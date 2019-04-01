@@ -1,17 +1,11 @@
 package com.gjs.taskTimekeeper.backend;
 
-
-import com.sun.istack.internal.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.*;
 
 /**
  * Overall manager of WorkPeriods. Handles high level tasks.
  */
 public class TimeManager {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TimeManager.class);
 
 	/** Taks held by this object. */
 	Set<Task> tasks = new HashSet<>();
@@ -29,7 +23,7 @@ public class TimeManager {
 	 * @param tasks The tasks to set.
 	 * @throws NullPointerException If the set of tasks if null.
 	 */
-	public TimeManager(@NotNull Set<Task> tasks) throws NullPointerException {
+	public TimeManager(Set<Task> tasks) throws NullPointerException {
 		this();
 		this.setTasks(tasks);
 	}
@@ -40,7 +34,7 @@ public class TimeManager {
 	 * @param workPeriods The work periods to set.
 	 * @throws NullPointerException If either tasks or work periods are set.
 	 */
-	public TimeManager(@NotNull Set<Task> tasks, @NotNull SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
+	public TimeManager(Set<Task> tasks, SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
 		this(tasks);
 		this.setWorkPeriods(workPeriods);
 	}
@@ -49,7 +43,6 @@ public class TimeManager {
 	 * Gets the work periods
 	 * @return The work periods.
 	 */
-	@NotNull
 	public SortedSet<WorkPeriod> getWorkPeriods() {
 		return workPeriods;
 	}
@@ -60,8 +53,7 @@ public class TimeManager {
 	 * @return This manager object.
 	 * @throws NullPointerException If the periods given are null or the set contains a null value.
 	 */
-	@NotNull
-	public TimeManager setWorkPeriods(@NotNull SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
+	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
 		if(workPeriods == null){
 			throw new NullPointerException("Work periods cannot be null.");
 		}
@@ -76,7 +68,6 @@ public class TimeManager {
 	 * Gets the tasks.
 	 * @return The tasks held.
 	 */
-	@NotNull
 	public Set<Task> getTasks() {
 		return tasks;
 	}
@@ -87,8 +78,7 @@ public class TimeManager {
 	 * @return This manager object.
 	 * @throws NullPointerException If the tasks list is null or contains null values.
 	 */
-	@NotNull
-	public TimeManager setTasks(@NotNull Set<Task> tasks) throws NullPointerException {
+	public TimeManager setTasks(Set<Task> tasks) throws NullPointerException {
 		if(tasks == null){
 			throw new NullPointerException("Tasks cannot be null.");
 		}
@@ -105,8 +95,7 @@ public class TimeManager {
 	 * @return This manager object
 	 * @throws NullPointerException If the task given is null.
 	 */
-	@NotNull
-	public TimeManager addTask(@NotNull Task task) throws NullPointerException{
+	public TimeManager addTask( Task task) throws NullPointerException{
 		if(task == null){
 			throw new NullPointerException("Cannot add a null task.");
 		}
@@ -118,7 +107,6 @@ public class TimeManager {
 	 * Cleans up the set of tasks by re-creating the set from held timespans.
 	 * @return This manager object
 	 */
-	@NotNull
 	public TimeManager cleanupTasks(){
 		Set<Task> usedTasks = new HashSet<>();
 
@@ -138,8 +126,7 @@ public class TimeManager {
 	 * @return This manager object
 	 * @throws NullPointerException If the period given is null
 	 */
-	@NotNull
-	public TimeManager addWorkPeriod(@NotNull WorkPeriod workPeriod) throws NullPointerException{
+	public TimeManager addWorkPeriod(WorkPeriod workPeriod) throws NullPointerException{
 		if(workPeriod == null){
 			throw new NullPointerException("Work period cannot be null.");
 		}
@@ -154,8 +141,7 @@ public class TimeManager {
 	 * @throws NullPointerException If the span given is null
 	 * @throws IllegalStateException If there are no periods to add to.
 	 */
-	@NotNull
-	public TimeManager addTimespan(@NotNull Timespan span) throws NullPointerException, IllegalStateException {
+	public TimeManager addTimespan(Timespan span) throws NullPointerException, IllegalStateException {
 		if(span == null){
 			throw new NullPointerException("Timespan cannot be null.");
 		}
@@ -171,7 +157,6 @@ public class TimeManager {
 	 * Gets a list of periods with unfinished periods.
 	 * @return a list of periods with unfinished periods.
 	 */
-	@NotNull
 	public Collection<WorkPeriod> getUnfinishedPeriods(){
 		List<WorkPeriod> periods = new LinkedList<>();
 
@@ -202,7 +187,6 @@ public class TimeManager {
 	 * @param timespan The timespan to look for.
 	 * @return all work periods with a given timespan.
 	 */
-	@NotNull
 	public Collection<WorkPeriod> getWorkPeriodsWith(Timespan timespan){
 		List<WorkPeriod> periods = new LinkedList<>();
 
@@ -219,7 +203,6 @@ public class TimeManager {
 	 * @param task The task to look for
 	 * @return all work periods with the given task
 	 */
-	@NotNull
 	public Collection<WorkPeriod> getWorkPeriodsWith(Task task){
 		List<WorkPeriod> periods = new LinkedList<>();
 
@@ -236,7 +219,6 @@ public class TimeManager {
 	 * @param task The task to look for.
 	 * @return all timespans with the given task
 	 */
-	@NotNull
 	public Collection<Timespan> getTimespansWith(Task task){
 		List<Timespan> periods = new LinkedList<>();
 

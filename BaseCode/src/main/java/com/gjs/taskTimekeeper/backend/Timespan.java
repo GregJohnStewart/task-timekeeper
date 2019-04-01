@@ -1,10 +1,5 @@
 package com.gjs.taskTimekeeper.backend;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,15 +8,12 @@ import java.util.Objects;
  * Defines a span of time. Associated with a {@link Task}.
  */
 public class Timespan implements Comparable<Timespan>{
-	private static final Logger LOGGER = LoggerFactory.getLogger(Timespan.class);
 
 	/** The task this timespan is associated with. */
 	private Task task;
 	/** The start time of this span. */
-	@Nullable
 	private LocalDateTime startTime;
 	/** The ending time of this span. */
-	@Nullable
 	private LocalDateTime endTime;
 	/** The duration of the timespan. Null if {@link #startTime} or {@link #endTime} are null. */
 	private Duration duration;
@@ -31,7 +23,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @param task The task to set
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan(@NotNull Task task) throws NullPointerException {
+	public Timespan(Task task) throws NullPointerException {
 		this.setTask(task);
 	}
 
@@ -41,7 +33,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @param startTime The time this span started at.
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan(@NotNull Task task, @Nullable LocalDateTime startTime) throws NullPointerException {
+	public Timespan(Task task, LocalDateTime startTime) throws NullPointerException {
 		this(task);
 		this.setStartTime(startTime);
 	}
@@ -53,7 +45,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @param endTime The time this span ended at.
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan(@NotNull Task task, @Nullable LocalDateTime startTime, @Nullable LocalDateTime endTime) throws NullPointerException {
+	public Timespan(Task task, LocalDateTime startTime, LocalDateTime endTime) throws NullPointerException {
 		this(task, startTime);
 		this.setEndTime(endTime);
 	}
@@ -62,7 +54,6 @@ public class Timespan implements Comparable<Timespan>{
 	 * Gets the {@link #task}.
 	 * @return The {@link #task} this span is associated with
 	 */
-	@NotNull
 	public Task getTask() {
 		return task;
 	}
@@ -73,7 +64,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @return This span object
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan setTask(@NotNull Task task) throws NullPointerException {
+	public Timespan setTask(Task task) throws NullPointerException {
 		if(task == null){
 			throw new NullPointerException("Task cannot be null.");
 		}
@@ -85,7 +76,6 @@ public class Timespan implements Comparable<Timespan>{
 	 * Gets the start datetime.
 	 * @return The start datetime. Null if not set.
 	 */
-	@Nullable
 	public LocalDateTime getStartTime() {
 		return startTime;
 	}
@@ -96,8 +86,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @return This span object
 	 * @throws IllegalArgumentException If the start time given is after the end time.
 	 */
-	@NotNull
-	public Timespan setStartTime(@Nullable LocalDateTime startTime) throws IllegalArgumentException {
+	public Timespan setStartTime(LocalDateTime startTime) throws IllegalArgumentException {
 		if(startTime != null && this.hasEndTime() && this.endTime.isBefore(startTime)){
 			throw new IllegalArgumentException("Start time cannot be before end time.");
 		}
@@ -110,7 +99,6 @@ public class Timespan implements Comparable<Timespan>{
 	 * Gets the end time for this span.
 	 * @return The end time for this span
 	 */
-	@Nullable
 	public LocalDateTime getEndTime() {
 		return endTime;
 	}
@@ -121,7 +109,6 @@ public class Timespan implements Comparable<Timespan>{
 	 * @return This span object
 	 * @throws IllegalArgumentException If the end time given is before the start time.
 	 */
-	@NotNull
 	public Timespan setEndTime(LocalDateTime endTime) throws IllegalArgumentException {
 		if(endTime != null && this.startTime != null && this.startTime.isAfter(endTime)){
 			throw new IllegalArgumentException("Start time cannot be before end time.");
@@ -206,7 +193,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * @return
 	 */
 	@Override
-	public int compareTo(@NotNull Timespan o) throws NullPointerException  {
+	public int compareTo(Timespan o) throws NullPointerException  {
 		if(o == null){
 			throw new NullPointerException("Cannot compare to null.");
 		}

@@ -1,7 +1,5 @@
 package com.gjs.taskTimekeeper.backend;
 
-import com.sun.istack.internal.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +22,7 @@ public class Task {
 	 * @param name The name of the task.
 	 * @throws NullPointerException if the string given is null.
 	 */
-	public Task(@NotNull String name) throws NullPointerException {
+	public Task(String name) throws NullPointerException {
 		this.setName(name);
 	}
 
@@ -33,7 +31,7 @@ public class Task {
 	 * @param name The name of the task.
 	 * @param attributes The attributes for the task.
 	 */
-	public Task(@NotNull String name, @NotNull Map<String, String> attributes) throws NullPointerException {
+	public Task(String name, Map<String, String> attributes) throws NullPointerException {
 		this(name);
 		this.setAttributes(attributes);
 	}
@@ -52,7 +50,7 @@ public class Task {
 	 * @return This task object.
 	 * @throws NullPointerException if the string given is null.
 	 */
-	public Task setName(@NotNull String name) throws NullPointerException {
+	public Task setName(String name) throws NullPointerException {
 		if(name == null){
 			throw new NullPointerException("Name cannot be null.");
 		}
@@ -75,9 +73,9 @@ public class Task {
 	 * @return This task object.
 	 * @throws NullPointerException if the attrubutes object is null.
 	 */
-	public Task setAttributes(@NotNull Map<String, String> attributes) throws NullPointerException {
+	public Task setAttributes(Map<String, String> attributes) throws NullPointerException {
 		if(attributes == null){
-			throw new IllegalArgumentException("Attributes cannot be null.");
+			throw new NullPointerException("Attributes cannot be null.");
 		}
 		this.attributes = attributes;
 		return this;

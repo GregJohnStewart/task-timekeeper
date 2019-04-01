@@ -1,8 +1,5 @@
 package com.gjs.taskTimekeeper.backend;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -13,6 +10,7 @@ import java.util.stream.Collectors;
  * Has its own attributes for the user to set.
  */
 public class WorkPeriod implements Comparable<WorkPeriod> {
+
 	/** The timespans in this period. */
 	private SortedSet<Timespan> timespans = new TreeSet<>();
 	/** The attributes held by the period */
@@ -30,7 +28,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @param timespans The timespans to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null.
 	 */
-	public WorkPeriod(@NotNull List<Timespan> timespans) throws NullPointerException {
+	public WorkPeriod(List<Timespan> timespans) throws NullPointerException {
 		this();
 	}
 
@@ -40,7 +38,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @param attributes The attributes to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null, or if the attributes are null.
 	 */
-	public WorkPeriod(@NotNull List<Timespan> timespans, @NotNull Map<String, String> attributes) throws NullPointerException {
+	public WorkPeriod(List<Timespan> timespans, Map<String, String> attributes) throws NullPointerException {
 		this(timespans);
 		this.setAttributes(attributes);
 	}
@@ -51,8 +49,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return This object.
 	 * @throws NullPointerException If the timespan given is null.
 	 */
-	@NotNull
-	public WorkPeriod addTimespan(@NotNull Timespan timespan) throws NullPointerException{
+	public WorkPeriod addTimespan(Timespan timespan) throws NullPointerException{
 		if(timespan == null){
 			throw new NullPointerException("Timespan cannot be null.");
 		}
@@ -65,7 +62,6 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * TODO:: prevent tampering, adding nulls. Defensive copy?
 	 * @return The list of timespans.
 	 */
-	@NotNull
 	public SortedSet<Timespan> getTimespans() {
 		return timespans;
 	}
@@ -76,8 +72,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return This object
 	 * @throws NullPointerException If the ist given is null or any of the contents of the list is null.
 	 */
-	@NotNull
-	public WorkPeriod setTimespans(@NotNull SortedSet<Timespan> timespans) throws NullPointerException {
+	public WorkPeriod setTimespans(SortedSet<Timespan> timespans) throws NullPointerException {
 		if(timespans == null){
 			throw new NullPointerException("Timespans cannot ne null.");
 		}
@@ -102,8 +97,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return This period object.
 	 * @throws NullPointerException If the attributes given are null.
 	 */
-	@NotNull
-	public WorkPeriod setAttributes(@NotNull Map<String, String> attributes) throws NullPointerException {
+	public WorkPeriod setAttributes(Map<String, String> attributes) throws NullPointerException {
 		if(attributes == null){
 			throw new NullPointerException("Attributes cannot be null.");
 		}
@@ -115,7 +109,6 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets the total time defined by all completed timespans.
 	 * @return the total time defined by all completed timespans.
 	 */
-	@NotNull
 	public Duration getTotalTime(){
 		Duration duration = Duration.ZERO;
 
@@ -134,7 +127,6 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return the starting time of this period
 	 * @throws IllegalStateException If there are no timespans or the first timespan does not specify a start time.
 	 */
-	@NotNull
 	public LocalDateTime getStart() throws IllegalStateException {
 		if(this.getTimespans().isEmpty()){
 			throw new IllegalStateException("No timespans added; cannot determine start.");
@@ -152,7 +144,6 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return the ending time of this period, as defined by the latest timespan.
 	 * @throws IllegalStateException If there are no timespans, or none exist with an ending datetime.
 	 */
-	@NotNull
 	public LocalDateTime getEnd() throws IllegalStateException {
 		if(this.getTimespans().isEmpty()){
 			throw new IllegalStateException("No timespans added; cannot determine end.");
@@ -181,7 +172,6 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets a list of all spans that are yet to be completed.
 	 * @return a Collection of all spans that are yet to be completed.
 	 */
-	@NotNull
 	public Collection<Timespan> getUnfinishedTimespans(){
 		List<Timespan> spans = new LinkedList<>();
 
@@ -212,7 +202,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @param timespan The timespan given to test if this holds it.
 	 * @return if this period contains the timespan given.
 	 */
-	public boolean contains(@Nullable Timespan timespan){
+	public boolean contains(Timespan timespan){
 		return this.getTimespans().contains(timespan);
 	}
 
@@ -253,7 +243,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return
 	 */
 	@Override
-	public int compareTo(@NotNull WorkPeriod o) {
+	public int compareTo(WorkPeriod o) {
 		if(o == null){
 			throw new NullPointerException("Cannot compare to null.");
 		}
