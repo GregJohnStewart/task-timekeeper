@@ -182,11 +182,11 @@ public class Timespan implements Comparable<Timespan>{
 
 	/**
 	 * Returns:
-	 *   -1 if this begins before o
+	 *   <0 if this begins before o
 	 *   -1 if o has no start
 	 *    0 if this begins and at the same time as o
 	 *    0 if both this and o have no start
-	 *    1 if this begins after o
+	 *   >0 if this begins after o
 	 *    1 if this has no start
 	 *
 	 * @param o
@@ -197,7 +197,7 @@ public class Timespan implements Comparable<Timespan>{
 		if(o == null){
 			throw new NullPointerException("Cannot compare to null.");
 		}
-		if(!this.hasEndTime() && !o.hasStartTime()){
+		if(!this.hasStartTime() && !o.hasStartTime()){
 			return 0;
 		}
 		if(!o.hasStartTime()){
