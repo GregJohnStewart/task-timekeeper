@@ -181,6 +181,8 @@ public class Timespan implements Comparable<Timespan>{
 	}
 
 	/**
+	 * Compares this to another timespan; Compares start time.
+	 *
 	 * Returns:
 	 *   <0 if this begins before o
 	 *   -1 if o has no start
@@ -197,6 +199,7 @@ public class Timespan implements Comparable<Timespan>{
 		if(o == null){
 			throw new NullPointerException("Cannot compare to null.");
 		}
+		//if one or both don't have start time
 		if(!this.hasStartTime() && !o.hasStartTime()){
 			return 0;
 		}
@@ -206,6 +209,25 @@ public class Timespan implements Comparable<Timespan>{
 		if(!this.hasStartTime()){
 			return 1;
 		}
-		return this.getStartTime().compareTo(o.getStartTime());
+
+		int compareResult = this.getStartTime().compareTo(o.getStartTime());
+		//if both have same start time, compare end times.
+		if(compareResult == 0){
+			if(this.hasEndTime() && o.hasEndTime()) {
+				compareResult = this.getEndTime().compareTo(o.getEndTime());
+			}else if(!this.hasEndTime() && !o.hasEndTime()){
+				compareResult = 0;
+			}else if(this.hasEndTime()){
+				compareResult = -1;
+			}else if(o.hasEndTime()){
+				compareResult = 1;
+			}
+		}
+		//if end times the same, compare tasks
+		if(compareResult == 0){
+			compareResult = this.task.compareTo(o.getTask());
+		}
+
+		return compareResult;
 	}
 }

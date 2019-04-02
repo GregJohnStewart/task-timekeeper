@@ -78,7 +78,6 @@ public class TimespanTest {
 
 		main.setStartTime(ldt);
 		o.setStartTime(ldt);
-		assertEquals(0, main.compareTo(o));
 
 		o.setStartTime(LocalDateTime.MIN);
 		assertTrue(main.compareTo(o) > 0);

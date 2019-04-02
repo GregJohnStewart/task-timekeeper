@@ -28,8 +28,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @param timespans The timespans to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null.
 	 */
-	public WorkPeriod(List<Timespan> timespans) throws NullPointerException {
+	public WorkPeriod(Collection<Timespan> timespans) throws NullPointerException {
 		this();
+		if(timespans instanceof SortedSet){
+			this.setTimespans((SortedSet)timespans);
+		}else {
+			this.setTimespans(timespans);
+		}
 	}
 
 	/**
@@ -38,23 +43,27 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @param attributes The attributes to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null, or if the attributes are null.
 	 */
-	public WorkPeriod(List<Timespan> timespans, Map<String, String> attributes) throws NullPointerException {
+	public WorkPeriod(Collection<Timespan> timespans, Map<String, String> attributes) throws NullPointerException {
 		this(timespans);
 		this.setAttributes(attributes);
 	}
 
 	/**
 	 * Adds a timespan to the work period.
+	 *
+	 * If timespan.equals({any in set}), it will not be kept. The internal set object will consider it the same as another.
+	 *  Same for timespan.compareTo({any in set}) == 0
+	 *
+	 *
 	 * @param timespan The timespan to add
-	 * @return This object.
+	 * @return The result from adding the timespan to the set. Presumably if it was actually added or not.
 	 * @throws NullPointerException If the timespan given is null.
 	 */
-	public WorkPeriod addTimespan(Timespan timespan) throws NullPointerException{
+	public boolean addTimespan(Timespan timespan) throws NullPointerException{
 		if(timespan == null){
 			throw new NullPointerException("Timespan cannot be null.");
 		}
-		this.timespans.add(timespan);
-		return this;
+		return this.timespans.add(timespan);
 	}
 
 	/**
@@ -76,10 +85,32 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 		if(timespans == null){
 			throw new NullPointerException("Timespans cannot ne null.");
 		}
-		if(timespans.contains(null)){
-			throw new NullPointerException("Cannot hold null timespans.");
+
+		if(!timespans.isEmpty()) {
+			boolean containsNullValues = false;
+
+			try {
+				containsNullValues = timespans.contains(null);
+			}catch (NullPointerException e){
+
+			}
+			if(containsNullValues){
+				throw new NullPointerException("Cannot hold null timespans.");
+			}
 		}
+
 		this.timespans = timespans;
+		return this;
+	}
+
+	/**
+	 * Sets the list of timespans with a generic collection.
+	 * @param timespans The timespans to set.
+	 * @return This period object.
+	 * @throws NullPointerException If the timespan collection given is null or any values are null.
+	 */
+	public WorkPeriod setTimespans(Collection<Timespan> timespans) throws NullPointerException {
+		this.setTimespans(new TreeSet<>(timespans));
 		return this;
 	}
 
@@ -270,5 +301,19 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 			return -1;
 		}
 		return thisStart.compareTo(oStart);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof WorkPeriod)) return false;
+		WorkPeriod period = (WorkPeriod) o;
+		return getTimespans().equals(period.getTimespans()) &&
+				getAttributes().equals(period.getAttributes());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getTimespans(), getAttributes());
 	}
 }

@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.backend;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Defines a task to associate to spans of time.
@@ -11,11 +12,32 @@ import java.util.Objects;
  *
  * Uses user defined attributes to customize it for what they need it to say.
  */
-public class Task {
+public class Task implements Comparable<Task> {
 	/** The name of the task. */
-	public String name;
+	private String name;
+	/** The uuid of the task. For ensuring uniqueness and allowing for comparison. */
+	private final UUID uuid;
 	/** Any attributes the user wants to add (charge number, for example) */
 	private Map<String, String> attributes = new HashMap<>();
+
+	/**
+	 * Constructor to set the UUID.
+	 * @param uuid The uuid to set.
+	 * @throws NullPointerException If the uuid object is null.
+	 */
+	private Task(UUID uuid) throws NullPointerException{
+		if(uuid == null){
+			throw new NullPointerException("UUID for task cannot be null.");
+		}
+		this.uuid = uuid;
+	}
+
+	/**
+	 * Constructor that sets a random UUID.
+	 */
+	private Task(){
+		this(UUID.randomUUID());
+	}
 
 	/**
 	 * Constructor to set the name of the task.
@@ -23,6 +45,7 @@ public class Task {
 	 * @throws NullPointerException if the string given is null.
 	 */
 	public Task(String name) throws NullPointerException {
+		this();
 		this.setName(name);
 	}
 
@@ -33,6 +56,29 @@ public class Task {
 	 */
 	public Task(String name, Map<String, String> attributes) throws NullPointerException {
 		this(name);
+		this.setAttributes(attributes);
+	}
+
+	/**
+	 * Constructor to set the UUID and name of the task.
+	 * @param uuid The uuid to set
+	 * @param name The name to set
+	 * @throws NullPointerException if either parameter is null
+	 */
+	public Task(UUID uuid, String name) throws NullPointerException {
+		this(uuid);
+		this.setName(name);
+	}
+
+	/**
+	 * Constructor to set everything.
+	 * @param uuid The uuid to set
+	 * @param name The name to set
+	 * @param attributes The attributes to set
+	 * @throws NullPointerException If any parameter is null
+	 */
+	public Task(UUID uuid, String name, Map<String, String> attributes) throws NullPointerException {
+		this(uuid, name);
 		this.setAttributes(attributes);
 	}
 
@@ -56,6 +102,14 @@ public class Task {
 		}
 		this.name = name;
 		return this;
+	}
+
+	/**
+	 * Gets the uuid of the task.
+	 * @return The uuid of the task.
+	 */
+	public UUID getUuid() {
+		return uuid;
 	}
 
 	/**
@@ -86,12 +140,21 @@ public class Task {
 		if (this == o) return true;
 		if (!(o instanceof Task)) return false;
 		Task task = (Task) o;
-		return name.equals(task.name) &&
-			getAttributes().equals(task.getAttributes());
+		return getName().equals(task.getName()) &&
+				getUuid().equals(task.getUuid()) &&
+				getAttributes().equals(task.getAttributes());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, getAttributes());
+		return Objects.hash(getName(), getUuid(), getAttributes());
+	}
+
+	@Override
+	public int compareTo(Task task) {
+		if(task == null){
+			throw new NullPointerException("cannot compare to null");
+		}
+		return this.uuid.compareTo(task.getUuid());
 	}
 }

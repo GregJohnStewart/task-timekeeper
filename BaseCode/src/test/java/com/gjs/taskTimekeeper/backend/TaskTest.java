@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TaskTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
@@ -26,8 +26,15 @@ public class TaskTest {
 
 		Task newTasktwo = new Task("", map);
 
-		assertEquals(newTask, newTasktwo);
-		assertEquals(newTask.hashCode(), newTasktwo.hashCode());
+		assertNotEquals(newTask, newTasktwo);
+		assertNotEquals(newTask.hashCode(), newTasktwo.hashCode());
+
+		assertNotNull(newTask.getUuid());
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNullUuid(){
+		new Task(null, "");
 	}
 
 	@Test(expected = NullPointerException.class)
