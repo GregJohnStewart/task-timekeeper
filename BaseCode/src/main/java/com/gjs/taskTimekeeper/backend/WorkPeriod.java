@@ -67,12 +67,33 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	}
 
 	/**
+	 * Adds a number of timespans to the period.
+	 * @param timespans The timespans to add
+	 * @return This object
+	 * @throws NullPointerException If any of the given timespans are null
+	 */
+	public WorkPeriod addTimespans(Timespan ... timespans) throws NullPointerException{
+		for(Timespan span : timespans){
+			this.addTimespan(span);
+		}
+		return this;
+	}
+
+	/**
 	 * Gets the list of timespans held.
 	 * TODO:: prevent tampering, adding nulls. Defensive copy?
 	 * @return The list of timespans.
 	 */
 	public SortedSet<Timespan> getTimespans() {
 		return timespans;
+	}
+
+	/**
+	 * Gets the number of timespans held.
+	 * @return The number of timespans held.
+	 */
+	public int getNumTimespans(){
+		return this.getTimespans().size();
 	}
 
 	/**
@@ -92,7 +113,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 			try {
 				containsNullValues = timespans.contains(null);
 			}catch (NullPointerException e){
-
+				//nothing to do
 			}
 			if(containsNullValues){
 				throw new NullPointerException("Cannot hold null timespans.");
@@ -182,7 +203,9 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 		LocalDateTime dateTime = null;
 
 		{
-			Timespan spans[] = (Timespan[]) this.getTimespans().toArray();
+
+			Timespan spans[] = new Timespan[this.getTimespans().size()];
+			this.getTimespans().toArray(spans);
 
 			for(int i = spans.length - 1; i > -1; i--){
 				dateTime = spans[i].getEndTime();
@@ -270,7 +293,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 *    0 if both this and o have no start time
 	 *    1 if this starts after o
 	 *    1 if this has no start
-	 * @param o
+	 * @param o The work period to compare to
 	 * @return
 	 */
 	@Override
