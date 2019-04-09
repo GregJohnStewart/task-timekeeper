@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.backend;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -64,8 +65,10 @@ public class TimespanTest {
 	public void testCompare(){
 		LocalDateTime ldt = LocalDateTime.now();
 
-		Timespan main = new Timespan(new Task(""));
-		Timespan o = new Timespan(new Task(""));
+		UUID uuid = UUID.randomUUID();
+
+		Timespan main = new Timespan(new Task(uuid, ""));
+		Timespan o = new Timespan(new Task(uuid, ""));
 
 		assertEquals(0, main.compareTo(o));
 
@@ -84,6 +87,11 @@ public class TimespanTest {
 
 		o.setStartTime(LocalDateTime.MAX);
 		assertTrue(main.compareTo(o) < 0);
+
+		main = new Timespan(new Task(""));
+		o = new Timespan(new Task(""));
+
+		assertNotEquals(0, main.compareTo(o));
 	}
 
 	@Test(expected = NullPointerException.class)

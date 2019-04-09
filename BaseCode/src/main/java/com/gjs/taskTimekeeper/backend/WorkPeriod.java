@@ -286,6 +286,20 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	}
 
 	/**
+	 * Gets a list of tasks that are held by the Timespans in this period.
+	 * @return A list of tasks that are held by the Timespans in this period.
+	 */
+	public Set<Task> getTasks(){
+		Set<Task> tasks = new TreeSet<>();
+
+		for(Timespan span : this.getTimespans()){
+			tasks.add(span.getTask());
+		}
+
+		return tasks;
+	}
+
+	/**
 	 * Returns:
 	 *   -1 if this starts before o
 	 *   -1 if o has no start

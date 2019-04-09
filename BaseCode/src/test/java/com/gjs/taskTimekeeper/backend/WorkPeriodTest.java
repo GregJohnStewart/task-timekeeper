@@ -267,6 +267,21 @@ public class WorkPeriodTest {
 		assertFalse(period.hasUnfinishedTimespans());
 	}
 
+	@Test
+	public void getTasks(){
+		WorkPeriod period = new WorkPeriod();
+
+		assertTrue(period.getTasks().isEmpty());
+
+		period.addTimespan(new Timespan(testTask));
+
+		assertFalse(period.getTasks().isEmpty());
+		assertTrue(period.getTasks().contains(testTask));
+
+		period.addTimespan(new Timespan(testTaskTwo));
+
+		assertTrue(period.getTasks().containsAll(Arrays.asList(testTask, testTaskTwo)));
+	}
 
 
 }

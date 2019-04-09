@@ -186,10 +186,9 @@ public class Timespan implements Comparable<Timespan>{
 	 * Returns:
 	 *   <0 if this begins before o
 	 *   -1 if o has no start
-	 *    0 if this begins and at the same time as o
-	 *    0 if both this and o have no start
 	 *   >0 if this begins after o
 	 *    1 if this has no start
+	 *    this.getTask().compare(o.getTask()) if no start times or times are equal
 	 *
 	 * @param o
 	 * @return
@@ -201,7 +200,7 @@ public class Timespan implements Comparable<Timespan>{
 		}
 		//if one or both don't have start time
 		if(!this.hasStartTime() && !o.hasStartTime()){
-			return 0;
+			return this.getTask().compareTo(o.getTask());
 		}
 		if(!o.hasStartTime()){
 			return -1;

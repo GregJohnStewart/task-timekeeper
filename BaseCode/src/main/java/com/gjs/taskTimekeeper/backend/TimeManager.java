@@ -53,14 +53,42 @@ public class TimeManager {
 	 * @return This manager object.
 	 * @throws NullPointerException If the periods given are null or the set contains a null value.
 	 */
-	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
+	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods, boolean updateTasks) throws NullPointerException {
 		if(workPeriods == null){
 			throw new NullPointerException("Work periods cannot be null.");
 		}
-		if(workPeriods.contains(null)){
-			throw new NullPointerException("Work periods cannot contain null period.");
+
+		if(!workPeriods.isEmpty()) {
+			boolean containsNullValues = false;
+
+			try {
+				containsNullValues = workPeriods.contains(null);
+			}catch (NullPointerException e){
+				//nothing to do
+			}
+			if(containsNullValues){
+				throw new NullPointerException("Cannot hold null timespans.");
+			}
 		}
 		this.workPeriods = workPeriods;
+		if(updateTasks){
+			this.tasks.clear();
+			for(WorkPeriod period : this.getWorkPeriods()){
+				this.tasks.addAll(period.getTasks());
+			}
+		}
+
+		return this;
+	}
+
+	/**
+	 * Sets the work periods. Wrapper for {@link #setWorkPeriods(SortedSet, boolean)}, not updating tasks.
+	 * @param workPeriods The work periods to set.
+	 * @return This object.
+	 * @throws NullPointerException If the periods given are null or the set contains a null value.
+	 */
+	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
+		this.setWorkPeriods(workPeriods, false);
 		return this;
 	}
 
@@ -82,8 +110,18 @@ public class TimeManager {
 		if(tasks == null){
 			throw new NullPointerException("Tasks cannot be null.");
 		}
-		if(tasks.contains(null)){
-			throw new NullPointerException("Tasks cannot hold a null value.");
+
+		if(!tasks.isEmpty()) {
+			boolean containsNullValues = false;
+
+			try {
+				containsNullValues = tasks.contains(null);
+			}catch (NullPointerException e){
+				//nothing to do
+			}
+			if(containsNullValues){
+				throw new NullPointerException("Cannot hold null timespans.");
+			}
 		}
 		this.tasks = tasks;
 		return this;
