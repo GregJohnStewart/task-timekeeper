@@ -10,5 +10,5 @@
 
 rootProject.name = 'Task-Timekeeper'
 include 'BaseCode'
-include 'desktop-app'
+include 'DesktopApp'
 
