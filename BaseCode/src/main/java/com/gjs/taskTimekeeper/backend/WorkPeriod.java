@@ -252,6 +252,14 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	}
 
 	/**
+	 * Determines if this work period is unfinished.
+	 * @return if this work period is unfinished.
+	 */
+	public boolean isUnfinished(){
+		return this.getTimespans().isEmpty() || this.hasUnfinishedTimespans();
+	}
+
+	/**
 	 * Determines if this period contains the timespan given.
 	 * @param timespan The timespan given to test if this holds it.
 	 * @return if this period contains the timespan given.

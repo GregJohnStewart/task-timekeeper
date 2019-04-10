@@ -53,7 +53,7 @@ public class TimeManager {
 	 * @return This manager object.
 	 * @throws NullPointerException If the periods given are null or the set contains a null value.
 	 */
-	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods, boolean updateTasks) throws NullPointerException {
+	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods, boolean cleanupTasks) throws NullPointerException {
 		if(workPeriods == null){
 			throw new NullPointerException("Work periods cannot be null.");
 		}
@@ -71,11 +71,11 @@ public class TimeManager {
 			}
 		}
 		this.workPeriods = workPeriods;
-		if(updateTasks){
-			this.tasks.clear();
-			for(WorkPeriod period : this.getWorkPeriods()){
-				this.tasks.addAll(period.getTasks());
-			}
+		for(WorkPeriod period : this.getWorkPeriods()){
+			this.tasks.addAll(period.getTasks());
+		}
+		if(cleanupTasks){
+			this.cleanupTasks();
 		}
 
 		return this;
@@ -133,7 +133,7 @@ public class TimeManager {
 	 * @return This manager object
 	 * @throws NullPointerException If the task given is null.
 	 */
-	public TimeManager addTask( Task task) throws NullPointerException{
+	public TimeManager addTask(Task task) throws NullPointerException{
 		if(task == null){
 			throw new NullPointerException("Cannot add a null task.");
 		}
@@ -146,14 +146,10 @@ public class TimeManager {
 	 * @return This manager object
 	 */
 	public TimeManager cleanupTasks(){
-		Set<Task> usedTasks = new HashSet<>();
-
+		this.tasks.clear();
 		for(WorkPeriod period : this.getWorkPeriods()){
-			for(Timespan span : period.getTimespans()){
-				usedTasks.add(span.getTask());
-			}
+			this.tasks.addAll(period.getTasks());
 		}
-		this.setTasks(usedTasks);
 
 		return this;
 	}
@@ -169,6 +165,7 @@ public class TimeManager {
 			throw new NullPointerException("Work period cannot be null.");
 		}
 		this.getWorkPeriods().add(workPeriod);
+		this.tasks.addAll(workPeriod.getTasks());
 		return this;
 	}
 
@@ -199,7 +196,7 @@ public class TimeManager {
 		List<WorkPeriod> periods = new LinkedList<>();
 
 		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.hasUnfinishedTimespans()){
+			if(period.isUnfinished()){
 				periods.add(period);
 			}
 		}
@@ -213,27 +210,11 @@ public class TimeManager {
 	 */
 	public boolean hasUnfinishedPeriods(){
 		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.hasUnfinishedTimespans()){
+			if(period.isUnfinished()){
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Gets all work periods with a given timespan.
-	 * @param timespan The timespan to look for.
-	 * @return all work periods with a given timespan.
-	 */
-	public Collection<WorkPeriod> getWorkPeriodsWith(Timespan timespan){
-		List<WorkPeriod> periods = new LinkedList<>();
-
-		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.contains(timespan)){
-				periods.add(period);
-			}
-		}
-		return periods;
 	}
 
 	/**
