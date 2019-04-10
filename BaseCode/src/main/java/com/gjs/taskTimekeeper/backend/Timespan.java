@@ -1,5 +1,9 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,6 +20,7 @@ public class Timespan implements Comparable<Timespan>{
 	/** The ending time of this span. */
 	private LocalDateTime endTime;
 	/** The duration of the timespan. Null if {@link #startTime} or {@link #endTime} are null. */
+	@JsonIgnore
 	private Duration duration;
 
 	/**
@@ -45,7 +50,12 @@ public class Timespan implements Comparable<Timespan>{
 	 * @param endTime The time this span ended at.
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan(Task task, LocalDateTime startTime, LocalDateTime endTime) throws NullPointerException {
+	@JsonCreator
+	public Timespan(
+			@JsonProperty("task") Task task,
+			@JsonProperty("startTime") LocalDateTime startTime,
+			@JsonProperty("endTime") LocalDateTime endTime
+	) throws NullPointerException {
 		this(task, startTime);
 		this.setEndTime(endTime);
 	}
@@ -138,6 +148,7 @@ public class Timespan implements Comparable<Timespan>{
 	 * Determines if both start and end times are set.
 	 * @return if both start and end times are set.
 	 */
+	@JsonIgnore
 	public boolean isComplete(){
 		return this.hasStartTime() && this.hasEndTime();
 	}

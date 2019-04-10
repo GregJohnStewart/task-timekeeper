@@ -1,7 +1,9 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -285,5 +287,20 @@ public class WorkPeriodTest {
 		assertTrue(period.getTasks().containsAll(Arrays.asList(testTask, testTaskTwo)));
 	}
 
+	@Test
+	public void serialization() throws IOException {
+		ObjectMapper mapper = TimeManager.MAPPER;
+
+		WorkPeriod period = new WorkPeriod();
+
+		period.getAttributes().put("test", "value");
+		period.addTimespan(new Timespan(new Task("test task")));
+
+		String serialized = mapper.writeValueAsString(period);
+
+		WorkPeriod deserialized = mapper.readValue(serialized, WorkPeriod.class);
+
+		assertTrue(period.equals(deserialized));
+	}
 
 }

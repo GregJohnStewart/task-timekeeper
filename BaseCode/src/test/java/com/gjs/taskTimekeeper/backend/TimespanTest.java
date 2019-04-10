@@ -1,7 +1,9 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,6 +11,8 @@ import static org.junit.Assert.*;
 
 public class TimespanTest {
 
+	private static final LocalDateTime now = LocalDateTime.now();
+	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
 
 	@Test
 	public void basicTest(){
@@ -97,6 +101,19 @@ public class TimespanTest {
 	@Test(expected = NullPointerException.class)
 	public void testCompareNull(){
 		new Timespan(new Task("")).compareTo(null);
+	}
+
+	@Test
+	public void serialization() throws IOException {
+		ObjectMapper mapper = TimeManager.MAPPER;
+
+		Timespan span = new Timespan(new Task("task"), now, nowPlusFive);
+
+		String serialization = mapper.writeValueAsString(span);
+
+		Timespan deserialized = mapper.readValue(serialization, Timespan.class);
+
+		assertTrue(span.equals(deserialized));
 	}
 
 }

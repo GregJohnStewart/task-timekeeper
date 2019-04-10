@@ -1,5 +1,8 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -84,6 +87,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * TODO:: prevent tampering, adding nulls. Defensive copy?
 	 * @return The list of timespans.
 	 */
+	@JsonProperty("timespans")
 	public SortedSet<Timespan> getTimespans() {
 		return timespans;
 	}
@@ -92,6 +96,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets the number of timespans held.
 	 * @return The number of timespans held.
 	 */
+	@JsonIgnore
 	public int getNumTimespans(){
 		return this.getTimespans().size();
 	}
@@ -102,6 +107,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return This object
 	 * @throws NullPointerException If the ist given is null or any of the contents of the list is null.
 	 */
+	@JsonIgnore
 	public WorkPeriod setTimespans(SortedSet<Timespan> timespans) throws NullPointerException {
 		if(timespans == null){
 			throw new NullPointerException("Timespans cannot ne null.");
@@ -161,6 +167,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets the total time defined by all completed timespans.
 	 * @return the total time defined by all completed timespans.
 	 */
+	@JsonIgnore
 	public Duration getTotalTime(){
 		Duration duration = Duration.ZERO;
 
@@ -179,6 +186,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return the starting time of this period
 	 * @throws IllegalStateException If there are no timespans or the first timespan does not specify a start time.
 	 */
+	@JsonIgnore
 	public LocalDateTime getStart() throws IllegalStateException {
 		if(this.getTimespans().isEmpty()){
 			throw new IllegalStateException("No timespans added; cannot determine start.");
@@ -196,6 +204,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * @return the ending time of this period, as defined by the latest timespan.
 	 * @throws IllegalStateException If there are no timespans, or none exist with an ending datetime.
 	 */
+	@JsonIgnore
 	public LocalDateTime getEnd() throws IllegalStateException {
 		if(this.getTimespans().isEmpty()){
 			throw new IllegalStateException("No timespans added; cannot determine end.");
@@ -226,6 +235,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets a list of all spans that are yet to be completed.
 	 * @return a Collection of all spans that are yet to be completed.
 	 */
+	@JsonIgnore
 	public Collection<Timespan> getUnfinishedTimespans(){
 		List<Timespan> spans = new LinkedList<>();
 
@@ -242,6 +252,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Determines if the work period has any timespans uncompleted.
 	 * @return if the work period has any timespans uncompleted.
 	 */
+	@JsonIgnore
 	public boolean hasUnfinishedTimespans(){
 		for(Timespan span : this.getTimespans()){
 			if(!span.isComplete()){
@@ -255,6 +266,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Determines if this work period is unfinished.
 	 * @return if this work period is unfinished.
 	 */
+	@JsonIgnore
 	public boolean isUnfinished(){
 		return this.getTimespans().isEmpty() || this.hasUnfinishedTimespans();
 	}
@@ -297,6 +309,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	 * Gets a list of tasks that are held by the Timespans in this period.
 	 * @return A list of tasks that are held by the Timespans in this period.
 	 */
+	@JsonIgnore
 	public Set<Task> getTasks(){
 		Set<Task> tasks = new TreeSet<>();
 

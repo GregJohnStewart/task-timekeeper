@@ -1,9 +1,11 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -45,6 +47,21 @@ public class TaskTest {
 	@Test(expected = NullPointerException.class)
 	public void testNullSetAttributes(){
 		new Task("", null);
+	}
+
+	@Test
+	public void serialization() throws IOException {
+		ObjectMapper mapper = TimeManager.MAPPER;
+
+		Task testTask = new Task("test task");
+
+		testTask.getAttributes().put("testAtt", "value");
+
+		String string = mapper.writeValueAsString(testTask);
+
+		Task deserializedTask = mapper.readValue(string, Task.class);
+
+		assertTrue(testTask.equals(deserializedTask));
 	}
 
 }

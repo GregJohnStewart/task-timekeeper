@@ -1,7 +1,9 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,6 +33,7 @@ public class TimeManagerTest {
 		manager = new TimeManager(tasks, periods);
 
 		assertEquals(periods, manager.getWorkPeriods());
+		manager.hashCode();
 	}
 
 	@Test
@@ -268,6 +271,23 @@ public class TimeManagerTest {
 		assertTrue(manager.getTimespansWith(testTask).contains(spanOne));
 		assertEquals(1, manager.getTimespansWith(testTask).size());
 
+	}
+
+	@Test
+	public void serialization() throws IOException {
+		ObjectMapper mapper = TimeManager.MAPPER;
+
+		TimeManager manager = new TimeManager();
+
+		manager.addWorkPeriod(new WorkPeriod());
+		manager.addTimespan(new Timespan(testTask));
+		manager.addTask(testTaskTwo);
+
+		String serialized = mapper.writeValueAsString(manager);
+
+		TimeManager deserialized = mapper.readValue(serialized, TimeManager.class);
+
+		assertTrue(manager.equals(deserialized));
 	}
 
 }

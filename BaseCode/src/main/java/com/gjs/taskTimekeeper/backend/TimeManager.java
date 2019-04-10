@@ -1,11 +1,23 @@
 package com.gjs.taskTimekeeper.backend;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.util.*;
 
 /**
  * Overall manager of WorkPeriods. Handles high level tasks.
  */
 public class TimeManager {
+	/**
+	 * Pre-configured object mapper to be compatible with Java's LocalDateTime objects.
+	 */
+	public static final ObjectMapper MAPPER = new ObjectMapper();
+
+	static{
+		MAPPER.registerModule(new JavaTimeModule());
+	}
 
 	/** Taks held by this object. */
 	private Set<Task> tasks = new HashSet<>();
@@ -192,6 +204,7 @@ public class TimeManager {
 	 * Gets a list of periods with unfinished periods.
 	 * @return a list of periods with unfinished periods.
 	 */
+	@JsonIgnore
 	public Collection<WorkPeriod> getUnfinishedPeriods(){
 		List<WorkPeriod> periods = new LinkedList<>();
 
@@ -247,5 +260,19 @@ public class TimeManager {
 			}
 		}
 		return periods;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TimeManager)) return false;
+		TimeManager manager = (TimeManager) o;
+		return getTasks().equals(manager.getTasks()) &&
+				getWorkPeriods().equals(manager.getWorkPeriods());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getTasks(), getWorkPeriods());
 	}
 }
