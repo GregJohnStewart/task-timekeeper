@@ -8,9 +8,9 @@ import java.util.*;
 public class TimeManager {
 
 	/** Taks held by this object. */
-	Set<Task> tasks = new HashSet<>();
+	private Set<Task> tasks = new HashSet<>();
 	/** Work periods held by this object. */
-	SortedSet<WorkPeriod> workPeriods = new TreeSet<>();
+	private SortedSet<WorkPeriod> workPeriods = new TreeSet<>();
 
 	/**
 	 * Default constructor
