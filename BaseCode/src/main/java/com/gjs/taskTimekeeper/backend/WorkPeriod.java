@@ -34,6 +34,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	public WorkPeriod(Collection<Timespan> timespans) throws NullPointerException {
 		this();
 		if(timespans instanceof SortedSet){
+			//noinspection unchecked
 			this.setTimespans((SortedSet)timespans);
 		}else {
 			this.setTimespans(timespans);
@@ -212,8 +213,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 		LocalDateTime dateTime = null;
 
 		{
-
-			Timespan spans[] = new Timespan[this.getTimespans().size()];
+			Timespan[] spans = new Timespan[this.getTimespans().size()];
 			this.getTimespans().toArray(spans);
 
 			for(int i = spans.length - 1; i > -1; i--){
