@@ -33,6 +33,7 @@ public class Configuration {
 	 * Reads the properties file for configuration
 	 */
 	private static void readPropertiesFile(){
+		LOGGER.trace("Reading properties file for properties.");
 		try(InputStream is = Configuration.class.getClassLoader().getResourceAsStream(PROPERTY_FILE_LOC)){
 			if(is == null){
 				throw new FileNotFoundException("Input stream was null, assuming file is not present.");
@@ -51,6 +52,7 @@ public class Configuration {
 	 * Processes default values.
 	 */
 	private static void processDefaults(){
+		LOGGER.trace("Processing default configuration values.");
 		for(ConfigKeys key : ConfigKeys.getKeysWithDefaultFor()){
 			PROPERTIES.put(
 					key.defaultFor.key,
@@ -63,6 +65,7 @@ public class Configuration {
 	 * Gets configuration from environment config.
 	 */
 	private static void addEnvironmentConfig(){
+		LOGGER.trace("Processing configuration from Environment.");
 		Map<String, String> envVars = System.getenv();
 
 		for(ConfigKeys key : ConfigKeys.getKeysWithEnv()){
@@ -77,6 +80,7 @@ public class Configuration {
 	 * @param args The arguments to process.
 	 */
 	public static void readCmdLinesIn(String[] args){
+		LOGGER.trace("Reading command line arguments into configuration.");
 		if(readCmdLinesIn){
 			throw new IllegalStateException("Cannot read command line args twice.");
 		}
@@ -100,7 +104,7 @@ public class Configuration {
 		RUN_MODE("run.mode", "TKPR_MODE"),
 		//Running config, for single mode
 		SINGLE_MODE_(""),
-		//default value
+		//default values
 		DEFAULT_SAVE_FILE("default.saveFile", SAVE_FILE),
 		DEFAULT_RUN_MODE("default.runMode", RUN_MODE);
 
@@ -153,6 +157,7 @@ public class Configuration {
 
 	/**
 	 * Private class for processing command line ops.
+	 * TODO:: figure out best way to get this into PROPERTIES
 	 */
 	private static class CommandLineOps {
 		private final Logger LOGGER = LoggerFactory.getLogger(CommandLineOps.class);
@@ -214,10 +219,11 @@ public class Configuration {
 	 */
 	public static void logOutProperties(){
 		LOGGER.info("Configuration properties:");
-
-		for(Map.Entry<Object, Object> curProp : getAllProperties()){
-			LOGGER.info("    {} : {}", curProp.getKey(), curProp.getValue());
-		}
+		
+		//TODO:: sort these somehow. Issue with Properties holding <Object, Object>
+		getAllProperties().stream().forEach(
+				curProp -> LOGGER.info("    {} : {}", curProp.getKey(), curProp.getValue())
+		);
 	}
 
 	/**
@@ -225,7 +231,7 @@ public class Configuration {
 	 * @param key The key to get from properties.
 	 * @return The property.
 	 */
-	public <T> T getProperty(ConfigKeys key, Class<T> clazz){
+	public static <T> T getProperty(ConfigKeys key, Class<T> clazz){
 		return clazz.cast(PROPERTIES.getProperty(key.key));
 	}
 }
