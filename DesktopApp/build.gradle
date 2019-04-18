@@ -46,7 +46,6 @@ String projectPropertiesDir = "$projectDir/src/main/resources/";
 //noinspection GroovyAssignabilityCheck
 task writeVersionConfig() {
     doLast {
-        String versionNickname = "Lorem";
         String libVersion = project(":BaseCode").version;
         new File(projectPropertiesDir + projectPropertiesFile).text = """
 ################################################################
@@ -66,7 +65,8 @@ app.buildtime: ${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
 # Version of the library used
 lib.version = $libVersion
 #default save file location
-default.saveFile = ~/.timeKeeperSave.tks
+default.configFile = ~/.timeKeeper/config.cfg
+default.saveFile = ~/.timeKeeper/save.tks
 #default run mode
 default.runMode = SINGLE
 """

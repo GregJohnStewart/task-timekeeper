@@ -6,10 +6,11 @@ This is the desktop app for Task Timekeeper.
 
 Main configuration for the app. Command line arguments override environment variables.
 
-| Name        | Description                                                           | Value(s)               | Default Value         | Environment               | Command Line Arg      |
-| ----------- | --------------------------------------------------------------------- | ---------------------- | --------------------- | ------------------------- | --------------------- |
-| Save file   | Where time data is saved.                                             | Writable file location | ~/.timeKeeperSave.tks | TKPR_SAVE_FILE=(location) | --saveFile (location) |
-| Mode        | How to open the program; GUI, Management, or single command (default) | GUI / MANAGE / SINGLE  | SINGLE                | TKPR_MODE=(mode)          | --mode (mode)         |
+| Name        | Description                                                           | Value(s)               | Default Value            | Environment                 | Command Line Arg        |
+| ----------- | --------------------------------------------------------------------- | ---------------------- | ------------------------ | --------------------------- | ----------------------- |
+| Config File | Where to put configuration, and some configuration is saved.          | Writable file location | ~/.timeKeeper/config.cfg | TKPR_CONFIG_FILE=(location) | --configFile (location) |
+| Save file   | Where time data is saved.                                             | Writable file location | ~/.timeKeeper/save.tks   | TKPR_SAVE_FILE=(location)   | --saveFile (location)   |
+| Mode        | How to open the program; GUI, Management, or single command (default) | GUI / MANAGE / SINGLE  | SINGLE                   | TKPR_MODE=(mode)            | --mode (mode)           |
 
 ##Command line args
 

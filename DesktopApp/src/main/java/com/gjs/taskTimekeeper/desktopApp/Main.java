@@ -1,5 +1,8 @@
 package com.gjs.taskTimekeeper.desktopApp;
 
+import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
+import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
 import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.ManagerRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.SingleRunner;
@@ -11,12 +14,12 @@ public class Main {
 
 	public static void main(String[] args){
 		LOGGER.info("Starting run of TaskTimekeeper.");
-		Configuration.readCmdLinesIn(args);
+		Configuration.finalizeConfig(args);
 		Configuration.logOutProperties();
 
 		switch (
-				Configuration.RunMode.valueOf(
-						Configuration.getProperty(Configuration.ConfigKeys.RUN_MODE, String.class)
+				RunMode.valueOf(
+						Configuration.getProperty(ConfigKeys.RUN_MODE, String.class)
 				)
 		){
 			case SINGLE:
