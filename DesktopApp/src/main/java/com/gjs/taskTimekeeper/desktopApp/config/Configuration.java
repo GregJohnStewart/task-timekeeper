@@ -6,9 +6,12 @@ import org.slf4j.LoggerFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineOps.PropertiesOption;
 
 /**
  * Handles the configuration for the running program.
@@ -50,7 +53,10 @@ public class Configuration {
 
 		CommandLineOps ops = new CommandLineOps(args);
 
-		//TODO:: if config file specified in ops, add that to PROPERTIES before
+		//set config location if overridden
+		if(ops.getConfigLoc() != null){
+			PROPERTIES.put(ConfigKeys.CONFIG_FILE, ops.getConfigLoc());
+		}
 
 		readFromConfigFile();
 		addEnvironmentConfig();
@@ -123,8 +129,33 @@ public class Configuration {
 		}
 	}
 
+	/**
+	 * Adds the command line ops to the PROPERTIES object.
+	 * @param ops
+	 */
 	private static void processCmdLineOps(CommandLineOps ops){
-		//TODO:: this
+		Class<? extends CommandLineOps> clazz = ops.getClass();
+
+		for(Field field : clazz.getDeclaredFields()){
+			field.setAccessible(true);
+			PropertiesOption propertiesOption = field.getAnnotation(PropertiesOption.class);
+
+			if(propertiesOption == null){
+				continue;
+			}
+
+			Object value;
+			try {
+				value = field.get(ops);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("Could not get value from CommandLineOps. Error: ", e);
+				throw new RuntimeException(e);
+			}
+
+			if(value != null){
+				PROPERTIES.put(propertiesOption.configKey().key, value);
+			}
+		}
 	}
 
 	/**

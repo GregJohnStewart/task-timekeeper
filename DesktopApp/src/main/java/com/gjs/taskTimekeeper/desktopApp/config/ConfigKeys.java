@@ -18,7 +18,7 @@ public enum ConfigKeys {
     SAVE_FILE("saveFile", "TKPR_SAVE_FILE"),
     RUN_MODE("run.mode", "TKPR_MODE"),
     //Running config, for single mode
-    SINGLE_MODE_(""),
+    SINGLE_MODE_HELP("consoleHelp"),
     //default values
     DEFAULT_CONFIG_FILE("default.configFile", CONFIG_FILE),
     DEFAULT_SAVE_FILE("default.saveFile", SAVE_FILE),
