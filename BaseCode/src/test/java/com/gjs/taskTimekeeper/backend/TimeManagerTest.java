@@ -19,7 +19,7 @@ public class TimeManagerTest {
 	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
 	@Test
-	public void basicsTest(){
+	public void basicsTest() {
 		TimeManager manager = new TimeManager();
 
 		TreeSet<Task> tasks = new TreeSet<>();
@@ -37,7 +37,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void setWorkPeriods(){
+	public void setWorkPeriods() {
 		TimeManager manager = new TimeManager();
 
 		TreeSet<WorkPeriod> periods = new TreeSet<>();
@@ -56,7 +56,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void setWorkPeriodsWithTrue(){
+	public void setWorkPeriodsWithTrue() {
 		TimeManager manager = new TimeManager();
 		manager.addTask(testTask);
 
@@ -80,12 +80,12 @@ public class TimeManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void setWorkPeriodsWithNull(){
+	public void setWorkPeriodsWithNull() {
 		new TimeManager().setWorkPeriods(null);
 	}
 
 	@Test
-	public void addWorkPeriod(){
+	public void addWorkPeriod() {
 		TimeManager manager = new TimeManager();
 
 		WorkPeriod period = new WorkPeriod().addTimespans(new Timespan(testTask));
@@ -98,12 +98,12 @@ public class TimeManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void addWorkPeriodWithNull(){
+	public void addWorkPeriodWithNull() {
 		new TimeManager().addWorkPeriod(null);
 	}
 
 	@Test
-	public void setTasks(){
+	public void setTasks() {
 		TimeManager manager = new TimeManager();
 
 		Set<Task> tasks = new TreeSet<>();
@@ -121,12 +121,12 @@ public class TimeManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void setTasksWithNull(){
+	public void setTasksWithNull() {
 		new TimeManager().setTasks(null);
 	}
 
 	@Test
-	public void addTasks(){
+	public void addTasks() {
 		TimeManager manager = new TimeManager();
 
 		manager.addTask(testTask);
@@ -136,7 +136,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void cleanupTasks(){
+	public void cleanupTasks() {
 		TimeManager manager = new TimeManager();
 
 		manager.addTask(testTask);
@@ -152,7 +152,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void addTask(){
+	public void addTask() {
 		TimeManager manager = new TimeManager();
 
 		manager.addTask(testTask);
@@ -162,12 +162,12 @@ public class TimeManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void addTaskWithNull(){
+	public void addTaskWithNull() {
 		new TimeManager().addTask(null);
 	}
 
 	@Test
-	public void addTimespan(){
+	public void addTimespan() {
 		TimeManager manager = new TimeManager();
 
 		WorkPeriod finishedPeriod = new WorkPeriod();
@@ -191,17 +191,17 @@ public class TimeManagerTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void addTimespanWithNull(){
+	public void addTimespanWithNull() {
 		new TimeManager().addTimespan(null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void addTimespanWithNoPeriods(){
+	public void addTimespanWithNoPeriods() {
 		new TimeManager().addTimespan(new Timespan(testTask));
 	}
 
 	@Test
-	public void getHasUnfinishedPeriods(){
+	public void getHasUnfinishedPeriods() {
 		TimeManager manager = new TimeManager();
 
 		assertTrue(manager.getUnfinishedPeriods().isEmpty());
@@ -229,7 +229,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void getWorkPeriodsWith(){
+	public void getWorkPeriodsWith() {
 		TimeManager manager = new TimeManager();
 
 		assertTrue(manager.getWorkPeriodsWith(testTask).isEmpty());
@@ -251,7 +251,7 @@ public class TimeManagerTest {
 	}
 
 	@Test
-	public void getTimespansWith(){
+	public void getTimespansWith() {
 		TimeManager manager = new TimeManager();
 
 		assertTrue(manager.getTimespansWith(testTask).isEmpty());

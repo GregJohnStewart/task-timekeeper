@@ -15,23 +15,28 @@ public class TimeManager {
 	 */
 	public static final ObjectMapper MAPPER = new ObjectMapper();
 
-	static{
+	static {
 		MAPPER.registerModule(new JavaTimeModule());
 	}
 
-	/** Taks held by this object. */
+	/**
+	 * Taks held by this object.
+	 */
 	private Set<Task> tasks = new HashSet<>();
-	/** Work periods held by this object. */
+	/**
+	 * Work periods held by this object.
+	 */
 	private SortedSet<WorkPeriod> workPeriods = new TreeSet<>();
 
 	/**
 	 * Default constructor
 	 */
-	public TimeManager(){
+	public TimeManager() {
 	}
 
 	/**
 	 * Constructor to set tasks.
+	 *
 	 * @param tasks The tasks to set.
 	 * @throws NullPointerException If the set of tasks if null.
 	 */
@@ -42,7 +47,8 @@ public class TimeManager {
 
 	/**
 	 * Constructor to set tasks and work periods.
-	 * @param tasks The tasks to set
+	 *
+	 * @param tasks       The tasks to set
 	 * @param workPeriods The work periods to set.
 	 * @throws NullPointerException If either tasks or work periods are set.
 	 */
@@ -53,6 +59,7 @@ public class TimeManager {
 
 	/**
 	 * Gets the work periods
+	 *
 	 * @return The work periods.
 	 */
 	public SortedSet<WorkPeriod> getWorkPeriods() {
@@ -61,32 +68,33 @@ public class TimeManager {
 
 	/**
 	 * Sets the work periods
+	 *
 	 * @param workPeriods The new work periods.
 	 * @return This manager object.
 	 * @throws NullPointerException If the periods given are null or the set contains a null value.
 	 */
 	public TimeManager setWorkPeriods(SortedSet<WorkPeriod> workPeriods, boolean cleanupTasks) throws NullPointerException {
-		if(workPeriods == null){
+		if (workPeriods == null) {
 			throw new NullPointerException("Work periods cannot be null.");
 		}
 
-		if(!workPeriods.isEmpty()) {
+		if (!workPeriods.isEmpty()) {
 			boolean containsNullValues = false;
 
 			try {
 				containsNullValues = workPeriods.contains(null);
-			}catch (NullPointerException e){
+			} catch (NullPointerException e) {
 				//nothing to do
 			}
-			if(containsNullValues){
+			if (containsNullValues) {
 				throw new NullPointerException("Cannot hold null timespans.");
 			}
 		}
 		this.workPeriods = workPeriods;
-		for(WorkPeriod period : this.getWorkPeriods()){
+		for (WorkPeriod period : this.getWorkPeriods()) {
 			this.tasks.addAll(period.getTasks());
 		}
-		if(cleanupTasks){
+		if (cleanupTasks) {
 			this.cleanupTasks();
 		}
 
@@ -95,6 +103,7 @@ public class TimeManager {
 
 	/**
 	 * Sets the work periods. Wrapper for {@link #setWorkPeriods(SortedSet, boolean)}, not updating tasks.
+	 *
 	 * @param workPeriods The work periods to set.
 	 * @return This object.
 	 * @throws NullPointerException If the periods given are null or the set contains a null value.
@@ -106,6 +115,7 @@ public class TimeManager {
 
 	/**
 	 * Gets the tasks.
+	 *
 	 * @return The tasks held.
 	 */
 	public Set<Task> getTasks() {
@@ -114,24 +124,25 @@ public class TimeManager {
 
 	/**
 	 * Sets the tasks held by the manager.
+	 *
 	 * @param tasks The new tasks to be held.
 	 * @return This manager object.
 	 * @throws NullPointerException If the tasks list is null or contains null values.
 	 */
 	public TimeManager setTasks(Set<Task> tasks) throws NullPointerException {
-		if(tasks == null){
+		if (tasks == null) {
 			throw new NullPointerException("Tasks cannot be null.");
 		}
 
-		if(!tasks.isEmpty()) {
+		if (!tasks.isEmpty()) {
 			boolean containsNullValues = false;
 
 			try {
 				containsNullValues = tasks.contains(null);
-			}catch (NullPointerException e){
+			} catch (NullPointerException e) {
 				//nothing to do
 			}
-			if(containsNullValues){
+			if (containsNullValues) {
 				throw new NullPointerException("Cannot hold null timespans.");
 			}
 		}
@@ -141,12 +152,13 @@ public class TimeManager {
 
 	/**
 	 * Adds a task to the set.
+	 *
 	 * @param task The task to add
 	 * @return This manager object
 	 * @throws NullPointerException If the task given is null.
 	 */
-	public TimeManager addTask(Task task) throws NullPointerException{
-		if(task == null){
+	public TimeManager addTask(Task task) throws NullPointerException {
+		if (task == null) {
 			throw new NullPointerException("Cannot add a null task.");
 		}
 		this.getTasks().add(task);
@@ -155,11 +167,12 @@ public class TimeManager {
 
 	/**
 	 * Cleans up the set of tasks by re-creating the set from held timespans.
+	 *
 	 * @return This manager object
 	 */
-	public TimeManager cleanupTasks(){
+	public TimeManager cleanupTasks() {
 		this.tasks.clear();
-		for(WorkPeriod period : this.getWorkPeriods()){
+		for (WorkPeriod period : this.getWorkPeriods()) {
 			this.tasks.addAll(period.getTasks());
 		}
 
@@ -168,12 +181,13 @@ public class TimeManager {
 
 	/**
 	 * Adds a work period
+	 *
 	 * @param workPeriod The work period to add
 	 * @return This manager object
 	 * @throws NullPointerException If the period given is null
 	 */
-	public TimeManager addWorkPeriod(WorkPeriod workPeriod) throws NullPointerException{
-		if(workPeriod == null){
+	public TimeManager addWorkPeriod(WorkPeriod workPeriod) throws NullPointerException {
+		if (workPeriod == null) {
 			throw new NullPointerException("Work period cannot be null.");
 		}
 		this.getWorkPeriods().add(workPeriod);
@@ -183,16 +197,17 @@ public class TimeManager {
 
 	/**
 	 * Adds a timespan to the most recent work period.
+	 *
 	 * @param span The span to add
 	 * @return This manager object
-	 * @throws NullPointerException If the span given is null
+	 * @throws NullPointerException  If the span given is null
 	 * @throws IllegalStateException If there are no periods to add to.
 	 */
 	public TimeManager addTimespan(Timespan span) throws NullPointerException, IllegalStateException {
-		if(span == null){
+		if (span == null) {
 			throw new NullPointerException("Timespan cannot be null.");
 		}
-		if(this.getWorkPeriods().isEmpty()){
+		if (this.getWorkPeriods().isEmpty()) {
 			throw new IllegalStateException("Do not have a work period to add to.");
 		}
 		this.addTask(span.getTask());
@@ -202,14 +217,15 @@ public class TimeManager {
 
 	/**
 	 * Gets a list of periods with unfinished periods.
+	 *
 	 * @return a list of periods with unfinished periods.
 	 */
 	@JsonIgnore
-	public Collection<WorkPeriod> getUnfinishedPeriods(){
+	public Collection<WorkPeriod> getUnfinishedPeriods() {
 		List<WorkPeriod> periods = new LinkedList<>();
 
-		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.isUnfinished()){
+		for (WorkPeriod period : this.getWorkPeriods()) {
+			if (period.isUnfinished()) {
 				periods.add(period);
 			}
 		}
@@ -219,11 +235,12 @@ public class TimeManager {
 
 	/**
 	 * Determines if there are any unfinished periods.
+	 *
 	 * @return if there are any unfinished periods.
 	 */
-	public boolean hasUnfinishedPeriods(){
-		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.isUnfinished()){
+	public boolean hasUnfinishedPeriods() {
+		for (WorkPeriod period : this.getWorkPeriods()) {
+			if (period.isUnfinished()) {
 				return true;
 			}
 		}
@@ -232,14 +249,15 @@ public class TimeManager {
 
 	/**
 	 * Gets all work periods with the given task
+	 *
 	 * @param task The task to look for
 	 * @return all work periods with the given task
 	 */
-	public Collection<WorkPeriod> getWorkPeriodsWith(Task task){
+	public Collection<WorkPeriod> getWorkPeriodsWith(Task task) {
 		List<WorkPeriod> periods = new LinkedList<>();
 
-		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.hasTimespansWith(task)){
+		for (WorkPeriod period : this.getWorkPeriods()) {
+			if (period.hasTimespansWith(task)) {
 				periods.add(period);
 			}
 		}
@@ -248,14 +266,15 @@ public class TimeManager {
 
 	/**
 	 * Gets all timespans with the given task
+	 *
 	 * @param task The task to look for.
 	 * @return all timespans with the given task
 	 */
-	public Collection<Timespan> getTimespansWith(Task task){
+	public Collection<Timespan> getTimespansWith(Task task) {
 		List<Timespan> periods = new LinkedList<>();
 
-		for(WorkPeriod period : this.getWorkPeriods()){
-			if(period.hasTimespansWith(task)){
+		for (WorkPeriod period : this.getWorkPeriods()) {
+			if (period.hasTimespansWith(task)) {
 				periods.addAll(period.getTimespansWith(task));
 			}
 		}
@@ -268,7 +287,7 @@ public class TimeManager {
 		if (!(o instanceof TimeManager)) return false;
 		TimeManager manager = (TimeManager) o;
 		return getTasks().equals(manager.getTasks()) &&
-				getWorkPeriods().equals(manager.getWorkPeriods());
+			getWorkPeriods().equals(manager.getWorkPeriods());
 	}
 
 	@Override

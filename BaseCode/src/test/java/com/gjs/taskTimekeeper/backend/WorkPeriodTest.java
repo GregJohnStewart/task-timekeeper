@@ -19,7 +19,7 @@ public class WorkPeriodTest {
 	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
 	@Test
-	public void testBasics(){
+	public void testBasics() {
 		WorkPeriod period = new WorkPeriod();
 		WorkPeriod periodTwo = new WorkPeriod();
 
@@ -47,7 +47,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void testCompare(){
+	public void testCompare() {
 		WorkPeriod main = new WorkPeriod();
 		WorkPeriod o = new WorkPeriod();
 
@@ -95,12 +95,12 @@ public class WorkPeriodTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testComparetoNull(){
+	public void testComparetoNull() {
 		new WorkPeriod().compareTo(null);
 	}
 
 	@Test
-	public void testDuration(){
+	public void testDuration() {
 		WorkPeriod period = new WorkPeriod();
 
 		assertEquals(0, Duration.ZERO.compareTo(period.getTotalTime()));
@@ -121,7 +121,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void testSetTimespans(){
+	public void testSetTimespans() {
 		Timespan spanOne = new Timespan(testTask, now, nowPlusFive);
 		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
@@ -139,11 +139,11 @@ public class WorkPeriodTest {
 		period.setTimespans(set);
 
 		assertFalse(period.getTimespans().isEmpty());
-		assertEquals(2,  period.getNumTimespans());
+		assertEquals(2, period.getNumTimespans());
 	}
 
 	@Test
-	public void addTimespans(){
+	public void addTimespans() {
 		WorkPeriod period = new WorkPeriod();
 
 		Timespan spanOne = new Timespan(testTask);
@@ -158,22 +158,22 @@ public class WorkPeriodTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void setNullTimespans(){
+	public void setNullTimespans() {
 		new WorkPeriod().setTimespans(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void setNullAtts(){
+	public void setNullAtts() {
 		new WorkPeriod().setAttributes(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void addNullTimespan(){
+	public void addNullTimespan() {
 		new WorkPeriod().addTimespan(null);
 	}
 
 	@Test
-	public void hasTimespansWithTask(){
+	public void hasTimespansWithTask() {
 		WorkPeriod period = new WorkPeriod();
 
 		Timespan spanOne = new Timespan(new Task(""), now, nowPlusFive);
@@ -189,7 +189,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void getTimespansWithTask(){
+	public void getTimespansWithTask() {
 		WorkPeriod period = new WorkPeriod();
 
 		Timespan spanOne = new Timespan(new Task(""), now, nowPlusFive);
@@ -206,12 +206,12 @@ public class WorkPeriodTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void getStartNoTimespans(){
+	public void getStartNoTimespans() {
 		new WorkPeriod().getStart();
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void getStartNoStartTimes(){
+	public void getStartNoStartTimes() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespans(new Timespan(testTask));
 
@@ -219,7 +219,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void getStart(){
+	public void getStart() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespan(new Timespan(testTask, now));
 
@@ -227,12 +227,12 @@ public class WorkPeriodTest {
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void getEndNoTimespans(){
+	public void getEndNoTimespans() {
 		new WorkPeriod().getEnd();
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void getEndNoEndTimes(){
+	public void getEndNoEndTimes() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespans(new Timespan(testTask));
 
@@ -240,7 +240,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void getEnd(){
+	public void getEnd() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespan(new Timespan(testTask, now, nowPlusFive));
 
@@ -248,7 +248,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void getHasUnfinishedTimespans(){
+	public void getHasUnfinishedTimespans() {
 		WorkPeriod period = new WorkPeriod();
 
 		assertTrue(period.isUnfinished());
@@ -272,7 +272,7 @@ public class WorkPeriodTest {
 	}
 
 	@Test
-	public void getTasks(){
+	public void getTasks() {
 		WorkPeriod period = new WorkPeriod();
 
 		assertTrue(period.getTasks().isEmpty());

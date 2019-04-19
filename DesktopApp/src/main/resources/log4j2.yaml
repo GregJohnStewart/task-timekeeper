@@ -1,47 +1,33 @@
-
 Configutation:
   name: LoggingConfiguration
 
   Properties:
     Property:
-      -
-        name: archiveTriggeringSize
+      - name: archiveTriggeringSize
         value: 1 MB
-      -
-        name: archiveMaxFiles
+      - name: archiveMaxFiles
         value: 5
-      -
-        name: logPath
+      - name: logPath
         value: "logs"
-      -
-        name: logArchivePath
+      - name: logArchivePath
         value: "/archive"
-      -
-        name: logArchiveStampFormat
+      - name: logArchiveStampFormat
         value: ".%d{yyyy-MM-dd-hh-mm-ss}.gz"
-      -
-        name: logFileName
+      - name: logFileName
         value: "/log.log"
-      -
-        name: errorLogFileName
+      - name: errorLogFileName
         value: "/errorLog.log"
-      -
-        name: logFile
+      - name: logFile
         value: "${logPath}${logFileName}"
-      -
-        name: errorLogFile
+      - name: errorLogFile
         value: "${logPath}${errorLogFileName}"
-      -
-        name: logPattern
+      - name: logPattern
         value: "%d %-5p [%t] - %m%n"
-      -
-        name: logPatternDetailed
+      - name: logPatternDetailed
         value: "%d %-5p [%t] (%-125l) - %m%n"
-      -
-        name: logPatternColored
+      - name: logPatternColored
         value: "%highlight{${logPattern}}{FATAL=red, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"
-      -
-        name: logPatternDetailedColored
+      - name: logPatternDetailedColored
         value: "%highlight{${logPatternDetailed}}{FATAL=red, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"
   Appenders:
     Console:
@@ -50,38 +36,33 @@ Configutation:
       PatternLayout:
         pattern: "${logPatternDetailedColored}"
     RollingFile:
-          -
-            name: LogFileOutput
-            fileName: ${logFile}
-            filePattern: "${logPath}${logArchivePath}${logFileName}${logArchiveStampFormat}"
-            PatternLayout:
-              pattern: "${logPatternDetailed}"
-            Policies:
-              SizeBasedTriggeringPolicy:
-                size: ${archiveTriggeringSize}
-            DefaultRollOverStrategy:
-              max: ${archiveMaxFiles}
-          -
-            name: ErrorLogFileOutput
-            fileName: ${errorLogFile}
-            filePattern: "${logPath}${logArchivePath}${errorLogFileName}${logArchiveStampFormat}"
-            PatternLayout:
-              pattern: "${logPatternDetailed}"
-            Policies:
-              SizeBasedTriggeringPolicy:
-                size: ${archiveTriggeringSize}
-            DefaultRollOverStrategy:
-              max: ${archiveMaxFiles}
+      - name: LogFileOutput
+        fileName: ${logFile}
+        filePattern: "${logPath}${logArchivePath}${logFileName}${logArchiveStampFormat}"
+        PatternLayout:
+          pattern: "${logPatternDetailed}"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${archiveTriggeringSize}
+        DefaultRollOverStrategy:
+          max: ${archiveMaxFiles}
+      - name: ErrorLogFileOutput
+        fileName: ${errorLogFile}
+        filePattern: "${logPath}${logArchivePath}${errorLogFileName}${logArchiveStampFormat}"
+        PatternLayout:
+          pattern: "${logPatternDetailed}"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${archiveTriggeringSize}
+        DefaultRollOverStrategy:
+          max: ${archiveMaxFiles}
   Loggers:
-      Root:
-        level: trace
-        AppenderRef:
-          -
-            ref: ConsoleOutput
-            level: trace
-          -
-            ref: LogFileOutput
-            level: trace
-          -
-            ref: ErrorLogFileOutput
-            level: warn
+    Root:
+      level: trace
+      AppenderRef:
+        - ref: ConsoleOutput
+          level: trace
+        - ref: LogFileOutput
+          level: trace
+        - ref: ErrorLogFileOutput
+          level: warn

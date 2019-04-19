@@ -15,7 +15,7 @@ public class TimespanTest {
 	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
 
 	@Test
-	public void basicTest(){
+	public void basicTest() {
 		Task testTask = new Task("test");
 		LocalDateTime ldt = LocalDateTime.now();
 
@@ -46,27 +46,27 @@ public class TimespanTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testNullTask(){
+	public void testNullTask() {
 		new Timespan(null);
 	}
 
 	@Test(expected = IllegalStateException.class)
-	public void testNotCompleteGetDuration(){
+	public void testNotCompleteGetDuration() {
 		new Timespan(new Task("")).getDuration();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadStart(){
+	public void testBadStart() {
 		(new Timespan(new Task(""))).setEndTime(LocalDateTime.MIN).setStartTime(LocalDateTime.now());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testBadEnd(){
+	public void testBadEnd() {
 		(new Timespan(new Task(""))).setStartTime(LocalDateTime.MAX).setEndTime(LocalDateTime.now());
 	}
 
 	@Test
-	public void testCompare(){
+	public void testCompare() {
 		LocalDateTime ldt = LocalDateTime.now();
 
 		UUID uuid = UUID.randomUUID();
@@ -99,7 +99,7 @@ public class TimespanTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testCompareNull(){
+	public void testCompareNull() {
 		new Timespan(new Task("")).compareTo(null);
 	}
 

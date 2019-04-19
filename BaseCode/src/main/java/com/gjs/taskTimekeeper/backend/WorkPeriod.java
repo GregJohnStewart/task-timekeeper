@@ -14,36 +14,42 @@ import java.util.stream.Collectors;
  */
 public class WorkPeriod implements Comparable<WorkPeriod> {
 
-	/** The timespans in this period. */
+	/**
+	 * The timespans in this period.
+	 */
 	private SortedSet<Timespan> timespans = new TreeSet<>();
-	/** The attributes held by the period */
+	/**
+	 * The attributes held by the period
+	 */
 	private Map<String, String> attributes = new HashMap<>();
 
 	/**
 	 * Base constructor.
 	 */
-	public WorkPeriod(){
+	public WorkPeriod() {
 
 	}
 
 	/**
 	 * Constructor to set the timespans.
+	 *
 	 * @param timespans The timespans to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null.
 	 */
 	public WorkPeriod(Collection<Timespan> timespans) throws NullPointerException {
 		this();
-		if(timespans instanceof SortedSet){
+		if (timespans instanceof SortedSet) {
 			//noinspection unchecked
-			this.setTimespans((SortedSet)timespans);
-		}else {
+			this.setTimespans((SortedSet) timespans);
+		} else {
 			this.setTimespans(timespans);
 		}
 	}
 
 	/**
 	 * Constructor to set the timespans and attributes.
-	 * @param timespans The timespans to set.
+	 *
+	 * @param timespans  The timespans to set.
 	 * @param attributes The attributes to set.
 	 * @throws NullPointerException If the list given is null or an element in the list is null, or if the attributes are null.
 	 */
@@ -54,17 +60,16 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Adds a timespan to the work period.
-	 *
+	 * <p>
 	 * If timespan.equals({any in set}), it will not be kept. The internal set object will consider it the same as another.
-	 *  Same for timespan.compareTo({any in set}) == 0
-	 *
+	 * Same for timespan.compareTo({any in set}) == 0
 	 *
 	 * @param timespan The timespan to add
 	 * @return The result from adding the timespan to the set. Presumably if it was actually added or not.
 	 * @throws NullPointerException If the timespan given is null.
 	 */
-	public boolean addTimespan(Timespan timespan) throws NullPointerException{
-		if(timespan == null){
+	public boolean addTimespan(Timespan timespan) throws NullPointerException {
+		if (timespan == null) {
 			throw new NullPointerException("Timespan cannot be null.");
 		}
 		return this.timespans.add(timespan);
@@ -72,12 +77,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Adds a number of timespans to the period.
+	 *
 	 * @param timespans The timespans to add
 	 * @return This object
 	 * @throws NullPointerException If any of the given timespans are null
 	 */
-	public WorkPeriod addTimespans(Timespan ... timespans) throws NullPointerException{
-		for(Timespan span : timespans){
+	public WorkPeriod addTimespans(Timespan... timespans) throws NullPointerException {
+		for (Timespan span : timespans) {
 			this.addTimespan(span);
 		}
 		return this;
@@ -86,6 +92,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	/**
 	 * Gets the list of timespans held.
 	 * TODO:: prevent tampering, adding nulls. Defensive copy?
+	 *
 	 * @return The list of timespans.
 	 */
 	@JsonProperty("timespans")
@@ -95,34 +102,36 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the number of timespans held.
+	 *
 	 * @return The number of timespans held.
 	 */
 	@JsonIgnore
-	public int getNumTimespans(){
+	public int getNumTimespans() {
 		return this.getTimespans().size();
 	}
 
 	/**
 	 * Sets the list of timespans.
+	 *
 	 * @param timespans The new list of timespans
 	 * @return This object
 	 * @throws NullPointerException If the ist given is null or any of the contents of the list is null.
 	 */
 	@JsonIgnore
 	public WorkPeriod setTimespans(SortedSet<Timespan> timespans) throws NullPointerException {
-		if(timespans == null){
+		if (timespans == null) {
 			throw new NullPointerException("Timespans cannot ne null.");
 		}
 
-		if(!timespans.isEmpty()) {
+		if (!timespans.isEmpty()) {
 			boolean containsNullValues = false;
 
 			try {
 				containsNullValues = timespans.contains(null);
-			}catch (NullPointerException e){
+			} catch (NullPointerException e) {
 				//nothing to do
 			}
-			if(containsNullValues){
+			if (containsNullValues) {
 				throw new NullPointerException("Cannot hold null timespans.");
 			}
 		}
@@ -133,6 +142,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Sets the list of timespans with a generic collection.
+	 *
 	 * @param timespans The timespans to set.
 	 * @return This period object.
 	 * @throws NullPointerException If the timespan collection given is null or any values are null.
@@ -144,6 +154,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the attributes held by this period.
+	 *
 	 * @return the attributes held by this period.
 	 */
 	public Map<String, String> getAttributes() {
@@ -152,12 +163,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Sets the attributes held by this period.
+	 *
 	 * @param attributes The new attributes to be held.
 	 * @return This period object.
 	 * @throws NullPointerException If the attributes given are null.
 	 */
 	public WorkPeriod setAttributes(Map<String, String> attributes) throws NullPointerException {
-		if(attributes == null){
+		if (attributes == null) {
 			throw new NullPointerException("Attributes cannot be null.");
 		}
 		this.attributes = attributes;
@@ -166,16 +178,17 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the total time defined by all completed timespans.
+	 *
 	 * @return the total time defined by all completed timespans.
 	 */
 	@JsonIgnore
-	public Duration getTotalTime(){
+	public Duration getTotalTime() {
 		Duration duration = Duration.ZERO;
 
-		for(Timespan span : this.getTimespans()){
-			try{
+		for (Timespan span : this.getTimespans()) {
+			try {
 				duration = duration.plus(span.getDuration());
-			}catch (IllegalStateException e){
+			} catch (IllegalStateException e) {
 				//don't need to do anything
 			}
 		}
@@ -184,17 +197,18 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the starting time of this period, as defined by the earliest timespan.
+	 *
 	 * @return the starting time of this period
 	 * @throws IllegalStateException If there are no timespans or the first timespan does not specify a start time.
 	 */
 	@JsonIgnore
 	public LocalDateTime getStart() throws IllegalStateException {
-		if(this.getTimespans().isEmpty()){
+		if (this.getTimespans().isEmpty()) {
 			throw new IllegalStateException("No timespans added; cannot determine start.");
 		}
 
 		LocalDateTime dateTime = this.getTimespans().first().getStartTime();
-		if(dateTime == null){
+		if (dateTime == null) {
 			throw new IllegalStateException("No timespans exist that have a start datetime; Cannot determine start.");
 		}
 		return dateTime;
@@ -202,12 +216,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the ending time of this period, as defined by the latest timespan.
+	 *
 	 * @return the ending time of this period, as defined by the latest timespan.
 	 * @throws IllegalStateException If there are no timespans, or none exist with an ending datetime.
 	 */
 	@JsonIgnore
 	public LocalDateTime getEnd() throws IllegalStateException {
-		if(this.getTimespans().isEmpty()){
+		if (this.getTimespans().isEmpty()) {
 			throw new IllegalStateException("No timespans added; cannot determine end.");
 		}
 		LocalDateTime dateTime = null;
@@ -216,15 +231,15 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 			Timespan[] spans = new Timespan[this.getTimespans().size()];
 			this.getTimespans().toArray(spans);
 
-			for(int i = spans.length - 1; i > -1; i--){
+			for (int i = spans.length - 1; i > -1; i--) {
 				dateTime = spans[i].getEndTime();
-				if(dateTime != null){
+				if (dateTime != null) {
 					break;
 				}
 			}
 		}
 
-		if(dateTime == null){
+		if (dateTime == null) {
 			throw new IllegalStateException("No timespans exist that have an end datetime. Ca");
 		}
 
@@ -233,14 +248,15 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets a list of all spans that are yet to be completed.
+	 *
 	 * @return a Collection of all spans that are yet to be completed.
 	 */
 	@JsonIgnore
-	public Collection<Timespan> getUnfinishedTimespans(){
+	public Collection<Timespan> getUnfinishedTimespans() {
 		List<Timespan> spans = new LinkedList<>();
 
-		for(Timespan span : this.getTimespans()){
-			if(!span.isComplete()){
+		for (Timespan span : this.getTimespans()) {
+			if (!span.isComplete()) {
 				spans.add(span);
 			}
 		}
@@ -250,12 +266,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Determines if the work period has any timespans uncompleted.
+	 *
 	 * @return if the work period has any timespans uncompleted.
 	 */
 	@JsonIgnore
-	public boolean hasUnfinishedTimespans(){
-		for(Timespan span : this.getTimespans()){
-			if(!span.isComplete()){
+	public boolean hasUnfinishedTimespans() {
+		for (Timespan span : this.getTimespans()) {
+			if (!span.isComplete()) {
 				return true;
 			}
 		}
@@ -264,41 +281,45 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Determines if this work period is unfinished.
+	 *
 	 * @return if this work period is unfinished.
 	 */
 	@JsonIgnore
-	public boolean isUnfinished(){
+	public boolean isUnfinished() {
 		return this.getTimespans().isEmpty() || this.hasUnfinishedTimespans();
 	}
 
 	/**
 	 * Determines if this period contains the timespan given.
+	 *
 	 * @param timespan The timespan given to test if this holds it.
 	 * @return if this period contains the timespan given.
 	 */
-	public boolean contains(Timespan timespan){
+	public boolean contains(Timespan timespan) {
 		return this.getTimespans().contains(timespan);
 	}
 
 	/**
 	 * Gets all timespans with the given task.
+	 *
 	 * @param task The task to look for
 	 * @return all timespans with the given task.
 	 */
-	public Collection<Timespan> getTimespansWith(Task task){
-		return this.getTimespans().stream().filter((Timespan span)->{
+	public Collection<Timespan> getTimespansWith(Task task) {
+		return this.getTimespans().stream().filter((Timespan span) -> {
 			return span.getTask().equals(task);
 		}).collect(Collectors.toList());
 	}
 
 	/**
 	 * Determines if this period has timespans with the given task.
+	 *
 	 * @param task The task given
 	 * @return if this period has timespans with the given task.
 	 */
-	public boolean hasTimespansWith(Task task){
-		for(Timespan span : this.getTimespans()){
-			if(span.getTask().equals(task)){
+	public boolean hasTimespansWith(Task task) {
+		for (Timespan span : this.getTimespans()) {
+			if (span.getTask().equals(task)) {
 				return true;
 			}
 		}
@@ -307,13 +328,14 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets a list of tasks that are held by the Timespans in this period.
+	 *
 	 * @return A list of tasks that are held by the Timespans in this period.
 	 */
 	@JsonIgnore
-	public Set<Task> getTasks(){
+	public Set<Task> getTasks() {
 		Set<Task> tasks = new TreeSet<>();
 
-		for(Timespan span : this.getTimespans()){
+		for (Timespan span : this.getTimespans()) {
 			tasks.add(span.getTask());
 		}
 
@@ -322,40 +344,41 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 
 	/**
 	 * Returns:
-	 *   -1 if this starts before o
-	 *   -1 if o has no start
-	 *    0 if this starts at the same time as o
-	 *    0 if both this and o have no start time
-	 *    1 if this starts after o
-	 *    1 if this has no start
+	 * -1 if this starts before o
+	 * -1 if o has no start
+	 * 0 if this starts at the same time as o
+	 * 0 if both this and o have no start time
+	 * 1 if this starts after o
+	 * 1 if this has no start
+	 *
 	 * @param o The work period to compare to
 	 * @return
 	 */
 	@Override
 	public int compareTo(WorkPeriod o) {
-		if(o == null){
+		if (o == null) {
 			throw new NullPointerException("Cannot compare to null.");
 		}
 		LocalDateTime thisStart = null;
 		LocalDateTime oStart = null;
 		try {
 			thisStart = this.getStart();
-		}catch (IllegalStateException e){
+		} catch (IllegalStateException e) {
 			//nothing to do
 		}
 		try {
 			oStart = o.getStart();
-		}catch (IllegalStateException e){
+		} catch (IllegalStateException e) {
 			//nothing to do
 		}
 
-		if(thisStart == null && oStart == null){
+		if (thisStart == null && oStart == null) {
 			return 0;
 		}
-		if(thisStart == null){
+		if (thisStart == null) {
 			return 1;
 		}
-		if(oStart == null){
+		if (oStart == null) {
 			return -1;
 		}
 		return thisStart.compareTo(oStart);
@@ -367,7 +390,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 		if (!(o instanceof WorkPeriod)) return false;
 		WorkPeriod period = (WorkPeriod) o;
 		return getTimespans().equals(period.getTimespans()) &&
-				getAttributes().equals(period.getAttributes());
+			getAttributes().equals(period.getAttributes());
 	}
 
 	@Override

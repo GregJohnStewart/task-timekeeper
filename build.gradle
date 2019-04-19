@@ -10,7 +10,7 @@
  * Task to update the gradle wrapper to the version set.
  */
 task updateWrapper(type: Wrapper) {
-	group "wrapper"
-	description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
-	gradleVersion = '5.2'
+    group "wrapper"
+    description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
+    gradleVersion = '5.2'
 }

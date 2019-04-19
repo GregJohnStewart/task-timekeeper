@@ -14,7 +14,7 @@ public class TaskTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
 
 	@Test
-	public void testBasics(){
+	public void testBasics() {
 		Task newTask = new Task("");
 
 		assertEquals("", newTask.getName());
@@ -35,17 +35,17 @@ public class TaskTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testNullUuid(){
+	public void testNullUuid() {
 		new Task(null, "");
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testNullSetName(){
+	public void testNullSetName() {
 		new Task(null);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testNullSetAttributes(){
+	public void testNullSetAttributes() {
 		new Task("", null);
 	}
 

@@ -12,16 +12,15 @@ import org.slf4j.LoggerFactory;
 public class Main {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		LOGGER.info("Starting run of TaskTimekeeper.");
 		Configuration.finalizeConfig(args);
-		Configuration.logOutProperties();
 
 		switch (
-				RunMode.valueOf(
-						Configuration.getProperty(ConfigKeys.RUN_MODE, String.class)
-				)
-		){
+			RunMode.valueOf(
+				Configuration.getProperty(ConfigKeys.RUN_MODE, String.class)
+			)
+		) {
 			case SINGLE:
 				new SingleRunner().run();
 				break;
@@ -32,6 +31,7 @@ public class Main {
 				new GuiRunner().run();
 				break;
 			default:
+				LOGGER.error("Invalid run mode given.");
 				throw new IllegalArgumentException("Invalid run mode given.");
 		}
 	}
