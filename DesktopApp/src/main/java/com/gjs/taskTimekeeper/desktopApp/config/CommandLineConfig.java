@@ -18,8 +18,8 @@ import java.util.List;
 /**
  * Processes command line options.
  */
-public class CommandLineOps {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineOps.class);
+public class CommandLineConfig {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineConfig.class);
 
 	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
 	@PropertiesOption(configKey = ConfigKeys.SINGLE_MODE_HELP)
@@ -42,36 +42,28 @@ public class CommandLineOps {
 	// receives other command line parameters than options
 	@Argument
 	private List<String> arguments = new ArrayList<>();
+	/**
+	 * The parser to parse the arguments.
+	 */
+	private final CmdLineParser parser = new CmdLineParser(this);
 
-	public CommandLineOps(String[] args) {
-		LOGGER.trace("Parsing command line ops.");
-		LOGGER.debug("Command line ops given ({}): {}", args.length, args);
+	public CommandLineConfig(String... args) throws CmdLineException {
+		LOGGER.trace("Parsing command line options for Configuration.");
+		LOGGER.debug("Command line config given ({}): {}", args.length, args);
 		this.argsGotten = Arrays.copyOf(args, args.length);
 
-		CmdLineParser parser = new CmdLineParser(this);
-
 		try {
-			parser.parseArgument(this.argsGotten);
-		} catch (CmdLineException | IllegalArgumentException e) {
-			LOGGER.error("Error processing command line options: ", e);
-			System.err.println("Error parsing arguments:");
-			System.err.println("\t" + e.getMessage());
-			System.err.println("");
-			// print the list of available options
-			System.err.println("Available options:");
-			parser.printUsage(System.err);
-			System.err.println();
-			System.exit(1);
+			this.parser.parseArgument(this.argsGotten);
+		}catch (CmdLineException e){
+			//ignore invalid options.
+			if(!e.getMessage().contains("is not a valid option")){
+				throw e;
+			}
 		}
 	}
 
-	/**
-	 * Only used for determining config file location and processing things in the right order.
-	 *
-	 * @return
-	 */
-	public String getConfigLoc() {
-		return configLoc;
+	public CmdLineParser getParser(){
+		return this.parser;
 	}
 
 	/**
@@ -81,5 +73,14 @@ public class CommandLineOps {
 	@Target(ElementType.FIELD)
 	public @interface PropertiesOption {
 		public ConfigKeys configKey();
+	}
+
+	/**
+	 * Only used for determining config file location and processing things in the right order.
+	 *
+	 * @return
+	 */
+	public String getConfigLoc() {
+		return configLoc;
 	}
 }

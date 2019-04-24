@@ -6,13 +6,14 @@ import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
 import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.ManagerRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.SingleRunner;
+import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CmdLineException {
 		LOGGER.info("Starting run of TaskTimekeeper.");
 		Configuration.finalizeConfig(args);
 
@@ -22,7 +23,7 @@ public class Main {
 			)
 		) {
 			case SINGLE:
-				new SingleRunner().run();
+				new SingleRunner(args).run();
 				break;
 			case MANAGEMENT:
 				new ManagerRunner().run();

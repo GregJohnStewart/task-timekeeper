@@ -14,13 +14,13 @@ Main configuration for the app. Command line arguments override environment vari
 
 ##Command line args
 
-These are arguments for interacting with SINGLE mode. 
+These are arguments for interacting with SINGLE mode.
 
 | Argument    | Description              | Valid Values |
 | ----------- | ------------------------ | ------------ |
-| --help / -h | Displays the help output | (no values)  |
+| --help / -h | Displays the help output | (no values)  | 
 
 
 ##Management Mode
 
-TODO 
+TODO  

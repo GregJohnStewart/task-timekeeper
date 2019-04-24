@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
+import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineOps.PropertiesOption;
+import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineConfig.PropertiesOption;
 
 /**
  * Handles the configuration for the running program.
@@ -56,13 +57,13 @@ public class Configuration {
 	 *
 	 * @param args
 	 */
-	public static void finalizeConfig(String[] args) {
+	public static void finalizeConfig(String[] args) throws CmdLineException {
 		if (finalized) {
 			throw new IllegalStateException("Cannot finalize properties twice.");
 		}
 		finalized = true;
 
-		CommandLineOps ops = new CommandLineOps(args);
+		CommandLineConfig ops = new CommandLineConfig(args);
 
 		//set config location if overridden
 		if (ops.getConfigLoc() != null) {
@@ -147,8 +148,8 @@ public class Configuration {
 	 *
 	 * @param ops
 	 */
-	private static void processCmdLineOps(CommandLineOps ops) {
-		Class<? extends CommandLineOps> clazz = ops.getClass();
+	private static void processCmdLineOps(CommandLineConfig ops) {
+		Class<? extends CommandLineConfig> clazz = ops.getClass();
 
 		for (Field field : clazz.getDeclaredFields()) {
 			field.setAccessible(true);
@@ -162,7 +163,7 @@ public class Configuration {
 			try {
 				value = field.get(ops);
 			} catch (IllegalAccessException e) {
-				LOGGER.error("Could not get value from CommandLineOps. Error: ", e);
+				LOGGER.error("Could not get value from CommandLineConfig. Error: ", e);
 				throw new RuntimeException(e);
 			}
 
