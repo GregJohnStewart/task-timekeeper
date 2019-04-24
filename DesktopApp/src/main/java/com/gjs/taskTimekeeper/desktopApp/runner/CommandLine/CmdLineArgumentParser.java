@@ -17,6 +17,11 @@ public class CmdLineArgumentParser {
 	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
 	private Boolean showHelp = null;
 
+	@Option(name = "-q", aliases = {"q", "--quit"}, usage = "Exits Management mode.")
+	private Boolean quit = null;
+
+
+
 	private final String[] argsGotten;
 	// receives other command line parameters than options
 	@Argument
@@ -41,4 +46,13 @@ public class CmdLineArgumentParser {
 	public CmdLineArgumentParser(String... args) throws CmdLineException {
 		this(false, args);
 	}
+
+	public Boolean getShowHelp() {
+		return showHelp;
+	}
+
+	public Boolean getQuit() {
+		return quit;
+	}
+
 }

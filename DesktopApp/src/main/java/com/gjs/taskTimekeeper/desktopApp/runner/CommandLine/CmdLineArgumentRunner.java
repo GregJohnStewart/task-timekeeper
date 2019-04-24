@@ -28,6 +28,23 @@ public class CmdLineArgumentRunner extends ModeRunner {
 	public void run() {
 		LOGGER.trace("Running argument based on parsed argument: {}", parser);
 
-		//TODO:: do the specified action in the parser.
+		if(this.parser.getQuit()){
+			LOGGER.debug("User chose to exit.");
+			throw new DoExit();
+		} else if (this.parser.getShowHelp()) {
+			LOGGER.debug("Showing help output.");
+			showArgHelp();
+		}
+
+		LOGGER.trace("FINISHED processing argument.");
+	}
+
+	public static void showArgHelp(){
+		LOGGER.trace("Showing argument help output.");
+
+		System.out.println("Help output:");
+
+		//TODO:: this
+
 	}
 }
