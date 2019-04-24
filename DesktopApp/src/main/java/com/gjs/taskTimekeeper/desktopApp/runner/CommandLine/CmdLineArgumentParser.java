@@ -23,11 +23,22 @@ public class CmdLineArgumentParser {
 	private List<String> arguments = new ArrayList<>();
 	private final CmdLineParser parser = new CmdLineParser(this);
 
-	public CmdLineArgumentParser(String[] args) throws CmdLineException {
+	public CmdLineArgumentParser(boolean allowExtra, String[] args) throws CmdLineException {
 		LOGGER.trace("Parsing command line ops.");
 		LOGGER.debug("Command line ops given ({}): {}", args.length, args);
 		this.argsGotten = Arrays.copyOf(args, args.length);
 
-		this.parser.parseArgument(this.argsGotten);
+		try {
+			this.parser.parseArgument(this.argsGotten);
+		}catch (CmdLineException e){
+			//ignore invalid options.
+			if(!allowExtra && !e.getMessage().contains("is not a valid option")){
+				throw e;
+			}
+		}
+	}
+
+	public CmdLineArgumentParser(String... args) throws CmdLineException {
+		this(false, args);
 	}
 }
