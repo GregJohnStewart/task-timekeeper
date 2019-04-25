@@ -14,8 +14,8 @@ public enum ConfigKeys {
 	APP_BUILDTIME("app.buildtime"),
 	LIB_VERSION("lib.version"),
 	//Other config
-	CONFIG_FILE("configFile", "TKPR_CONFIG_FILE"),
-	SAVE_FILE("saveFile", "TKPR_SAVE_FILE"),
+	CONFIG_FILE("configFile", "TKPR_CONFIG_FILE", true),
+	SAVE_FILE("saveFile", "TKPR_SAVE_FILE", true),
 	RUN_MODE("run.mode", "TKPR_MODE"),
 	//Running config, for single mode
 	SINGLE_MODE_HELP("consoleHelp"),
@@ -27,23 +27,34 @@ public enum ConfigKeys {
 	public final String key;
 	public final String envVar;
 	public final ConfigKeys defaultFor;
+	public final boolean isFile;
 
 	ConfigKeys(String key) {
 		this.key = key;
 		this.envVar = null;
 		this.defaultFor = null;
+		this.isFile = false;
 	}
 
 	ConfigKeys(String key, String envVar) {
 		this.key = key;
 		this.envVar = envVar;
 		this.defaultFor = null;
+		this.isFile = false;
+	}
+
+	ConfigKeys(String key, String envVar, boolean isFile) {
+		this.key = key;
+		this.envVar = envVar;
+		this.defaultFor = null;
+		this.isFile = isFile;
 	}
 
 	ConfigKeys(String key, ConfigKeys defaultFor) {
 		this.key = key;
 		this.envVar = null;
 		this.defaultFor = defaultFor;
+		this.isFile = false;
 	}
 
 	public static Collection<ConfigKeys> getKeysWithEnv() {
@@ -60,6 +71,16 @@ public enum ConfigKeys {
 		List<ConfigKeys> keys = new ArrayList<>();
 		for (ConfigKeys key : ConfigKeys.values()) {
 			if (key.defaultFor != null) {
+				keys.add(key);
+			}
+		}
+		return keys;
+	}
+
+	public static Collection<ConfigKeys> getKeysThatAreFiles() {
+		List<ConfigKeys> keys = new ArrayList<>();
+		for (ConfigKeys key : ConfigKeys.values()) {
+			if (key.isFile) {
 				keys.add(key);
 			}
 		}

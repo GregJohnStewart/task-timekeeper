@@ -16,6 +16,7 @@ public class SingleRunner extends ModeRunner {
 
 	public void run() {
 		LOGGER.info("Running single command mode.");
+		System.out.println("Running single command.");
 		CmdLineArgumentRunner runner;
 		try {
 			runner = new CmdLineArgumentRunner(true, this.args);

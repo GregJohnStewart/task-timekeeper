@@ -5,9 +5,9 @@ plugins {
     id 'application'
 }
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 //config for the application plugin
-version '1.0'
+version '0.1'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "Task Timekeeper"
 
@@ -60,9 +60,9 @@ app.name = $applicationName
 # the version of the app code
 app.version = $version
 # the time of build
-app.buildtime: ${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+app.buildtime = ${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
 # Version of the library used
-lib.version = $project(":BaseCode").version
+lib.version = ${project(":BaseCode").version}
 #default save file location
 default.configFile = ~/.timeKeeper/config.cfg
 default.saveFile = ~/.timeKeeper/save.tks

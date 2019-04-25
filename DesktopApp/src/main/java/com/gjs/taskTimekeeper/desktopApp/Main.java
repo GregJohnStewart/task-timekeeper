@@ -10,12 +10,20 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 public class Main {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws CmdLineException {
 		LOGGER.info("Starting run of TaskTimekeeper.");
+		LOGGER.debug("Input arguments: {}", (Object[]) args);
 		Configuration.finalizeConfig(args);
+
+		System.out.println("TaskTimekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class) + " Using lib v" + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
+		System.out.println();
+
+		ensureFilesExistWritable();
 
 		switch (
 			RunMode.valueOf(
@@ -34,6 +42,14 @@ public class Main {
 			default:
 				LOGGER.error("Invalid run mode given.");
 				throw new IllegalArgumentException("Invalid run mode given.");
+		}
+	}
+
+	private static void ensureFilesExistWritable(){
+		Collection<ConfigKeys> fileKeys = ConfigKeys.getKeysThatAreFiles();
+
+		for(ConfigKeys key : fileKeys){
+			//TODO:: ensure used files exist and are readable. Create new ones if not
 		}
 	}
 }

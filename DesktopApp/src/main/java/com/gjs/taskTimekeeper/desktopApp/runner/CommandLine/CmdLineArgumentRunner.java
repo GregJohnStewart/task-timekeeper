@@ -31,10 +31,16 @@ public class CmdLineArgumentRunner extends ModeRunner {
 		if(this.parser.getQuit()){
 			LOGGER.debug("User chose to exit.");
 			throw new DoExit();
-		} else if (this.parser.getShowHelp()) {
+		}
+
+		if (this.parser.getShowHelp()) {
 			LOGGER.debug("Showing help output.");
 			showArgHelp();
+			return;
 		}
+
+		//read in files for use.
+
 
 		LOGGER.trace("FINISHED processing argument.");
 	}
