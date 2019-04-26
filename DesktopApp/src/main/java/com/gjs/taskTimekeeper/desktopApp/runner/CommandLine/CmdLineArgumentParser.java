@@ -15,11 +15,20 @@ public class CmdLineArgumentParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentParser.class);
 
 	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
-	private Boolean showHelp = null;
+	private boolean showHelp = false;
 
-	@Option(name = "-q", aliases = {"q", "--quit"}, usage = "Exits Management mode.")
-	private Boolean quit = null;
+	@Option(name = "-q", aliases = {"q", "--quit", "quit"}, usage = "Exits Management mode.")
+	private boolean quit = false;
 
+	@Option(name = "-a", aliases = {"a", "--action", "action"}, usage = "Adds a task to the list of tasks.")
+	private Action action;
+
+	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The object to operate on.")
+	private KeeperObject objectOperatingOn;
+
+	//Identifiers to add:
+	//  current (for periods/ timespans)
+	//  name
 
 
 	private final String[] argsGotten;
@@ -55,4 +64,11 @@ public class CmdLineArgumentParser {
 		return quit;
 	}
 
+	public Action getAction() {
+		return action;
+	}
+
+	public KeeperObject getObjectOperatingOn() {
+		return objectOperatingOn;
+	}
 }

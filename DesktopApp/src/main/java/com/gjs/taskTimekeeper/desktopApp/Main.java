@@ -81,7 +81,7 @@ public class Main {
 				if(file.createNewFile()){
 					LOGGER.info("File did not exist previously, but was created: \"{}\"", file);
 				}else{
-					LOGGER.info("File already present.");
+					LOGGER.info("File already present: \"{}\"", file);
 				}
 			} catch (IOException e) {
 				if(key.needsFile){
@@ -97,7 +97,7 @@ public class Main {
 			}
 			//double check file is good to go
 			if(file.exists() && file.isFile() && file.canRead() && file.canWrite()){
-				LOGGER.debug("Verified file at \"{}\".", file);
+				LOGGER.debug("Verified file at \"{}\" (exists and is accessible).", file);
 				Configuration.setFile(key, file);
 				continue;
 			}

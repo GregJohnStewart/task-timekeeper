@@ -202,7 +202,7 @@ public class Configuration {
 	 * @return The property.
 	 */
 	public static <T> T getProperty(ConfigKeys key, Class<T> clazz) {
-		return clazz.cast(PROPERTIES.getProperty(key.key));
+		return clazz.cast(PROPERTIES.get(key.key));
 	}
 
 	public static void setFile(ConfigKeys key, File file){
