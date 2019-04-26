@@ -4,6 +4,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -202,5 +203,13 @@ public class Configuration {
 	 */
 	public static <T> T getProperty(ConfigKeys key, Class<T> clazz) {
 		return clazz.cast(PROPERTIES.getProperty(key.key));
+	}
+
+	public static void setFile(ConfigKeys key, File file){
+		if(!key.isFile){
+			throw new IllegalArgumentException("Cannot set value as file if not a file config key.");
+		}
+		LOGGER.debug("Updating {} config value from \"{}\" to \"{}\"", key, PROPERTIES.get(key.key), file);
+		PROPERTIES.put(key.key, file);
 	}
 }

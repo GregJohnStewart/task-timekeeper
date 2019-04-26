@@ -21,6 +21,7 @@ public class SingleRunner extends ModeRunner {
 		try {
 			runner = new CmdLineArgumentRunner(true, this.args);
 		} catch (CmdLineException e) {
+			//TODO:: handle better
 			LOGGER.error("Exception when running command: ", e);
 			e.printStackTrace();
 		}
