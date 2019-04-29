@@ -20,15 +20,21 @@ public class CmdLineArgumentParser {
 	@Option(name = "-q", aliases = {"q", "--quit", "quit"}, usage = "Exits Management mode.")
 	private boolean quit = false;
 
-	@Option(name = "-a", aliases = {"a", "--action", "action"}, usage = "Adds a task to the list of tasks.")
+	@Option(name = "-a", aliases = {"a", "--action", "action"}, usage = "The action to take.")
 	private Action action;
 
-	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The object to operate on.")
+	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The type of object to operate on.")
 	private KeeperObject objectOperatingOn;
 
-	//Identifiers to add:
+	//Identifiers/ data inputs to add:
 	//  current (for periods/ timespans)
 	//  name
+	//  key/value pair
+	//  time/date spans and instants
+
+	@Option(name="t", aliases = {"-t", "--task", "task"}, usage = "The name of the task to operate on.")
+	private String taskname;
+
 
 
 	private final String[] argsGotten;

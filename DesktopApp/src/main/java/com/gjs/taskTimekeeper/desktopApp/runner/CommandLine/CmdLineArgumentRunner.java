@@ -5,6 +5,7 @@ import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.actionDoer.ActionDoer;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ public class CmdLineArgumentRunner extends ModeRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
 	private final CmdLineArgumentParser parser;
+
+	//TODO:: add saveFile member to make testing easier
 
 	public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
 		this.parser = parser;
@@ -49,6 +52,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 		if(action == null){
 			LOGGER.warn("No action given.");
 			System.out.println("No action given. Doing nothing.");
+			return;
 		}
 
 		TimeManager manager = null;
@@ -59,7 +63,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 			InputStream is = new FileInputStream(
 				Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)
 			)
-			) {
+		) {
 			manager = TimeManager.MAPPER.readValue(is, TimeManager.class);
 		} catch (MismatchedInputException e){
 			LOGGER.debug("Empty save file. Starting with new manager.");
@@ -76,8 +80,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 		//do action on manager
 
-
-
+		ActionDoer.doAction(manager, this.parser);
 
 		LOGGER.trace("Writing out changed data.");
 		try(
