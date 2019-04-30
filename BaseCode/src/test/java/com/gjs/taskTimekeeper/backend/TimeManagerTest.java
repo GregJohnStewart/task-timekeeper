@@ -290,4 +290,18 @@ public class TimeManagerTest {
 		assertTrue(manager.equals(deserialized));
 	}
 
+
+	@Test
+	public void testClone() {
+		TimeManager manager = new TimeManager();
+
+		assertTrue(manager.getUnfinishedPeriods().isEmpty());
+		assertFalse(manager.hasUnfinishedPeriods());
+
+		WorkPeriod finishedPeriod = new WorkPeriod().addTimespans(new Timespan(testTask, now, nowPlusFive));
+		manager.addWorkPeriod(finishedPeriod);
+
+		assertEquals(manager, manager.clone());
+	}
+
 }

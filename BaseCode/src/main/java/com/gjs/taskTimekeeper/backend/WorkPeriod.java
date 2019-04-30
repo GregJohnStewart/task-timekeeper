@@ -397,4 +397,13 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	public int hashCode() {
 		return Objects.hash(getTimespans(), getAttributes());
 	}
+
+	@Override
+	protected WorkPeriod clone() {
+		TreeSet<Timespan> newSpans = new TreeSet<>();
+		for(Timespan span : this.timespans){
+			newSpans.add(span.clone());
+		}
+		return new WorkPeriod(newSpans, new HashMap<>(this.attributes));
+	}
 }

@@ -294,4 +294,19 @@ public class TimeManager {
 	public int hashCode() {
 		return Objects.hash(getTasks(), getWorkPeriods());
 	}
+
+	@Override
+	protected TimeManager clone() {
+		HashSet<Task> newTasks = new HashSet<>();
+		for(Task task : this.tasks){
+			newTasks.add(task.clone());
+		}
+
+		TreeSet<WorkPeriod> newPeriods = new TreeSet<>();
+		for(WorkPeriod period : this.workPeriods){
+			newPeriods.add(period.clone());
+		}
+
+		return new TimeManager(newTasks, newPeriods);
+	}
 }

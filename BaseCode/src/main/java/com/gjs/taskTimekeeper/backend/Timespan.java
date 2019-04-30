@@ -261,4 +261,9 @@ public class Timespan implements Comparable<Timespan> {
 
 		return compareResult;
 	}
+
+	@Override
+	protected Timespan clone() {
+		return new Timespan(this.task.clone(), this.startTime, this.endTime);
+	}
 }

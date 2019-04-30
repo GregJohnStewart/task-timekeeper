@@ -172,4 +172,9 @@ public class Task implements Comparable<Task> {
 		}
 		return this.uuid.compareTo(task.getUuid());
 	}
+
+	@Override
+	protected Task clone() {
+		return new Task(this.uuid, this.name, new HashMap<>(this.attributes));
+	}
 }
