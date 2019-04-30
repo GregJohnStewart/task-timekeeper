@@ -41,28 +41,26 @@ public class Configuration {
 	/**
 	 * The properties read from the properties file.
 	 */
-	private static final Properties PROPERTIES = new Properties();
+	private static Properties PROPERTIES = new Properties();
 
 	/**
 	 * If command line args have been read in already.
 	 */
 	private static boolean finalized = false;
 
-	static {
-		readPropertiesFile();
-		processDefaults();
-	}
-
 	/**
 	 * Finalizes the configuration. Only run once.
 	 *
 	 * @param args
 	 */
-	public static void finalizeConfig(String[] args) throws CmdLineException {
+	public static void finalizeConfig(String... args) throws CmdLineException {
 		if (finalized) {
 			throw new IllegalStateException("Cannot finalize properties twice.");
 		}
 		finalized = true;
+
+		readPropertiesFile();
+		processDefaults();
 
 		CommandLineConfig ops = new CommandLineConfig(args);
 
