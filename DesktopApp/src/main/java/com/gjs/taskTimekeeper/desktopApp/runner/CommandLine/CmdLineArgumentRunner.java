@@ -53,18 +53,12 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 		TimeManager manager = ManagerIO.loadTimeManager();
 		if(manager == null){
-			//something bad happened reading data, nothing to do
+			//something bad happened reading data, nothing to do. already handled.
 			return;
 		}
 
-		//do action on manager
-
-		try {
-			if (ActionDoer.doAction(manager, this.parser)) {
-				ManagerIO.saveTimeManager(manager);
-			}
-		}catch (Exception e){
-			//TODO:: handle?
+		if (ActionDoer.doObjAction(manager, this.parser)) {
+			ManagerIO.saveTimeManager(manager);
 		}
 
 		LOGGER.trace("FINISHED processing argument.");
