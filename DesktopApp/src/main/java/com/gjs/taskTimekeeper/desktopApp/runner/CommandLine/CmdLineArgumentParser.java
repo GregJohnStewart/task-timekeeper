@@ -1,9 +1,9 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
 
+import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,37 +11,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * TODO:: Move options to own bean class in base code to allow action doers into th base code as well
+ */
 public class CmdLineArgumentParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentParser.class);
 
-	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
-	private boolean showHelp = false;
-
-	@Option(name = "-q", aliases = {"q", "--quit", "quit"}, usage = "Exits Management mode.")
-	private boolean quit = false;
-
-	@Option(name = "-a", aliases = {"a", "--action", "action"}, usage = "The action to take.")
-	private Action action;
-
-	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The type of object to operate on.")
-	private KeeperObject objectOperatingOn;
-
-	//Identifiers/ data inputs to add:
-	//  current (for periods/ timespans)
-	//  name
-	//  key/value pair
-	//  time/date spans and instants
-
-	@Option(name="t", aliases = {"-t", "--task", "task"}, usage = "The name of the task to operate on.")
-	private String taskname;
-
-
+	private final ActionConfig config = new ActionConfig();
 
 	private final String[] argsGotten;
 	// receives other command line parameters than options
 	@Argument
 	private List<String> arguments = new ArrayList<>();
-	private final CmdLineParser parser = new CmdLineParser(this);
+	private final CmdLineParser parser = new CmdLineParser(this.config);
 
 	public CmdLineArgumentParser(boolean allowExtra, String[] args) throws CmdLineException {
 		LOGGER.trace("Parsing command line ops.");
@@ -62,19 +44,7 @@ public class CmdLineArgumentParser {
 		this(false, args);
 	}
 
-	public Boolean getShowHelp() {
-		return showHelp;
-	}
-
-	public Boolean getQuit() {
-		return quit;
-	}
-
-	public Action getAction() {
-		return action;
-	}
-
-	public KeeperObject getObjectOperatingOn() {
-		return objectOperatingOn;
+	public ActionConfig getConfig(){
+		return this.config;
 	}
 }

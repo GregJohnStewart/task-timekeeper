@@ -1,9 +1,11 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
 
 import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.crudAction.Action;
+import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.actionDoer.ActionDoer;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +13,12 @@ import org.slf4j.LoggerFactory;
 public class CmdLineArgumentRunner extends ModeRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
-	private final CmdLineArgumentParser parser;
+	private final ActionConfig actionConfig;
 
 	//TODO:: add saveFile member to make testing easier
 
 	public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
-		this.parser = parser;
+		this.actionConfig = parser.getConfig();
 	}
 
 	public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
@@ -31,20 +33,20 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 	@Override
 	public void run() {
-		LOGGER.trace("Running argument based on parsed argument: {}", parser);
+		LOGGER.trace("Running argument based on parsed argument: {}", actionConfig);
 
-		if(this.parser.getQuit()){
+		if(this.actionConfig.getQuit()){
 			LOGGER.debug("User chose to exit.");
 			throw new DoExit();
 		}
 
-		if (this.parser.getShowHelp()) {
+		if (this.actionConfig.getShowHelp()) {
 			LOGGER.debug("Showing help output.");
 			showArgHelp();
 			return;
 		}
 
-		final Action action = this.parser.getAction();
+		final Action action = this.actionConfig.getAction();
 		if(action == null){
 			LOGGER.warn("No action given.");
 			System.out.println("No action given. Doing nothing.");
@@ -57,7 +59,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 			return;
 		}
 
-		if (ActionDoer.doObjAction(manager, this.parser)) {
+		if (ActionDoer.doObjAction(manager, this.actionConfig)) {
 			ManagerIO.saveTimeManager(manager);
 		}
 
