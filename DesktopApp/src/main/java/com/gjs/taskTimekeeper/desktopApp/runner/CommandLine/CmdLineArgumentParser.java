@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * TODO:: Move options to own bean class in base code to allow action doers into th base code as well
- */
 public class CmdLineArgumentParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentParser.class);
 

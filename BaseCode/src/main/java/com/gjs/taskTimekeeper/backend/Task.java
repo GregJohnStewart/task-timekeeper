@@ -174,7 +174,7 @@ public class Task implements Comparable<Task> {
 	}
 
 	@Override
-	protected Task clone() {
+	public Task clone() {
 		return new Task(this.uuid, this.name, new HashMap<>(this.attributes));
 	}
 }

@@ -59,6 +59,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 			return;
 		}
 
+		//Do action. If returns true, data was changed.
 		if (ActionDoer.doObjAction(manager, this.actionConfig)) {
 			ManagerIO.saveTimeManager(manager);
 		}

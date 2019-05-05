@@ -37,8 +37,7 @@ public abstract class ActionDoer {
 	public static boolean doObjAction(TimeManager manager, ActionConfig config){
 		switch (config.getObjectOperatingOn()){
 			case TASK:
-				new TaskDoer().doAction(manager, config);
-				break;
+				return new TaskDoer().doAction(manager, config);
 			case PERIOD:
 				//TODO:: make doer
 				break;
@@ -46,6 +45,6 @@ public abstract class ActionDoer {
 				//TODO:: make doer
 				break;
 		}
-		return true;
+		return false;
 	}
 }

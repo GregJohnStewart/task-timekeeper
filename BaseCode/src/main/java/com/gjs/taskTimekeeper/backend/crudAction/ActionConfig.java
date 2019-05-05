@@ -21,10 +21,34 @@ public class ActionConfig {
 	//  key/value pair
 	//  time/date spans and instants
 
-	@Option(name="t", aliases = {"-t", "--task", "task"}, usage = "The name of the task to operate on.")
-	private String taskname;
+	@Option(name="-t", aliases = {"t", "--task", "task"}, usage = "The name of the task to operate on.")
+	private String taskname = null;
 
+	@Option(name="")
 
+	public void setShowHelp(boolean showHelp) {
+		this.showHelp = showHelp;
+	}
+
+	public void setQuit(boolean quit) {
+		this.quit = quit;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
+	public void setObjectOperatingOn(KeeperObject objectOperatingOn) {
+		this.objectOperatingOn = objectOperatingOn;
+	}
+
+	public String getTaskname() {
+		return taskname;
+	}
+
+	public void setTaskname(String taskname) {
+		this.taskname = taskname;
+	}
 
 	public Boolean getShowHelp() {
 		return showHelp;

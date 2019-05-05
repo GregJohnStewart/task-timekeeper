@@ -399,7 +399,7 @@ public class WorkPeriod implements Comparable<WorkPeriod> {
 	}
 
 	@Override
-	protected WorkPeriod clone() {
+	public WorkPeriod clone() {
 		TreeSet<Timespan> newSpans = new TreeSet<>();
 		for(Timespan span : this.timespans){
 			newSpans.add(span.clone());

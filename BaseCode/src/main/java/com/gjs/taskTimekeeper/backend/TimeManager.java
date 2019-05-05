@@ -296,7 +296,7 @@ public class TimeManager {
 	}
 
 	@Override
-	protected TimeManager clone() {
+	public TimeManager clone() {
 		HashSet<Task> newTasks = new HashSet<>();
 		for(Task task : this.tasks){
 			newTasks.add(task.clone());
