@@ -208,7 +208,8 @@ public class TimeManager {
 			throw new NullPointerException("Timespan cannot be null.");
 		}
 		if (this.getWorkPeriods().isEmpty()) {
-			throw new IllegalStateException("Do not have a work period to add to.");
+			this.addWorkPeriod(new WorkPeriod());
+			//throw new IllegalStateException("Do not have a work period to add to.");
 		}
 		this.addTask(span.getTask());
 		this.workPeriods.last().addTimespan(span);

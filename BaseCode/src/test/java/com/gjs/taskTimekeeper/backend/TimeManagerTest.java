@@ -195,9 +195,11 @@ public class TimeManagerTest {
 		new TimeManager().addTimespan(null);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test()
 	public void addTimespanWithNoPeriods() {
-		new TimeManager().addTimespan(new Timespan(testTask));
+		TimeManager manager = new TimeManager().addTimespan(new Timespan(testTask));
+
+		assertFalse(manager.getWorkPeriods().isEmpty());
 	}
 
 	@Test

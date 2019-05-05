@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.Timespan;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObject;
@@ -52,7 +53,31 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void remove() {
-		//TODO:: this
+		ActionConfig config = this.getActionConfig(Action.REMOVE);
+		String newTaskName = "New Test Task";
+		TimeManager manager = getTestManager();
+		Task testTask = new Task(newTaskName);
+		manager.addTask(testTask);
+		TimeManager managerOrig = manager.clone();
+
+		//don't remove w/o specifying task
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+
+		//don't remove anything when wrong task name
+		config.setTaskname("Wrong task name");
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+
+		//remove
+		config.setTaskname(newTaskName);
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertNotEquals(managerOrig, manager);
+
+		manager.addTimespan(new Timespan(testTask));
+
+		assertTrue(manager.getTasks().contains(testTask));
+		assertFalse(ActionDoer.doObjAction(manager, config));
 	}
 
 	@Test
