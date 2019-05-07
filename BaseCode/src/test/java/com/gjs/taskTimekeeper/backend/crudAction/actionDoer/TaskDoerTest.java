@@ -82,6 +82,7 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void view() {
+		//TODO:: assert values from view
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
 	}
 }

@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * Defines a span of time. Associated with a {@link Task}.
  */
-public class Timespan implements Comparable<Timespan> {
+public class Timespan extends KeeperObject implements Comparable<Timespan> {
 
 	/**
 	 * The task this timespan is associated with.

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Defines a period of work, or a set of {@link Timespan}s.
  * Has its own attributes for the user to set.
  */
-public class WorkPeriod implements Comparable<WorkPeriod> {
+public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 
 	/**
 	 * The timespans in this period.

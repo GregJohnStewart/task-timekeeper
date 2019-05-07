@@ -14,6 +14,7 @@ public abstract class ActionDoerTest {
 		testManager = new TimeManager();
 
 		testManager.addTask(new Task("Test Task"));
+		testManager.addTask(new Task("Test Task Two"));
 
 		//TODO:: setup manager with data
 	}

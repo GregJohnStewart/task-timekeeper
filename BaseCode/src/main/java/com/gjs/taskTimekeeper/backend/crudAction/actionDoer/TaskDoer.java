@@ -7,7 +7,11 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskDoer extends ActionDoer {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class TaskDoer extends ActionDoer<Task> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
 
 	@Override
@@ -88,8 +92,37 @@ public class TaskDoer extends ActionDoer {
 	}
 
 	@Override
-	public void view(TimeManager manager, ActionConfig config) {
+	public List<String> getViewHeaders() {
+		List<String> output = new ArrayList<>();
+
+		output.add("#");
+		output.add("Name");
+
+		//TODO:: add more data points
+
+		return output;
+	}
+
+	@Override
+	public List<String> getViewRowEntries(int rowNum, Task object) {
+		List<String> output = new ArrayList<>();
+
+		output.add("" + rowNum);
+		output.add(object.getName());
+
+		//TODO:: add more data points
+
+		return output;
+	}
+
+	@Override
+	public Collection<Task> view(TimeManager manager, ActionConfig config) {
 		LOGGER.info("Viewing one or more tasks.");
-		//TODO:: nicely output task data, based on the config
+
+		//TODO:: do based on config, search for appropriate tasks
+		Collection<Task> results = manager.getTasks();
+
+		this.printView(results);
+		return results;
 	}
 }
