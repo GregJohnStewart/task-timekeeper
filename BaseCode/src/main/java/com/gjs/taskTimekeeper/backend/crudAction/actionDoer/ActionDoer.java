@@ -5,7 +5,6 @@ import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -139,16 +138,16 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @return the string that is a horizontal line in the table.
 	 */
 	private static String getViewHr(List<Integer> colWidths){
-		int length = 0;
+		StringBuilder builder = new StringBuilder();
 
 		for(int width : colWidths){
-			length+=3 + width;
+			builder.append("+-");
+			for(int i = 0; i <= width; i++){
+				builder.append('-');
+			}
 		}
-		length++;
-
-		char[] charArray = new char[length];
-		Arrays.fill(charArray, '-');
-		return new String(charArray);
+		builder.append('+');
+		return builder.toString();
 	}
 
 	/**
