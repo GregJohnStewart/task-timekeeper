@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Overall manager of WorkPeriods. Handles high level tasks.
@@ -280,6 +281,39 @@ public class TimeManager {
 			}
 		}
 		return periods;
+	}
+
+	/**
+	 * TODO:: test
+	 * @param name
+	 * @return
+	 */
+	public Task getTaskByName(String name){
+		for(Task task : this.tasks){
+			if(task.getName().equals(name)){
+				return task;
+			}
+		}
+		return null;
+	}
+
+	public Collection<Task> getTasksByNamePattern(Pattern pattern){
+		Collection<Task> tasks = new LinkedList<>();
+		for(Task task : this.tasks){
+			if(pattern.matcher(task.getName()).matches()){
+				tasks.add(task);
+			}
+		}
+		return tasks;
+	}
+
+	/**
+	 * TODO:: test
+	 * @param pattern
+	 * @return
+	 */
+	public Collection<Task> getTasksByNamePattern(String pattern){
+		return this.getTasksByNamePattern(Pattern.compile(pattern));
 	}
 
 	@Override

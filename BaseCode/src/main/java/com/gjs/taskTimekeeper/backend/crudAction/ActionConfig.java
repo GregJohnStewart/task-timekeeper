@@ -13,7 +13,7 @@ public class ActionConfig {
 	private Action action;
 
 	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The type of object to operate on.")
-	private KeeperObject objectOperatingOn;
+	private KeeperObjectType objectOperatingOn;
 
 	//Identifiers/ data inputs to add:
 	//  current (for periods/ timespans)
@@ -22,9 +22,9 @@ public class ActionConfig {
 	//  time/date spans and instants
 
 	@Option(name="-t", aliases = {"t", "--task", "task"}, usage = "The name of the task to operate on.")
-	private String taskname = null;
-
-	@Option(name="")
+	private String taskName = null;
+	@Option(name="-nt", aliases = {"nt", "--newTask", "newTask"}, usage = "The name of the task to operate on.")
+	private String newTaskName = null;
 
 	public void setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
@@ -38,16 +38,24 @@ public class ActionConfig {
 		this.action = action;
 	}
 
-	public void setObjectOperatingOn(KeeperObject objectOperatingOn) {
+	public void setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
 		this.objectOperatingOn = objectOperatingOn;
 	}
 
-	public String getTaskname() {
-		return taskname;
+	public String getTaskName() {
+		return taskName;
 	}
 
-	public void setTaskname(String taskname) {
-		this.taskname = taskname;
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public String getNewTaskName() {
+		return newTaskName;
+	}
+
+	public void setNewTaskName(String newTaskName) {
+		this.newTaskName = newTaskName;
 	}
 
 	public Boolean getShowHelp() {
@@ -62,7 +70,7 @@ public class ActionConfig {
 		return action;
 	}
 
-	public KeeperObject getObjectOperatingOn() {
+	public KeeperObjectType getObjectOperatingOn() {
 		return objectOperatingOn;
 	}
 }

@@ -5,7 +5,7 @@ import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.Timespan;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObject;
+import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class TaskDoerTest extends ActionDoerTest {
 
 	public TaskDoerTest() {
-		super(KeeperObject.TASK);
+		super(KeeperObjectType.TASK);
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertEquals(managerOrig, manager);
 
 		//give task name and verify it was added
-		config.setTaskname(newTaskName);
+		config.setTaskName(newTaskName);
 
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
@@ -65,12 +65,12 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertEquals(managerOrig, manager);
 
 		//don't remove anything when wrong task name
-		config.setTaskname("Wrong task name");
+		config.setTaskName("Wrong task name");
 		assertFalse(ActionDoer.doObjAction(manager, config));
 		assertEquals(managerOrig, manager);
 
 		//remove
-		config.setTaskname(newTaskName);
+		config.setTaskName(newTaskName);
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 

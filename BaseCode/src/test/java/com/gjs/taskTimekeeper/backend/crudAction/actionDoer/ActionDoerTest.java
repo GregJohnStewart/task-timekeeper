@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObject;
+import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 
 public abstract class ActionDoerTest {
 
@@ -22,9 +22,9 @@ public abstract class ActionDoerTest {
 		return testManager.clone();
 	}
 
-	protected final KeeperObject keeperObject;
+	protected final KeeperObjectType keeperObject;
 
-	protected ActionDoerTest(KeeperObject keeperObject) {
+	protected ActionDoerTest(KeeperObjectType keeperObject) {
 		this.keeperObject = keeperObject;
 	}
 

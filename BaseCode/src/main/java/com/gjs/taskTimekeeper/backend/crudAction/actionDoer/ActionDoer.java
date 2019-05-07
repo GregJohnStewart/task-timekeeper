@@ -3,6 +3,8 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 
+import java.util.Collection;
+
 public abstract class ActionDoer {
 
 	protected abstract boolean add(TimeManager manager, ActionConfig config);
@@ -12,6 +14,14 @@ public abstract class ActionDoer {
 	protected abstract boolean remove(TimeManager manager, ActionConfig config);
 
 	public abstract void view(TimeManager manager, ActionConfig config);
+
+	public abstract Collection<String> getViewHeaders();
+
+	public abstract Collection<String> getViewRowEntries();
+
+	protected final void printView(Object ... objects){
+
+	}
 
 	public final boolean doAction(TimeManager manager, ActionConfig config){
 		boolean changed = false;

@@ -12,7 +12,7 @@ import java.util.UUID;
  * <p>
  * Uses user defined attributes to customize it for what they need it to say.
  */
-public class Task implements Comparable<Task> {
+public class Task extends KeeperObject implements Comparable<Task>{
 	/**
 	 * The name of the task.
 	 */

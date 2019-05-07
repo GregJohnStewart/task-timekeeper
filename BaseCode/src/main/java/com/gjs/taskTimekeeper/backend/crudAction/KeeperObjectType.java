@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.backend.crudAction;
 
-public enum KeeperObject {
+public enum KeeperObjectType {
 	TASK,
 	PERIOD,
 	SPAN

@@ -13,21 +13,21 @@ public class TaskDoer extends ActionDoer {
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
 		//ensure we have a name for the new task
-		if(config.getTaskname() == null){
+		if(config.getTaskName() == null){
 			LOGGER.warn("No task name given for the new task. Not adding new task.");
 			System.err.println("ERROR:: No task name given for the new task.");
 			return false;
 		}
 		//check we aren't duplicating names
 		for(Task task : manager.getTasks()){
-			if(task.getName().equals(config.getTaskname())){
+			if(task.getName().equals(config.getTaskName())){
 				LOGGER.warn("Duplicate task name given. Not adding new task.");
 				System.err.println("ERROR:: Duplicate task name given.");
 				return false;
 			}
 		}
 
-		Task newTask = new Task(config.getTaskname());
+		Task newTask = new Task(config.getTaskName());
 
 		//TODO:: add more datapoints to add to the task
 
@@ -37,24 +37,40 @@ public class TaskDoer extends ActionDoer {
 
 	@Override
 	protected boolean edit(TimeManager manager, ActionConfig config) {
-		//TODO:: this
-		return false;
+		//ensure we have old and new name
+		if(config.getTaskName() == null){
+			LOGGER.warn("No task name given for the task to change. Not editing task.");
+			System.err.println("ERROR:: No task name given for the changing task. Not editing task.");
+			return false;
+		}
+
+		Task editingTask = manager.getTaskByName(config.getTaskName());
+		if(editingTask == null){
+			LOGGER.info("No task with the name given found.");
+			System.out.println("No task with the name given found.");
+			return false;
+		}
+
+		boolean modified = false;
+		if(config.getNewTaskName() != null){
+			modified = true;
+			editingTask.setName(config.getNewTaskName());
+		}
+
+		//TODO:: others for other things
+
+		return modified;
 	}
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
-		if(config.getTaskname() == null){
+		if(config.getTaskName() == null){
 			LOGGER.warn("No task name given to remove the task.");
 			System.err.println("ERROR:: No task name given for the new task.");
 			return false;
 		}
 
-		Task taskToRemove = null;
-		for(Task task : manager.getTasks()){
-			if(config.getTaskname().equals(task.getName())){
-				taskToRemove = task;
-			}
-		}
+		Task taskToRemove = manager.getTaskByName(config.getTaskName());
 		if(taskToRemove == null){
 			LOGGER.info("No task with the name given found.");
 			System.out.println("No task with the name given found.");
