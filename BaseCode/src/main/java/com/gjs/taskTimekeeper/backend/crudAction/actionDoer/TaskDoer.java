@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class TaskDoer extends ActionDoer<Task> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
@@ -17,23 +18,30 @@ public class TaskDoer extends ActionDoer<Task> {
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
 		//ensure we have a name for the new task
-		if(config.getTaskName() == null){
+		if(config.getName() == null){
 			LOGGER.warn("No task name given for the new task. Not adding new task.");
 			System.err.println("ERROR:: No task name given for the new task.");
 			return false;
 		}
 		//check we aren't duplicating names
 		for(Task task : manager.getTasks()){
-			if(task.getName().equals(config.getTaskName())){
+			if(task.getName().equals(config.getName())){
 				LOGGER.warn("Duplicate task name given. Not adding new task.");
 				System.err.println("ERROR:: Duplicate task name given.");
 				return false;
 			}
 		}
 
-		Task newTask = new Task(config.getTaskName());
+		Task newTask = new Task(config.getName());
 
-		//TODO:: add more datapoints to add to the task
+		if(config.getAttributeName() != null){
+			if(config.getAttributeVal() != null){
+				newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
+			}
+			if(config.getNewAttributeVal() != null){
+				newTask.getAttributes().put(config.getAttributeName(), config.getNewAttributeVal());
+			}
+		}
 
 		manager.addTask(newTask);
 		return true;
@@ -42,13 +50,13 @@ public class TaskDoer extends ActionDoer<Task> {
 	@Override
 	protected boolean edit(TimeManager manager, ActionConfig config) {
 		//ensure we have old and new name
-		if(config.getTaskName() == null){
+		if(config.getName() == null){
 			LOGGER.warn("No task name given for the task to change. Not editing task.");
 			System.err.println("ERROR:: No task name given for the changing task. Not editing task.");
 			return false;
 		}
 
-		Task editingTask = manager.getTaskByName(config.getTaskName());
+		Task editingTask = manager.getTaskByName(config.getName());
 		if(editingTask == null){
 			LOGGER.info("No task with the name given found.");
 			System.out.println("No task with the name given found.");
@@ -56,25 +64,35 @@ public class TaskDoer extends ActionDoer<Task> {
 		}
 
 		boolean modified = false;
-		if(config.getNewTaskName() != null){
+		if(config.getNewName() != null){
 			modified = true;
-			editingTask.setName(config.getNewTaskName());
+			editingTask.setName(config.getNewName());
 		}
 
-		//TODO:: others for other things
+		if(config.getAttributeName() != null){
+			if(config.getNewAttributeVal() != null){
+				if(!config.getNewAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
+					modified = true;
+					editingTask.getAttributes().put(config.getAttributeName(), config.getNewAttributeVal());
+				}
+			}else{
+				modified = true;
+				editingTask.getAttributes().remove(config.getAttributeName());
+			}
+		}
 
 		return modified;
 	}
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
-		if(config.getTaskName() == null){
+		if(config.getName() == null){
 			LOGGER.warn("No task name given to remove the task.");
 			System.err.println("ERROR:: No task name given for the new task.");
 			return false;
 		}
 
-		Task taskToRemove = manager.getTaskByName(config.getTaskName());
+		Task taskToRemove = manager.getTaskByName(config.getName());
 		if(taskToRemove == null){
 			LOGGER.info("No task with the name given found.");
 			System.out.println("No task with the name given found.");
@@ -98,8 +116,6 @@ public class TaskDoer extends ActionDoer<Task> {
 		output.add("#");
 		output.add("Name");
 
-		//TODO:: add more data points
-
 		return output;
 	}
 
@@ -116,13 +132,34 @@ public class TaskDoer extends ActionDoer<Task> {
 	}
 
 	@Override
-	public Collection<Task> view(TimeManager manager, ActionConfig config) {
+	public Collection<Task> search(TimeManager manager, ActionConfig config) {
+		//TODO:: this
+		return manager.getTasks();
+	}
+
+	@Override
+	public void view(TimeManager manager, ActionConfig config) {
 		LOGGER.info("Viewing one or more tasks.");
 
-		//TODO:: do based on config, search for appropriate tasks
-		Collection<Task> results = manager.getTasks();
+		{
+			Task task = manager.getTaskByName(config.getName());
+			if(task != null){
+				LOGGER.debug("Found a task that matched the name.");
+				System.out.println("Task:");
+				System.out.println("\tName: " + task.getName());
+
+				for(Map.Entry<String, String> att : task.getAttributes().entrySet()){
+					System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+				}
+
+				//TODO:: list other info? (How many periods/ spans have this task)
+
+				return;
+			}
+		}
+
+		Collection<Task> results = this.search(manager, config);
 
 		this.printView(results);
-		return results;
 	}
 }

@@ -28,7 +28,7 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertEquals(managerOrig, manager);
 
 		//give task name and verify it was added
-		config.setTaskName(newTaskName);
+		config.setName(newTaskName);
 
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
@@ -44,6 +44,8 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		//test that we can't add a duplicate name
 		assertFalse(ActionDoer.doObjAction(manager, config));
+
+		//TODO:: test adding with an attribute
 	}
 
 	@Test
@@ -65,12 +67,12 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertEquals(managerOrig, manager);
 
 		//don't remove anything when wrong task name
-		config.setTaskName("Wrong task name");
+		config.setName("Wrong task name");
 		assertFalse(ActionDoer.doObjAction(manager, config));
 		assertEquals(managerOrig, manager);
 
 		//remove
-		config.setTaskName(newTaskName);
+		config.setName(newTaskName);
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
@@ -82,7 +84,12 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void view() {
-		//TODO:: assert values from view
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
+		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setName("Test Task"));
+	}
+
+	@Test
+	public void search(){
+		//TODO:: this
 	}
 }

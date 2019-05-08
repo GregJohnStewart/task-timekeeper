@@ -17,45 +17,59 @@ public class ActionConfig {
 
 	//Identifiers/ data inputs to add:
 	//  current (for periods/ timespans)
-	//  name
 	//  key/value pair
 	//  time/date spans and instants
 
-	@Option(name="-t", aliases = {"t", "--task", "task"}, usage = "The name of the task to operate on.")
-	private String taskName = null;
-	@Option(name="-nt", aliases = {"nt", "--newTask", "newTask"}, usage = "The name of the task to operate on.")
-	private String newTaskName = null;
+	@Option(name="-n", aliases = {"n", "--name", "name"}, usage = "The name of the object to operate on.")
+	private String name = null;
+	@Option(name="-nn", aliases = {"nn", "--newName", "newName"}, usage = "The new name of the object to operate on.")
+	private String newName = null;
 
-	public void setShowHelp(boolean showHelp) {
+	@Option(name="-at", aliases = {"at", "--attribute", "attribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
+	private String attributeName = null;
+
+	@Option(name="-atv", aliases = {"atv", "--attributeVal", "attributeVal"}, usage = "Specifying the value of the attribute. ")
+	private String attributeVal = null;
+
+	@Option(name="-natv", aliases = {"natv", "--newAttributeVal", "newAttributeVal"}, usage = "Specifying the new value of the attribute. ")
+	private String newAttributeVal = null;
+
+	public ActionConfig setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
+		return this;
 	}
 
-	public void setQuit(boolean quit) {
+	public ActionConfig setQuit(boolean quit) {
 		this.quit = quit;
+		return this;
 	}
 
-	public void setAction(Action action) {
+	public ActionConfig setAction(Action action) {
 		this.action = action;
+		return this;
 	}
 
-	public void setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
+	public ActionConfig setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
 		this.objectOperatingOn = objectOperatingOn;
+		return this;
 	}
 
-	public String getTaskName() {
-		return taskName;
+	public String getName() {
+		return name;
 	}
 
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
+	public ActionConfig setName(String name) {
+		this.name = name;
+		return this;
 	}
 
-	public String getNewTaskName() {
-		return newTaskName;
+	public String getNewName() {
+		return newName;
 	}
 
-	public void setNewTaskName(String newTaskName) {
-		this.newTaskName = newTaskName;
+	public ActionConfig setNewName(String newName) {
+		this.newName = newName;
+		return this;
 	}
 
 	public Boolean getShowHelp() {
@@ -72,5 +86,32 @@ public class ActionConfig {
 
 	public KeeperObjectType getObjectOperatingOn() {
 		return objectOperatingOn;
+	}
+
+	public String getAttributeName() {
+		return attributeName;
+	}
+
+	public ActionConfig setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+		return this;
+	}
+
+	public String getAttributeVal() {
+		return attributeVal;
+	}
+
+	public ActionConfig setAttributeVal(String attributeVal) {
+		this.attributeVal = attributeVal;
+		return this;
+	}
+
+	public String getNewAttributeVal() {
+		return newAttributeVal;
+	}
+
+	public ActionConfig setNewAttributeVal(String newAttributeVal) {
+		this.newAttributeVal = newAttributeVal;
+		return this;
 	}
 }

@@ -40,7 +40,15 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param config The configuration to provide details for the view (filtering, etc.)
 	 * @return The objects included in the view
 	 */
-	public abstract Collection<T> view(TimeManager manager, ActionConfig config);
+	public abstract void view(TimeManager manager, ActionConfig config);
+
+	/**
+	 * Searches the time manager for the data object based on the config.
+	 * @param manager
+	 * @param config
+	 * @return
+	 */
+	public abstract Collection<T> search(TimeManager manager, ActionConfig config);
 
 	/**
 	 * Gets the headers used when viewing objects. Starts with a "#" column, followed by the name of each of the data points to show.
