@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TaskDoer extends ActionDoer<Task> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
@@ -126,15 +127,31 @@ public class TaskDoer extends ActionDoer<Task> {
 		output.add("" + rowNum);
 		output.add(object.getName());
 
-		//TODO:: add more data points
-
 		return output;
 	}
 
 	@Override
 	public Collection<Task> search(TimeManager manager, ActionConfig config) {
-		//TODO:: this
-		return manager.getTasks();
+		Collection<Task> output = null;
+
+		if(config.getName() != null){
+			output = manager.getTasksByNamePattern(config.getName());
+		}else{
+			output = manager.getTasks();
+		}
+
+		if(config.getAttributeName() != null && config.getAttributeVal() != null){
+			output = output.stream().filter(
+				(Task task) -> {
+					if(task.getAttributes().containsKey(config.getAttributeName())){
+						return config.getAttributeVal().equals(task.getAttributes().get(config.getAttributeName()));
+					}
+					return false;
+				}
+			).collect(Collectors.toList());
+		}
+
+		return output;
 	}
 
 	@Override

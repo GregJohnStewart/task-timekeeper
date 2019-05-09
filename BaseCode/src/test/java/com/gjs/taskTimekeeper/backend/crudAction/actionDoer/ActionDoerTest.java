@@ -6,6 +6,9 @@ import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class ActionDoerTest {
 
 	private static final TimeManager testManager;
@@ -13,7 +16,11 @@ public abstract class ActionDoerTest {
 	static {
 		testManager = new TimeManager();
 
-		testManager.addTask(new Task("Test Task"));
+		Task newTask = new Task("Test Task");
+		Map<String, String> map = new HashMap<>();
+		map.put("attOne", "valOne");
+
+		testManager.addTask(newTask.setAttributes(map));
 		testManager.addTask(new Task("Test Task Two"));
 
 		//TODO:: setup manager with data

@@ -8,6 +8,8 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.Test;
 
+import java.util.Collection;
+
 import static org.junit.Assert.*;
 
 public class TaskDoerTest extends ActionDoerTest {
@@ -90,6 +92,13 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void search(){
-		//TODO:: this
+		TimeManager manager = getTestManager();
+		ActionConfig config = this.getActionConfig(Action.VIEW);
+
+		Collection<Task> results = new TaskDoer().search(manager, config);
+
+		assertEquals(manager.getTasks().size(), results.size());
+
+		//TODO:: this but more
 	}
 }
