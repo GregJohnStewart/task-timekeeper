@@ -66,8 +66,10 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		boolean modified = false;
 		if(config.getNewName() != null){
-			modified = true;
-			editingTask.setName(config.getNewName());
+			if(!editingTask.getName().equals(config.getName())){
+				modified = true;
+				editingTask.setName(config.getNewName());
+			}
 		}
 
 		if(config.getAttributeName() != null){
