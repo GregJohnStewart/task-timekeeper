@@ -4,7 +4,6 @@ import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 
-import java.util.Collection;
 import java.util.List;
 
 public class PeriodDoer extends ActionDoer<WorkPeriod> {
@@ -31,14 +30,28 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		return true;
 	}
 
+	/**
+	 *
+	 * @param manager The manager being dealt with
+	 * @param config The configuration to provide details for the change.
+	 * @return
+	 */
 	@Override
 	protected boolean edit(TimeManager manager, ActionConfig config) {
+		WorkPeriod period = this.getAtIndex(manager, config);
 		return false;
 	}
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
-		return false;
+		WorkPeriod period = this.getAtIndex(manager, config);
+
+		if(period == null){
+			return false;
+		}
+
+		manager.getWorkPeriods().remove(period);
+		return true;
 	}
 
 	@Override
@@ -47,7 +60,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	}
 
 	@Override
-	public Collection<WorkPeriod> search(TimeManager manager, ActionConfig config) {
+	public List<WorkPeriod> search(TimeManager manager, ActionConfig config) {
 		return null;
 	}
 

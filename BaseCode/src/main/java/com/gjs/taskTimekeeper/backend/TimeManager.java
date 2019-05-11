@@ -297,8 +297,8 @@ public class TimeManager {
 		return null;
 	}
 
-	public Collection<Task> getTasksByNamePattern(Pattern pattern){
-		Collection<Task> tasks = new LinkedList<>();
+	public List<Task> getTasksByNamePattern(Pattern pattern){
+		List<Task> tasks = new LinkedList<>();
 		for(Task task : this.tasks){
 			if(pattern.matcher(task.getName()).matches()){
 				tasks.add(task);
@@ -312,7 +312,7 @@ public class TimeManager {
 	 * @param pattern
 	 * @return
 	 */
-	public Collection<Task> getTasksByNamePattern(String pattern){
+	public List<Task> getTasksByNamePattern(String pattern){
 		return this.getTasksByNamePattern(Pattern.compile(pattern));
 	}
 

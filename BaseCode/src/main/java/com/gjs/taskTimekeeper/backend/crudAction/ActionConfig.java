@@ -20,6 +20,9 @@ public class ActionConfig {
 	//  key/value pair
 	//  time/date spans and instants
 
+	@Option(name="-i", aliases = {"i", "--index", "index"}, usage = "The index of the object in a view.")
+	private Integer index = null;
+
 	@Option(name="-n", aliases = {"n", "--name", "name"}, usage = "The name of the object to operate on.")
 	private String name = null;
 	@Option(name="-nn", aliases = {"nn", "--newName", "newName"}, usage = "The new name of the object to operate on.")
@@ -52,6 +55,14 @@ public class ActionConfig {
 	public ActionConfig setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
 		this.objectOperatingOn = objectOperatingOn;
 		return this;
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public void setIndex(Integer index) {
+		this.index = index;
 	}
 
 	public String getName() {

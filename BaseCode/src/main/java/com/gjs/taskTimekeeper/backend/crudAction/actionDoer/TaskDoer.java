@@ -7,10 +7,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TaskDoer extends ActionDoer<Task> {
@@ -133,13 +130,13 @@ public class TaskDoer extends ActionDoer<Task> {
 	}
 
 	@Override
-	public Collection<Task> search(TimeManager manager, ActionConfig config) {
-		Collection<Task> output = null;
+	public List<Task> search(TimeManager manager, ActionConfig config) {
+		List<Task> output = null;
 
 		if(config.getName() != null){
 			output = manager.getTasksByNamePattern(config.getName());
 		}else{
-			output = manager.getTasks();
+			output = new LinkedList<>(manager.getTasks());
 		}
 
 		if(config.getAttributeName() != null && config.getAttributeVal() != null){
@@ -161,6 +158,7 @@ public class TaskDoer extends ActionDoer<Task> {
 		LOGGER.info("Viewing one or more tasks.");
 
 		{
+			//TODO:: integrate getAtIndex() into this
 			Task task = manager.getTaskByName(config.getName());
 			if(task != null){
 				LOGGER.debug("Found a task that matched the name.");

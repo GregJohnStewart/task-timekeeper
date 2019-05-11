@@ -3,12 +3,15 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 import com.gjs.taskTimekeeper.backend.KeeperObject;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public abstract class ActionDoer <T extends KeeperObject> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
 
 	/**
 	 * Adds an object to the time manager.
@@ -48,7 +51,31 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param config
 	 * @return
 	 */
-	public abstract Collection<T> search(TimeManager manager, ActionConfig config);
+	public abstract List<T> search(TimeManager manager, ActionConfig config);
+
+	/**
+	 * Gets an object based on its index in the search in the configuration given.
+	 * @param manager
+	 * @param config
+	 * @return
+	 */
+	protected T getAtIndex(TimeManager manager, ActionConfig config){
+		if(config.getIndex() == null){
+			LOGGER.warn("No index given to get.");
+			System.err.println("No index given to get.");
+			return null;
+		}
+		List<T> results = this.search(manager, config);
+
+		try{
+			return results.get(config.getIndex() - 1);
+		}catch (IndexOutOfBoundsException e){
+			LOGGER.warn("Index given was out of bounds for the search.", e);
+			System.err.println("Index given was out of bounds for the search.");
+		}
+
+		return null;
+	}
 
 	/**
 	 * Gets the headers used when viewing objects. Starts with a "#" column, followed by the name of each of the data points to show.
