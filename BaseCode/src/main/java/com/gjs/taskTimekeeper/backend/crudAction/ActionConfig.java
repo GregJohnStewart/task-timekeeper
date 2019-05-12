@@ -76,8 +76,9 @@ public class ActionConfig {
 		return index;
 	}
 
-	public void setIndex(Integer index) {
+	public ActionConfig setIndex(Integer index) {
 		this.index = index;
+		return this;
 	}
 
 	public String getName() {
@@ -153,31 +154,35 @@ public class ActionConfig {
 		return before;
 	}
 
-	public void setBefore(String before) {
+	public ActionConfig setBefore(String before) {
 		this.before = before;
+		return this;
 	}
 
 	public String getAfter() {
 		return after;
 	}
 
-	public void setAfter(String after) {
+	public ActionConfig setAfter(String after) {
 		this.after = after;
+		return this;
 	}
 
 	public String getAt() {
 		return at;
 	}
 
-	public void setAt(String at) {
+	public ActionConfig setAt(String at) {
 		this.at = at;
+		return this;
 	}
 
 	public boolean isSelect() {
 		return select;
 	}
 
-	public void setSelect(boolean select) {
+	public ActionConfig setSelect(boolean select) {
 		this.select = select;
+		return this;
 	}
 }

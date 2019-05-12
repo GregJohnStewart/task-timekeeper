@@ -205,17 +205,17 @@ public class WorkPeriodTest {
 		assertEquals(1, period.getTimespansWith(testTask).size());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getStartNoTimespans() {
-		new WorkPeriod().getStart();
+		assertNull(new WorkPeriod().getStart());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getStartNoStartTimes() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespans(new Timespan(testTask));
 
-		period.getStart();
+		assertNull(period.getStart());
 	}
 
 	@Test
@@ -226,17 +226,17 @@ public class WorkPeriodTest {
 		assertEquals(now, period.getStart());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getEndNoTimespans() {
-		new WorkPeriod().getEnd();
+		assertNull(new WorkPeriod().getEnd());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void getEndNoEndTimes() {
 		WorkPeriod period = new WorkPeriod();
 		period.addTimespans(new Timespan(testTask));
 
-		period.getEnd();
+		assertNull(period.getEnd());
 	}
 
 	@Test

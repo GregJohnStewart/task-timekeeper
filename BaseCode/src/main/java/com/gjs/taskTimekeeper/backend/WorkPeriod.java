@@ -199,19 +199,14 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 * Gets the starting time of this period, as defined by the earliest timespan.
 	 *
 	 * @return the starting time of this period
-	 * @throws IllegalStateException If there are no timespans or the first timespan does not specify a start time.
 	 */
 	@JsonIgnore
-	public LocalDateTime getStart() throws IllegalStateException {
+	public LocalDateTime getStart() {
 		if (this.getTimespans().isEmpty()) {
-			throw new IllegalStateException("No timespans added; cannot determine start.");
+			return null;
 		}
 
-		LocalDateTime dateTime = this.getTimespans().first().getStartTime();
-		if (dateTime == null) {
-			throw new IllegalStateException("No timespans exist that have a start datetime; Cannot determine start.");
-		}
-		return dateTime;
+		return this.getTimespans().first().getStartTime();
 	}
 
 	/**
@@ -223,7 +218,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	@JsonIgnore
 	public LocalDateTime getEnd() throws IllegalStateException {
 		if (this.getTimespans().isEmpty()) {
-			throw new IllegalStateException("No timespans added; cannot determine end.");
+			return null;
 		}
 		LocalDateTime dateTime = null;
 
@@ -237,10 +232,6 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 					break;
 				}
 			}
-		}
-
-		if (dateTime == null) {
-			throw new IllegalStateException("No timespans exist that have an end datetime. Ca");
 		}
 
 		return dateTime;

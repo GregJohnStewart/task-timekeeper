@@ -125,9 +125,12 @@ public class TimeParser {
 	/**
 	 * Gets the datetime as a string described in the default output formatter.
 	 * @param dateTime The datetime to format
-	 * @return The String described by the default output formatter.
+	 * @return The String described by the default output formatter. If dateTime null, return empty string.
 	 */
 	public static String toOutputString(LocalDateTime dateTime){
+		if(dateTime == null){
+			return "";
+		}
 		return DEFAULT_OUTPUT_FORMATTER.format(dateTime);
 	}
 }

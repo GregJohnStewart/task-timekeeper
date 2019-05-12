@@ -226,6 +226,11 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		PERIOD_DOER = new PeriodDoer();
 	}
 
+	public static void resetDoers(){
+		doersSetup = false;
+		setupDoers();
+	}
+
 	/**
 	 * Performs an action based on the config given. Creates a doer of the appropriate type and calls its {@link #doAction(TimeManager, ActionConfig)}
 	 * @param manager The manager being dealt with
