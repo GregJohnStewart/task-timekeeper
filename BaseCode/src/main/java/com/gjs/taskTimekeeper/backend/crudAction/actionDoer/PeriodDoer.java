@@ -3,10 +3,46 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * TODO:: implement a 'selected' period thing. Make ActionDoer keep track of actionDoers.
+ */
 public class PeriodDoer extends ActionDoer<WorkPeriod> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PeriodDoer.class);
+
+	protected WorkPeriod selected = null;
+
+	protected WorkPeriod getSelected(){
+		return selected;
+	}
+
+	public WorkPeriod getSelectedFromManager(TimeManager manager){
+		for(WorkPeriod period : manager.getWorkPeriods()){
+			if(period.equals(this.getSelected())){
+				this.setSelected(period);
+				return period;
+			}
+		}
+
+		this.setSelected(null);
+		return null;
+	}
+
+	protected boolean isSelected(WorkPeriod period){
+		if(this.selected == null){
+			return period == null;
+		}
+		return this.selected.equals(period);
+	}
+
+	protected void setSelected(WorkPeriod period){
+		this.selected = period;
+	}
+
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
 		WorkPeriod period = new WorkPeriod();
@@ -27,6 +63,11 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		}
 
 		manager.addWorkPeriod(period);
+
+		if(config.isSelect()){
+			this.setSelected(period);
+		}
+
 		return true;
 	}
 
@@ -38,12 +79,37 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	 */
 	@Override
 	protected boolean edit(TimeManager manager, ActionConfig config) {
-		WorkPeriod period = this.getAtIndex(manager, config);
-		return false;
+		WorkPeriod period = this.getSelectedFromManager(manager);
+
+		if(period == null){
+			LOGGER.warn("No period selected. Cannot edit it.");
+			System.err.println("No period selected.");
+			return false;
+		}
+
+		boolean modified = false;
+
+		if(config.getNewAttributeName() != null){
+			if(config.getNewAttributeVal() != null){
+				String returned = period.getAttributes().put(
+					config.getNewAttributeName(),
+					config.getAttributeVal()
+				);
+				if(!config.getNewAttributeVal().equals(returned)){
+					modified = true;
+				}
+			}else{
+				period.getAttributes().remove(config.getNewAttributeName());
+				modified = true;
+			}
+		}
+
+		return modified;
 	}
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
+		//TODO:: implement removing periods before certain times, etc. remove selected?
 		WorkPeriod period = this.getAtIndex(manager, config);
 
 		if(period == null){

@@ -28,14 +28,29 @@ public class ActionConfig {
 	@Option(name="-nn", aliases = {"nn", "--newName", "newName"}, usage = "The new name of the object to operate on.")
 	private String newName = null;
 
-	@Option(name="-at", aliases = {"at", "--attribute", "attribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
+	@Option(name="-a", aliases = {"a", "--attribute", "attribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
 	private String attributeName = null;
+
+	@Option(name="-na", aliases = {"na", "--newAttribute", "newAttribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
+	private String newAttributeName = null;
 
 	@Option(name="-atv", aliases = {"atv", "--attributeVal", "attributeVal"}, usage = "Specifying the value of the attribute. ")
 	private String attributeVal = null;
 
 	@Option(name="-natv", aliases = {"natv", "--newAttributeVal", "newAttributeVal"}, usage = "Specifying the new value of the attribute. ")
 	private String newAttributeVal = null;
+
+	@Option(name = "-bf", aliases = {"bf", "--before", "before"}, usage = "Specifying datetime before")
+	private String before = null;
+
+	@Option(name = "-af", aliases = {"af", "--after", "after"})
+	private String after = null;
+
+	@Option(name = "-at", aliases = {"at", "--after", "after"})
+	private String at = null;
+
+	@Option(name = "-s", aliases = {"s", "--select", "select"}, usage="Flag to select periods.")
+	private boolean select = false;
 
 	public ActionConfig setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
@@ -108,6 +123,14 @@ public class ActionConfig {
 		return this;
 	}
 
+	public String getNewAttributeName() {
+		return newAttributeName;
+	}
+
+	public void setNewAttributeName(String newAttributeName) {
+		this.newAttributeName = newAttributeName;
+	}
+
 	public String getAttributeVal() {
 		return attributeVal;
 	}
@@ -124,5 +147,37 @@ public class ActionConfig {
 	public ActionConfig setNewAttributeVal(String newAttributeVal) {
 		this.newAttributeVal = newAttributeVal;
 		return this;
+	}
+
+	public String getBefore() {
+		return before;
+	}
+
+	public void setBefore(String before) {
+		this.before = before;
+	}
+
+	public String getAfter() {
+		return after;
+	}
+
+	public void setAfter(String after) {
+		this.after = after;
+	}
+
+	public String getAt() {
+		return at;
+	}
+
+	public void setAt(String at) {
+		this.at = at;
+	}
+
+	public boolean isSelect() {
+		return select;
+	}
+
+	public void setSelect(boolean select) {
+		this.select = select;
 	}
 }

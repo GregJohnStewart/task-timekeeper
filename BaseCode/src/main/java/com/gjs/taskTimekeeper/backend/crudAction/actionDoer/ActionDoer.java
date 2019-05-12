@@ -212,6 +212,20 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		return changed;
 	}
 
+	private static TaskDoer TASK_DOER;
+	private static PeriodDoer PERIOD_DOER;
+	private static boolean doersSetup = false;
+
+	private static void setupDoers(){
+		if(doersSetup){
+			return;
+		}
+
+		doersSetup = true;
+		TASK_DOER = new TaskDoer();
+		PERIOD_DOER = new PeriodDoer();
+	}
+
 	/**
 	 * Performs an action based on the config given. Creates a doer of the appropriate type and calls its {@link #doAction(TimeManager, ActionConfig)}
 	 * @param manager The manager being dealt with
@@ -219,12 +233,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @return True if the manager was modified, false otherwise.
 	 */
 	public static boolean doObjAction(TimeManager manager, ActionConfig config){
+		setupDoers();
 		switch (config.getObjectOperatingOn()){
 			case TASK:
-				return new TaskDoer().doAction(manager, config);
+				return TASK_DOER.doAction(manager, config);
 			case PERIOD:
-				//TODO:: make doer
-				break;
+				return PERIOD_DOER.doAction(manager, config);
 			case SPAN:
 				//TODO:: make doer
 				break;

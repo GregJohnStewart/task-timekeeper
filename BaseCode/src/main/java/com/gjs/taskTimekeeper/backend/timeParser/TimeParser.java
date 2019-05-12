@@ -37,6 +37,8 @@ public class TimeParser {
 		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L"), DateTimeParsedType.DATE);
 		FORMATTERS.put(DateTimeFormatter.ofPattern("H:m"), DateTimeParsedType.TIME);
 		FORMATTERS.put(DateTimeFormatter.ofPattern("h:m a"), DateTimeParsedType.TIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L H:m"), DateTimeParsedType.DATETIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L h:m a"), DateTimeParsedType.DATETIME);
 
 		try {
 			TIME_VALUES.put("NOW", LocalDateTime.class.getMethod("now"));
