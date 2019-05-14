@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.backend.KeeperObject;
 import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -231,6 +232,10 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	public static void resetDoers(){
 		doersSetup = false;
 		setupDoers();
+	}
+
+	public static WorkPeriod getSelectedWorkPeriod(){
+		return PERIOD_DOER.getSelected();
 	}
 
 	/**

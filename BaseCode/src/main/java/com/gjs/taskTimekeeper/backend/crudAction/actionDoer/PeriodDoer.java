@@ -144,10 +144,10 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			}
 
 			System.out.println("Period:");
-			System.out.println("\tStart:" + TimeParser.toOutputString(result.getStart()));
-			System.out.println("\t  End:" + TimeParser.toOutputString(result.getEnd()));
+			System.out.println("\tStart: " + TimeParser.toOutputString(result.getStart()));
+			System.out.println("\t  End: " + TimeParser.toOutputString(result.getEnd()));
 			Duration totalTime = result.getTotalTime();
-			System.out.println(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
+			System.out.println("\tTotal time: " + totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
 			System.out.println("\tSelected: " + (this.isSelected(result) ? "Yes" : "No"));
 			System.out.println("\t# Spans: " + result.getNumTimespans());
 

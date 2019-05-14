@@ -11,6 +11,9 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class PeriodDoerTest extends ActionDoerTest{
 
 	public PeriodDoerTest() {
@@ -20,6 +23,18 @@ public class PeriodDoerTest extends ActionDoerTest{
 	@Test
 	public void add() {
 		TimeManager manager = getTestManager();
+		String newAttName = "nothing like it before";
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName(newAttName).setAttributeVal("val").setSelect(true));
+
+		boolean found = false;
+		for(WorkPeriod period : manager.getWorkPeriods()){
+			if(period.getAttributes().containsKey(newAttName)){
+				found = true;
+				assertEquals(period, ActionDoer.getSelectedWorkPeriod());
+				break;
+			}
+		}
+		assertTrue(found);
 	}
 
 	@Before
