@@ -11,13 +11,22 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PeriodDoerTest extends ActionDoerTest{
 
 	public PeriodDoerTest() {
 		super(KeeperObjectType.PERIOD);
+	}
+
+	@Before
+	public void before(){
+		ActionDoer.resetDoers();
+	}
+
+	@After
+	public void after(){
+		ActionDoer.resetDoers();
 	}
 
 	@Test
@@ -37,16 +46,6 @@ public class PeriodDoerTest extends ActionDoerTest{
 		assertTrue(found);
 	}
 
-	@Before
-	public void before(){
-		ActionDoer.resetDoers();
-	}
-
-	@After
-	public void after(){
-		ActionDoer.resetDoers();
-	}
-
 	@Test
 	public void edit() {
 		//TODO:: this
@@ -54,7 +53,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void remove() {
-		//TODO:: this
+
 	}
 
 	@Test
@@ -75,11 +74,34 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void selecting(){
-		//TODO:: this
+		TimeManager manager = getTestManager();
+		int selectedInd = 2;
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true));
+
+		assertNull(ActionDoer.getSelectedWorkPeriod());
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
+
+		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		assertNotNull(selected);
+		assertEquals(new PeriodDoer().search(manager, this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
 	}
 
 	@Test
 	public void remembersSelected(){
-		//TODO:: this
+		int selectedInd = 2;
+
+		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setSelect(true));
+
+		assertNull(ActionDoer.getSelectedWorkPeriod());
+
+		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
+
+		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		assertNotNull(selected);
+		assertEquals(new PeriodDoer().search(getTestManager(), this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
 	}
 }
