@@ -7,6 +7,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -77,7 +78,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	}
 
 	/**
-	 *
+	 * Edits the selected WorkPeriod
 	 * @param manager The manager being dealt with
 	 * @param config The configuration to provide details for the change.
 	 * @return
@@ -145,6 +146,8 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			System.out.println("Period:");
 			System.out.println("\tStart:" + TimeParser.toOutputString(result.getStart()));
 			System.out.println("\t  End:" + TimeParser.toOutputString(result.getEnd()));
+			Duration totalTime = result.getTotalTime();
+			System.out.println(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
 			System.out.println("\tSelected: " + (this.isSelected(result) ? "Yes" : "No"));
 			System.out.println("\t# Spans: " + result.getNumTimespans());
 
@@ -220,6 +223,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add("S");
 		output.add("Start");
 		output.add("End");
+		output.add("Time Worked");
 
 		return output;
 	}
@@ -235,6 +239,8 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 		output.add(TimeParser.toOutputString(period.getStart()));
 		output.add(TimeParser.toOutputString(period.getEnd()));
+		Duration totalTime = period.getTotalTime();
+		output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
 
 		return output;
 	}

@@ -62,4 +62,9 @@ public class PeriodDoerTest extends ActionDoerTest{
 	public void selecting(){
 		//TODO:: this
 	}
+
+	@Test
+	public void remembersSelected(){
+		//TODO:: this
+	}
 }

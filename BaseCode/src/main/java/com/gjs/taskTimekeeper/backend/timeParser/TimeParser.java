@@ -22,7 +22,7 @@ public class TimeParser {
 		TIME
 	}
 
-	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/L h:m a"); // DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 	private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
 	private static final Map<String, Method> TIME_VALUES = new HashMap<>();
 

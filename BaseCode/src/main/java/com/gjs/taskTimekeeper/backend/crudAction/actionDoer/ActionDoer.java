@@ -214,6 +214,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 	private static TaskDoer TASK_DOER;
 	private static PeriodDoer PERIOD_DOER;
+	private static TimespanDoer TIMESPAN_DOER;
 	private static boolean doersSetup = false;
 
 	private static void setupDoers(){
@@ -224,6 +225,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		doersSetup = true;
 		TASK_DOER = new TaskDoer();
 		PERIOD_DOER = new PeriodDoer();
+		TIMESPAN_DOER = new TimespanDoer(PERIOD_DOER);
 	}
 
 	public static void resetDoers(){
@@ -245,8 +247,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			case PERIOD:
 				return PERIOD_DOER.doAction(manager, config);
 			case SPAN:
-				//TODO:: make doer
-				break;
+				return TIMESPAN_DOER.doAction(manager, config);
 		}
 		return false;
 	}

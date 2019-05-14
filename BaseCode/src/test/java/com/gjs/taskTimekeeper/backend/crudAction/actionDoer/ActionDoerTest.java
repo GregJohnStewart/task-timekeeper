@@ -20,6 +20,10 @@ public abstract class ActionDoerTest {
 	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
 	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 	private static final LocalDateTime nowPlusFifteen = now.plusMinutes(15);
+	private static final LocalDateTime nowPlusHour = now.plusMinutes(60);
+	private static final LocalDateTime nowPlusHourFive = now.plusMinutes(65);
+	private static final LocalDateTime nowPlusHourTen = now.plusMinutes(70);
+	private static final LocalDateTime nowPlusHourFifteen = now.plusMinutes(75);
 
 	static {
 		testManager = new TimeManager();
@@ -36,6 +40,11 @@ public abstract class ActionDoerTest {
 		testManager.addWorkPeriod(new WorkPeriod().addTimespans(
 			new Timespan(newTask, now, nowPlusFive),
 			new Timespan(newTaskTwo, nowPlusTen, nowPlusFifteen)
+		).setAttributes(map));
+
+		testManager.addWorkPeriod(new WorkPeriod().addTimespans(
+			new Timespan(newTaskTwo, nowPlusHour, nowPlusHourFive),
+			new Timespan(newTask, nowPlusHourTen, nowPlusHourFifteen)
 		));
 
 		//TODO:: setup manager with data
