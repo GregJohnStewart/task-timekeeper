@@ -14,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * TODO:: implement a 'selected' period thing. Make ActionDoer keep track of actionDoers.
- */
 public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeriodDoer.class);
 

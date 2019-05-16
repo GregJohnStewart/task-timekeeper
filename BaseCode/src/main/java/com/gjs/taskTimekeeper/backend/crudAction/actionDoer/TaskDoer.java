@@ -7,7 +7,10 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TaskDoer extends ActionDoer<Task> {
@@ -169,13 +172,14 @@ public class TaskDoer extends ActionDoer<Task> {
 					System.out.println("\t"+ att.getKey() + ": " + att.getValue());
 				}
 
-				//TODO:: list other info? (How many periods/ spans have this task)
+				System.out.println("\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
+				System.out.println("\tSpans with task: " + manager.getTimespansWith(task).size());
 
 				return;
 			}
 		}
 
-		Collection<Task> results = this.search(manager, config);
+		List<Task> results = this.search(manager, config);
 
 		this.printView(results);
 	}

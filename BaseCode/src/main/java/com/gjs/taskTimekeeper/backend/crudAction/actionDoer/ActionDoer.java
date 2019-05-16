@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class ActionDoer <T extends KeeperObject> {
@@ -95,7 +95,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * Prints out the collection of objects to stdin. Prints in an ASCII table format.
 	 * @param objects The objects to print out.
 	 */
-	protected final void printView(Collection<T> objects){
+	protected final void printView(List<T> objects){
 		List<String> headers = this.getViewHeaders();
 		List<List<String>> rows = this.getViewRows(objects);
 		List<Integer> colWidths = getColWidths(headers, rows);
@@ -118,7 +118,10 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param objects The objects to get the row data for.
 	 * @return The needed row data from the objects given to view.
 	 */
-	private List<List<String>> getViewRows(Collection<T> objects){
+	private List<List<String>> getViewRows(List<T> objects){
+		if(objects == null){
+			return new LinkedList<>();
+		}
 		ArrayList<List<String>> output = new ArrayList<>(objects.size());
 
 		int i = 0;

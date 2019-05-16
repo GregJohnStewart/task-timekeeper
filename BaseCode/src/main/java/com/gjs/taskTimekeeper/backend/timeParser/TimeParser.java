@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -132,5 +133,9 @@ public class TimeParser {
 			return "";
 		}
 		return DEFAULT_OUTPUT_FORMATTER.format(dateTime);
+	}
+
+	public static String toDurationString(Duration duration){
+		return duration.toHoursPart() + ":" + duration.toMinutesPart();
 	}
 }

@@ -53,14 +53,13 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void remove() {
-
+		//TODO:: this
 	}
 
 	@Test
 	public void view() {
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setIndex(1));
-
 	}
 
 	@Test
