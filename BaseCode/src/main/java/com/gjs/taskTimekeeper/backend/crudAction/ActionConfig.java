@@ -28,7 +28,7 @@ public class ActionConfig {
 	@Option(name="-nn", aliases = {"nn", "--newName", "newName"}, usage = "The new name of the object to operate on.")
 	private String newName = null;
 
-	@Option(name="-a", aliases = {"a", "--attribute", "attribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
+	@Option(name="-att", aliases = {"att", "--attribute", "attribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
 	private String attributeName = null;
 
 	@Option(name="-na", aliases = {"na", "--newAttribute", "newAttribute"}, usage = "The name of the attribute to deal with. For tasks and work periods.")
@@ -46,7 +46,7 @@ public class ActionConfig {
 	@Option(name = "-af", aliases = {"af", "--after", "after"})
 	private String after = null;
 
-	@Option(name = "-at", aliases = {"at", "--after", "after"})
+	@Option(name = "-at", aliases = {"at", "--at"})
 	private String at = null;
 
 	@Option(name = "-s", aliases = {"s", "--select", "select"}, usage="Flag to select periods.")

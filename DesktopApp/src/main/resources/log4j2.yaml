@@ -30,11 +30,11 @@ Configutation:
       - name: logPatternDetailedColored
         value: "%highlight{${logPatternDetailed}}{FATAL=red, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"
   Appenders:
-    Console:
-      name: ConsoleOutput
-      target: SYSTEM_OUT
-      PatternLayout:
-        pattern: "${logPatternDetailedColored}"
+    #Console:
+    #  name: ConsoleOutput
+    #  target: SYSTEM_OUT
+    #  PatternLayout:
+    #    pattern: "${logPatternDetailedColored}"
     RollingFile:
       - name: LogFileOutput
         fileName: ${logFile}
@@ -60,8 +60,8 @@ Configutation:
     Root:
       level: trace
       AppenderRef:
-        - ref: ConsoleOutput
-          level: trace
+        #- ref: ConsoleOutput
+        #  level: trace
         - ref: LogFileOutput
           level: trace
         - ref: ErrorLogFileOutput
