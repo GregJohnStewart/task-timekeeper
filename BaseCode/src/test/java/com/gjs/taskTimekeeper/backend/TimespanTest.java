@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -50,9 +51,9 @@ public class TimespanTest {
 		new Timespan(null);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testNotCompleteGetDuration() {
-		new Timespan(new Task("")).getDuration();
+		assertEquals(Duration.ZERO, new Timespan(new Task("")).getDuration());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

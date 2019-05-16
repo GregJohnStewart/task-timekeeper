@@ -16,14 +16,14 @@ public abstract class ActionDoerTest {
 
 	private static final TimeManager testManager;
 
-	private static final LocalDateTime now = LocalDateTime.now();
-	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
-	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
-	private static final LocalDateTime nowPlusFifteen = now.plusMinutes(15);
-	private static final LocalDateTime nowPlusHour = now.plusMinutes(60);
-	private static final LocalDateTime nowPlusHourFive = now.plusMinutes(65);
-	private static final LocalDateTime nowPlusHourTen = now.plusMinutes(70);
-	private static final LocalDateTime nowPlusHourFifteen = now.plusMinutes(75);
+	protected static final LocalDateTime now = LocalDateTime.now();
+	protected static final LocalDateTime nowPlusFive = now.plusMinutes(5);
+	protected static final LocalDateTime nowPlusTen = now.plusMinutes(10);
+	protected static final LocalDateTime nowPlusFifteen = now.plusMinutes(15);
+	protected static final LocalDateTime nowPlusHour = now.plusMinutes(60);
+	protected static final LocalDateTime nowPlusHourFive = now.plusMinutes(65);
+	protected static final LocalDateTime nowPlusHourTen = now.plusMinutes(70);
+	protected static final LocalDateTime nowPlusHourFifteen = now.plusMinutes(75);
 
 	static {
 		testManager = new TimeManager();

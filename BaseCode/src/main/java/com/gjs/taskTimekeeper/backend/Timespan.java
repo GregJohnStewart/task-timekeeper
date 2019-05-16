@@ -181,7 +181,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 */
 	public Duration getDuration() throws IllegalStateException {
 		if (duration == null || !this.isComplete()) {
-			throw new IllegalStateException("Start and end times not set. Cannot determine duration.");
+			return Duration.ZERO;
 		}
 		return duration;
 	}

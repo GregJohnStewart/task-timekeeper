@@ -4,12 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +19,7 @@ public class TimeParser {
 		TIME
 	}
 
-	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/L h:m a"); // DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME; //DateTimeFormatter.ofPattern("d/L h:m a");
 	private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
 	private static final Map<String, Method> TIME_VALUES = new HashMap<>();
 
@@ -35,11 +31,11 @@ public class TimeParser {
 		FORMATTERS.put(DateTimeFormatter.ISO_TIME, DateTimeParsedType.TIME);
 		FORMATTERS.put(DateTimeFormatter.ISO_LOCAL_TIME, DateTimeParsedType.TIME);
 
-		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L"), DateTimeParsedType.DATE);
-		FORMATTERS.put(DateTimeFormatter.ofPattern("H:m"), DateTimeParsedType.TIME);
-		FORMATTERS.put(DateTimeFormatter.ofPattern("h:m a"), DateTimeParsedType.TIME);
-		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L H:m"), DateTimeParsedType.DATETIME);
 		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L h:m a"), DateTimeParsedType.DATETIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L H:m"), DateTimeParsedType.DATETIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L"), DateTimeParsedType.DATE);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("h:m a"), DateTimeParsedType.TIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("H:m"), DateTimeParsedType.TIME);
 
 		try {
 			TIME_VALUES.put("NOW", LocalDateTime.class.getMethod("now"));
@@ -81,7 +77,7 @@ public class TimeParser {
 					case TIME:
 						return LocalTime.from(parsed).atDate(LocalDate.now());
 				}
-			}catch (DateTimeParseException e){
+			}catch (DateTimeException e){
 				continue;
 			}
 		}
