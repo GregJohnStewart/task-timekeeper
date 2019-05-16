@@ -143,10 +143,10 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			System.out.println("Period:");
 			System.out.println("\tStart: " + TimeParser.toOutputString(result.getStart()));
 			System.out.println("\t  End: " + TimeParser.toOutputString(result.getEnd()));
-			Duration totalTime = result.getTotalTime();
-			System.out.println("\tTotal time: " + totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
+			System.out.println("\tTotal time: " + TimeParser.toDurationString(result.getTotalTime()));
 			System.out.println("\tSelected: " + (this.isSelected(result) ? "Yes" : "No"));
 			System.out.println("\t# Spans: " + result.getNumTimespans());
+			System.out.println("\tComplete: " + (result.isUnfinished() ? "No" : "Yes"));
 
 			for(Map.Entry<String, String> att : result.getAttributes().entrySet()){
 				System.out.println("\t"+ att.getKey() + ": " + att.getValue());
@@ -221,6 +221,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add("Start");
 		output.add("End");
 		output.add("Time Worked");
+		output.add("Complete?");
 
 		return output;
 	}
@@ -238,6 +239,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add(TimeParser.toOutputString(period.getEnd()));
 		Duration totalTime = period.getTotalTime();
 		output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
+		output.add(period.isUnfinished() ? "No" : "Yes");
 
 		return output;
 	}
