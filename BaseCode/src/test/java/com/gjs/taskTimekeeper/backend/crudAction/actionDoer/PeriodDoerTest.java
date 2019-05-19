@@ -48,7 +48,26 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void edit() {
-		//TODO:: this
+		TimeManager manager = getTestManager();
+		int selectedInd = 2;
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setNewAttributeName("new Att").setNewAttributeVal("New val")
+			)
+		);
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setNewAttributeName("new Att").setNewAttributeVal("New val")
+			)
+		);
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setIndex(selectedInd));
 	}
 
 	@Test

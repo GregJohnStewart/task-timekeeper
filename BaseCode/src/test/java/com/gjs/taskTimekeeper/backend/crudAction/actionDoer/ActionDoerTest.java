@@ -46,8 +46,6 @@ public abstract class ActionDoerTest {
 			new Timespan(newTaskTwo, nowPlusHour, nowPlusHourFive),
 			new Timespan(newTask, nowPlusHourTen, nowPlusHourFifteen)
 		));
-
-		//TODO:: setup manager with data
 	}
 
 	protected static TimeManager getTestManager(){

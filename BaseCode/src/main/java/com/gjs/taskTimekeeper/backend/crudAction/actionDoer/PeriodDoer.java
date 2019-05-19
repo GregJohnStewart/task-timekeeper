@@ -96,7 +96,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			if(config.getNewAttributeVal() != null){
 				String returned = period.getAttributes().put(
 					config.getNewAttributeName(),
-					config.getAttributeVal()
+					config.getNewAttributeVal()
 				);
 				if(!config.getNewAttributeVal().equals(returned)){
 					modified = true;

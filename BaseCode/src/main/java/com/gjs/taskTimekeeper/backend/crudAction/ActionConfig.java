@@ -128,8 +128,9 @@ public class ActionConfig {
 		return newAttributeName;
 	}
 
-	public void setNewAttributeName(String newAttributeName) {
+	public ActionConfig setNewAttributeName(String newAttributeName) {
 		this.newAttributeName = newAttributeName;
+		return this;
 	}
 
 	public String getAttributeVal() {
