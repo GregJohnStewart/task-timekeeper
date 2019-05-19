@@ -19,7 +19,7 @@ public class TimeParser {
 		TIME
 	}
 
-	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME; //DateTimeFormatter.ofPattern("d/L h:m a");
+	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M h:m a y"); //DateTimeFormatter.ofPattern("d/L h:m a");
 	private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
 	private static final Map<String, Method> TIME_VALUES = new HashMap<>();
 
@@ -31,9 +31,9 @@ public class TimeParser {
 		FORMATTERS.put(DateTimeFormatter.ISO_TIME, DateTimeParsedType.TIME);
 		FORMATTERS.put(DateTimeFormatter.ISO_LOCAL_TIME, DateTimeParsedType.TIME);
 
-		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L h:m a"), DateTimeParsedType.DATETIME);
-		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L H:m"), DateTimeParsedType.DATETIME);
-		FORMATTERS.put(DateTimeFormatter.ofPattern("d/L"), DateTimeParsedType.DATE);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/M h:m a y"), DateTimeParsedType.DATETIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/M H:m y"), DateTimeParsedType.DATETIME);
+		FORMATTERS.put(DateTimeFormatter.ofPattern("d/M y"), DateTimeParsedType.DATE);
 		FORMATTERS.put(DateTimeFormatter.ofPattern("h:m a"), DateTimeParsedType.TIME);
 		FORMATTERS.put(DateTimeFormatter.ofPattern("H:m"), DateTimeParsedType.TIME);
 
@@ -73,6 +73,7 @@ public class TimeParser {
 					case DATETIME:
 						return LocalDateTime.from(parsed);
 					case DATE:
+						//TODO:: figure out how to add year to the parsed, for entering simpler dates
 						return LocalDate.from(parsed).atStartOfDay();
 					case TIME:
 						return LocalTime.from(parsed).atDate(LocalDate.now());
