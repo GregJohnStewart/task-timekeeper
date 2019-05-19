@@ -72,7 +72,18 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void remove() {
-		//TODO:: this
+		TimeManager manager = getTestManager();
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setIndex(2)
+			)
+		);
+
+		assertEquals(1, manager.getWorkPeriods().size());
+
+		//TODO:: better, before date, etc
 	}
 
 	@Test
