@@ -114,13 +114,28 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	protected boolean remove(TimeManager manager, ActionConfig config) {
 		//TODO:: implement removing periods before certain times, etc. remove selected?
 		WorkPeriod period = this.getAtIndex(manager, config);
-
 		if(period == null){
 			return false;
 		}
 
 		manager.getWorkPeriods().remove(period);
 		return true;
+	}
+
+	@Override
+	public void displayOne(TimeManager manager, WorkPeriod workPeriod) {
+
+		System.out.println("Period:");
+		System.out.println("\tStart: " + TimeParser.toOutputString(workPeriod.getStart()));
+		System.out.println("\t  End: " + TimeParser.toOutputString(workPeriod.getEnd()));
+		System.out.println("\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
+		System.out.println("\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
+		System.out.println("\t# Spans: " + workPeriod.getNumTimespans());
+		System.out.println("\tComplete: " + (workPeriod.isUnfinished() ? "No" : "Yes"));
+
+		for(Map.Entry<String, String> att : workPeriod.getAttributes().entrySet()){
+			System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+		}
 	}
 
 	@Override
@@ -140,17 +155,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 				this.setSelected(result);
 			}
 
-			System.out.println("Period:");
-			System.out.println("\tStart: " + TimeParser.toOutputString(result.getStart()));
-			System.out.println("\t  End: " + TimeParser.toOutputString(result.getEnd()));
-			System.out.println("\tTotal time: " + TimeParser.toDurationString(result.getTotalTime()));
-			System.out.println("\tSelected: " + (this.isSelected(result) ? "Yes" : "No"));
-			System.out.println("\t# Spans: " + result.getNumTimespans());
-			System.out.println("\tComplete: " + (result.isUnfinished() ? "No" : "Yes"));
-
-			for(Map.Entry<String, String> att : result.getAttributes().entrySet()){
-				System.out.println("\t"+ att.getKey() + ": " + att.getValue());
-			}
+			this.displayOne(manager, result);
 
 			return;
 		}

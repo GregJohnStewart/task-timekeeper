@@ -91,7 +91,8 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 
 	/**
 	 * Gets the list of timespans held.
-	 * TODO:: prevent tampering, adding nulls. Defensive copy?
+	 *
+	 * Do not add nulls to the list.
 	 *
 	 * @return The list of timespans.
 	 */

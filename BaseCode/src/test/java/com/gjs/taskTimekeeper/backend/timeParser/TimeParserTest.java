@@ -37,6 +37,4 @@ public class TimeParserTest {
 		assertNotNull(TimeParser.parse("15/5 1:05 PM 2019"));
 		assertNotNull(TimeParser.parse("15/5 13:05 2019"));
 	}
-
-	//TODO:: more testing
 }

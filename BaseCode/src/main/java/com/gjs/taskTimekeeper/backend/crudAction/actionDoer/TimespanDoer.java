@@ -124,6 +124,11 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 	}
 
 	@Override
+	public void displayOne(TimeManager manager, Timespan object) {
+		//nothing to do, we do not need to do this for tasks
+	}
+
+	@Override
 	public void view(TimeManager manager, ActionConfig config) {
 		this.printView(this.search(manager, config));
 	}

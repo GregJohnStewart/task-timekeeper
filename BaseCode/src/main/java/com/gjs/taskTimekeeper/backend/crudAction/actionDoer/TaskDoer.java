@@ -157,24 +157,35 @@ public class TaskDoer extends ActionDoer<Task> {
 	}
 
 	@Override
+	public void displayOne(TimeManager manager, Task task) {
+		System.out.println("Task:");
+		System.out.println("\tName: " + task.getName());
+
+		for(Map.Entry<String, String> att : task.getAttributes().entrySet()){
+			System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+		}
+
+		System.out.println("\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
+		System.out.println("\tSpans with task: " + manager.getTimespansWith(task).size());
+
+	}
+
+	@Override
 	public void view(TimeManager manager, ActionConfig config) {
 		LOGGER.info("Viewing one or more tasks.");
 
 		{
-			//TODO:: integrate getAtIndex() into this
 			Task task = manager.getTaskByName(config.getName());
 			if(task != null){
 				LOGGER.debug("Found a task that matched the name.");
-				System.out.println("Task:");
-				System.out.println("\tName: " + task.getName());
+				this.displayOne(manager, task);
+				return;
+			}
+			task = this.getAtIndex(manager, config);
 
-				for(Map.Entry<String, String> att : task.getAttributes().entrySet()){
-					System.out.println("\t"+ att.getKey() + ": " + att.getValue());
-				}
-
-				System.out.println("\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
-				System.out.println("\tSpans with task: " + manager.getTimespansWith(task).size());
-
+			if(task != null){
+				LOGGER.debug("Found a task at the given index.");
+				this.displayOne(manager, task);
 				return;
 			}
 		}

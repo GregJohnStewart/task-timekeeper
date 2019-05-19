@@ -47,6 +47,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	public abstract void view(TimeManager manager, ActionConfig config);
 
 	/**
+	 * Displays a long output of the object given.
+	 * @param object
+	 */
+	public abstract void displayOne(TimeManager manager, T object);
+
+	/**
 	 * Searches the time manager for the data object based on the config.
 	 * @param manager
 	 * @param config
@@ -211,7 +217,8 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				this.view(manager, config);
 				break;
 			default:
-				//TODO:: output nothing specified?
+				LOGGER.warn("No action given.");
+				System.err.println("No action given.");
 		}
 		return changed;
 	}
