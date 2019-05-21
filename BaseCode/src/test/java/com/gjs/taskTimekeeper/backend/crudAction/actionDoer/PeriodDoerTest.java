@@ -83,7 +83,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertEquals(1, manager.getWorkPeriods().size());
 
-		//TODO:: better, before date, etc
+		//TODO:: better; before date, etc
 	}
 
 	@Test

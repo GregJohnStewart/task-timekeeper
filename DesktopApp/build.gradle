@@ -9,7 +9,7 @@ sourceCompatibility = 1.11
 //config for the application plugin
 version '0.1'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
-applicationName = "Task Timekeeper"
+applicationName = "TaskTimekeeper"
 
 repositories {
     mavenCentral()

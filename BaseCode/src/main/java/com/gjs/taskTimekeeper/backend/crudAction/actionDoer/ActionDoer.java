@@ -1,15 +1,18 @@
 package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.KeeperObject;
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.WorkPeriod;
+import com.gjs.taskTimekeeper.backend.*;
+import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
 
 public abstract class ActionDoer <T extends KeeperObject> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
@@ -256,6 +259,14 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 */
 	public static boolean doObjAction(TimeManager manager, ActionConfig config){
 		setupDoers();
+		if(config.getSpecialAction() != null){
+			return processSpecial(manager, config);
+		}
+		if(config.getObjectOperatingOn() == null){
+			LOGGER.error("No object specified to operate on.");
+			System.err.println("No object specified to operate on");
+			return false;
+		}
 		switch (config.getObjectOperatingOn()){
 			case TASK:
 				return TASK_DOER.doAction(manager, config);
@@ -265,5 +276,71 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				return TIMESPAN_DOER.doAction(manager, config);
 		}
 		return false;
+	}
+
+	/**
+	 * TODO:: document, test
+	 * @param manager
+	 * @param config
+	 * @return
+	 */
+	public static boolean processSpecial(TimeManager manager, ActionConfig config){
+		switch (config.getSpecialAction()){
+			case "newSpan":
+				return setupForAddSpanNow(manager, config);
+			case "selectNewest": {
+				ActionConfig actionConfig = new ActionConfig()
+					.setObjectOperatingOn(KeeperObjectType.PERIOD)
+					.setAction(Action.VIEW)
+					.setIndex(manager.getWorkPeriods().size())
+					.setSelect(true);
+				return doObjAction(manager, actionConfig);
+			}
+			case "newPeriod": {
+				ActionConfig actionConfig = new ActionConfig()
+					.setObjectOperatingOn(KeeperObjectType.PERIOD)
+					.setAction(ADD)
+					.setSelect(true);
+				return doObjAction(manager, actionConfig);
+			}
+			default:
+				LOGGER.error("No valid special command given.");
+				System.err.println("No valid special command given.");
+				return false;
+		}
+	}
+
+	public static boolean setupForAddSpanNow(TimeManager manager, ActionConfig config){
+		WorkPeriod selected = getSelectedWorkPeriod();
+		Task task = manager.getTaskByName(config.getName());
+		LOGGER.info("Setting up config for adding a span now.");
+		if(selected == null){
+			LOGGER.error("No work period selected.");
+			System.err.println("No work period selected.");
+			return false;
+		}
+		if(task == null){
+			LOGGER.error("No task with name specified.");
+			System.err.println("No task with name specified.");
+			return false;
+		}
+		//finish unfinished spans
+		if(selected.isUnfinished()){
+			LOGGER.debug("Attempting to finish spans in selected periods.");
+			System.out.println("Attempting to finish spans in selected periods.");
+			for(Timespan span : selected.getUnfinishedTimespans()){
+				if(!span.hasStartTime()){
+					continue;
+				}
+				if(!span.hasEndTime()){
+					span.setEndTime(LocalDateTime.now());
+				}
+			}
+		}
+
+		selected.addTimespan(
+			new Timespan(task, LocalDateTime.now())
+		);
+		return true;
 	}
 }

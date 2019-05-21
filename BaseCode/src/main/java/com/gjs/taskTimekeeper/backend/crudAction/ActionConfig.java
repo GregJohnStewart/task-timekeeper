@@ -1,8 +1,12 @@
 package com.gjs.taskTimekeeper.backend.crudAction;
 
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActionConfig {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConfig.class);
+
 	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
 	private boolean showHelp = false;
 
@@ -14,6 +18,9 @@ public class ActionConfig {
 
 	@Option(name = "-o", aliases = {"o", "--object", "object"}, usage = "The type of object to operate on.")
 	private KeeperObjectType objectOperatingOn;
+
+	@Option(name = "-s", aliases = {"s", "--special", "special"}, usage = "A special command to make using the program easier.")
+	private String specialAction = null;
 
 	//Identifiers/ data inputs to add:
 	//  current (for periods/ timespans)
@@ -49,7 +56,7 @@ public class ActionConfig {
 	@Option(name = "-at", aliases = {"at", "--at"})
 	private String at = null;
 
-	@Option(name = "-s", aliases = {"s", "--select", "select"}, usage="Flag to select periods.")
+	@Option(name = "-se", aliases = {"se", "--select", "select"}, usage="Flag to select periods.")
 	private boolean select = false;
 
 	public ActionConfig setShowHelp(boolean showHelp) {
@@ -69,6 +76,15 @@ public class ActionConfig {
 
 	public ActionConfig setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
 		this.objectOperatingOn = objectOperatingOn;
+		return this;
+	}
+
+	public String getSpecialAction() {
+		return specialAction;
+	}
+
+	public ActionConfig setSpecialAction(String specialAction) {
+		this.specialAction = specialAction;
 		return this;
 	}
 
