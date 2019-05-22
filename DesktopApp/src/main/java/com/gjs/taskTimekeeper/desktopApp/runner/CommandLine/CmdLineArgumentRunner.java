@@ -31,7 +31,11 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 
 	@Override
-	public void run() {
+	public void run(){
+		this.run(false);
+	}
+
+	public void run(boolean selectLatest) {
 		LOGGER.trace("Running argument based on parsed argument: {}", actionConfig);
 
 		if(this.actionConfig.getQuit()){
@@ -51,6 +55,11 @@ public class CmdLineArgumentRunner extends ModeRunner {
 			return;
 		}
 
+		if(selectLatest){
+			LOGGER.trace("Selecting the latest period.");
+			ActionDoer.setNewestPeriodAsSelectedQuiet(manager);
+		}
+
 		//Do action. If returns true, data was changed.
 		if (ActionDoer.doObjAction(manager, this.actionConfig)) {
 			ManagerIO.saveTimeManager(manager);
@@ -58,6 +67,8 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 		LOGGER.trace("FINISHED processing argument.");
 	}
+
+
 
 	public static void showArgHelp(){
 		LOGGER.trace("Showing argument help output.");

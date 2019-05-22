@@ -247,6 +247,13 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		setupDoers();
 	}
 
+	public static void setNewestPeriodAsSelectedQuiet(TimeManager manager){
+		setupDoers();
+		PERIOD_DOER.setSelected(
+			manager.getWorkPeriods().last()
+		);
+	}
+
 	public static WorkPeriod getSelectedWorkPeriod(){
 		return PERIOD_DOER.getSelected();
 	}

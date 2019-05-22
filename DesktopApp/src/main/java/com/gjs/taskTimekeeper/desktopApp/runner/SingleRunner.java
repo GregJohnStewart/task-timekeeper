@@ -17,9 +17,10 @@ public class SingleRunner extends ModeRunner {
 	public void run() {
 		LOGGER.info("Running single command mode.");
 		System.out.println("Running single command.");
+
 		try {
 			CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, this.args);
-			runner.run();
+			runner.run(true);
 		} catch (CmdLineException e) {
 			//TODO:: handle better
 			LOGGER.error("Exception when running command: ", e);
