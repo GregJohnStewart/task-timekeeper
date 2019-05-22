@@ -89,16 +89,19 @@ public class TaskDoer extends ActionDoer<Task> {
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
-		if(config.getName() == null){
-			LOGGER.warn("No task name given to remove the task.");
-			System.err.println("ERROR:: No task name given for the new task.");
-			return false;
+		Task taskToRemove = null;
+
+		if(config.getName() != null){
+			taskToRemove = manager.getTaskByName(config.getName());
 		}
 
-		Task taskToRemove = manager.getTaskByName(config.getName());
+		if(config.getIndex() != null) {
+			taskToRemove = this.getAtIndex(manager, config);
+		}
+
 		if(taskToRemove == null){
-			LOGGER.info("No task with the name given found.");
-			System.out.println("No task with the name given found.");
+			LOGGER.info("No task with the name given found or at index given.");
+			System.out.println("No task with the name given found or at index given.");
 			return false;
 		}
 

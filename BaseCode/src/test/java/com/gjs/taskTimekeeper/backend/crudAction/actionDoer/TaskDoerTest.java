@@ -82,6 +82,8 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		assertTrue(manager.getTasks().contains(testTask));
 		assertFalse(ActionDoer.doObjAction(manager, config));
+
+		//TODO:: test removal with index
 	}
 
 	@Test

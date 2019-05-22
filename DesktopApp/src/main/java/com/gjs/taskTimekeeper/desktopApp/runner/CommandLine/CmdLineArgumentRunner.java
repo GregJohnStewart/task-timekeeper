@@ -1,7 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
 
 import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
@@ -43,13 +42,6 @@ public class CmdLineArgumentRunner extends ModeRunner {
 		if (this.actionConfig.getShowHelp()) {
 			LOGGER.debug("Showing help output.");
 			showArgHelp();
-			return;
-		}
-
-		final Action action = this.actionConfig.getAction();
-		if(action == null){
-			LOGGER.warn("No action given.");
-			System.out.println("No action given. Doing nothing.");
 			return;
 		}
 
