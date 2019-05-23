@@ -25,7 +25,6 @@ public class TimeParserTest {
 	public void parse() {
 		//TODO:: make parameterized, test that times equal each other
 		assertNotNull(TimeParser.parse("01:00"));
-		assertNotNull(TimeParser.parse("NOW"));
 		assertNotNull(TimeParser.parse("2019-05-12T16:28:06"));
 		assertNotNull(TimeParser.parse("16:28:06"));
 		assertNotNull(TimeParser.parse("2019-05-12"));
@@ -36,5 +35,11 @@ public class TimeParserTest {
 		assertNotNull(TimeParser.parse("15/05 2019"));
 		assertNotNull(TimeParser.parse("15/5 1:05 PM 2019"));
 		assertNotNull(TimeParser.parse("15/5 13:05 2019"));
+
+		assertNotNull(TimeParser.parse("NOW"));
+		assertNotNull(TimeParser.parse("now"));
+		assertNotNull(TimeParser.parse("this week"));
+		assertNotNull(TimeParser.parse("last_week"));
+
 	}
 }

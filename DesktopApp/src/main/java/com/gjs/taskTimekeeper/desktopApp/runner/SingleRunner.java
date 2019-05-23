@@ -24,7 +24,7 @@ public class SingleRunner extends ModeRunner {
 		} catch (CmdLineException e) {
 			//TODO:: handle better
 			LOGGER.error("Exception when running command: ", e);
-			e.printStackTrace();
+			System.err.println("Error when running command: " + e.getMessage());
 		}
 	}
 }

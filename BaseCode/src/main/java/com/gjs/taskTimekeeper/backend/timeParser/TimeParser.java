@@ -22,6 +22,19 @@ public class TimeParser {
 	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M h:m a y"); //DateTimeFormatter.ofPattern("d/L h:m a");
 	private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
 	private static final Map<String, Method> TIME_VALUES = new HashMap<>();
+	private static final DayOfWeek WEEK_START = DayOfWeek.MONDAY;
+
+	public static LocalDateTime getStartOfLastWeek(){
+		return getStartOfThisWeek().minusWeeks(1);
+	}
+
+	/**
+	 * https://stackoverflow.com/questions/28450720/get-date-of-first-day-of-week-based-on-localdate-now-in-java-8
+	 * @return
+	 */
+	public static LocalDateTime getStartOfThisWeek(){
+		return LocalDate.now().with(WEEK_START).atStartOfDay();
+	}
 
 	static {
 		FORMATTERS.put(DateTimeFormatter.ISO_DATE_TIME, DateTimeParsedType.DATETIME);
@@ -39,6 +52,12 @@ public class TimeParser {
 
 		try {
 			TIME_VALUES.put("NOW", LocalDateTime.class.getMethod("now"));
+			TIME_VALUES.put("LAST_WEEK", TimeParser.class.getMethod("getStartOfLastWeek"));
+			TIME_VALUES.put("THIS_WEEK", TimeParser.class.getMethod("getStartOfThisWeek"));
+			TIME_VALUES.put("LAST WEEK", TimeParser.class.getMethod("getStartOfLastWeek"));
+			TIME_VALUES.put("THIS WEEK", TimeParser.class.getMethod("getStartOfThisWeek"));
+			TIME_VALUES.put("LASTWEEK", TimeParser.class.getMethod("getStartOfLastWeek"));
+			TIME_VALUES.put("THISWEEK", TimeParser.class.getMethod("getStartOfThisWeek"));
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
