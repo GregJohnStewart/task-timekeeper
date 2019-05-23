@@ -40,6 +40,5 @@ public class TimeParserTest {
 		assertNotNull(TimeParser.parse("now"));
 		assertNotNull(TimeParser.parse("this week"));
 		assertNotNull(TimeParser.parse("last_week"));
-
 	}
 }
