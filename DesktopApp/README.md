@@ -4,7 +4,7 @@ This is the desktop app for Task Timekeeper.
 
 ## Workflow
 
-In general, this is how one works with Task timekeeper:
+In general, this is how one works with Task Timekeeper:
 
  - Make tasks to associate with timespans
  - Make a new work period to add spans to

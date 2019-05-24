@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeriodDoer.class);
@@ -112,7 +109,21 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
-		//TODO:: implement removing periods before certain times, etc. remove selected?
+		if(config.getIndex() != null){
+			return this.removeOne(manager, config);
+		}else if(config.getBefore() != null || config.getAfter() != null){
+			//TODO:: test
+			return this.removeBeforeAfter(manager, config);
+		}
+		LOGGER.warn("No period(s) specified to remove.");
+		System.err.println("No period(s) specified o remove.");
+		return false;
+	}
+
+	private boolean removeOne(TimeManager manager, ActionConfig config){
+		LOGGER.info("Removing one period.");
+		System.out.println("Removing one period.");
+
 		WorkPeriod period = this.getAtIndex(manager, config);
 		if(period == null){
 			return false;
@@ -120,6 +131,30 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 		manager.getWorkPeriods().remove(period);
 		return true;
+	}
+
+	private boolean removeBeforeAfter(TimeManager manager, ActionConfig config){
+		LOGGER.info("Removing periods before or after given datetimes.");
+		System.out.println("Removing periods before or after given datetimes.");
+		Set<WorkPeriod> periodsToKeep = manager.getWorkPeriods();
+
+		LocalDateTime before = TimeParser.parse(config.getBefore());
+		LocalDateTime after = TimeParser.parse(config.getAfter());
+
+		for(WorkPeriod period : periodsToKeep){
+			if(before != null && period.getStart() != null){
+				if(before.isAfter(period.getStart())){
+					periodsToKeep.remove(period);
+				}
+			}
+			if(after != null && period.getEnd() != null){
+				if(after.isBefore(period.getEnd())){
+					periodsToKeep.remove(period);
+				}
+			}
+		}
+
+		return manager.getWorkPeriods().retainAll(periodsToKeep);
 	}
 
 	@Override
