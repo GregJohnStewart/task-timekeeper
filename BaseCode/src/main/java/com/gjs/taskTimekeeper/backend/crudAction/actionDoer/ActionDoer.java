@@ -320,6 +320,8 @@ public abstract class ActionDoer <T extends KeeperObject> {
 					.setSelect(true);
 				return doObjAction(manager, actionConfig) || result;
 			}
+			//TODO:: "lastWeeksPeriods"
+				//TODO:: "thisWeeksPeriods"
 			default:
 				LOGGER.error("No valid special command given.");
 				System.err.println("No valid special command given.");

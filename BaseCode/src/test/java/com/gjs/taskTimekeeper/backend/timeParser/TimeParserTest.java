@@ -4,8 +4,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class TimeParserTest {
@@ -19,6 +21,17 @@ public class TimeParserTest {
 	@Test
 	public void toConsoleString(){
 		LOGGER.info(TimeParser.toOutputString(LocalDateTime.now()));
+	}
+
+	@Test
+	public void durationToString(){
+		Duration duration = Duration.ofHours(1).plusMinutes(15);
+
+		assertEquals("1:15", TimeParser.toDurationString(duration));
+
+		duration = Duration.ofHours(25).plusMinutes(70);
+
+		assertEquals("26:10", TimeParser.toDurationString(duration));
 	}
 
 	@Test
