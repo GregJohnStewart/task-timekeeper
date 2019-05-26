@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -292,7 +293,6 @@ public class TimeManagerTest {
 		assertTrue(manager.equals(deserialized));
 	}
 
-
 	@Test
 	public void testClone() {
 		TimeManager manager = new TimeManager();
@@ -304,6 +304,21 @@ public class TimeManagerTest {
 		manager.addWorkPeriod(finishedPeriod);
 
 		assertEquals(manager, manager.clone());
+	}
+
+	@Test
+	public void getTasksByName(){
+		TimeManager manager = new TimeManager();
+		Task testTask = new Task("Test Task Very Important");
+
+		manager.addTask(testTask);
+
+
+		assertEquals(testTask, manager.getTaskByName(testTask.getName()));
+
+		List<Task> returned = manager.getTasksByNamePattern("Test Task(.*)");
+		assertTrue(returned.contains(testTask));
+
 	}
 
 }

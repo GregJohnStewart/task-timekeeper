@@ -284,9 +284,9 @@ public class TimeManager {
 	}
 
 	/**
-	 * TODO:: test
-	 * @param name
-	 * @return
+	 * Gets tasks by their exact name.
+	 * @param name The name of the task to get.
+	 * @return The task if the name matched. Null if no task has the exact name.
 	 */
 	public Task getTaskByName(String name){
 		for(Task task : this.tasks){
@@ -297,6 +297,11 @@ public class TimeManager {
 		return null;
 	}
 
+	/**
+	 * Gets tasks based off of a regex pattern.
+	 * @param pattern The pattern to match.
+	 * @return The list of tasks that have a matching name.
+	 */
 	public List<Task> getTasksByNamePattern(Pattern pattern){
 		List<Task> tasks = new LinkedList<>();
 		for(Task task : this.tasks){
@@ -308,9 +313,9 @@ public class TimeManager {
 	}
 
 	/**
-	 * TODO:: test
-	 * @param pattern
-	 * @return
+	 * Gets tasks based off of a regex pattern.
+	 * @param pattern The pattern to match.
+	 * @return The list of tasks that have a matching name.
 	 */
 	public List<Task> getTasksByNamePattern(String pattern){
 		return this.getTasksByNamePattern(Pattern.compile(pattern));
