@@ -297,7 +297,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param config
 	 * @return
 	 */
-	public static boolean processSpecial(TimeManager manager, ActionConfig config){
+	private static boolean processSpecial(TimeManager manager, ActionConfig config){
 		switch (config.getSpecialAction().toLowerCase()){
 			case "newspan":
 				return setupForAddSpanNow(manager, config);
@@ -329,7 +329,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		}
 	}
 
-	public static boolean finishSpansInSelected(TimeManager manager){
+	private static boolean finishSpansInSelected(TimeManager manager){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
@@ -359,7 +359,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		return false;
 	}
 
-	public static boolean setupForAddSpanNow(TimeManager manager, ActionConfig config){
+	private static boolean setupForAddSpanNow(TimeManager manager, ActionConfig config){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		Task task = manager.getTaskByName(config.getName());
 		LOGGER.info("Setting up config for adding a span now.");

@@ -22,6 +22,8 @@ public class TaskDoerTest extends ActionDoerTest {
 	public void add() {
 		ActionConfig config = this.getActionConfig(Action.ADD);
 		String newTaskName = "New Test Task";
+		String newTaskAttKey = "keyyy";
+		String newTaskAttVal = "valueable info";
 		TimeManager manager = getTestManager();
 		TimeManager managerOrig = manager.clone();
 
@@ -31,13 +33,19 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		//give task name and verify it was added
 		config.setName(newTaskName);
+		config.setAttributeName(newTaskAttKey);
+		config.setAttributeVal(newTaskAttVal);
 
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
 		boolean found = false;
 		for(Task task : manager.getTasks()){
-			if(newTaskName.equals(task.getName())){
+			if(
+				newTaskName.equals(task.getName()) &&
+				task.getAttributes().containsKey(newTaskAttKey) &&
+				newTaskAttVal.equals(task.getAttributes().get(newTaskAttKey))
+			){
 				found = true;
 				break;
 			}
@@ -46,8 +54,6 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		//test that we can't add a duplicate name
 		assertFalse(ActionDoer.doObjAction(manager, config));
-
-		//TODO:: test adding with an attribute
 	}
 
 	@Test
