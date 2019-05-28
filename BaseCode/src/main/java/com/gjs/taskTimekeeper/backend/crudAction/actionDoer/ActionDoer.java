@@ -14,6 +14,10 @@ import java.util.List;
 
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
 
+/**
+ * Main class to be used to perform actions. Provides a 'main' method ({@link #doAction(TimeManager, ActionConfig)} to perform said action.
+ * @param <T> For extending object action doers, the object the action performs operations on.
+ */
 public abstract class ActionDoer <T extends KeeperObject> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
 
@@ -45,29 +49,29 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * Views objects in the time manager.
 	 * @param manager The manager being dealt with
 	 * @param config The configuration to provide details for the view (filtering, etc.)
-	 * @return The objects included in the view
 	 */
 	public abstract void view(TimeManager manager, ActionConfig config);
 
 	/**
 	 * Displays a long output of the object given.
-	 * @param object
+	 * @param manager The manager being dealt with.
+	 * @param object The object being viewed.
 	 */
 	public abstract void displayOne(TimeManager manager, T object);
 
 	/**
 	 * Searches the time manager for the data object based on the config.
-	 * @param manager
-	 * @param config
-	 * @return
+	 * @param manager The manager being dealt with
+	 * @param config The configuration to provide details for the search.
+	 * @return The list of matched objects.
 	 */
 	public abstract List<T> search(TimeManager manager, ActionConfig config);
 
 	/**
 	 * Gets an object based on its index in the search in the configuration given.
-	 * @param manager
-	 * @param config
-	 * @return
+	 * @param manager The manager being dealt with
+	 * @param config The configuration to provide details for the search and index to get.
+	 * @return The object at the index of the search given.
 	 */
 	protected T getAtIndex(TimeManager manager, ActionConfig config){
 		if(config.getIndex() == null){
@@ -150,8 +154,8 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	private static List<Integer> getColWidths(List<String> headers, List<List<String>> rows) {
 		ArrayList<Integer> output = new ArrayList<>(headers.size());
 
-		for(int i = 0; i < headers.size(); i++){
-			output.add(headers.get(i).length());
+		for(String header : headers){
+			output.add(header.length());
 		}
 
 		for(List<String> row : rows){
@@ -190,9 +194,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		for(int width : colWidths){
 			builder.append("+-");
-			for(int i = 0; i <= width; i++){
-				builder.append('-');
-			}
+			builder.append("-".repeat(width));
 		}
 		builder.append('+');
 		return builder.toString();
@@ -226,11 +228,18 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		return changed;
 	}
 
+	/** An instance of a task doer. */
 	private static TaskDoer TASK_DOER;
+	/** An instance of a period doer. */
 	private static PeriodDoer PERIOD_DOER;
+	/** An instance of a timespan doer. */
 	private static TimespanDoer TIMESPAN_DOER;
+	/** If the doers have already been setup. */
 	private static boolean doersSetup = false;
 
+	/**
+	 * If it needs to, sets up the doers to have a static set to work with.
+	 */
 	private static void setupDoers(){
 		if(doersSetup){
 			return;
@@ -242,11 +251,18 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		TIMESPAN_DOER = new TimespanDoer(PERIOD_DOER);
 	}
 
+	/**
+	 * Resets the static doers. Will clear data meant to be persistent between runs.
+	 */
 	public static void resetDoers(){
 		doersSetup = false;
 		setupDoers();
 	}
 
+	/**
+	 * Sets the latest period held by the manager as the selected period in the period doer.
+	 * @param manager The manager being dealt with.
+	 */
 	public static void setNewestPeriodAsSelectedQuiet(TimeManager manager){
 		setupDoers();
 		PERIOD_DOER.setSelected(
@@ -254,6 +270,10 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		);
 	}
 
+	/**
+	 * Gets the selected work period from the period doer.
+	 * @return The selected work period from the period doer.
+	 */
 	public static WorkPeriod getSelectedWorkPeriod(){
 		return PERIOD_DOER.getSelected();
 	}
@@ -292,15 +312,16 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	}
 
 	/**
-	 * TODO:: document, test
-	 * @param manager
-	 * @param config
-	 * @return
+	 * Processes special commands from the command line.
+	 * TODO:: document, test. Move to own class?
+	 * @param manager The manager being dealt with
+	 * @param config The configuration from command line
+	 * @return If the manager was changed in any way.
 	 */
 	private static boolean processSpecial(TimeManager manager, ActionConfig config){
 		switch (config.getSpecialAction().toLowerCase()){
 			case "newspan":
-				return setupForAddSpanNow(manager, config);
+				return finishOldSpansAndAddNew(manager, config);
 			case "selectnewest": {
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
@@ -329,6 +350,11 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		}
 	}
 
+	/**
+	 * Finishes all spans in selected work period.
+	 * @param manager The manager being dealt with.
+	 * @return True if any spans were actually finished.
+	 */
 	private static boolean finishSpansInSelected(TimeManager manager){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
@@ -359,7 +385,13 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		return false;
 	}
 
-	private static boolean setupForAddSpanNow(TimeManager manager, ActionConfig config){
+	/**
+	 * Finishes all old spans in selected work period and starts a new work period.
+	 * @param manager The time manager being dealt with.
+	 * @param config The configuration used to do the action.
+	 * @return If the manager was changed during the operation.
+	 */
+	private static boolean finishOldSpansAndAddNew(TimeManager manager, ActionConfig config){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		Task task = manager.getTaskByName(config.getName());
 		LOGGER.info("Setting up config for adding a span now.");
