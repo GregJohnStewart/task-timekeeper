@@ -58,7 +58,38 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void edit() {
-		//TODO:: this
+		String taskName = "New Task";
+		String newTaskName = "Another Task";
+		Task workingTask = new Task(taskName);
+		TimeManager manager = new TimeManager();
+
+		manager.addTask(workingTask);
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT)
+					.setName(taskName)
+					.setNewName(newTaskName)
+					.setAttributeName("key")
+					.setAttributeVal("value")
+			)
+		);
+
+		assertEquals(newTaskName, workingTask.getName());
+		assertTrue(workingTask.getAttributes().containsKey("key"));
+		assertEquals("value", workingTask.getAttributes().get("key"));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT)
+					.setName(newTaskName)
+					.setAttributeName("key")
+			)
+		);
+
+		assertFalse(workingTask.getAttributes().containsKey("key"));
 	}
 
 	@Test

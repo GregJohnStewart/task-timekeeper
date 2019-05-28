@@ -44,4 +44,9 @@ public class CmdLineArgumentParser {
 	public ActionConfig getConfig(){
 		return this.config;
 	}
+
+	public void printUsage(){
+		this.parser.printUsage(System.out);
+	}
+
 }

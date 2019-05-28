@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
+import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import org.kohsuke.args4j.CmdLineException;
@@ -12,12 +13,12 @@ import org.slf4j.LoggerFactory;
 public class CmdLineArgumentRunner extends ModeRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
-	private final ActionConfig actionConfig;
+	private final CmdLineArgumentParser parser;
 
 	//TODO:: add saveFile member to make testing easier
 
 	public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
-		this.actionConfig = parser.getConfig();
+		this.parser = parser;
 	}
 
 	public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
@@ -36,14 +37,15 @@ public class CmdLineArgumentRunner extends ModeRunner {
 	}
 
 	public void run(boolean selectLatest) {
+		ActionConfig actionConfig = this.parser.getConfig();
 		LOGGER.trace("Running argument based on parsed argument: {}", actionConfig);
 
-		if(this.actionConfig.getQuit()){
+		if(actionConfig.getQuit()){
 			LOGGER.debug("User chose to exit.");
 			throw new DoExit();
 		}
 
-		if (this.actionConfig.getShowHelp()) {
+		if(actionConfig.getShowHelp()) {
 			LOGGER.debug("Showing help output.");
 			showArgHelp();
 			return;
@@ -61,21 +63,25 @@ public class CmdLineArgumentRunner extends ModeRunner {
 		}
 
 		//Do action. If returns true, data was changed.
-		if (ActionDoer.doObjAction(manager, this.actionConfig)) {
+		if (ActionDoer.doObjAction(manager, actionConfig)) {
 			ManagerIO.saveTimeManager(manager);
 		}
 
 		LOGGER.trace("FINISHED processing argument.");
 	}
 
-
-
-	public static void showArgHelp(){
-		LOGGER.trace("Showing argument help output.");
+	/**
+	 * Displays the help output to the terminal.
+	 */
+	public void showArgHelp(){
+		LOGGER.info("Showing argument help output to terminal.");
 
 		System.out.println("Help output:");
+		System.out.println("\tFor more detailed information, visit: "); //TODO:: put real URL
+		System.out.println();
 
-		//TODO:: this
+		this.parser.printUsage();
 
+		TimeParser.outputHelp();
 	}
 }
