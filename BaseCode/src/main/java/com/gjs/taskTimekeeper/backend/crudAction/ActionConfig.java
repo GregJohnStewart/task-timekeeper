@@ -4,6 +4,9 @@ import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Configuration to describe what action to take and what arguments to pass to do that action.
+ */
 public class ActionConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConfig.class);
 
@@ -21,11 +24,6 @@ public class ActionConfig {
 
 	@Option(name = "-s", aliases = {"s", "--special", "special"}, usage = "A special command to make using the program easier.")
 	private String specialAction = null;
-
-	//Identifiers/ data inputs to add:
-	//  current (for periods/ timespans)
-	//  key/value pair
-	//  time/date spans and instants
 
 	@Option(name="-i", aliases = {"i", "--index", "index"}, usage = "The index of the object in a view.")
 	private Integer index = null;

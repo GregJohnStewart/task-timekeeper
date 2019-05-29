@@ -1,4 +1,7 @@
 package com.gjs.taskTimekeeper.backend;
 
-public class KeeperObject {
+/**
+ * Main class object to round up the objects used in the TimeManager.
+ */
+public abstract class KeeperObject {
 }

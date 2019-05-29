@@ -11,15 +11,34 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Action doer to edit WorkPeriods.
+ */
 public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PeriodDoer.class);
 
+	/** The selected work period. If null, none are selected. */
 	protected WorkPeriod selected = null;
 
+	/**
+	 * Gets the currently selected work period.
+	 *
+	 * The selected work period set will .equals() that in the time manager given but will be a different object between runs (assuming between runs the TimeManager is reloaded).
+	 *
+	 * Use {@link #getSelectedFromManager(TimeManager)} to get the selected work period object that is part of the manager.
+	 * @return The currently selected work period.
+	 */
 	protected WorkPeriod getSelected(){
 		return selected;
 	}
 
+	/**
+	 * Gets the work period from the time manager. Also resets the work period held to it, if found.
+	 *
+	 * If not found, nulls out the held selected object.
+	 * @param manager The manager to get the selected work period from.
+	 * @return The selected work period object from the TimeManager given. Null if not found.
+	 */
 	public WorkPeriod getSelectedFromManager(TimeManager manager){
 		for(WorkPeriod period : manager.getWorkPeriods()){
 			if(period.equals(this.getSelected())){
@@ -32,13 +51,19 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		return null;
 	}
 
+	/**
+	 * Determines if the period given is selected.
+	 * @param period The period to check if selected.
+	 * @return
+	 */
 	protected boolean isSelected(WorkPeriod period){
-		if(this.selected == null){
-			return period == null;
-		}
-		return this.selected.equals(period);
+		return this.selected != null && this.selected.equals(period);
 	}
 
+	/**
+	 * Sets the selected work period.
+	 * @param period The period to set as selected.
+	 */
 	protected void setSelected(WorkPeriod period){
 		this.selected = period;
 	}

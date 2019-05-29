@@ -14,10 +14,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The ActionDoer to handle Timespans.
+ */
 public class TimespanDoer extends ActionDoer<Timespan> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoer.class);
 
-	private PeriodDoer periodDoer;
+	/**
+	 * The period doer also being used the ActionDoer to get the selected work period.
+	 */
+	private final PeriodDoer periodDoer;
 
 	public TimespanDoer(PeriodDoer periodDoer){
 		this.periodDoer = periodDoer;
