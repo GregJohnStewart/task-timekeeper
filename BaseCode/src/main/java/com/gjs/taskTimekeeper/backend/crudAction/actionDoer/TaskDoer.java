@@ -66,17 +66,29 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		boolean modified = false;
 		if(config.getNewName() != null){
-			if(!editingTask.getName().equals(config.getName())){
+			if(!editingTask.getName().equals(config.getNewName())){
 				modified = true;
 				editingTask.setName(config.getNewName());
 			}
 		}
 
-		if(config.getAttributeName() != null){
+		if(config.getNewAttributeName() != null){
 			if(config.getNewAttributeVal() != null){
-				if(!config.getNewAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
+				if(!config.getNewAttributeVal().equals(editingTask.getAttributes().get(config.getNewAttributeName()))){
 					modified = true;
-					editingTask.getAttributes().put(config.getAttributeName(), config.getNewAttributeVal());
+					editingTask.getAttributes().put(config.getNewAttributeName(), config.getNewAttributeVal());
+				}
+			}else{
+				modified = true;
+				editingTask.getAttributes().remove(config.getNewAttributeName());
+			}
+		}
+
+		if(config.getAttributeName() != null){
+			if(config.getAttributeVal() != null){
+				if(!config.getAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
+					modified = true;
+					editingTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
 				}
 			}else{
 				modified = true;
