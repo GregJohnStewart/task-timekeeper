@@ -13,6 +13,16 @@ import org.slf4j.LoggerFactory;
 public class CmdLineArgumentRunner extends ModeRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
+	public static String[] splitCommandLineArgumentString(String inputString){
+		String[] inputs = inputString.split("(?<!\\\\)\\s+");
+
+		for(int i = 0; i < inputs.length; i++){
+			inputs[i] = inputs[i].replace("\\ ", " ");
+		}
+
+		return inputs;
+	}
+
 	private final CmdLineArgumentParser parser;
 
 	//TODO:: add saveFile member to make testing easier
@@ -26,8 +36,11 @@ public class CmdLineArgumentRunner extends ModeRunner {
 	}
 
 	public CmdLineArgumentRunner(boolean allowExtra, String inputString) throws CmdLineException {
-		//TODO:: parse inputString as array....better
-		this(allowExtra, inputString.split(" "));
+		this(allowExtra, splitCommandLineArgumentString(inputString));
+	}
+
+	public CmdLineArgumentParser getParser(){
+		return this.parser;
 	}
 
 

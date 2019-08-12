@@ -49,4 +49,7 @@ public class CmdLineArgumentParser {
 		this.parser.printUsage(System.out);
 	}
 
+	public String[] getArgsGotten(){
+		return this.argsGotten;
+	}
 }
