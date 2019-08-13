@@ -128,16 +128,16 @@ public class Configuration {
 	 * Does not throw exception if config file not found, but will throw exception of there is an error reading an existing configuration file.
 	 */
 	private static void readFromConfigFile() {
-		LOGGER.trace("Reading config file for properties.");
+		LOGGER.trace("Reading user config file for properties.");
 		try (InputStream is = Configuration.class.getClassLoader().getResourceAsStream(getProperty(ConfigKeys.CONFIG_FILE, String.class))) {
 			if (is == null) {
-				throw new FileNotFoundException("Input stream was null, assuming file is not present.");
+				throw new FileNotFoundException("Input stream was null, assuming user's configuration file is not present.");
 			}
 			PROPERTIES.load(is);
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Configuration file not found. Cannot read properties in. Error: ", e);
+			LOGGER.warn("User's configuration file not found. Cannot read properties in from user's config file. Error: ", e);
 		} catch (IOException e) {
-			LOGGER.error("Error reading configuration file. Cannot read configuration in. Error: ", e);
+			LOGGER.error("Error reading user's configuration file. Cannot read user's configuration in. Assumed that it is present, just not readable. Error: ", e);
 			throw new RuntimeException(e);
 		}
 	}
