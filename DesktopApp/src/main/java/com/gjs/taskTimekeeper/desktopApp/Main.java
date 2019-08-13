@@ -20,6 +20,7 @@ public class Main {
 		Configuration.finalizeConfig(args);
 
 		System.out.println("TaskTimekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class) + " Using lib v" + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
+		System.out.println("\tGithub: " + Configuration.getProperty(ConfigKeys.GITHUB_REPO_URL, String.class));
 		System.out.println();
 
 		LocalFile.ensureFilesExistWritable();
@@ -32,7 +33,7 @@ public class Main {
 			case SINGLE:
 				new SingleRunner(args).run();
 				break;
-			case MANAGEMENT:
+			case MANAGE:
 				new ManagerRunner().run();
 				break;
 			case GUI:

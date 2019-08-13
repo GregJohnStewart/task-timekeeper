@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
-import com.gjs.taskTimekeeper.desktopApp.runner.CommandLine.CmdLineArgumentRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.CommandLine.DoExit;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

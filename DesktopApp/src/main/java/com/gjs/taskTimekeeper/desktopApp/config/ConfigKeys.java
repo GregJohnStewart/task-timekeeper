@@ -22,7 +22,10 @@ public enum ConfigKeys {
 	//default values
 	DEFAULT_CONFIG_FILE("default.configFile", CONFIG_FILE),
 	DEFAULT_SAVE_FILE("default.saveFile", SAVE_FILE),
-	DEFAULT_RUN_MODE("default.runMode", RUN_MODE);
+	DEFAULT_RUN_MODE("default.runMode", RUN_MODE),
+	//other
+	GITHUB_REPO_URL("urls.github"),
+	GITHUB_DESKTOP_APP_README("urls.desktopReadme");
 
 	public final String key;
 	public final String envVar;

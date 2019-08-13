@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
+package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
@@ -12,8 +12,11 @@ public class CmdLineArgumentRunnerTest {
 		CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, "hello world");
 		assertArrayEquals(new String[]{"hello", "world"}, runner.getParser().getArgsGotten());
 
-		runner = new CmdLineArgumentRunner(true, "hello\\ world");
-		assertArrayEquals(new String[]{"hello world"}, runner.getParser().getArgsGotten());
+		runner = new CmdLineArgumentRunner(true, "hello\\ there\\ world");
+		assertArrayEquals(new String[]{"hello there world"}, runner.getParser().getArgsGotten());
+
+		runner = new CmdLineArgumentRunner(true, "hello\\ there, world");
+		assertArrayEquals(new String[]{"hello there,", "world"}, runner.getParser().getArgsGotten());
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
+package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.kohsuke.args4j.Argument;

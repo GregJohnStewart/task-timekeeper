@@ -12,7 +12,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin
-version '0.1'
+version = '0.1'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 
@@ -50,6 +50,7 @@ String projectPropertiesDir = "$projectDir/src/main/resources/";
  */
 //noinspection GroovyAssignabilityCheck
 task writeVersionConfig() {
+
     doLast {
         new File(projectPropertiesDir + projectPropertiesFile).text = """
 ################################################################
@@ -65,14 +66,18 @@ app.name = $applicationName
 # the version of the app code
 app.version = $version
 # the time of build
-app.buildtime = ${new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())}
+app.buildtime = ${ZonedDateTime.now().toString()}
 # Version of the library used
 lib.version = ${project(":BaseCode").version}
-#default save file location
+# default save file location
 default.configFile = {HOME}/.timeKeeper/config.cfg
 default.saveFile = {HOME}/.timeKeeper/save.tks
-#default run mode
+# default run mode
 default.runMode = SINGLE
+
+# Help url's
+urls.github = https://github.com/GregJohnStewart/task-timekeeper
+urls.desktopReadme = https://github.com/GregJohnStewart/task-timekeeper/tree/master/DesktopApp
 """
     }
 }
@@ -98,19 +103,24 @@ clean {
 setupBuilder {
 
     vendor = 'Greg Stewart'
-    appIdentifier = applicationName
-    version = version
+    appIdentifier = applicationName  // "TaskTimekeeper"
+    this.version = version // '0.1'
 
     application = "Task Timekeeper"
     description = 'A program for keeping track of time spent on tasks.'
     icons = "src/main/resources/test-icon.icns"
 
-    licenseFile "../LICENSE"
+    licenseFile = "../LICENSE"
 
     from jar.outputs
 
-    bundleJre = 1.11
-    mainClass = mainClassName
-    mainJar = 'BaseCode-1.0.jar'
+    System.out.println("Jar outputs:")
+    for(File f : jar.outputs.files.files){
+        System.out.println("\t" + f)
+    }
+
+    //bundleJre = 1.11 // not working on linux systems :(
+    mainClass = mainClassName // "com.gjs.taskTimekeeper.desktopApp.Main"
+    mainJar = 'DesktopApp-' + version + '.jar'
 
 }

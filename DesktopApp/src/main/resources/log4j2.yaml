@@ -60,9 +60,10 @@ Configutation:
     Root:
       level: trace
       AppenderRef:
-        - ref: ConsoleOutput
-          level: trace
         - ref: LogFileOutput
           level: trace
         - ref: ErrorLogFileOutput
           level: warn
+        # For debugging; keep disabled for distributing
+#        - ref: ConsoleOutput
+#          level: trace

@@ -1,4 +1,4 @@
-#Task Timekeeper Desktop App
+# Task Timekeeper Desktop App
 
 This is the desktop app for Task Timekeeper.
 
@@ -14,7 +14,7 @@ In general, this is how one works with Task Timekeeper:
  - review the time you spent on what tasks for either a certain period or over a few periods 
 
 
-##Configuration
+## Configuration
 
 Main configuration for the app. Command line arguments override environment variables.
 
@@ -26,18 +26,10 @@ Main configuration for the app. Command line arguments override environment vari
 
 ## Command line interaction
 
-Whether working in single command mode or management mode, the same arguments are used.
+To learn how to interact with the program from the command line, look [here](Command%20Line.md)
 
 It should be noted that in single mode, one can only operate on the latest work period (it is automatically selected and cannot be changed).
 
-### Commands
+## Distributing/ Making Distributions
 
-TODO:: table detailing different commands
-
-#### Special Commands
-
-TODO:: list available special commands
-
-#### Time inputs
-
-TODO:: list available time input formats
+TODO:: list how to make .deb, msi, rpms

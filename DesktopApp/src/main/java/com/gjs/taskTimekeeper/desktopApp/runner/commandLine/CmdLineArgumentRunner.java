@@ -1,9 +1,11 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.CommandLine;
+package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
+import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import org.kohsuke.args4j.CmdLineException;
@@ -90,7 +92,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
 		LOGGER.info("Showing argument help output to terminal.");
 
 		System.out.println("Help output:");
-		System.out.println("\tFor more detailed information, visit: "); //TODO:: put real URL
+		System.out.println("\tFor more detailed information, visit: " + Configuration.getProperty(ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
 		System.out.println();
 
 		this.parser.printUsage();

@@ -141,7 +141,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			return this.removeBeforeAfter(manager, config);
 		}
 		LOGGER.warn("No period(s) specified to remove.");
-		System.err.println("No period(s) specified o remove.");
+		System.err.println("No period(s) specified to remove.");
 		return false;
 	}
 
@@ -163,8 +163,15 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		System.out.println("Removing periods before or after given datetimes.");
 		Set<WorkPeriod> periodsToKeep = manager.getWorkPeriods();
 
-		LocalDateTime before = TimeParser.parse(config.getBefore());
-		LocalDateTime after = TimeParser.parse(config.getAfter());
+		LocalDateTime before = null;
+		if(config.getBefore() != null){
+			before = TimeParser.parse(config.getBefore());
+		}
+
+		LocalDateTime after = null;
+		if(config.getAfter() != null){
+			after = TimeParser.parse(config.getAfter());
+		}
 
 		for(WorkPeriod period : periodsToKeep){
 			if(before != null && period.getStart() != null){
