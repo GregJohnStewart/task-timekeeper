@@ -8,7 +8,7 @@ Configutation:
       - name: archiveMaxFiles
         value: 5
       - name: logPath
-        value: "logs"
+        value: "${sys:user.home}/.timeKeeper/logs"
       - name: logArchivePath
         value: "/archive"
       - name: logArchiveStampFormat
@@ -30,11 +30,11 @@ Configutation:
       - name: logPatternDetailedColored
         value: "%highlight{${logPatternDetailed}}{FATAL=red, ERROR=red, WARN=yellow bold, INFO=black, DEBUG=green bold, TRACE=blue}"
   Appenders:
-    Console:
-      name: ConsoleOutput
-      target: SYSTEM_OUT
-      PatternLayout:
-        pattern: "${logPatternDetailedColored}"
+#    Console:
+#      name: ConsoleOutput
+#      target: SYSTEM_OUT
+#      PatternLayout:
+#        pattern: "${logPatternDetailedColored}"
     RollingFile:
       - name: LogFileOutput
         fileName: ${logFile}

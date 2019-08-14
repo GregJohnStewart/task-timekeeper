@@ -3,8 +3,6 @@ import java.text.SimpleDateFormat
 plugins {
     id 'java'
     id 'application'
-    // for making deb and rpm packages https://github.com/nebula-plugins/gradle-ospackage-plugin/wiki/Usage-Example
-    //id "nebula.ospackage-application" version "6.2.1"
 
     //https://github.com/i-net-software/SetupBuilder
     id "de.inetsoftware.setupbuilder" version "4.8.6"
@@ -12,7 +10,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin
-version = '0.1'
+version = '0.1.007'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 
@@ -100,11 +98,23 @@ clean {
     dependsOn 'deleteVersionConfig';
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+
+    }
+}
+
 /*
  * Setup for building .deb, .dmg, .msi, and .rpm installers.
+ * https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-setupBuilder
  */
 setupBuilder {
-
     vendor = 'Greg Stewart'
     appIdentifier = applicationName  // "TaskTimekeeper"
     this.version = version // '0.1'
@@ -117,13 +127,35 @@ setupBuilder {
 
     from jar.outputs
 
-    System.out.println("Jar outputs:")
-    for(File f : jar.outputs.files.files){
-        System.out.println("\t" + f)
-    }
-
     //bundleJre = 1.11 // not working on linux systems :(
     mainClass = mainClassName // "com.gjs.taskTimekeeper.desktopApp.Main"
     mainJar = 'DesktopApp-' + version + '.jar'
 
+    // https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
+    desktopStarter {
+        displayName   = "tasktimekeeper"
+        description   = "A program for keeping track of time spent on tasks."
+
+        // The working directory of the service, relative to installation root
+        workDir        = "."
+    }
+}
+
+//TODO:: make this work. Currently nothing happens
+task buildDistributions() {
+    group "distribution"
+    description "Rebuilds the distrobutions with a clean, tested codebase."
+    doFirst {
+        clean
+        build
+        test
+    }
+    doLast {
+        deb
+        dmg
+        rpm
+        msi
+        distZip
+        distTar
+    }
 }
