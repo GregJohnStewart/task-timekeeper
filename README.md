@@ -3,7 +3,7 @@ All-in one tool for keeping track of time spent on tasks
 
 The base code behind all the projects is located in the BaseCode project.
 
-Implementations can be found in desktop-app
+Implementations can be found in [DesktopApp](DesktopApp)
 
 ## How it works
 
@@ -19,3 +19,6 @@ The Manager works off of several objects:
    - timespans are added to a period to describe how long certain tasks were worked for that period 
    - Example: a workday where I worked on a project from 1:00 to 2:00
 
+## Desktop App
+
+The desktop app is located [here](DesktopApp/README.md). You can run it either as a cli or gui.

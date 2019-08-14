@@ -10,7 +10,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin
-version = '0.1.007'
+version = '0.1.009'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 
@@ -101,7 +101,8 @@ clean {
 jar {
     manifest {
         attributes(
-                'Main-Class': mainClassName
+                'Main-Class': mainClassName,
+                'Multi-Release': true
         )
     }
     from {
@@ -121,7 +122,7 @@ setupBuilder {
 
     application = "Task Timekeeper"
     description = 'A program for keeping track of time spent on tasks.'
-    icons = "src/main/resources/test-icon.icns"
+    icons = "src/main/resources/icon.icns"
 
     licenseFile = "../LICENSE"
 
@@ -132,30 +133,31 @@ setupBuilder {
     mainJar = 'DesktopApp-' + version + '.jar'
 
     // https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
+    //TODO:: associate file type
     desktopStarter {
-        displayName   = "tasktimekeeper"
-        description   = "A program for keeping track of time spent on tasks."
+        displayName   = "Task Timekeeper GUI"
+        description   = "A program for keeping track of time spent on tasks, in GUI mode."
+
+        startArguments = "--mode GUI"
+
+        // Categories of the application (only for deb and rpm) TODO:: what categories are there?
+        //categories = "software;game"
+
+        // Where should this desktopStarter item be placed? (Windows only)
+        //location = StartMenu
 
         // The working directory of the service, relative to installation root
         workDir        = "."
     }
-}
+    desktopStarter {
+        displayName   = "tasktimekeeper"
+        description   = "A program for keeping track of time spent on tasks."
 
-//TODO:: make this work. Currently nothing happens
-task buildDistributions() {
-    group "distribution"
-    description "Rebuilds the distrobutions with a clean, tested codebase."
-    doFirst {
-        clean
-        build
-        test
+        // Categories of the application (only for deb and rpm) TODO:: what categories are there?
+        //categories = "software;game"
+
+        // The working directory of the service, relative to installation root
+        workDir        = "."
     }
-    doLast {
-        deb
-        dmg
-        rpm
-        msi
-        distZip
-        distTar
-    }
+
 }
