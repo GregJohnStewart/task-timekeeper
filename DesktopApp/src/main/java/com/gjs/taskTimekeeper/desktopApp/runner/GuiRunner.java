@@ -20,7 +20,7 @@ public class GuiRunner extends ModeRunner {
 	private static final String appTitle;
 
 	static {
-		try(InputStream is = GuiRunner.class.getClassLoader().getResourceAsStream("icon.png")){
+		try(InputStream is = GuiRunner.class.getClassLoader().getResourceAsStream("gui-icon.png")){
 			// icon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			icon = ImageIO.read(is);
 		}catch (Exception e){

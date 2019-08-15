@@ -8,9 +8,12 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code.
-version = '0.1.1.6'
+version = '0.1.1.29'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
+def gitHubUrl = "https://github.com/GregJohnStewart/task-timekeeper"
+def progDesc = "An open source program for keeping track of time spent on tasks. Github: " + gitHubUrl
+description = progDesc
 
 repositories {
     mavenCentral()
@@ -41,16 +44,27 @@ run {
     }
 }
 
-String projectPropertiesFile = "project.properties";
-String projectPropertiesDir = "$projectDir/src/main/resources/";
+String projectPropertiesFileName = "project.properties";
+String projectResourcesDir = "$projectDir/src/main/resources/";
+
+task copyInLogos() {
+    doLast {
+        copy {
+            from "../logo/generated"
+            include "gui-icon.png"
+            into projectResourcesDir
+        }
+    }
+}
+
 
 /**
  * Writes out the version configuration for the app.
  */
 //noinspection GroovyAssignabilityCheck
-task writeVersionConfig() {
+task writePropertiesFile() {
     doLast {
-        new File(projectPropertiesDir + projectPropertiesFile).text = """
+        new File(projectResourcesDir + projectPropertiesFileName).text = """
 ################################################################
 #                                                              #
 # Main properties file. Contains values used in the app.       #
@@ -67,6 +81,7 @@ app.version = $version
 app.buildtime = ${ZonedDateTime.now().toString()}
 # Version of the library used
 lib.version = ${project(":BaseCode").version}
+
 # default save file location
 default.configFile = {HOME}/.timeKeeper/config.cfg
 default.saveFile = {HOME}/.timeKeeper/save.tks
@@ -74,15 +89,15 @@ default.saveFile = {HOME}/.timeKeeper/save.tks
 default.runMode = SINGLE
 
 # Help url's
-urls.github = https://github.com/GregJohnStewart/task-timekeeper
-urls.desktopReadme = https://github.com/GregJohnStewart/task-timekeeper/tree/master/DesktopApp
+urls.github = $gitHubUrl
+urls.desktopReadme = ${gitHubUrl}/tree/master/DesktopApp
 """
     }
 }
 
-task deleteVersionConfig(type: Delete) {
-    delete fileTree(projectPropertiesDir) {
-        include "**/$projectPropertiesFile"
+task deletePropertiesFile(type: Delete) {
+    delete fileTree(projectResourcesDir) {
+        include "**/$projectPropertiesFileName"
     }
 }
 
@@ -95,7 +110,7 @@ task incrementBuildVersion {
         //println ver
         String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
         int increment = lastNumber.toInteger() + 1
-        println "Build number: " + increment
+        //println "Build number: " + increment
 
         String firstNumber = ver.substring(0, ver.lastIndexOf("."))
         //println firstNumber
@@ -107,11 +122,12 @@ task incrementBuildVersion {
 compileJava {
     dependsOn ':BaseCode:test'
     dependsOn 'incrementBuildVersion';
-    dependsOn 'writeVersionConfig';
+    dependsOn 'writePropertiesFile';
+    dependsOn 'copyInLogos';
 }
 
 clean {
-    dependsOn 'deleteVersionConfig';
+    dependsOn 'deletePropertiesFile';
 }
 
 jar {
@@ -123,7 +139,6 @@ jar {
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-
     }
 }
 
@@ -137,8 +152,8 @@ setupBuilder {
     this.version = version // '0.1'
 
     application = "Task Timekeeper"
-    description = 'A program for keeping track of time spent on tasks.'
-    icons = "src/main/resources/icon.icns"
+    description = progDesc
+    icons = "../logo/generated/desktop-icon.icns"
 
     licenseFile = "../LICENSE"
 
@@ -151,8 +166,8 @@ setupBuilder {
     // https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
     //TODO:: associate file type
     desktopStarter {
-        displayName   = "Task Timekeeper GUI"
-        description   = "A program for keeping track of time spent on tasks, in GUI mode."
+        displayName = "Task Timekeeper GUI"
+        description = progDesc + "\nThis opens the program in GUI mode."
 
         startArguments = "--mode GUI"
 
@@ -163,17 +178,17 @@ setupBuilder {
         //location = StartMenu
 
         // The working directory of the service, relative to installation root
-        workDir        = "."
+        workDir = "."
     }
     desktopStarter {
-        displayName   = "tasktimekeeper"
-        description   = "A program for keeping track of time spent on tasks."
+        displayName = "tasktimekeeper"
+        description = progDesc
 
         // Categories of the application (only for deb and rpm) TODO:: what categories are there?
         //categories = "software;game"
 
         // The working directory of the service, relative to installation root
-        workDir        = "."
+        workDir = "."
     }
 
 }
