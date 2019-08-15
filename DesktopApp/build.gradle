@@ -1,5 +1,3 @@
-import java.text.SimpleDateFormat
-
 plugins {
     id 'java'
     id 'application'
@@ -9,8 +7,8 @@ plugins {
 }
 
 sourceCompatibility = 1.11
-//config for the application plugin
-version = '0.1.009'
+//config for the application plugin. The last number (build #) is auto generated on assembly of the code.
+version = '0.1.1.6'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 
@@ -51,7 +49,6 @@ String projectPropertiesDir = "$projectDir/src/main/resources/";
  */
 //noinspection GroovyAssignabilityCheck
 task writeVersionConfig() {
-
     doLast {
         new File(projectPropertiesDir + projectPropertiesFile).text = """
 ################################################################
@@ -89,8 +86,27 @@ task deleteVersionConfig(type: Delete) {
     }
 }
 
+task incrementBuildVersion {
+    group "build"
+    description "Increments the build number in the version config."
+
+    doLast {
+        def ver = version
+        //println ver
+        String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
+        int increment = lastNumber.toInteger() + 1
+        println "Build number: " + increment
+
+        String firstNumber = ver.substring(0, ver.lastIndexOf("."))
+        //println firstNumber
+        String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
+        buildFile.setText(result)
+    }
+}
+
 compileJava {
     dependsOn ':BaseCode:test'
+    dependsOn 'incrementBuildVersion';
     dependsOn 'writeVersionConfig';
 }
 
