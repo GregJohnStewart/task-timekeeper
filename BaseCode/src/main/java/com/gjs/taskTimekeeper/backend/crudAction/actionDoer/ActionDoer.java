@@ -105,10 +105,16 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	public abstract List<String> getViewRowEntries(int rowNum, T object);
 
 	/**
-	 * Prints out the collection of objects to stdin. Prints in an ASCII table format.
+	 * Prints out the collection of objects to stdout. Prints in an ASCII table format.
 	 * @param objects The objects to print out.
 	 */
-	protected final void printView(List<T> objects){
+	protected final void printView(String title, List<T> objects){
+		for(String textRow : this.getView(title, objects)){
+			System.out.println(textRow);
+		}
+	}
+
+	protected final List<String> getView(String title, List<T> objects){
 		List<String> headers = this.getViewHeaders();
 		List<List<String>> rows = this.getViewRows(objects);
 		List<Integer> colWidths = getColWidths(headers, rows);
@@ -116,14 +122,20 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		String rowFormat = getRowFormat(colWidths);
 		String hr = getViewHr(colWidths);
 
-		System.out.println(hr);
-		System.out.printf(rowFormat, headers.toArray());
-		System.out.println(hr);
-		for(List<String> row : rows){
-			System.out.printf(rowFormat, row.toArray());
-		}
-		System.out.println(hr);
+		List<String> output = new ArrayList<>();
 
+		if(title != null) {
+			output.add(title + ":");
+		}
+		output.add(hr);
+		output.add(String.format(rowFormat, headers.toArray()));
+		output.add(hr);
+		for(List<String> row : rows){
+			output.add(String.format(rowFormat, row.toArray()));
+		}
+		output.add(hr);
+
+		return output;
 	}
 
 	/**
@@ -180,7 +192,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		for(int colWidth : colWidths){
 			builder.append("| %-").append(colWidth).append("s ");
 		}
-		builder.append("|%n");
+		builder.append("|");
 		return builder.toString();
 	}
 
@@ -194,7 +206,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		for(int width : colWidths){
 			builder.append("+-");
-			builder.append("-".repeat(width));
+			builder.append("-".repeat(width + 1));
 		}
 		builder.append('+');
 		return builder.toString();
@@ -261,13 +273,19 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 	/**
 	 * Sets the latest period held by the manager as the selected period in the period doer.
+	 * If there are no periods, sets the selected to null.
 	 * @param manager The manager being dealt with.
 	 */
 	public static void setNewestPeriodAsSelectedQuiet(TimeManager manager){
 		setupDoers();
-		PERIOD_DOER.setSelected(
-			manager.getWorkPeriods().last()
-		);
+		if(manager.getWorkPeriods().isEmpty()){
+			PERIOD_DOER.setSelected(null);
+		} else {
+			PERIOD_DOER.setSelected(
+				manager.getWorkPeriods()
+					.last()
+			);
+		}
 	}
 
 	/**
@@ -343,6 +361,9 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			}
 			//TODO:: "lastWeeksPeriods"
 				//TODO:: "thisWeeksPeriods"
+				//TODO:: clearPeriods
+				//TODO:: clearAll
+				//TODO:: cleanTasks
 			default:
 				LOGGER.error("No valid special command given.");
 				System.err.println("No valid special command given.");

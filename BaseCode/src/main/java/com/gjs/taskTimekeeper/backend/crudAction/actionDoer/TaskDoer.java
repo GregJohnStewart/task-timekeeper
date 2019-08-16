@@ -210,6 +210,6 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		List<Task> results = this.search(manager, config);
 
-		this.printView(results);
+		this.printView("Tasks", results);
 	}
 }

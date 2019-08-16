@@ -229,7 +229,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 		List<WorkPeriod> results = this.search(manager, config);
 
-		this.printView(results);
+		this.printView("Periods", results);
 	}
 
 	@Override

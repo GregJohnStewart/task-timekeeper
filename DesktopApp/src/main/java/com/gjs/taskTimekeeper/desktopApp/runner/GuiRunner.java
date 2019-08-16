@@ -13,27 +13,24 @@ import java.io.InputStream;
 public class GuiRunner extends ModeRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
-
-	private static final int iconSize = 24;
-	private static final Image icon;
-
-	private static final String appTitle;
+	private static final Image ICON;
+	private static final String APP_TITLE;
 
 	static {
 		try(InputStream is = GuiRunner.class.getClassLoader().getResourceAsStream("gui-icon.png")){
 			// icon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			icon = ImageIO.read(is);
+			ICON = ImageIO.read(is);
 		}catch (Exception e){
 			LOGGER.error("FAILED to read in icon image. Error: ", e);
 			throw new RuntimeException(e);
 		}
 
-		appTitle = "Task Timekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
+		APP_TITLE = "Task Timekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
 	}
 
 	@Override
 	public void run() {
 		LOGGER.info("Running the GUI mode.");
-		MainGui.main(icon, appTitle);
+		MainGui.main(ICON, APP_TITLE);
 	}
 }

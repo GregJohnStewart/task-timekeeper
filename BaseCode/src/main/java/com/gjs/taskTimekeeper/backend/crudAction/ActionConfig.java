@@ -48,10 +48,10 @@ public class ActionConfig {
 	@Option(name = "-bf", aliases = {"bf", "--before", "before"}, usage = "Specifying datetime before")
 	private String before = null;
 
-	@Option(name = "-af", aliases = {"af", "--after", "after"})
+	@Option(name = "-af", aliases = {"af", "--after", "after"}, usage = "Specifying datetime after")
 	private String after = null;
 
-	@Option(name = "-at", aliases = {"at", "--at"})
+	@Option(name = "-at", aliases = {"at", "--at"}, usage = "Specifying a datetime")
 	private String at = null;
 
 	@Option(name = "-se", aliases = {"se", "--select", "select"}, usage="Flag to select periods.")

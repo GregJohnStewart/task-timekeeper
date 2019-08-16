@@ -31,6 +31,7 @@ public class LocalFile extends ManagerIO {
 			LOGGER.debug("Empty save file. Starting with new manager.");
 			System.out.println("New data initialized.");
 			manager = new TimeManager();
+			this.save(manager);
 		} catch (IOException e) {
 			LOGGER.error("FAILED to read in saved data: ", e);
 			System.err.println("FAILED to read save data in. Error: " + e.getMessage());
