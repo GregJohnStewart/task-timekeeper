@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code.
-version = '0.1.1.29'
+version = '0.1.1.42'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 def gitHubUrl = "https://github.com/GregJohnStewart/task-timekeeper"
@@ -56,7 +56,6 @@ task copyInLogos() {
         }
     }
 }
-
 
 /**
  * Writes out the version configuration for the app.
@@ -153,7 +152,7 @@ setupBuilder {
 
     application = "Task Timekeeper"
     description = progDesc
-    icons = "../logo/generated/desktop-icon.icns"
+    icons = "../logo/generated/desktop-icon.icn"
 
     licenseFile = "../LICENSE"
 
@@ -190,5 +189,4 @@ setupBuilder {
         // The working directory of the service, relative to installation root
         workDir = "."
     }
-
 }

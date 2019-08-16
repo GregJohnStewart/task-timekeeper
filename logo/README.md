@@ -15,5 +15,5 @@ To generate the files actually used as logos, you simply need to run the followi
 
 Requisites:
 
- * Have imagemagick installed: https://www.tecmint.com/install-imagemagick-on-debian-ubuntu/
+ * Have imagemagick installed
  * This script is for running on Linux systems
