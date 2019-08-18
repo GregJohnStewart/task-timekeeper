@@ -1,6 +1,6 @@
 # Task Timekeeper Desktop App
 
-This is the desktop app for Task Timekeeper.
+This is the desktop app for Task Timekeeper. Requires Java 11 to run.
 
 ## Workflow
 

@@ -75,5 +75,46 @@ Verifying it was removed:
 
 **NOTE::** Selecting specific periods is only supported in manage mode. In single mode, only the newest/ most recent period is selected.
 
- 
+Selecting a work period:
 
+ `-a view -o period -se -i <index of period in view>`
+
+Verifying it was selected (will have an asterisk in the "S" column):
+
+`-a view -o period`
+
+### Starting a new timespan
+
+Starting a new timespan (and finishing the others):
+
+`-s newspan -tn <task name>`
+
+Verifying it was created:
+
+`-a view -o span`
+
+### Finish unfinished timespans
+
+Finishing all unfinished spans:
+
+`-s finish`
+
+Verifying they were finished:
+
+`-a view -o span`
+
+### Review timespans
+
+Viewing all spans in period:
+
+`-a view -o span`
+
+Reviewing time spent on tasks:
+
+`<unimplemented/ TODO>`
+
+### Cleaning up
+
+Removing periods before a certain date:
+
+`-a remove -o period -bf <datetime>`
