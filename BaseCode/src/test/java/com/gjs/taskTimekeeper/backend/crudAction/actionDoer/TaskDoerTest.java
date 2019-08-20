@@ -9,6 +9,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -93,6 +94,45 @@ public class TaskDoerTest extends ActionDoerTest {
 	}
 
 	@Test
+	public void dontRemoveWithoutSpecifyingTask() {
+		ActionConfig config = this.getActionConfig(Action.REMOVE);
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+	}
+
+	@Test
+	public void dontRemoveWithWrongTaskName() {
+		ActionConfig config = this.getActionConfig(Action.REMOVE);
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
+		//don't remove anything when wrong task name
+		config.setName("Wrong task name");
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+	}
+
+	@Test
+	public void dontRemoveWithSpanAssociated() {
+		ActionConfig config = this.getActionConfig(Action.REMOVE);
+		String newTaskName = "New Test Task";
+		TimeManager manager = getTestManager();
+		Task testTask = new Task(newTaskName);
+		manager.addTask(testTask);
+		TimeManager managerOrig = manager.clone();
+
+		//dont remove task that has a span associated with it
+		manager.addTimespan(new Timespan(testTask));
+
+		assertTrue(manager.getTasks().contains(testTask));
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertTrue(manager.getTasks().contains(testTask));
+	}
+
+	@Test
 	public void remove() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
 		String newTaskName = "New Test Task";
@@ -101,26 +141,26 @@ public class TaskDoerTest extends ActionDoerTest {
 		manager.addTask(testTask);
 		TimeManager managerOrig = manager.clone();
 
-		//don't remove w/o specifying task
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
-
-		//don't remove anything when wrong task name
-		config.setName("Wrong task name");
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
-
 		//remove
 		config.setName(newTaskName);
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
-		manager.addTimespan(new Timespan(testTask));
+		//test removal with index
+		manager = getTestManager();
+		manager.addTask(testTask);
+		config = this.getActionConfig(Action.REMOVE);
 
-		assertTrue(manager.getTasks().contains(testTask));
-		assertFalse(ActionDoer.doObjAction(manager, config));
+		List<Task> tasks = new TaskDoer().search(managerOrig, this.getActionConfig(Action.VIEW));
+		for(Task task : tasks){
+			if(task.getName().equals(newTaskName)){
+				config.setIndex(tasks.indexOf(task) + 1);
+				break;
+			}
+		}
 
-		//TODO:: test removal with index
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertEquals(2, manager.getTasks().size());
 	}
 
 	@Test
