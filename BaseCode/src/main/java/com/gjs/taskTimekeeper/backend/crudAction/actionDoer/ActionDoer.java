@@ -465,4 +465,16 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			System.out.print(output);
 		}
 	}
+
+	protected static void consoleErrorPrintln(String output, OutputLevel level){
+		if(CONSOLE_OUTPUT_LEVEL != NONE) {
+			System.err.println(output);
+		}
+	}
+
+	protected static void consoleErrorPrint(String output, OutputLevel level){
+		if(CONSOLE_OUTPUT_LEVEL != NONE) {
+			System.err.print(output);
+		}
+	}
 }

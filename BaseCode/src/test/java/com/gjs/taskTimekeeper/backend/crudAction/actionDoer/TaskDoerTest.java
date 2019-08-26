@@ -20,7 +20,24 @@ public class TaskDoerTest extends ActionDoerTest {
 	}
 
 	@Test
-	public void add() {
+	public void addWithJustName(){
+		ActionConfig config = this.getActionConfig(Action.ADD);
+		String newTaskName = "New Test Task";
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
+		config.setName(newTaskName);
+
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertNotEquals(managerOrig, manager);
+
+		Task newTask = manager.getTaskByName(newTaskName);
+
+		assertNotNull(newTask);
+	}
+
+	@Test
+	public void addWithNameAndAtt() {
 		ActionConfig config = this.getActionConfig(Action.ADD);
 		String newTaskName = "New Test Task";
 		String newTaskAttKey = "keyyy";
@@ -28,11 +45,6 @@ public class TaskDoerTest extends ActionDoerTest {
 		TimeManager manager = getTestManager();
 		TimeManager managerOrig = manager.clone();
 
-		//check that we need task name
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
-
-		//give task name and verify it was added
 		config.setName(newTaskName);
 		config.setAttributeName(newTaskAttKey);
 		config.setAttributeVal(newTaskAttVal);
@@ -40,21 +52,37 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
-		boolean found = false;
-		for(Task task : manager.getTasks()){
-			if(
-				newTaskName.equals(task.getName()) &&
-				task.getAttributes().containsKey(newTaskAttKey) &&
-				newTaskAttVal.equals(task.getAttributes().get(newTaskAttKey))
-			){
-				found = true;
-				break;
-			}
-		}
-		assertTrue(found);
+		Task newTask = manager.getTaskByName(newTaskName);
 
-		//test that we can't add a duplicate name
+		assertNotNull(newTask);
+		assertTrue(newTask.getAttributes().containsKey(newTaskAttKey));
+		assertEquals(newTaskAttVal, newTask.getAttributes().get(newTaskAttKey));
+
+	}
+
+
+	@Test
+	public void cantAddWithoutName(){
+		ActionConfig config = this.getActionConfig(Action.ADD);
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
 		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+	}
+
+	@Test
+	public void cantAddDuplicateName(){
+		ActionConfig config = this.getActionConfig(Action.ADD);
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
+		config.setName(
+			manager.getTasks().iterator().next().getName()
+		);
+
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
 	}
 
 	@Test

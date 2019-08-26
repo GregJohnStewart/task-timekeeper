@@ -28,12 +28,10 @@ public class TaskDoer extends ActionDoer<Task> {
 			return false;
 		}
 		//check we aren't duplicating names
-		for(Task task : manager.getTasks()){
-			if(task.getName().equals(config.getName())){
-				LOGGER.warn("Duplicate task name given. Not adding new task.");
-				System.err.println("ERROR:: Duplicate task name given.");
-				return false;
-			}
+		if(manager.getTaskByName(config.getName()) != null){
+			LOGGER.warn("Duplicate task name given. Not adding new task.");
+			System.err.println("ERROR:: Duplicate task name given.");
+			return false;
 		}
 
 		Task newTask = new Task(config.getName());
@@ -41,9 +39,6 @@ public class TaskDoer extends ActionDoer<Task> {
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
 				newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
-			}
-			if(config.getNewAttributeVal() != null){
-				newTask.getAttributes().put(config.getAttributeName(), config.getNewAttributeVal());
 			}
 		}
 
