@@ -18,7 +18,6 @@ public class GuiRunner extends ModeRunner {
 
 	static {
 		try(InputStream is = GuiRunner.class.getClassLoader().getResourceAsStream("gui-icon.png")){
-			// icon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			ICON = ImageIO.read(is);
 		}catch (Exception e){
 			LOGGER.error("FAILED to read in icon image. Error: ", e);

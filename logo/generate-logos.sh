@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# This script automatically generates the logos needed for the project from logo-main.png
-# Must have ImageMagick installed
-# https://imagemagick.org/script/convert.php
+# This script automatically generates the logos needed for the project
+# Must have inkscape installed
 
 mainFile="logo-main.png";
 destinationDir="generated/";
 
-iconDefaultSize="500x500"
+# Generate the gui icon. Used as the icon for the Desktop GUI and taskbar icon.
+guiIconSize="128"
+inkscape -z -e ${destinationDir}gui-icon.png -w $guiIconSize -h $guiIconSize $mainFile
 
-convert $mainFile -resize $iconDefaultSize ${destinationDir}gui-icon.png
-convert $mainFile -resize $iconDefaultSize ${destinationDir}desktop-icon.icn
+# generate the desktop icon, or the icon of the executable when installed.
+desktopIconSize="500"
+inkscape -z -e ${destinationDir}desktop-icon.icn -w $desktopIconSize -h $desktopIconSize $mainFile
