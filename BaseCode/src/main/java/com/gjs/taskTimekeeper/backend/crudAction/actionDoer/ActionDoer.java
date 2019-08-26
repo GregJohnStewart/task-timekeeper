@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel.DEFAULT;
+import static com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel.NONE;
 
 /**
  * Main class to be used to perform actions. Provides a 'main' method ({@link #doAction(TimeManager, ActionConfig)} to perform said action.
@@ -434,5 +436,33 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			new Timespan(task, LocalDateTime.now())
 		);
 		return true;
+	}
+
+
+	private static OutputLevel CONSOLE_OUTPUT_LEVEL = DEFAULT;
+
+	public static void setConsoleOutputLevel(OutputLevel level){
+		CONSOLE_OUTPUT_LEVEL = DEFAULT;
+	}
+
+	private static boolean canOutput(OutputLevel level){
+		if(CONSOLE_OUTPUT_LEVEL == NONE){
+			return false;
+		}
+
+		return CONSOLE_OUTPUT_LEVEL == level ||
+			       level == DEFAULT;
+	}
+
+	protected static void consolePrintln(String output, OutputLevel level){
+		if(canOutput(level)) {
+			System.out.println(output);
+		}
+	}
+
+	protected static void consolePrint(String output, OutputLevel level){
+		if(canOutput(level)){
+			System.out.print(output);
+		}
 	}
 }

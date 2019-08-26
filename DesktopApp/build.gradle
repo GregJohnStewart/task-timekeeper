@@ -7,7 +7,7 @@ plugins {
 }
 
 sourceCompatibility = 1.11
-//config for the application plugin. The last number (build #) is auto generated on assembly of the code.
+//config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
 version = '0.1.1.121'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
