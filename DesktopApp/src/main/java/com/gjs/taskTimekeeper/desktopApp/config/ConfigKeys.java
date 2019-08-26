@@ -23,6 +23,8 @@ public enum ConfigKeys {
 	DEFAULT_CONFIG_FILE("default.configFile", CONFIG_FILE),
 	DEFAULT_SAVE_FILE("default.saveFile", SAVE_FILE),
 	DEFAULT_RUN_MODE("default.runMode", RUN_MODE),
+	//static files
+	STATIC_GUI_ICON("static.guiIconFile"),
 	//other
 	GITHUB_REPO_URL("urls.github"),
 	GITHUB_DESKTOP_APP_README("urls.desktopReadme");

@@ -8,9 +8,14 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code.
-version = '0.1.1.114'
+version = '0.1.1.121'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
+//logo location information
+def logoDir = "../logo/generated/desktop-app/"
+def guiIconFile = "gui-icon.png"
+def desktopIconFile = "desktop-icon.icn"
+//important urls
 def gitHubUrl = "https://github.com/GregJohnStewart/task-timekeeper"
 def progDesc = "An open source program for keeping track of time spent on tasks. Github: " + gitHubUrl
 description = progDesc
@@ -50,8 +55,8 @@ String projectResourcesDir = "$projectDir/src/main/resources/";
 task copyInLogos() {
     doLast {
         copy {
-            from "../logo/generated"
-            include "gui-icon.png"
+            from logoDir
+            include guiIconFile
             into projectResourcesDir
         }
     }
@@ -86,6 +91,9 @@ default.configFile = {HOME}/.timeKeeper/config.cfg
 default.saveFile = {HOME}/.timeKeeper/save.tks
 # default run mode
 default.runMode = SINGLE
+
+# static file names
+static.guiIconFile = $guiIconFile
 
 # Help url's
 urls.github = $gitHubUrl
@@ -154,7 +162,7 @@ setupBuilder {
 
     application = "Task Timekeeper"
     description = progDesc
-    icons = "../logo/generated/desktop-icon.icn"
+    icons = (String)logoDir + desktopIconFile
 
     licenseFile = "../LICENSE"
 

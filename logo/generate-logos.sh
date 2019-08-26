@@ -3,7 +3,7 @@
 # Must have inkscape installed
 
 mainFile="logo-main.png";
-destinationDir="generated/";
+destinationDir="generated/desktop-app/";
 
 # Generate the gui icon. Used as the icon for the Desktop GUI and taskbar icon.
 guiIconSize="128"
