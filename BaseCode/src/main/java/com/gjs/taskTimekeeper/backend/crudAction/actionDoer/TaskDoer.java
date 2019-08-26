@@ -24,17 +24,18 @@ public class TaskDoer extends ActionDoer<Task> {
 		//ensure we have a name for the new task
 		if(config.getName() == null){
 			LOGGER.warn("No task name given for the new task. Not adding new task.");
-			System.err.println("ERROR:: No task name given for the new task.");
+			consoleErrorPrintln("ERROR:: No task name given for the new task.");
 			return false;
 		}
 		//check we aren't duplicating names
 		if(manager.getTaskByName(config.getName()) != null){
 			LOGGER.warn("Duplicate task name given. Not adding new task.");
-			System.err.println("ERROR:: Duplicate task name given.");
+			consoleErrorPrintln("ERROR:: Duplicate task name given.");
 			return false;
 		}
 
 		Task newTask = new Task(config.getName());
+
 
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
@@ -42,7 +43,16 @@ public class TaskDoer extends ActionDoer<Task> {
 			}
 		}
 
+		consolePrintln(OutputLevel.VERBOSE, "New task details:");
+		consolePrintln(OutputLevel.VERBOSE, "\tName: " + newTask.getName());
+		if(!newTask.getAttributes().isEmpty()){
+			consolePrintln(OutputLevel.VERBOSE, "\t(custom attribute) " + config.getAttributeName() + ": " + config.getAttributeVal());
+		}
+		consolePrintln(OutputLevel.VERBOSE, "");
+
 		manager.addTask(newTask);
+		consolePrintln(OutputLevel.DEFAULT, "New task added.");
+		consolePrintln(OutputLevel.DEFAULT, "");
 		return true;
 	}
 

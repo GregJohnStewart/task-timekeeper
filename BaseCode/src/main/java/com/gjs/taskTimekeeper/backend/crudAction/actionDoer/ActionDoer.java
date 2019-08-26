@@ -454,25 +454,25 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			       level == DEFAULT;
 	}
 
-	protected static void consolePrintln(String output, OutputLevel level){
+	protected static void consolePrintln(OutputLevel level, String output){
 		if(canOutput(level)) {
 			System.out.println(output);
 		}
 	}
 
-	protected static void consolePrint(String output, OutputLevel level){
+	protected static void consolePrint(OutputLevel level, String output){
 		if(canOutput(level)){
 			System.out.print(output);
 		}
 	}
 
-	protected static void consoleErrorPrintln(String output, OutputLevel level){
+	protected static void consoleErrorPrintln(String output){
 		if(CONSOLE_OUTPUT_LEVEL != NONE) {
 			System.err.println(output);
 		}
 	}
 
-	protected static void consoleErrorPrint(String output, OutputLevel level){
+	protected static void consoleErrorPrint(String output){
 		if(CONSOLE_OUTPUT_LEVEL != NONE) {
 			System.err.print(output);
 		}
