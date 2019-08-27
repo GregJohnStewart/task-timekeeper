@@ -25,11 +25,14 @@ public abstract class ActionDoerTest {
 	protected static final LocalDateTime nowPlusHourTen = now.plusMinutes(70);
 	protected static final LocalDateTime nowPlusHourFifteen = now.plusMinutes(75);
 
+	protected static final String TASK_ONE_NAME = "Test Task";
+	protected static final String TASK_TWO_NAME = "Test Task Two";
+
 	static {
 		testManager = new TimeManager();
 
-		Task newTask = new Task("Test Task");
-		Task newTaskTwo = new Task("Test Task Two");
+		Task newTask = new Task(TASK_ONE_NAME);
+		Task newTaskTwo = new Task(TASK_TWO_NAME);
 		Map<String, String> map = new HashMap<>();
 		map.put("attOne", "valOne");
 

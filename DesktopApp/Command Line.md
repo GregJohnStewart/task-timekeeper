@@ -12,11 +12,70 @@ Configuration arguments in the README of the desktop app are not explained here,
 
 ## Usage
 
+**Why the backslashes between words?**
+
+In this guide you will see things like the following: `-n Task\ Name`
+
+This is meant to express how you will need to enter in strings with spaces in managed mode. When processing in single mode, you can simply throw quotes around the value (I.e., `"Task Name"`, as the shell knows how to interpret that.
+
+In managed mode, however, the parser is not quite as sophisticated. It splits your input on spaces, ignoring escaped spaces (`\ `). It does not know to look for quoted strings as one value. Therefore, in managed mode, spaces in string inputs require spaces to be escaped.
+
+This guide has all example strings with escaped spaces because doing this would work for both managed and single mode, whereas quoted strings would only be valid for single mode. 
+
+
 ### Workflow
 
 ### Breakdown of a command
 
 ### Working with Tasks
+
+#### Adding a task
+
+The syntax for adding a task is simple.
+
+`-a create -o task -n Task\ Name`
+
+Here, `-a create -o task` specifies we want to create an object of type task, and `-n Task\ Name` specifies that we are giving it the name "Task Name".
+
+You can also specify a custom attribute when creating:
+
+`-a create -o task -n TaskName -att charge\ code -atv 12345`
+
+Where `-att chargeCode` specifies we are giving it an attribute named "charge code", and `-atv 12345` specifies that we give that attribute a value of "12345".
+
+#### Modifying a task
+
+TODO:: explain index method of selecting task to modify
+
+##### Changing the task's name
+
+`-a edit -o task -n Task\ Name -nn New\ Task\ Name`
+
+This changes the "Task Name" task to have the new name "New Task Name". `-n Task\ Name` specifies the name of the task to change, while `-nn New\ Task\ Name` specifies the new name to give it.
+
+##### Changing a task's attributes
+
+###### Adding/ Updating an attribute
+
+`-a edit -o task -n Task\ Name -at charge\ code -atv 1234567`
+
+This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it. 
+
+###### Removing an attribute
+
+`-a edit -o task -n Task\ Name -at charge\ code`
+
+This removes the attribute "charge code" from the "Task Name" task; simply not specifying the value to give the attribute tells the program to remove it.
+
+#### Removing a task
+
+TODO:: explain index method of selecting task to remove
+
+`-a remove -o task -n Task\ Name`
+
+This removes the task "Task Name" from the list of tasks.
+
+This can fail if there are timespans that use this task.
 
 ### Working with Periods
 

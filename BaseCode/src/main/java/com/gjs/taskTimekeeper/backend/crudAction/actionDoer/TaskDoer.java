@@ -36,7 +36,6 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		Task newTask = new Task(config.getName());
 
-
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
 				newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
@@ -58,17 +57,31 @@ public class TaskDoer extends ActionDoer<Task> {
 
 	@Override
 	protected boolean edit(TimeManager manager, ActionConfig config) {
-		//ensure we have old and new name
-		if(config.getName() == null){
-			LOGGER.warn("No task name given for the task to change. Not editing task.");
-			System.err.println("ERROR:: No task name given for the changing task. Not editing task.");
+		Task editingTask = null;
+		if(config.getName() != null && config.getIndex() != null){
+			LOGGER.warn("Error: Both name and search index were used to specify which task to edit.");
+			consoleErrorPrintln("ERROR:: Cannot give both name and index to specify which task to edit.");
+			return false;
+		}else if(config.getName() != null){
+			editingTask = manager.getTaskByName(config.getName());
+		}else if(config.getIndex() != null){
+			int index = config.getIndex() - 1;
+			List<Task> searchResults = this.search(manager, config);
+			if(index >= 0 && index < searchResults.size()) {
+				editingTask = this.search(manager, config).get(index);
+			}else{
+				LOGGER.warn("Index given was out of bounds for referencing tasks.");
+				consoleErrorPrintln("ERROR: Index given was out of bounds.");
+				return false;
+			}
+		}else{
+			LOGGER.warn("No task name or index entered to look up task to change.");
+			consoleErrorPrintln("ERROR:: Nothing given to specify which task to edit.");
 			return false;
 		}
-
-		Task editingTask = manager.getTaskByName(config.getName());
 		if(editingTask == null){
-			LOGGER.info("No task with the name given found.");
-			System.out.println("No task with the name given found.");
+			LOGGER.warn("No task found with name or index given.");
+			consoleErrorPrintln("No task found to edit.");
 			return false;
 		}
 
@@ -80,18 +93,6 @@ public class TaskDoer extends ActionDoer<Task> {
 			}
 		}
 
-		if(config.getNewAttributeName() != null){
-			if(config.getNewAttributeVal() != null){
-				if(!config.getNewAttributeVal().equals(editingTask.getAttributes().get(config.getNewAttributeName()))){
-					modified = true;
-					editingTask.getAttributes().put(config.getNewAttributeName(), config.getNewAttributeVal());
-				}
-			}else{
-				modified = true;
-				editingTask.getAttributes().remove(config.getNewAttributeName());
-			}
-		}
-
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
 				if(!config.getAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
@@ -99,8 +100,11 @@ public class TaskDoer extends ActionDoer<Task> {
 					editingTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
 				}
 			}else{
-				modified = true;
-				editingTask.getAttributes().remove(config.getAttributeName());
+				if(editingTask.getAttributes().containsKey(config.getAttributeName())) {
+					modified = true;
+					editingTask.getAttributes()
+						.remove(config.getAttributeName());
+				}
 			}
 		}
 
