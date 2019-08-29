@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The actiuon doer to handle managing Tasks.
+ * The action doer to handle managing Tasks.
  */
 public class TaskDoer extends ActionDoer<Task> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
@@ -69,6 +69,7 @@ public class TaskDoer extends ActionDoer<Task> {
 			List<Task> searchResults = this.search(manager, config);
 			if(index >= 0 && index < searchResults.size()) {
 				editingTask = this.search(manager, config).get(index);
+				consolePrintln(OutputLevel.DEFAULT, "Editing task: " + editingTask.getName());
 			}else{
 				LOGGER.warn("Index given was out of bounds for referencing tasks.");
 				consoleErrorPrintln("ERROR: Index given was out of bounds.");
@@ -88,8 +89,12 @@ public class TaskDoer extends ActionDoer<Task> {
 		boolean modified = false;
 		if(config.getNewName() != null){
 			if(!editingTask.getName().equals(config.getNewName())){
+				//TODO:: error check that name given isn't present and is not empty whitespace
 				modified = true;
 				editingTask.setName(config.getNewName());
+				consolePrintln(OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
+			}else{
+				consolePrintln(OutputLevel.DEFAULT, "Name was already the new name value.");
 			}
 		}
 
@@ -98,14 +103,21 @@ public class TaskDoer extends ActionDoer<Task> {
 				if(!config.getAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
 					modified = true;
 					editingTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
+					consolePrintln(OutputLevel.VERBOSE, "Set attribute " + config.getAttributeName() + " to " + config.getAttributeVal());
 				}
 			}else{
 				if(editingTask.getAttributes().containsKey(config.getAttributeName())) {
 					modified = true;
 					editingTask.getAttributes()
 						.remove(config.getAttributeName());
+					consolePrintln(OutputLevel.VERBOSE, "Removed attribute: " + config.getAttributeName());
 				}
 			}
+		}
+
+		if(!modified){
+			consolePrintln(OutputLevel.DEFAULT, "Task not modified.");
+			consolePrintln(OutputLevel.DEFAULT, "");
 		}
 
 		return modified;

@@ -303,11 +303,39 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertEquals(2, manager.getTasks().size());
 	}
+
+	@Test
+	public void removeWithIndex() {
+		ActionConfig config = this.getActionConfig(Action.REMOVE);
+		String newTaskName = "New Test Task";
+		TimeManager manager = getTestManager();
+		Task testTask = new Task(newTaskName);
+		manager.addTask(testTask);
+		TimeManager managerOrig = manager.clone();
+
+		//test removal with index
+		manager = getTestManager();
+		manager.addTask(testTask);
+		config = this.getActionConfig(Action.REMOVE);
+
+		List<Task> tasks = new TaskDoer().search(managerOrig, this.getActionConfig(Action.VIEW));
+		for(Task task : tasks){
+			if(task.getName().equals(newTaskName)){
+				config.setIndex(tasks.indexOf(task) + 1);
+				break;
+			}
+		}
+
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertEquals(2, manager.getTasks().size());
+	}
 	//</editor-fold>
 
 	//<editor-fold desc="View/ Search Tests">
 	@Test
 	public void view() {
+		//This prints out to console; meat of this test in search().
+		//TODO:: hijack Sytem.out and see what prints?
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setName("Test Task"));
 	}
