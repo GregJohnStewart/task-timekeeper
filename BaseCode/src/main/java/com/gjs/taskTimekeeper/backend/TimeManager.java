@@ -337,9 +337,10 @@ public class TimeManager {
 
 	@Override
 	public TimeManager clone() {
-		HashSet<Task> newTasks = new HashSet<>();
+		TimeManager newManager = new TimeManager();
+
 		for(Task task : this.tasks){
-			newTasks.add(task.clone());
+			newManager.addTask(task.clone());
 		}
 
 		TreeSet<WorkPeriod> newPeriods = new TreeSet<>();
@@ -347,6 +348,13 @@ public class TimeManager {
 			newPeriods.add(period.clone());
 		}
 
-		return new TimeManager(newTasks, newPeriods);
+		for(WorkPeriod period : newPeriods){
+			for (Timespan span : period.getTimespans()) {
+				span.setTask(newManager.getTaskByName(span.getTask().getName()));
+			}
+			newManager.addWorkPeriod(period);
+		}
+
+		return newManager;
 	}
 }

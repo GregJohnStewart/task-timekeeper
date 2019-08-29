@@ -225,12 +225,11 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		//don't die if try to remove attribute that doesn't exist
 		managerOrig = manager.clone();
-		//TODO:: fix this, somehow adding a task in the clone. think the issue is in where the periods/ timespans are cloned
-//		assertFalse(ActionDoer.doObjAction(manager, config));
-//		assertEquals(managerOrig.getTasks().size(), manager.getTasks().size());
-//		assertEquals(managerOrig, manager);
-//
-//		assertFalse(task.getAttributes().containsKey("attOne"));
+
+		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertEquals(managerOrig, manager);
+
+		assertFalse(task.getAttributes().containsKey("attOne"));
 	}
 	//</editor-fold>
 
