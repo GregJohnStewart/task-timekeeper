@@ -47,11 +47,9 @@ public class TaskDoer extends ActionDoer<Task> {
 		if(!newTask.getAttributes().isEmpty()){
 			consolePrintln(OutputLevel.VERBOSE, "\t(custom attribute) " + config.getAttributeName() + ": " + config.getAttributeVal());
 		}
-		consolePrintln(OutputLevel.VERBOSE, "");
 
 		manager.addTask(newTask);
 		consolePrintln(OutputLevel.DEFAULT, "New task added.");
-		consolePrintln(OutputLevel.DEFAULT, "");
 		return true;
 	}
 
@@ -117,7 +115,6 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		if(!modified){
 			consolePrintln(OutputLevel.DEFAULT, "Task not modified.");
-			consolePrintln(OutputLevel.DEFAULT, "");
 		}
 
 		return modified;

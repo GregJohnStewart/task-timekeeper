@@ -29,23 +29,45 @@ public class PeriodDoerTest extends ActionDoerTest{
 		ActionDoer.resetDoers();
 	}
 
+	//<editor-fold desc="Adding Tests">
 	@Test
-	public void add() {
-		TimeManager manager = getTestManager();
-		String newAttName = "nothing like it before";
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName(newAttName).setAttributeVal("val").setSelect(true));
+	public void addSimple(){
+		TimeManager manager = new TimeManager();
 
-		boolean found = false;
-		for(WorkPeriod period : manager.getWorkPeriods()){
-			if(period.getAttributes().containsKey(newAttName)){
-				found = true;
-				assertEquals(period, ActionDoer.getSelectedWorkPeriod());
-				break;
-			}
-		}
-		assertTrue(found);
+		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD)));
+
+		assertEquals(1, manager.getWorkPeriods().size());
+
+		assertNull(ActionDoer.getSelectedWorkPeriod());
 	}
 
+	@Test
+	public void addAndSelectSimple(){
+		TimeManager manager = new TimeManager();
+
+		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setSelect(true)));
+
+		assertEquals(1, manager.getWorkPeriods().size());
+
+		assertEquals(manager.getWorkPeriods().first(), ActionDoer.getSelectedWorkPeriod());
+	}
+
+	@Test
+	public void addWithAttributeSimple(){
+		TimeManager manager = new TimeManager();
+
+		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName("newAttName").setAttributeVal("val").setSelect(true)));
+
+		assertEquals(1, manager.getWorkPeriods().size());
+
+		WorkPeriod period = manager.getWorkPeriods().first();
+
+		assertTrue(period.getAttributes().containsKey("newAttName"));
+		assertEquals("val", period.getAttributes().get("newAttName"));
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="Editing Tests">
 	@Test
 	public void edit() {
 		TimeManager manager = getTestManager();
@@ -69,7 +91,9 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setIndex(selectedInd));
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Removing Tests">
 	@Test
 	public void remove() {
 		TimeManager manager = getTestManager();
@@ -85,7 +109,9 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		//TODO:: better; before date, etc
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="View/Search Tests">
 	@Test
 	public void view() {
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
@@ -100,7 +126,9 @@ public class PeriodDoerTest extends ActionDoerTest{
 		Collection<WorkPeriod> results = new PeriodDoer().search(manager, config);
 		//TODO:: this, but better
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Selecting">
 	@Test
 	public void selecting(){
 		TimeManager manager = getTestManager();
@@ -133,4 +161,5 @@ public class PeriodDoerTest extends ActionDoerTest{
 		assertNotNull(selected);
 		assertEquals(new PeriodDoer().search(getTestManager(), this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
 	}
+	//</editor-fold>
 }

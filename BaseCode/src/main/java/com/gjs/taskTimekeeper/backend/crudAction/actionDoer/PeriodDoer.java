@@ -79,18 +79,14 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 					config.getAttributeVal()
 				);
 			}
-			if(config.getNewAttributeVal() != null){
-				period.getAttributes().put(
-					config.getAttributeName(),
-					config.getNewAttributeVal()
-				);
-			}
 		}
 
 		manager.addWorkPeriod(period);
+		consolePrintln(OutputLevel.DEFAULT, "Added new work period.");
 
 		if(config.isSelect()){
 			this.setSelected(period);
+			consolePrintln(OutputLevel.DEFAULT, "Selected the new work period.");
 		}
 
 		return true;
