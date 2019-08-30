@@ -7,6 +7,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -439,10 +440,26 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	}
 
 
+	private static PrintStream MESSAGE_OUTPUT_STREAM = System.out;
+	private static PrintStream MESSAGE_ERROR_STREAM = System.err;
 	private static OutputLevel CONSOLE_OUTPUT_LEVEL = DEFAULT;
 
 	public static void setConsoleOutputLevel(OutputLevel level){
 		CONSOLE_OUTPUT_LEVEL = DEFAULT;
+	}
+
+	public static void setMessageOutputStream(PrintStream stream){
+		if(stream == null){
+			throw new IllegalArgumentException();
+		}
+		MESSAGE_OUTPUT_STREAM = stream;
+	}
+
+	public static void setMessageErrorStream(PrintStream stream){
+		if(stream == null){
+			throw new IllegalArgumentException();
+		}
+		MESSAGE_ERROR_STREAM = stream;
 	}
 
 	private static boolean canOutput(OutputLevel level){
@@ -456,25 +473,25 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 	protected static void consolePrintln(OutputLevel level, String output){
 		if(canOutput(level)) {
-			System.out.println(output);
+			MESSAGE_OUTPUT_STREAM.println(output);
 		}
 	}
 
 	protected static void consolePrint(OutputLevel level, String output){
 		if(canOutput(level)){
-			System.out.print(output);
+			MESSAGE_OUTPUT_STREAM.print(output);
 		}
 	}
 
 	protected static void consoleErrorPrintln(String output){
 		if(CONSOLE_OUTPUT_LEVEL != NONE) {
-			System.err.println(output);
+			MESSAGE_ERROR_STREAM.println(output);
 		}
 	}
 
 	protected static void consoleErrorPrint(String output){
 		if(CONSOLE_OUTPUT_LEVEL != NONE) {
-			System.err.print(output);
+			MESSAGE_ERROR_STREAM.print(output);
 		}
 	}
 }
