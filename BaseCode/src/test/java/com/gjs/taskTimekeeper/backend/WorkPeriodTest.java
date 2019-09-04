@@ -19,6 +19,28 @@ public class WorkPeriodTest {
 	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
 	@Test
+	public void testEquals(){
+		WorkPeriod periodOne = new WorkPeriod();
+		WorkPeriod periodTwo = new WorkPeriod();
+
+		assertEquals(periodOne, periodTwo);
+
+		String attOneKey = "one";
+		String attOneVal = "one";
+
+		periodOne.getAttributes().put(attOneKey, attOneVal);
+		periodTwo.getAttributes().put(attOneKey, attOneVal);
+
+		assertEquals(periodOne, periodTwo);
+
+		periodTwo.getAttributes().put(attOneKey, "something else");
+
+		assertNotEquals(periodOne, periodTwo);
+
+	}
+
+
+	@Test
 	public void testBasics() {
 		WorkPeriod period = new WorkPeriod();
 		WorkPeriod periodTwo = new WorkPeriod();

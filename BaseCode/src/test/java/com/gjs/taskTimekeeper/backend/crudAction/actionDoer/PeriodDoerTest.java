@@ -7,6 +7,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -21,6 +22,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Before
 	public void before(){
+		ActionDoer.setConsoleOutputLevel(OutputLevel.VERBOSE);
 		ActionDoer.resetDoers();
 	}
 
@@ -65,9 +67,74 @@ public class PeriodDoerTest extends ActionDoerTest{
 		assertTrue(period.getAttributes().containsKey("newAttName"));
 		assertEquals("val", period.getAttributes().get("newAttName"));
 	}
+
+	@Test
+	public void addWithExisting(){
+		TimeManager manager = getTestManager();
+		int origSize = manager.getWorkPeriods().size();
+
+		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName("testAtt").setAttributeVal("theVal")));
+
+		assertEquals(origSize + 1, manager.getWorkPeriods().size());
+
+		assertNull(ActionDoer.getSelectedWorkPeriod());
+
+		WorkPeriod period = manager.getWorkPeriods().last();
+
+		assertTrue(period.getAttributes().containsKey("testAtt"));
+		assertEquals("theVal", period.getAttributes().get("testAtt"));
+	}
 	//</editor-fold>
 
 	//<editor-fold desc="Editing Tests">
+
+	@Test
+	public void editFailNoneSelected(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setAttributeName("new Att").setAttributeVal("New val")
+			)
+		);
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void editAddAtt(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 2;
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setAttributeName("new Att").setAttributeVal("New val")
+			)
+		);
+
+		assertNotEquals(orig, manager);
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
+
+		assertTrue(period.getAttributes().containsKey("new Att"));
+		assertEquals("New val", period.getAttributes().get("new Att"));
+	}
+
+	@Test
+	public void editChangeAtt(){
+		//todo
+	}
+	@Test
+	public void editRemoveAtt(){
+		//todo
+	}
+
+	@Ignore
 	@Test
 	public void edit() {
 		TimeManager manager = getTestManager();

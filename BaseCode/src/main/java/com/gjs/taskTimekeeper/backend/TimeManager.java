@@ -326,8 +326,26 @@ public class TimeManager {
 		if (this == o) return true;
 		if (!(o instanceof TimeManager)) return false;
 		TimeManager manager = (TimeManager) o;
-		return getTasks().equals(manager.getTasks()) &&
+		boolean base = getTasks().equals(manager.getTasks()) &&
 			getWorkPeriods().equals(manager.getWorkPeriods());
+
+		// re-check work periods held. Needed because th TreeSet uses compare() to determine equality, which doesn't consider attributes
+		if(base){
+			Iterator<WorkPeriod> thisIt = this.getWorkPeriods().iterator();
+			Iterator<WorkPeriod> oIt = manager.getWorkPeriods().iterator();
+
+			while(thisIt.hasNext() && oIt.hasNext()){
+				WorkPeriod thisCur = thisIt.next();
+				WorkPeriod oCur = oIt.next();
+				if(!thisCur.equals(oCur)){
+					return false;
+				}
+			}
+
+			return !thisIt.hasNext() && !oIt.hasNext();
+		}else{
+			return false;
+		}
 	}
 
 	@Override

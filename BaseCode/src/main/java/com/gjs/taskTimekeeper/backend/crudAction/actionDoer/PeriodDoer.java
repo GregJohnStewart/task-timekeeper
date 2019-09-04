@@ -43,10 +43,11 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		for(WorkPeriod period : manager.getWorkPeriods()){
 			if(period.equals(this.getSelected())){
 				this.setSelected(period);
+				consolePrintln(OutputLevel.VERBOSE, "There was a selected work period.");
 				return period;
 			}
 		}
-
+		consolePrintln(OutputLevel.DEFAULT, "No period selected.");
 		this.setSelected(null);
 		return null;
 	}
@@ -105,24 +106,32 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		if(period == null){
 			LOGGER.warn("No period selected. Cannot edit it.");
 			System.err.println("No period selected.");
+			consoleErrorPrintln("No period selected to edit.");
 			return false;
 		}
 
 		boolean modified = false;
 
-		if(config.getNewAttributeName() != null){
-			if(config.getNewAttributeVal() != null){
+		if(config.getAttributeName() != null){
+			if(config.getAttributeVal() != null){
 				String returned = period.getAttributes().put(
-					config.getNewAttributeName(),
-					config.getNewAttributeVal()
+					config.getAttributeName(),
+					config.getAttributeVal()
 				);
-				if(!config.getNewAttributeVal().equals(returned)){
+				if(!config.getAttributeVal().equals(returned)){
 					modified = true;
 				}
 			}else{
-				period.getAttributes().remove(config.getNewAttributeName());
-				modified = true;
+				boolean contained = period.getAttributes().containsKey(config.getAttributeName());
+				period.getAttributes().remove(config.getAttributeName());
+				modified = contained;
 			}
+		}
+
+		if(modified){
+			consolePrintln(OutputLevel.VERBOSE, "Period was modified.");
+		} else {
+			consolePrintln(OutputLevel.VERBOSE, "Period was not modified.");
 		}
 
 		return modified;
