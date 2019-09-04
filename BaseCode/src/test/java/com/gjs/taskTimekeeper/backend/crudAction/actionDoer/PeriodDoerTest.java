@@ -7,7 +7,6 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -127,36 +126,47 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Test
 	public void editChangeAtt(){
-		//todo
-	}
-	@Test
-	public void editRemoveAtt(){
-		//todo
-	}
-
-	@Ignore
-	@Test
-	public void edit() {
 		TimeManager manager = getTestManager();
-		int selectedInd = 2;
-
-		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
-				this.getActionConfig(Action.EDIT).setNewAttributeName("new Att").setNewAttributeVal("New val")
-			)
-		);
+		TimeManager orig = manager.clone();
+		int selectedInd = 1;
 
 		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
 
 		assertTrue(
 			ActionDoer.doObjAction(
 				manager,
-				this.getActionConfig(Action.EDIT).setNewAttributeName("new Att").setNewAttributeVal("New val")
+				this.getActionConfig(Action.EDIT).setAttributeName("attOne").setAttributeVal("New val")
 			)
 		);
 
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setIndex(selectedInd));
+		assertNotEquals(orig, manager);
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+
+		assertTrue(period.getAttributes().containsKey("attOne"));
+		assertEquals("New val", period.getAttributes().get("attOne"));
+	}
+
+	@Test
+	public void editRemoveAtt(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 1;
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setAttributeName("attOne")
+			)
+		);
+
+		assertNotEquals(orig, manager);
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+
+		assertFalse(period.getAttributes().containsKey("attOne"));
 	}
 	//</editor-fold>
 
