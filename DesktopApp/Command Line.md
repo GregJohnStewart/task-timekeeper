@@ -57,13 +57,13 @@ This changes the "Task Name" task to have the new name "New Task Name". `-n Task
 
 ###### Adding/ Updating an attribute
 
-`-a edit -o task -n Task\ Name -at charge\ code -atv 1234567`
+`-a edit -o task -n Task\ Name -att charge\ code -atv 1234567`
 
 This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it. 
 
 ###### Removing an attribute
 
-`-a edit -o task -n Task\ Name -at charge\ code`
+`-a edit -o task -n Task\ Name -att charge\ code`
 
 This removes the attribute "charge code" from the "Task Name" task; simply not specifying the value to give the attribute tells the program to remove it.
 
@@ -78,6 +78,42 @@ This removes the task "Task Name" from the list of tasks.
 This can fail if there are timespans that use this task.
 
 ### Working with Periods
+
+#### Adding a work period
+
+`-a add -o period`
+
+This adds a new work period. The created period should be the first one in a viewing of periods. Note this alone does not select the newly created period (unless in single mode) nor does it finish any tasks in previously created periods.
+
+You can specify to select the new period by specifying to do so with the command:
+
+`-a add -o period -se`
+
+You can specify a key/val attribute pair when adding:
+
+`-a add -o period -att key -atv value`
+
+#### Updating a work period
+
+All modifications on a period affect the selected period. In single mode, this is the most recent period.
+
+##### Changing a periods's attributes
+
+###### Adding/ Updating an attribute
+
+`-a edit -o period -att charge\ code -atv 1234567`
+
+This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it. 
+
+###### Removing an attribute
+
+`-a edit -o period -att charge\ code`
+
+This removes the attribute "charge code" from the selected period; simply not specifying the value to give the attribute tells the program to remove it.
+
+#### Removing a work period
+
+TODO
 
 ### Working with Spans
 
