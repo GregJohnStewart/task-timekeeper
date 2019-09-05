@@ -6,6 +6,8 @@ Configuration arguments in the README of the desktop app are not explained here,
 
 [Skip to examples](#workflow-examples-cheat-sheet)
 
+TODO:: use the following to generate docs from markdown files to package with install: https://concordion.org/tutorial/java/markdown/
+
 ### `MANAGE` vs `SINGLE` Mode:
 
 `MANAGE` mode is simply a continuous version of `SINGLE`. In single mode, you enter your command in the initial call to the program, and only that one command is run. In Manage mode, you simply run the program in this mode and are entered into a new command prompt to enter in multiple commands (one at a time).
