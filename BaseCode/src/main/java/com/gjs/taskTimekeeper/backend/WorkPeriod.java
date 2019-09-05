@@ -335,6 +335,42 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	}
 
 	/**
+	 * Compares this work period to the datetime given.
+	 *
+	 * TODO:: test
+	 *
+	 * @param dt The datetime to compare to.
+	 * @return 0 if the period encompasses the datetime. -1 if it is before, 1 if after.
+	 */
+	@JsonIgnore
+	public int compareTo(LocalDateTime dt){
+		if(this.getStart() == null && this.getEnd() == null){
+			return 0;
+		} else if(this.getStart() == null){
+			if(this.getEnd().isBefore(dt)){
+				return -1;
+			}else if(this.getEnd().isAfter(dt)){
+				return 1;
+			}
+			return 0;
+		} else if(this.getEnd() == null){
+			if(this.getStart().isBefore(dt)){
+				return -1;
+			}else if(this.getStart().isAfter(dt)){
+				return 1;
+			}
+			return 0;
+		}
+
+		if(this.getStart().isAfter(dt)){
+			return 1;
+		} else if(this.getEnd().isBefore(dt)){
+			return -1;
+		}
+		return 0;
+	}
+
+	/**
 	 * Returns:
 	 * -1 if this starts before o
 	 * -1 if o has no start

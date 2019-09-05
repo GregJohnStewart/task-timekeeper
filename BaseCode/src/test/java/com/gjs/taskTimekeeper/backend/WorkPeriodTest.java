@@ -118,7 +118,8 @@ public class WorkPeriodTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testComparetoNull() {
-		new WorkPeriod().compareTo(null);
+		//noinspection ResultOfMethodCallIgnored
+		new WorkPeriod().compareTo((WorkPeriod) null);
 	}
 
 	@Test

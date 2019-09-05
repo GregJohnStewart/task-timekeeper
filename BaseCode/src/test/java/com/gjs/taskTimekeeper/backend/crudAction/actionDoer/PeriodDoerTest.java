@@ -5,10 +5,12 @@ import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static org.junit.Assert.*;
@@ -172,19 +174,158 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	//<editor-fold desc="Removing Tests">
 	@Test
-	public void remove() {
+	public void removeNoPeriods(){
+		TimeManager manager = new TimeManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setIndex(1)
+			)
+		);
+
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void removeOneBadIndex(){
 		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setIndex(0)
+			)
+		);
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void removeNoSpecify(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE)
+			)
+		);
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void removeAtIndex(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 1;
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		assertTrue(
 			ActionDoer.doObjAction(
 				manager,
-				this.getActionConfig(Action.REMOVE).setIndex(2)
+				this.getActionConfig(Action.REMOVE).setIndex(selectedInd)
 			)
 		);
 
-		assertEquals(1, manager.getWorkPeriods().size());
+		assertNotEquals(orig, manager);
+		assertFalse(manager.getWorkPeriods().contains(period));
+	}
 
-		//TODO:: better; before date, etc
+	@Test
+	public void removeBeforeBadDatetime(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setBefore("bad dateTime")
+			)
+		);
+
+		assertEquals(orig, manager);
+	}
+	@Test
+	public void removeAfterBadDatetime(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setAfter("bad dateTime")
+			)
+		);
+
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void removeBeforeAfterAfter(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(nowPlusFifteen)).setAfter(TimeParser.toOutputString(nowPlusFive))
+			)
+		);
+
+		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void removeBefore(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 1;
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+
+		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(dateTime))
+			)
+		);
+
+		assertNotEquals(orig, manager);
+		assertFalse(manager.getWorkPeriods().contains(period));
+		//TODO:: assert that the end set contains what it should
+	}
+
+	@Test
+	public void removeAfter(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 2;
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+
+		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE).setAfter(TimeParser.toOutputString(dateTime))
+			)
+		);
+
+		assertNotEquals(orig, manager);
+		assertFalse(manager.getWorkPeriods().contains(period));
+		//TODO:: assert that the end set contains what it should
+	}
+
+	@Test
+	public void removeBetween(){
+		//TODO
 	}
 	//</editor-fold>
 

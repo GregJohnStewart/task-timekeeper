@@ -29,6 +29,10 @@ This guide has all example strings with escaped spaces because doing this would 
 
 ### Working with Tasks
 
+#### Viewing tasks
+
+TODO
+
 #### Adding a task
 
 The syntax for adding a task is simple.
@@ -79,6 +83,10 @@ This can fail if there are timespans that use this task.
 
 ### Working with Periods
 
+#### Viewing Work Periods
+
+TODO
+
 #### Adding a work period
 
 `-a add -o period`
@@ -113,7 +121,33 @@ This removes the attribute "charge code" from the selected period; simply not sp
 
 #### Removing a work period
 
+##### Removing by index
+
 TODO
+
+##### Removing based on datetime
+
+You can remove work periods based on datetimes.
+
+Note: in the following examples, replace <datetime> with a valid datetime format. See the [inputting date/times](#inputting-timedates) section.
+
+###### Removing periods before a datetime
+
+`-a remove -o period -bf <datetime>`
+
+The `-bf <datetime>` parameter specifies to remove periods before the given datetime. 
+
+###### Removing periods before a datetime
+
+`-a remove -o period -af <datetime>`
+
+The `-af <datetime>` parameter specifies to remove periods after the given datetime.
+
+###### Removing periods between two datetimes
+
+`-a remove -o period -bf <datetime> -af <datetime>`
+
+The `-bf <datetime>` parameter specifies to remove periods before the given datetime. 
 
 ### Working with Spans
 

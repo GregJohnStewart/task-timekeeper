@@ -139,23 +139,29 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
+		if(manager.getWorkPeriods().isEmpty()){
+			LOGGER.warn("No period(s) to remove.");
+			consoleErrorPrintln("No period(s) to remove.");
+			return false;
+		}
 		if(config.getIndex() != null){
 			return this.removeOne(manager, config);
 		}else if(config.getBefore() != null || config.getAfter() != null){
-			//TODO:: test
 			return this.removeBeforeAfter(manager, config);
 		}
 		LOGGER.warn("No period(s) specified to remove.");
-		System.err.println("No period(s) specified to remove.");
+		consoleErrorPrintln("No period(s) specified to remove.");
 		return false;
 	}
 
 	private boolean removeOne(TimeManager manager, ActionConfig config){
 		LOGGER.info("Removing one period.");
-		System.out.println("Removing one period.");
+		consolePrintln(OutputLevel.VERBOSE, "Removing a single period.");
 
 		WorkPeriod period = this.getAtIndex(manager, config);
 		if(period == null){
+			LOGGER.warn("No work period at this index.");
+			consoleErrorPrintln("No work period at this index.");
 			return false;
 		}
 
@@ -166,30 +172,54 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 	private boolean removeBeforeAfter(TimeManager manager, ActionConfig config){
 		LOGGER.info("Removing periods before or after given datetimes.");
 		System.out.println("Removing periods before or after given datetimes.");
-		Set<WorkPeriod> periodsToKeep = manager.getWorkPeriods();
 
 		LocalDateTime before = null;
 		if(config.getBefore() != null){
 			before = TimeParser.parse(config.getBefore());
+			if(before == null){
+				LOGGER.warn("Could not parse a datetime from before datetime. Erring datetime: \"{}\"", config.getBefore());
+				consoleErrorPrintln("No datetime could be parsed from before datetime.");
+				return false;
+			}
 		}
 
 		LocalDateTime after = null;
 		if(config.getAfter() != null){
 			after = TimeParser.parse(config.getAfter());
+			if(after == null){
+				LOGGER.warn("Could not parse a datetime from after datetime. Erring datetime: \"{}\"", config.getAfter());
+				consoleErrorPrintln("No datetime could be parsed from after datetime.");
+				return false;
+			}
 		}
 
-		for(WorkPeriod period : periodsToKeep){
-			if(before != null && period.getStart() != null){
-				if(before.isAfter(period.getStart())){
-					periodsToKeep.remove(period);
+		if(before != null && after != null && before.isAfter(after)){
+			LOGGER.warn("The before datetime was after the after datetime.");
+			consoleErrorPrintln("The before datetime was after the after datetime.");
+			return false;
+		}
+
+		Collection<WorkPeriod> periodsToKeep = new ArrayList<>();
+		for(WorkPeriod period : manager.getWorkPeriods()){
+			if(before == null){
+				if(period.compareTo(after) <= 0){
+					periodsToKeep.add(period);
 				}
-			}
-			if(after != null && period.getEnd() != null){
-				if(after.isBefore(period.getEnd())){
-					periodsToKeep.remove(period);
+			}else if(after == null){
+				if(period.compareTo(before) >= 0){
+					periodsToKeep.add(period);
+				}
+			} else {
+				if(period.compareTo(before) >= 0 && period.compareTo(after) <= 0){
+					periodsToKeep.add(period);
 				}
 			}
 		}
+
+		int numRemoved = manager.getWorkPeriods().size() - periodsToKeep.size();
+
+		LOGGER.debug("Removed {} periods.", numRemoved);
+		consolePrintln(OutputLevel.DEFAULT, "Removing " + numRemoved + " periods.");
 
 		return manager.getWorkPeriods().retainAll(periodsToKeep);
 	}
