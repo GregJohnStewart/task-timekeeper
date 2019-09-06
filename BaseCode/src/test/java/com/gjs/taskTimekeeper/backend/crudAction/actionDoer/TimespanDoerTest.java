@@ -34,6 +34,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		ActionDoer.resetDoers();
 	}
 
+	//<editor-fold desc="Adding Tests">
 	@Test
 	public void addNoneSelected() {
 		ActionDoer.resetDoers();
@@ -64,7 +65,9 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		//ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW));
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Edit Tests">
 	@Test
 	public void edit() {
 		WorkPeriod period = ActionDoer.getSelectedWorkPeriod();
@@ -81,7 +84,9 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW));
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Remove Tests">
 	@Test
 	public void remove() {
 		TimeManager manager = getTestManager();
@@ -96,9 +101,12 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		assertEquals(prevCount - 1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="View/ Search Tests">
 	@Test
 	public void view() {
 		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
 	}
+	//</editor-fold>
 }

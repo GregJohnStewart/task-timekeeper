@@ -34,7 +34,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to add to.");
-			System.err.println("No work period selected to add to.");
+			consoleErrorPrintln("No work period selected to add to.");
 			return false;
 		}
 
@@ -43,7 +43,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			Task task = manager.getTaskByName(config.getName());
 			if(task == null){
 				LOGGER.error("No or invalid task name given.");
-				System.err.println("No or invalid task name given.");
+				consoleErrorPrintln("No or invalid task name given.");
 				return false;
 			}
 			newSpan = new Timespan(task);
@@ -53,7 +53,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime start = TimeParser.parse(config.getAfter());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
-				System.err.println("Malformed starting datetime given.");
+				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			newSpan.setStartTime(start);
@@ -62,12 +62,13 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime end = TimeParser.parse(config.getBefore());
 			if(end == null){
 				LOGGER.error("Malformed starting datetime given.");
-				System.err.println("Malformed starting datetime given.");
+				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			newSpan.setEndTime(end);
 		}
 
+		consolePrintln(OutputLevel.DEFAULT, "New timespan added.");
 		return period.addTimespan(newSpan);
 	}
 
@@ -76,7 +77,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		Timespan span = this.getAtIndex(manager, config);
 		if(span == null){
 			LOGGER.error("No span at given index.");
-			System.err.println("No span at given index.");
+			consoleErrorPrintln("No span at given index.");
 			return false;
 		}
 
@@ -86,7 +87,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime start = TimeParser.parse(config.getAfter());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
-				System.err.println("Malformed starting datetime given.");
+				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			span.setStartTime(start);
@@ -96,7 +97,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime end = TimeParser.parse(config.getBefore());
 			if(end == null){
 				LOGGER.error("Malformed starting datetime given.");
-				System.err.println("Malformed starting datetime given.");
+				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			span.setEndTime(end);
@@ -106,11 +107,16 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			Task newTask = manager.getTaskByName(config.getName());
 			if(newTask == null){
 				LOGGER.error("New task given does not exist in manager.");
-				System.err.println("New task given does not exist in manager");
+				consoleErrorPrintln("New task given does not exist in manager");
 				return false;
 			}
 		}
 
+		if(modified){
+			consolePrintln(OutputLevel.DEFAULT, "Timespan modified.");
+		} else {
+			consolePrintln(OutputLevel.DEFAULT, "Timespan not modified.");
+		}
 		return modified;
 	}
 
@@ -119,13 +125,15 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		Timespan span = this.getAtIndex(manager, config);
 		if(span == null){
 			LOGGER.error("No span at given index.");
-			System.err.println("No span at given index.");
+			consoleErrorPrintln("No span at given index.");
 			return false;
 		}
 
 		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
 
 		period.getTimespans().remove(span);
+
+		consolePrintln(OutputLevel.DEFAULT, "Timespan removed.");
 		return true;
 	}
 
@@ -144,7 +152,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to search time spans in.");
-			System.err.println("No work period selected to search time spans in.");
+			consoleErrorPrintln("No work period selected to search time spans in.");
 			return null;
 		}
 
