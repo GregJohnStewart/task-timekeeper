@@ -193,7 +193,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			}
 		}
 
-		if(before != null && after != null && before.isAfter(after)){
+		if(before != null && after != null && after.isAfter(before)){
 			LOGGER.warn("The before datetime was after the after datetime.");
 			consoleErrorPrintln("The before datetime was after the after datetime.");
 			return false;
@@ -210,7 +210,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 					periodsToKeep.add(period);
 				}
 			} else {
-				if(period.compareTo(before) >= 0 && period.compareTo(after) <= 0){
+				if(period.compareTo(before) >= 0 || period.compareTo(after) <= 0){
 					periodsToKeep.add(period);
 				}
 			}

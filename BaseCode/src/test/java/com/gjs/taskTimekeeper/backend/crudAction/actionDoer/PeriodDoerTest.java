@@ -272,7 +272,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		assertFalse(
 			ActionDoer.doObjAction(
 				manager,
-				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(nowPlusFifteen)).setAfter(TimeParser.toOutputString(nowPlusFive))
+				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(nowPlusFive)).setAfter(TimeParser.toOutputString(nowPlusFifteen))
 			)
 		);
 
@@ -298,6 +298,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertNotEquals(orig, manager);
 		assertFalse(manager.getWorkPeriods().contains(period));
+		assertEquals(1, manager.getWorkPeriods().size());
 		//TODO:: assert that the end set contains what it should
 	}
 
@@ -320,12 +321,34 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertNotEquals(orig, manager);
 		assertFalse(manager.getWorkPeriods().contains(period));
+		assertEquals(1, manager.getWorkPeriods().size());
 		//TODO:: assert that the end set contains what it should
 	}
 
 	@Test
 	public void removeBetween(){
-		//TODO
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 2;
+
+		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+
+		LocalDateTime after = nowPlusFifteen.plusMinutes(2);
+		LocalDateTime before = nowPlusHourFifteen.plusMinutes(2);
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE)
+					.setBefore(TimeParser.toOutputString(before))
+					.setAfter(TimeParser.toOutputString(after))
+			)
+		);
+
+		assertNotEquals(orig, manager);
+		assertFalse(manager.getWorkPeriods().contains(period));
+		assertEquals(1, manager.getWorkPeriods().size());
+		//TODO:: assert that the end set contains what it should
 	}
 	//</editor-fold>
 
