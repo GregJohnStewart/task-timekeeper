@@ -49,8 +49,8 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			newSpan = new Timespan(task);
 		}
 
-		if(config.getAfter() != null){
-			LocalDateTime start = TimeParser.parse(config.getAfter());
+		if(config.getStart() != null){
+			LocalDateTime start = TimeParser.parse(config.getStart());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
 				consoleErrorPrintln("Malformed starting datetime given.");
@@ -58,14 +58,20 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			}
 			newSpan.setStartTime(start);
 		}
-		if(config.getBefore() != null){
-			LocalDateTime end = TimeParser.parse(config.getBefore());
+		if(config.getEnd() != null){
+			LocalDateTime end = TimeParser.parse(config.getEnd());
 			if(end == null){
 				LOGGER.error("Malformed starting datetime given.");
 				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
-			newSpan.setEndTime(end);
+			try {
+				newSpan.setEndTime(end);
+			}catch (IllegalArgumentException e){
+				LOGGER.error("End time cannot be before start time.");
+				consoleErrorPrintln("End time cannot be before start time.");
+				return false;
+			}
 		}
 
 		consolePrintln(OutputLevel.DEFAULT, "New timespan added.");
@@ -83,8 +89,8 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 		boolean modified = false;
 
-		if(config.getAfter() != null){
-			LocalDateTime start = TimeParser.parse(config.getAfter());
+		if(config.getStart() != null){
+			LocalDateTime start = TimeParser.parse(config.getStart());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
 				consoleErrorPrintln("Malformed starting datetime given.");
@@ -93,8 +99,8 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			span.setStartTime(start);
 			modified = true;
 		}
-		if(config.getBefore() != null){
-			LocalDateTime end = TimeParser.parse(config.getBefore());
+		if(config.getEnd() != null){
+			LocalDateTime end = TimeParser.parse(config.getEnd());
 			if(end == null){
 				LOGGER.error("Malformed starting datetime given.");
 				consoleErrorPrintln("Malformed starting datetime given.");

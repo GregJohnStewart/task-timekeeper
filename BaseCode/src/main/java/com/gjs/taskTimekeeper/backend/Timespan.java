@@ -138,7 +138,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 */
 	public Timespan setEndTime(LocalDateTime endTime) throws IllegalArgumentException {
 		if (endTime != null && this.startTime != null && this.startTime.isAfter(endTime)) {
-			throw new IllegalArgumentException("Start time cannot be before end time.");
+			throw new IllegalArgumentException("Start time cannot be after end time.");
 		}
 		this.endTime = endTime;
 		this.resetDuration();

@@ -171,6 +171,32 @@ The `-bf <datetime>` parameter specifies to remove periods before the given date
 
 ### Working with Spans
 
+#### Viewing spans
+
+`-a view -o span`
+
+This views the spans in the current work period.
+
+#### Adding spans
+
+`-a add -o span -n Task\ Name`
+
+This adds a new timespan to the selected work period. Note this does not give the new span a start or end datetime.
+
+To give the new span start and end datetimes, use the `-st` and `-en` arguments, respectively:
+
+`-a add -o span -n Task\ Name -st <datetime> -en <datetime>`
+
+Note that you can specify only one or the other here, and that if specified together, the starting datetime must be before the ending one.
+
+#### Editing spans
+
+TODO
+
+#### Removing spans
+
+TODO
+
 ### Inputting time/dates
 
 ### Special Commands

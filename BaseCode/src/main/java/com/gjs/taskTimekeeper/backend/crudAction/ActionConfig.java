@@ -57,6 +57,12 @@ public class ActionConfig {
 	@Option(name = "-se", aliases = {"se", "--select", "select"}, usage="Flag to select periods.")
 	private boolean select = false;
 
+	@Option(name = "-st", aliases = {"st", "--start", "start"}, usage = "Specifying datetime something starts at.")
+	private String start = null;
+
+	@Option(name = "-en", aliases = {"en", "--end", "end"}, usage = "Specifying datetime something ends at.")
+	private String end = null;
+
 	public ActionConfig setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
 		return this;
@@ -180,6 +186,24 @@ public class ActionConfig {
 
 	public ActionConfig setAfter(String after) {
 		this.after = after;
+		return this;
+	}
+
+	public String getStart() {
+		return start;
+	}
+
+	public ActionConfig setStart(String start) {
+		this.start = start;
+		return this;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public ActionConfig setEnd(String end) {
+		this.end = end;
 		return this;
 	}
 
