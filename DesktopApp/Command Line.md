@@ -6,6 +6,8 @@ Configuration arguments in the README of the desktop app are not explained here,
 
 [Skip to examples](#workflow-examples-cheat-sheet)
 
+Note: in the following examples, replace `<datetime>` with a valid datetime format. See the [inputting date/times](#inputting-timedates) section.
+
 TODO:: use the following to generate docs from markdown files to package with install: https://concordion.org/tutorial/java/markdown/
 
 ### `MANAGE` vs `SINGLE` Mode:
@@ -33,7 +35,17 @@ This guide has all example strings with escaped spaces because doing this would 
 
 #### Viewing tasks
 
-TODO
+`-a view -o task`
+
+This lists all the tasks held.
+
+You can also search for tasks by name using any standard regex pattern:
+
+`-a view -o task -n NameRegex`
+
+This can be further narrowed down by specifying attributes the tasks should have:
+
+`-a view -o task -att attName -atv attVal`
 
 #### Adding a task
 
@@ -87,7 +99,13 @@ This can fail if there are timespans that use this task.
 
 #### Viewing Work Periods
 
-TODO
+To view all periods held:
+
+`-a view -o period`
+
+You can view periods before and after certain datetimes:
+
+`-a view -o period -bf <datetime> -af <datetime>`
 
 #### Adding a work period
 

@@ -139,6 +139,7 @@ public class TaskDoer extends ActionDoer<Task> {
 		}
 
 		if(!manager.getTimespansWith(taskToRemove).isEmpty()){
+			//TODO:: test
 			LOGGER.warn("Task part of one or more time spans. Cannot remove task.");
 			System.err.println("Task given part of one or more time spans. Cannot remove.");
 			return false;
