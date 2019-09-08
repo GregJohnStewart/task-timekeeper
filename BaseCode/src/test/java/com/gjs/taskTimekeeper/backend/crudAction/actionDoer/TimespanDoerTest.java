@@ -3,7 +3,6 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.Timespan;
-import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
@@ -217,24 +216,240 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	//<editor-fold desc="Edit Tests">
 	@Test
-	public void edit() {
-		WorkPeriod period = ActionDoer.getSelectedWorkPeriod();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW));
-		assertTrue(
+	public void editNoInput(){
+		TimeManager orig = this.manager.clone();
+		assertFalse(
 			ActionDoer.doObjAction(
 				this.manager,
 				this.getActionConfig(Action.EDIT)
-					.setIndex(2)
+					.setIndex(1)
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editBadIndex(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(0)
 					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
 			)
 		);
 
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW));
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editMalformedStart(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart("bad datetime")
+					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editBadStart(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(6)))
+					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
+			)
+		);
+		assertEquals(orig, this.manager);
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusWeeks(50)))
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editMalformedEnd(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
+					.setEnd("bad datetime")
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editBadEnd(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.minusWeeks(50)))
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void ediBadStartEnd(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(6)))
+					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void ediBadTask(){
+		TimeManager orig = this.manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setName("bad task name")
+			)
+		);
+		assertEquals(orig, this.manager);
+	}
+
+	@Test
+	public void editTask(){
+		TimeManager orig = this.manager.clone();
+
+		Task newTask = (Task) this.manager.getTaskByName(TASK_ONE_NAME);
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setName(newTask.getName())
+			)
+		);
+		assertNotEquals(orig, this.manager);
+
+		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+
+		assertEquals(newTask, span.getTask());
+	}
+
+	@Test
+	public void editStart(){
+		TimeManager orig = this.manager.clone();
+
+		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(span.getStartTime().minusWeeks(1)));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(start))
+			)
+		);
+		assertNotEquals(orig, this.manager);
+
+		assertEquals(start, span.getStartTime());
+	}
+
+	@Test
+	public void editEnd(){
+		TimeManager orig = this.manager.clone();
+
+		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(span.getEndTime().plusWeeks(1)));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setEnd(TimeParser.toOutputString(end))
+			)
+		);
+		assertNotEquals(orig, this.manager);
+
+		assertEquals(end, span.getEndTime());
+	}
+
+	@Test
+	public void editStartEnd(){
+		TimeManager orig = this.manager.clone();
+
+		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(span.getEndTime().plusMinutes(1)));
+		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(span.getStartTime().minusMinutes(1)));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				this.manager,
+				this.getActionConfig(Action.EDIT)
+					.setIndex(1)
+					.setStart(TimeParser.toOutputString(start))
+					.setEnd(TimeParser.toOutputString(end))
+			)
+		);
+		assertNotEquals(orig, this.manager);
+
+		assertEquals(start, span.getStartTime());
+		assertEquals(end, span.getEndTime());
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="Remove Tests">
+	@Test
+	public void removeBadIndex() {
+		TimeManager orig = this.manager.clone();
+		int prevCount = ActionDoer.getSelectedWorkPeriod().getNumTimespans();
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.REMOVE)
+					.setIndex(0)
+			)
+		);
+		assertEquals(orig, this.manager);
+
+		assertEquals(prevCount, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+	}
+
 	@Test
 	public void remove() {
 		TimeManager manager = getTestManager();

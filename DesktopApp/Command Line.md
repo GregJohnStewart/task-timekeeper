@@ -191,7 +191,19 @@ Note that you can specify only one or the other here, and that if specified toge
 
 #### Editing spans
 
-TODO
+Note that all operations deal with spans held in the selected period.
+
+##### Editing the span's task
+
+`-a edit -o span -i 1 -n Task\ Name`
+
+This sets the span at index `1`'s task to the task named `Task Name`
+
+##### Editing the span's start and end times
+
+`-a edit -o span -i 1 -st <datetime> -en <datetime>`
+
+This edits the span at index `1`'s starting and ending datetimes using the `-st` and `-en` arguments, respectively. You can also use the arguments independently from eachother, if you only want to update one at a time.  
 
 #### Removing spans
 

@@ -87,35 +87,71 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			return false;
 		}
 
-		boolean modified = false;
+		LocalDateTime start = null;
+		LocalDateTime end = null;
 
 		if(config.getStart() != null){
-			LocalDateTime start = TimeParser.parse(config.getStart());
+			start = TimeParser.parse(config.getStart());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
 				consoleErrorPrintln("Malformed starting datetime given.");
 				return false;
 			}
-			span.setStartTime(start);
-			modified = true;
 		}
 		if(config.getEnd() != null){
-			LocalDateTime end = TimeParser.parse(config.getEnd());
+			end = TimeParser.parse(config.getEnd());
 			if(end == null){
-				LOGGER.error("Malformed starting datetime given.");
-				consoleErrorPrintln("Malformed starting datetime given.");
+				LOGGER.error("Malformed ending datetime given.");
+				consoleErrorPrintln("Malformed ending datetime given.");
 				return false;
 			}
-			span.setEndTime(end);
-			modified = true;
 		}
+
+		Task newTask = null;
 		if(config.getName() != null){
-			Task newTask = manager.getTaskByName(config.getName());
+			newTask = manager.getTaskByName(config.getName());
 			if(newTask == null){
 				LOGGER.error("New task given does not exist in manager.");
 				consoleErrorPrintln("New task given does not exist in manager");
 				return false;
 			}
+		}
+
+		boolean modified = false;
+		if(start != null && end != null){
+			if(start.isAfter(end)){
+				LOGGER.error("Start given was after end given.");
+				consoleErrorPrintln("Start given was after end given.");
+				return false;
+			}
+			span.setEndTime(null);
+			span.setStartTime(null);
+			span.setStartTime(start);
+			span.setEndTime(end);
+			modified = true;
+		} else if(start != null){
+			try {
+				span.setStartTime(start);
+				modified = true;
+			} catch (IllegalArgumentException e) {
+				LOGGER.error("Invalid start datetime given: ", e);
+				consoleErrorPrintln("Invalid start datetime given. Is it after the end datetime?");
+				return false;
+			}
+		} else if(end != null){
+			try {
+				span.setEndTime(end);
+				modified = true;
+			} catch (IllegalArgumentException e) {
+				LOGGER.error("Invalid end datetime given: ", e);
+				consoleErrorPrintln("Invalid end datetime given. Is it before the start datetime?");
+				return false;
+			}
+		}
+
+		if(newTask != null){
+			span.setTask(newTask);
+			modified = true;
 		}
 
 		if(modified){
@@ -145,7 +181,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 	@Override
 	public void displayOne(TimeManager manager, Timespan object) {
-		//nothing to do, we do not need to do this for tasks
+		//nothing to do, we do not need to do this for timespans
 	}
 
 	@Override
