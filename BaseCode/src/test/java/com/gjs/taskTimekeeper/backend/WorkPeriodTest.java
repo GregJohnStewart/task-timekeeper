@@ -274,7 +274,7 @@ public class WorkPeriodTest {
 	public void getHasUnfinishedTimespans() {
 		WorkPeriod period = new WorkPeriod();
 
-		assertTrue(period.isUnfinished());
+		assertTrue(period.isUnCompleted());
 		assertTrue(period.getUnfinishedTimespans().isEmpty());
 		assertFalse(period.hasUnfinishedTimespans());
 
@@ -291,7 +291,7 @@ public class WorkPeriodTest {
 
 		assertTrue(period.getUnfinishedTimespans().isEmpty());
 		assertFalse(period.hasUnfinishedTimespans());
-		assertFalse(period.isUnfinished());
+		assertFalse(period.isUnCompleted());
 	}
 
 	@Test

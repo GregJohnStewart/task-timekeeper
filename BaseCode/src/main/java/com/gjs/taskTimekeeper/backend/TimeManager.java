@@ -227,7 +227,7 @@ public class TimeManager {
 		List<WorkPeriod> periods = new LinkedList<>();
 
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			if (period.isUnfinished()) {
+			if (period.isUnCompleted()) {
 				periods.add(period);
 			}
 		}
@@ -242,7 +242,7 @@ public class TimeManager {
 	 */
 	public boolean hasUnfinishedPeriods() {
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			if (period.isUnfinished()) {
+			if (period.isUnCompleted()) {
 				return true;
 			}
 		}

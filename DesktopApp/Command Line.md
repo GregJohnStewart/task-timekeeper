@@ -213,10 +213,10 @@ TODO
 
 ### Special Commands
 
- * *newspan* - finishes remaining timespans and starts a new one in the selected period. Need to have period selected and task specified.
+ * *newspan* - Completes remaining timespans and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
  * *selectnewest* - selects the newest period held
- * *finish* - Finishes remaining timespans in selected period.
- * *newperiod* - Finishes remaining timespans in selected period, creates a new period and selects it.
+ * *completeSpans* - Completes remaining timespans in selected period.
+ * *newperiod* - Completes remaining timespans in selected period, creates a new period and selects it.
 
 ## Workflow Examples (cheat sheet)
 
@@ -246,7 +246,7 @@ Verifying it was created:
 
 #### Notes:
 
-This finishes timespans in the currently selected period, adds a new period and selects it.
+This completes timespans in the currently selected period, adds a new period and selects it.
 
 ### Removing a work period
 
@@ -272,7 +272,7 @@ Verifying it was selected (will have an asterisk in the "S" column):
 
 ### Starting a new timespan
 
-Starting a new timespan (and finishing the others):
+Starting a new timespan (and completing the others):
 
 `-s newspan -tn <task name>`
 
@@ -280,13 +280,13 @@ Verifying it was created:
 
 `-a view -o span`
 
-### Finish unfinished timespans
+### Complete uncompleted timespans
 
-Finishing all unfinished spans:
+Completing all uncompleted spans in current period:
 
-`-s finish`
+`-s completeSpans`
 
-Verifying they were finished:
+Verifying they were completed:
 
 `-a view -o span`
 

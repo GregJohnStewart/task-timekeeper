@@ -184,9 +184,22 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 */
 	@JsonIgnore
 	public Duration getTotalTime() {
+		return this.getTotalTimeWith(null);
+	}
+
+	/**
+	 * Gets the total time spent on a particular task.
+	 * @param task The task to get the time spent on. Null if you want time spent on all tasks.
+	 * @return the total time defined by all completed timespans with the task given.
+	 */
+	@JsonIgnore
+	public Duration getTotalTimeWith(Task task){
 		Duration duration = Duration.ZERO;
 
 		for (Timespan span : this.getTimespans()) {
+			if(task != null && !span.getTask().equals(task)){
+				continue;
+			}
 			try {
 				duration = duration.plus(span.getDuration());
 			} catch (IllegalStateException e) {
@@ -277,7 +290,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 * @return if this work period is unfinished.
 	 */
 	@JsonIgnore
-	public boolean isUnfinished() {
+	public boolean isUnCompleted() {
 		return this.getTimespans().isEmpty() || this.hasUnfinishedTimespans();
 	}
 

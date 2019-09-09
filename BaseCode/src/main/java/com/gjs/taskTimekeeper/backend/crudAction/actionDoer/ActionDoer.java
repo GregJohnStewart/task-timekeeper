@@ -342,7 +342,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	private static boolean processSpecial(TimeManager manager, ActionConfig config){
 		switch (config.getSpecialAction().toLowerCase()){
 			case "newspan":
-				return finishOldSpansAndAddNew(manager, config);
+				return completeOldSpansAndAddNew(manager, config);
 			case "selectnewest": {
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
@@ -351,7 +351,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 					.setSelect(true);
 				return doObjAction(manager, actionConfig);
 			}
-			case "finish": {
+			case "completeSpans": {
 				return finishSpansInSelected(manager);
 			}
 			case "newperiod": {
@@ -388,7 +388,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			return false;
 		}
 
-		if(selected.isUnfinished()){
+		if(selected.isUnCompleted()){
 			LOGGER.debug("Attempting to finish spans in selected periods.");
 			System.out.println("Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
@@ -416,7 +416,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param config The configuration used to do the action.
 	 * @return If the manager was changed during the operation.
 	 */
-	private static boolean finishOldSpansAndAddNew(TimeManager manager, ActionConfig config){
+	private static boolean completeOldSpansAndAddNew(TimeManager manager, ActionConfig config){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		Task task = manager.getTaskByName(config.getName());
 		LOGGER.info("Setting up config for adding a span now.");

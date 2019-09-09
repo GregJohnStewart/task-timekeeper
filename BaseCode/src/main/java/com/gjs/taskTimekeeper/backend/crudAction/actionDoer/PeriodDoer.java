@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
+import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
@@ -233,10 +234,16 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		System.out.println("\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
 		System.out.println("\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
 		System.out.println("\t# Spans: " + workPeriod.getNumTimespans());
-		System.out.println("\tComplete: " + (workPeriod.isUnfinished() ? "No" : "Yes"));
+		System.out.println("\tComplete: " + (workPeriod.isUnCompleted() ? "No" : "Yes"));
 
 		for(Map.Entry<String, String> att : workPeriod.getAttributes().entrySet()){
 			System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+		}
+
+		System.out.println("\tTime spent on tasks:");
+		for(Task curTask : workPeriod.getTasks()){
+			Duration duration = workPeriod.getTotalTimeWith(curTask);
+			System.out.println("\t\t" + curTask.getName() + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
 		}
 	}
 
@@ -329,6 +336,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add("End");
 		output.add("Time Worked");
 		output.add("Complete?");
+		output.add("Task Times");
 
 		return output;
 	}
@@ -346,7 +354,34 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add(TimeParser.toOutputString(period.getEnd()));
 		Duration totalTime = period.getTotalTime();
 		output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
-		output.add(period.isUnfinished() ? "No" : "Yes");
+		output.add(period.isUnCompleted() ? "No" : "Yes");
+
+		Set<Task> tasks = period.getTasks();
+
+		if(tasks.isEmpty()) {
+			output.add("");
+		}else {
+			StringBuilder sb = new StringBuilder();
+			Iterator<Task> taskIt = tasks.iterator();
+
+			while(taskIt.hasNext()){
+				Task curTask = taskIt.next();
+
+				Duration duration = period.getTotalTimeWith(curTask);
+
+				sb.append(curTask.getName());
+				sb.append(" (");
+				sb.append(duration.toHoursPart());
+				sb.append(':');
+				sb.append(duration.toMinutesPart());
+				sb.append(")");
+
+				if(taskIt.hasNext()){
+					sb.append(" | ");
+				}
+			}
+			output.add(sb.toString());
+		}
 
 		return output;
 	}
