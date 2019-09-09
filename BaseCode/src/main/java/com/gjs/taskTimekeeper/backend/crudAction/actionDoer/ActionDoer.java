@@ -74,12 +74,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * Gets an object based on its index in the search in the configuration given.
 	 * @param manager The manager being dealt with
 	 * @param config The configuration to provide details for the search and index to get.
-	 * @return The object at the index of the search given.
+	 * @return The object at the index of the search given. Null if index out of bounds or no index given.
 	 */
 	protected T getAtIndex(TimeManager manager, ActionConfig config){
 		if(config.getIndex() == null){
-			LOGGER.warn("No index given to get.");
-			System.err.println("No index given to get.");
+			//LOGGER.warn("No index given to get.");
+			//System.err.println("No index given to get.");
 			return null;
 		}
 		List<T> results = this.search(manager, config);

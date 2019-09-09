@@ -186,7 +186,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 	@Override
 	public void view(TimeManager manager, ActionConfig config) {
-		this.printView("Timespans in selected period:", this.search(manager, config));
+		this.printView("Timespans in selected period", this.search(manager, config));
 	}
 
 	@Override
