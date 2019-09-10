@@ -88,7 +88,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			return results.get(config.getIndex() - 1);
 		}catch (IndexOutOfBoundsException e){
 			LOGGER.warn("Index given was out of bounds for the search.", e);
-			System.err.println("Index given was out of bounds for the search.");
+			consoleErrorPrintln("Index given was out of bounds for the search.");
 		}
 
 		return null;
@@ -238,7 +238,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				break;
 			default:
 				LOGGER.warn("No action given.");
-				System.err.println("No action given.");
+				consoleErrorPrintln("No action given.");
 		}
 		return changed;
 	}
@@ -313,12 +313,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		if(config.getAction() == null){
 			LOGGER.warn("No action given.");
-			System.out.println("No action given. Doing nothing.");
+			consolePrintln(DEFAULT, "No action given. Doing nothing.");
 			return false;
 		}
 		if(config.getObjectOperatingOn() == null){
 			LOGGER.error("No object specified to operate on.");
-			System.err.println("No object specified to operate on");
+			consoleErrorPrintln("No object specified to operate on");
 			return false;
 		}
 		switch (config.getObjectOperatingOn()){
@@ -354,7 +354,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			case "completeSpans": {
 				return finishSpansInSelected(manager);
 			}
-			case "newperiod": {
+			case "newPeriod": {
 				boolean result = finishSpansInSelected(manager);
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
@@ -363,14 +363,14 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				return doObjAction(manager, actionConfig) || result;
 			}
 			//TODO:: "lastWeeksPeriods"
-				//TODO:: "thisWeeksPeriods"
-				//TODO:: clearPeriods
-				//TODO:: clearAll
-				//TODO:: cleanTasks
-				//TODO:: taskStats -> view amount of time spent on what tasks in a period.
+			//TODO:: "thisWeeksPeriods"
+			//TODO:: clearPeriods
+			//TODO:: clearAll
+			//TODO:: cleanTasks
+			//TODO:: taskStats -> view amount of time spent on what tasks in a period.
 			default:
 				LOGGER.error("No valid special command given.");
-				System.err.println("No valid special command given.");
+				consoleErrorPrintln("No valid special command given.");
 				return false;
 		}
 	}
@@ -384,13 +384,13 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			System.err.println("No work period selected.");
+			consoleErrorPrintln("No work period selected.");
 			return false;
 		}
 
 		if(selected.isUnCompleted()){
 			LOGGER.debug("Attempting to finish spans in selected periods.");
-			System.out.println("Attempting to finish spans in selected periods.");
+			consolePrintln(DEFAULT, "Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
 			for(Timespan span : selected.getUnfinishedTimespans()){
 				if(!span.hasStartTime()){
@@ -403,7 +403,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			}
 			if(finishedCount > 0){
 				LOGGER.info("Finished {} spans.", finishedCount);
-				System.out.println("Finished " + finishedCount + " spans.");
+				consolePrintln(DEFAULT, "Finished " + finishedCount + " spans.");
 				return true;
 			}
 		}
@@ -422,12 +422,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		LOGGER.info("Setting up config for adding a span now.");
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			System.err.println("No work period selected.");
+			consoleErrorPrintln("No work period selected.");
 			return false;
 		}
 		if(task == null){
 			LOGGER.error("No task with name specified.");
-			System.err.println("No task with name specified.");
+			consoleErrorPrintln("No task with name specified.");
 			return false;
 		}
 		//finish unfinished spans
