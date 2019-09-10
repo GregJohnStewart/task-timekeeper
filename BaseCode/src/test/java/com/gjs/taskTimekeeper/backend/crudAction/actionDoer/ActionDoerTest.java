@@ -7,6 +7,8 @@ import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
+import org.junit.After;
+import org.junit.Before;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -77,5 +79,11 @@ public abstract class ActionDoerTest {
 		config.setAction(action);
 
 		return config;
+	}
+
+	@Before
+	@After
+	public void resetDoers(){
+		ActionDoer.resetDoers();
 	}
 }

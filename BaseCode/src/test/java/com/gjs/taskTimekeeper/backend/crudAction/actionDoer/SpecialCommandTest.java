@@ -1,12 +1,13 @@
 package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class SpecialCommandTest extends ActionDoerTest {
 	public SpecialCommandTest() {
@@ -36,24 +37,104 @@ public class SpecialCommandTest extends ActionDoerTest {
 		assertEquals(orig, manager);
 	}
 	//</editor-fold>
+	//<editor-fold desc="completeSpans tests">
+	@Test
+	public void completespanNoSelectedPeriod(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			)
+		);
+		assertEquals(orig, manager);
+	}
+	@Test
+	public void completespanCompletedSelectedPeriod(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(2));
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			)
+		);
+		assertEquals(orig, manager);
+	}
+	@Test
+	public void completeSpans(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			)
+		);
+		assertNotEquals(orig, manager);
+		//TODO:: verify
+	}
+	//</editor-fold>
 	//<editor-fold desc="newspan tests">
-	@Ignore
+	@Test
+	public void newspanNoSelectedPeriod(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("newspan").setName(TASK_ONE_NAME)
+			)
+		);
+		assertEquals(orig, manager);
+	}
+	@Test
+	public void newspanNoTaskName(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("newspan")
+			)
+		);
+		assertEquals(orig, manager);
+	}
 	@Test
 	public void newspan(){
-		//TODO
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("newspan").setName(TASK_ONE_NAME)
+			)
+		);
+		assertNotEquals(orig, manager);
+		//TODO:: verify
 	}
 	//</editor-fold>
 	//<editor-fold desc="selectnewest tests">
 	@Ignore
 	@Test
 	public void selectnewest(){
-
-	}
-	//</editor-fold>
-	//<editor-fold desc="completeSpans tests">
-	@Ignore
-	@Test
-	public void completeSpans(){
+		//TODO
 
 	}
 	//</editor-fold>
@@ -61,6 +142,7 @@ public class SpecialCommandTest extends ActionDoerTest {
 	@Ignore
 	@Test
 	public void newPeriod(){
+		//TODO
 
 	}
 	//</editor-fold>

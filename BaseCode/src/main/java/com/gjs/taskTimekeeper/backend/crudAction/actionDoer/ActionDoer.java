@@ -341,8 +341,11 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 */
 	private static boolean processSpecial(TimeManager manager, ActionConfig config){
 		switch (config.getSpecialAction().toLowerCase()){
+			case "completespans": {
+				return completeSpansInSelected(manager);
+			}
 			case "newspan":
-				return completeOldSpansAndAddNew(manager, config);
+				return completeOldSpansAndAddNewInSelected(manager, config);
 			case "selectnewest": {
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
@@ -351,11 +354,8 @@ public abstract class ActionDoer <T extends KeeperObject> {
 					.setSelect(true);
 				return doObjAction(manager, actionConfig);
 			}
-			case "completespans": {
-				return finishSpansInSelected(manager);
-			}
 			case "newperiod": {
-				boolean result = finishSpansInSelected(manager);
+				boolean result = completeSpansInSelected(manager);
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
 					.setAction(ADD)
@@ -380,7 +380,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param manager The manager being dealt with.
 	 * @return True if any spans were actually finished.
 	 */
-	private static boolean finishSpansInSelected(TimeManager manager){
+	private static boolean completeSpansInSelected(TimeManager manager){
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
@@ -392,12 +392,20 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			LOGGER.debug("Attempting to finish spans in selected periods.");
 			consolePrintln(DEFAULT, "Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
+			LocalDateTime now = LocalDateTime.now();
 			for(Timespan span : selected.getUnfinishedTimespans()){
 				if(!span.hasStartTime()){
 					continue;
 				}
 				if(!span.hasEndTime()){
-					span.setEndTime(LocalDateTime.now());
+					if(span.getStartTime().isAfter(now)){
+						span.setEndTime(
+							span.getStartTime().plusSeconds(1)
+						);
+					} else {
+						span.setEndTime(LocalDateTime.now());
+					}
+
 					finishedCount++;
 				}
 			}
@@ -416,26 +424,25 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	 * @param config The configuration used to do the action.
 	 * @return If the manager was changed during the operation.
 	 */
-	private static boolean completeOldSpansAndAddNew(TimeManager manager, ActionConfig config){
+	private static boolean completeOldSpansAndAddNewInSelected(TimeManager manager, ActionConfig config){
+		LOGGER.info("Setting up config for adding a span.");
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
-		Task task = manager.getTaskByName(config.getName());
-		LOGGER.info("Setting up config for adding a span now.");
 		if(selected == null){
 			LOGGER.error("No work period selected.");
 			consoleErrorPrintln("No work period selected.");
 			return false;
 		}
+		Task task = manager.getTaskByName(config.getName());
 		if(task == null){
 			LOGGER.error("No task with name specified.");
 			consoleErrorPrintln("No task with name specified.");
 			return false;
 		}
 		//finish unfinished spans
-		finishSpansInSelected(manager);
+		completeSpansInSelected(manager);
 
-		selected.addTimespan(
-			new Timespan(task, LocalDateTime.now())
-		);
+		selected.addTimespan(new Timespan(task, LocalDateTime.now()));
+		consolePrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
 		return true;
 	}
 

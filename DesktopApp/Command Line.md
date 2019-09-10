@@ -215,18 +215,23 @@ TODO
 
 Special commands are commands that exist to streamline the process of using this program.
 
+#### `completeSpans`
+
+`-se completeSpans`
+
+Completes remaining timespans in selected period, giving them an end datetime of now (when the command is run). If uncompleted timespan started in the future, gives that span and and datetime of one second after start. 
+
 #### `newSpan`
 
-`-se newSpan`
+`-se newSpan -n Task\ Name`
 
-Completes remaining timespans in the selected period and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
+Completes remaining timespans in the selected period (as done in `completeSpans`) and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
 
 
 
 TODO:: the rest of these.
 
- * *selectSewest* - selects the newest period held
- * *completeSpans* - Completes remaining timespans in selected period.
+ * *selectNewest* - selects the newest period held
  * *newPeriod* - Completes remaining timespans in selected period, creates a new period and selects it.
 
 ## Workflow Examples (cheat sheet)
