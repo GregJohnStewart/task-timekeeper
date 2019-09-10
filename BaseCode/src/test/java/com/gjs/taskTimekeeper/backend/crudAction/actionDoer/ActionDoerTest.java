@@ -24,6 +24,10 @@ public abstract class ActionDoerTest {
 	protected static final LocalDateTime nowPlusHourFive = now.plusMinutes(65);
 	protected static final LocalDateTime nowPlusHourTen = now.plusMinutes(70);
 	protected static final LocalDateTime nowPlusHourFifteen = now.plusMinutes(75);
+	protected static final LocalDateTime nowPlusTwoHour = now.plusMinutes(120);
+	protected static final LocalDateTime nowPlusTwoHourFive = now.plusMinutes(125);
+	protected static final LocalDateTime nowPlusTwoHourTen = now.plusMinutes(130);
+	protected static final LocalDateTime nowPlusTwoHourFifteen = now.plusMinutes(135);
 
 	protected static final String TASK_ONE_NAME = "Test Task";
 	protected static final String TASK_TWO_NAME = "Test Task Two";
@@ -48,6 +52,11 @@ public abstract class ActionDoerTest {
 		testManager.addWorkPeriod(new WorkPeriod().addTimespans(
 			new Timespan(newTaskTwo, nowPlusHour, nowPlusHourFive),
 			new Timespan(newTask, nowPlusHourTen, nowPlusHourFifteen)
+		));
+
+		testManager.addWorkPeriod(new WorkPeriod().addTimespans(
+			new Timespan(newTaskTwo, nowPlusTwoHour, nowPlusTwoHourFive),
+			new Timespan(newTask, nowPlusTwoHourTen)
 		));
 	}
 
