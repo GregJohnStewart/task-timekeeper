@@ -323,6 +323,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 			}
 		}
 
+		Collections.reverse(results);
 		return results;
 	}
 

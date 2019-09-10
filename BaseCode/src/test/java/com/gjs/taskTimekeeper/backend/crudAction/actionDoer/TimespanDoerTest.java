@@ -27,7 +27,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Before
 	public void before(){
 		ActionDoer.resetDoers();
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(2));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		LOGGER.info("Finished setup of timespan doer test.");
 	}
 
@@ -68,7 +68,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addBadStart() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = this.manager.clone();
 		assertFalse(
 			ActionDoer.doObjAction(
@@ -84,7 +84,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addBadEnd() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = this.manager.clone();
 		assertFalse(
 			ActionDoer.doObjAction(
@@ -100,7 +100,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addStartAfterEnd() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = this.manager.clone();
 		assertFalse(
 			ActionDoer.doObjAction(
@@ -117,7 +117,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addNoDatetimes() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = manager.clone();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		assertTrue(
@@ -136,7 +136,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addWithDatetimes() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = manager.clone();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(nowPlusFive));
@@ -164,7 +164,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addWithStartDatetime() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = manager.clone();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(nowPlusFive));
@@ -190,7 +190,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 	@Test
 	public void addWithEndDatetime() {
 		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(3));
+		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 		TimeManager orig = manager.clone();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(nowPlusTen));

@@ -153,7 +153,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 	public void editRemoveAtt(){
 		TimeManager manager = getTestManager();
 		TimeManager orig = manager.clone();
-		int selectedInd = 1;
+		int selectedInd = 2;
 
 		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
 
@@ -283,7 +283,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 	public void removeBefore(){
 		TimeManager manager = getTestManager();
 		TimeManager orig = manager.clone();
-		int selectedInd = 1;
+		int selectedInd = 2;
 
 		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
@@ -306,7 +306,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 	public void removeAfter(){
 		TimeManager manager = getTestManager();
 		TimeManager orig = manager.clone();
-		int selectedInd = 2;
+		int selectedInd = 1;
 
 		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
@@ -329,7 +329,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 	public void removeBetween(){
 		TimeManager manager = getTestManager();
 		TimeManager orig = manager.clone();
-		int selectedInd = 2;
+		int selectedInd = 1;
 
 		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
