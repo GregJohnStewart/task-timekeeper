@@ -207,32 +207,64 @@ This edits the span at index `1`'s starting and ending datetimes using the `-st`
 
 #### Removing spans
 
-TODO
+`-a remove -o span -i 1`
+
+Removes the timespan at the index given from the selected period.
 
 ### Inputting time/dates
+
+This section outlines the different formats you can use to input datetimes. Not that only local datetimes are used, and timezones are not considered.
+
+#### ISO Formats
+
+You can enter any ISO formatted datetime, minus the timezone.
+
+#### Human friendly formats
+
+Here is a list of some more friendly formats for entering datetimes:
+
+- `d/M h:m a y` day/month hour:minute (am/pm) year
+- `d/M H:m y` day/month 24-hour:minute year 
+- `d/M y` day/month year (sets time to midnight)
+- `h:m a` hour:minute (am/pm) (sets date to current)
+- `H:m` 24-hour:minute (sets date to current)
+
+#### Shortcuts
+
+- `NOW` What it sounds like, the current day/time
+- `LAST_WEEK` Midnight of the start of last week
+- `THIS_WEEK` Midnight of the start of this week
+- `NEXT_WEEK` Midnight of the start of next week
 
 ### Special Commands
 
 Special commands are commands that exist to streamline the process of using this program.
 
+Note that the command is not case sensitive.
+
 #### `completeSpans`
 
-`-se completeSpans`
+`-s completeSpans`
 
 Completes remaining timespans in selected period, giving them an end datetime of now (when the command is run). If uncompleted timespan started in the future, gives that span and and datetime of one second after start. 
 
 #### `newSpan`
 
-`-se newSpan -n Task\ Name`
+`-s newSpan -n Task\ Name`
 
 Completes remaining timespans in the selected period (as done in `completeSpans`) and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
 
+#### `selectNewest`
 
+`-s selectNewest`
 
-TODO:: the rest of these.
+This simply selects the newest period held.
 
- * *selectNewest* - selects the newest period held
- * *newPeriod* - Completes remaining timespans in selected period, creates a new period and selects it.
+#### `newPeriod`
+
+`-s newPeriod`
+
+This completes remaining timespans in the current period (if one is selected), creates a new work period and selects it.
 
 ## Workflow Examples (cheat sheet)
 
@@ -244,7 +276,7 @@ This section is meant to be a quick reference guide, view the sections above for
 
 Adding a new task:
 
-`-a add -o task -n TaskOne`
+`-a add -o task -n Task\ One`
 
 Verifying it was created:
 
@@ -290,7 +322,7 @@ Verifying it was selected (will have an asterisk in the "S" column):
 
 Starting a new timespan (and completing the others):
 
-`-s newspan -tn <task name>`
+`-s newspan -n <task name>`
 
 Verifying it was created:
 
@@ -298,7 +330,7 @@ Verifying it was created:
 
 ### Complete uncompleted timespans
 
-Completing all uncompleted spans in current period:
+Completing all uncompleted spans in selected period:
 
 `-s completeSpans`
 
@@ -308,13 +340,9 @@ Verifying they were completed:
 
 ### Review timespans
 
-Viewing all spans in period:
+Viewing all spans in selected period:
 
 `-a view -o span`
-
-Reviewing time spent on tasks:
-
-`<unimplemented/ TODO>`
 
 ### Cleaning up
 

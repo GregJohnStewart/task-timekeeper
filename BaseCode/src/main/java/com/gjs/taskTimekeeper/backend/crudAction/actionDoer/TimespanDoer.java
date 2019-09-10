@@ -176,6 +176,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		period.getTimespans().remove(span);
 
 		consolePrintln(OutputLevel.DEFAULT, "Timespan removed.");
+		//TODO:: add functionality for before/ after datetime?
 		return true;
 	}
 

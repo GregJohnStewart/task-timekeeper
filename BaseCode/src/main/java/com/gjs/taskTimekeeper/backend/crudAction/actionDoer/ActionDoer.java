@@ -347,10 +347,15 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			case "newspan":
 				return completeOldSpansAndAddNewInSelected(manager, config);
 			case "selectnewest": {
+				if(manager.getWorkPeriods().isEmpty()){
+					LOGGER.warn("No periods to select.");
+					consoleErrorPrintln("No periods to select.");
+					return false;
+				}
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)
 					.setAction(Action.VIEW)
-					.setIndex(manager.getWorkPeriods().size())
+					.setIndex(1)
 					.setSelect(true);
 				return doObjAction(manager, actionConfig);
 			}

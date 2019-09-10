@@ -4,7 +4,6 @@ import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -119,7 +118,6 @@ public class SpecialCommandTest extends ActionDoerTest {
 
 		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
 
-
 		assertTrue(
 			ActionDoer.doObjAction(
 				manager,
@@ -131,19 +129,56 @@ public class SpecialCommandTest extends ActionDoerTest {
 	}
 	//</editor-fold>
 	//<editor-fold desc="selectnewest tests">
-	@Ignore
+	@Test
+	public void selectnewestNoPeriods(){
+		TimeManager manager = new TimeManager();
+		TimeManager orig = manager.clone();
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("selectnewest")
+			)
+		);
+		assertEquals(orig, manager);
+
+		assertNull(ActionDoer.getSelectedWorkPeriod());
+	}
 	@Test
 	public void selectnewest(){
-		//TODO
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
 
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(2));
+
+		assertFalse(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("selectnewest")
+			)
+		);
+		assertEquals(orig, manager);
+		assertNotNull(ActionDoer.getSelectedWorkPeriod());
+		//TODO:: verify
 	}
 	//</editor-fold>
 	//<editor-fold desc="newPeriod tests">
-	@Ignore
 	@Test
 	public void newPeriod(){
-		//TODO
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
 
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig().setSpecialAction("newPeriod")
+			)
+		);
+		assertNotEquals(orig, manager);
+		assertNotNull(ActionDoer.getSelectedWorkPeriod());
+		//TODO:: verify
 	}
 	//</editor-fold>
 }
