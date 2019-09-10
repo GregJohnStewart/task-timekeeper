@@ -351,10 +351,10 @@ public abstract class ActionDoer <T extends KeeperObject> {
 					.setSelect(true);
 				return doObjAction(manager, actionConfig);
 			}
-			case "completeSpans": {
+			case "completespans": {
 				return finishSpansInSelected(manager);
 			}
-			case "newPeriod": {
+			case "newperiod": {
 				boolean result = finishSpansInSelected(manager);
 				ActionConfig actionConfig = new ActionConfig()
 					.setObjectOperatingOn(KeeperObjectType.PERIOD)

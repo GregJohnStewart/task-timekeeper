@@ -213,10 +213,21 @@ TODO
 
 ### Special Commands
 
- * *newspan* - Completes remaining timespans and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
- * *selectnewest* - selects the newest period held
+Special commands are commands that exist to streamline the process of using this program.
+
+#### `newSpan`
+
+`-se newSpan`
+
+Completes remaining timespans in the selected period and starts a new one in the selected period. Need to have period selected and task specified with `-n`.
+
+
+
+TODO:: the rest of these.
+
+ * *selectSewest* - selects the newest period held
  * *completeSpans* - Completes remaining timespans in selected period.
- * *newperiod* - Completes remaining timespans in selected period, creates a new period and selects it.
+ * *newPeriod* - Completes remaining timespans in selected period, creates a new period and selects it.
 
 ## Workflow Examples (cheat sheet)
 
