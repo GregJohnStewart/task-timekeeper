@@ -32,4 +32,4 @@ It should be noted that in single mode, one can only operate on the latest work 
 
 ## Distributing/ Making Distributions
 
-TODO:: list how to make .deb, msi, rpms
+To learn how to build this for yourself, look [here](BuildingDistrobutions.md)

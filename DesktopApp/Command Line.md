@@ -26,10 +26,14 @@ In managed mode, however, the parser is not quite as sophisticated. It splits yo
 
 This guide has all example strings with escaped spaces because doing this would work for both managed and single mode, whereas quoted strings would only be valid for single mode. 
 
-
-### Workflow
-
 ### Breakdown of a command
+
+In general, you must always specify two things:
+
+- The object type you are doing something with, speified by `-o`.
+- The action you are performing, specified by `-a`.
+
+The exception here is with the special commands, which don't need these set.
 
 ### Working with Tasks
 

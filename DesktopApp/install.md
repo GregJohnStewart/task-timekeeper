@@ -6,20 +6,22 @@ This app requires that you have:
 
  - Java Runtime Environment (JRE) 11 or newer
  
-This guide assumes that you have gotten the compiled archive file (`TaskTimekeeper-<version>.zip` or `TaskTimekeeper-<version>.tar`) from:
+This guide assumes that you have gotten the appropriate installer for your system by either:
 
-### Download a release on GitHub
+- [Downliading a release on GitHub](https://github.com/GregJohnStewart/task-timekeeper/releases)
+- [Building the installer yourself](BuildingDistrobutions.md)
 
-TODO:: detail this
+## TL:DR
 
-### Build it yourself
+Run the installer, run the command (`tasktimekeeper` from cli or `Task Timekeeper GUI` for gui mode. Standard installing for your system. 
 
-TODO:: detail this
+## Linux
 
+TODO:: detail this for different distros
 
-## Linux/ Mac
+## Mac
 
-TODO:: detail this
+TODO:: detail this, need access to mac
 
 ## Windows
 
