@@ -14,18 +14,29 @@ import java.awt.*;
 public class MainGui {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainGui.class);
 
+	private JFrame mainFrame;
+
 	private JPanel mainPanel;
 	private JLabel testLabel;
 
-
-	public static void main(Image icon, String appTitle) {
+	public MainGui(Image icon, String appTitle) {
 		LOGGER.info("Starting GUI.");
-		JFrame frame = new JFrame(appTitle);
-		frame.setIconImage(icon);
-		frame.setContentPane(new MainGui().mainPanel);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+		this.mainFrame = new JFrame(appTitle);
+		this.mainFrame.setIconImage(icon);
+		this.mainFrame.setContentPane(this.mainPanel);
+		this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		//TODO:: tell action handler to not kill process when window closes. not a problem until we do the system tray icon.
+
+		this.mainFrame.pack();
+		this.mainFrame.setVisible(true);
+
+		LOGGER.info("Opened window");
+	}
+
+
+	public boolean stillOpen() {
+		return this.mainFrame.isVisible();
 	}
 
 	{
