@@ -4,8 +4,8 @@ import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainGui;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public class GuiRunner extends ModeRunner {
 			} catch (InterruptedException e) {
 				LOGGER.warn("Wait interrupted.", e);
 			}
-			LOGGER.trace("Waiting for UI components to close.");
+			//LOGGER.trace("Waiting for UI components to close.");
 		}
 		LOGGER.info("All UI components closed. Exiting.");
 	}

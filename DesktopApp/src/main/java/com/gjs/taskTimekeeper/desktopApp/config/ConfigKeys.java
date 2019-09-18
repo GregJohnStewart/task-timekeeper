@@ -27,7 +27,8 @@ public enum ConfigKeys {
 	STATIC_GUI_ICON("static.guiIconFile"),
 	//other
 	GITHUB_REPO_URL("urls.github"),
-	GITHUB_DESKTOP_APP_README("urls.desktopReadme");
+	GITHUB_DESKTOP_APP_README("urls.desktopReadme"),
+	DONATE_URL("urls.donateUrl");
 
 	public final String key;
 	public final String envVar;

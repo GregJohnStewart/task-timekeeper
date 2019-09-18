@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '0.1.1.195'
+version = '0.1.1.232'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -97,9 +97,10 @@ default.runMode = SINGLE
 # static file names
 static.guiIconFile = $guiIconFile
 
-# Help url's
+# Help and other url's
 urls.github = $gitHubUrl
 urls.desktopReadme = ${gitHubUrl}/tree/master/DesktopApp
+urls.donateUrl = https://gjstewart.net/donate.html
 """
     }
 }
