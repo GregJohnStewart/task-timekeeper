@@ -1,21 +1,43 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
+import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.WorkPeriod;
+import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
+import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.PeriodDoer;
+import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TaskDoer;
+import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Insets;
 import java.net.URI;
+import java.util.List;
 
 /**
  * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
@@ -29,6 +51,18 @@ public class MainGui {
 		                                            "\nFor help, please visit the Github for this project." +
 		                                            "\nPlease consider donating if you find this program was helpful to you!";
 
+	private static final int INDEX_COL_WIDTH = 35;
+	private static final int DATETIME_COL_WIDTH = 130;
+	private static final DefaultTableCellRenderer CENTER_CELL_RENDERER = new DefaultTableCellRenderer();
+
+	private static final String[] PERIOD_LIST_TABLE_HEADERS = new String[]{"#", "Start", "End", "Duration", "Complete", "Actions"};
+	private static final String[] TASK_LIST_TABLE_HEADERS = new String[]{"#", "Name", "Actions"};
+
+	static {
+		CENTER_CELL_RENDERER.setHorizontalAlignment(JLabel.CENTER);
+	}
+
+	//<editor-fold desc="member variables">
 	private TimeManager manager;
 	private boolean changed = false;
 
@@ -43,9 +77,14 @@ public class MainGui {
 	private JPanel selectedPeriodBannerPanel;
 	private JPanel selectedPeriodTaskStatPanel;
 	private JPanel selectedPeriodSpansPanel;
+	private JScrollPane periodsScrollPane;
+	private JScrollPane tasksScrollPane;
 
 	private JMenuBar mainMenuBar;
 
+	//</editor-fold>
+
+	//<editor-fold desc="constructor and public methods">
 	public MainGui(Image icon, String appTitle) {
 		LOGGER.info("Starting GUI.");
 		this.origTitle = appTitle;
@@ -64,6 +103,8 @@ public class MainGui {
 		JMenuItem menuItem = new JMenuItem("Save (ctrl + s)");
 		menu.add(menuItem);
 		//TODO:: auto save checkbox
+		menuItem = new JMenuItem("Reload from file (ctrl + r)");
+		menu.add(menuItem);
 		menu.addSeparator();
 		menuItem = new JMenuItem("Close");
 		menu.add(menuItem);
@@ -110,8 +151,10 @@ public class MainGui {
 	public boolean stillOpen() {
 		return this.mainFrame.isVisible();
 	}
+	//<editor-fold>
 
-	private void reloadData(){
+	//<editor-fold desc="Data Loading methods">
+	private void reloadData() {
 		//read in new manager
 		//TODO:: handle errors
 		this.manager = ManagerIO.loadTimeManager();
@@ -123,26 +166,95 @@ public class MainGui {
 		this.updateUiData();
 	}
 
-	private void wasUpdated(boolean wasUpdated){
+	private void wasUpdated(boolean wasUpdated) {
 		this.changed = this.changed || wasUpdated;
 		this.updateUiData();
 	}
 
-	private void saveData(){
+	private void saveData() {
 		//TODO:: handle errors
 		ManagerIO.saveTimeManager(this.manager);
 		this.changed = false;
 		this.updateUiData();
 	}
 
-	private void updateUiData(){
-		if(this.changed){
+	private void updateUiData() {
+		if (this.changed) {
 			this.mainFrame.setTitle(this.origTitle + " *");
 		} else {
 			this.mainFrame.setTitle(this.origTitle);
 		}
+
+		//<editor-fold desc="Periods tab">
+		{
+			List<WorkPeriod> periods = new PeriodDoer().search(this.manager, new ActionConfig());
+			Object[][] periodData = new Object[periods.size()][];
+
+			int curInd = 0;
+			for (WorkPeriod period : periods) {
+				periodData[curInd] = new Object[PERIOD_LIST_TABLE_HEADERS.length];
+
+				periodData[curInd][0] = curInd + 1;
+				periodData[curInd][1] = TimeParser.toOutputString(period.getStart());
+				periodData[curInd][2] = TimeParser.toOutputString(period.getEnd());
+				periodData[curInd][3] = TimeParser.toDurationString(period.getTotalTime());
+				periodData[curInd][4] = (period.isUnCompleted() ? "No" : "Yes");
+				periodData[curInd][5] = new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				curInd++;
+			}
+
+			JTable periodListTable = new JTable(periodData, PERIOD_LIST_TABLE_HEADERS);
+			periodListTable.getColumnModel()
+				.getColumn(0)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			Utils.setColWidth(periodListTable, 0, INDEX_COL_WIDTH);
+			periodListTable.getColumnModel()
+				.getColumn(1)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			Utils.setColWidth(periodListTable, 1, DATETIME_COL_WIDTH);
+			periodListTable.getColumnModel()
+				.getColumn(2)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			Utils.setColWidth(periodListTable, 2, DATETIME_COL_WIDTH);
+			periodListTable.getColumnModel()
+				.getColumn(3)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			periodListTable.getColumnModel()
+				.getColumn(4)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			Utils.setColWidth(periodListTable, 4, 85);
+			this.periodsScrollPane.setViewportView(periodListTable);
+		}
+		//</editor-fold>
+
+		//<editor-fold desc="Tasks tab">
+		{
+			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
+			Object[][] periodData = new Object[tasks.size()][];
+
+			int curInd = 0;
+			for (Task task : tasks) {
+				periodData[curInd] = new Object[TASK_LIST_TABLE_HEADERS.length];
+
+				periodData[curInd][0] = curInd + 1;
+				periodData[curInd][1] = task.getName();
+				periodData[curInd][2] = new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				curInd++;
+			}
+
+			JTable tabListTable = new JTable(periodData, TASK_LIST_TABLE_HEADERS);
+			tabListTable.getColumnModel()
+				.getColumn(0)
+				.setCellRenderer(CENTER_CELL_RENDERER);
+			Utils.setColWidth(tabListTable, 0, INDEX_COL_WIDTH);
+
+			this.tasksScrollPane.setViewportView(tabListTable);
+		}
+		//</editor-fold>
+
 		//TODO:: rest of this
 	}
+	//</editor-fold>
 
 
 	{
@@ -162,8 +274,8 @@ public class MainGui {
 	private void $$$setupUI$$$() {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		mainPanel.setMinimumSize(new Dimension(500, 500));
-		mainPanel.setPreferredSize(new Dimension(500, 500));
+		mainPanel.setMinimumSize(new Dimension(650, 500));
+		mainPanel.setPreferredSize(new Dimension(650, 500));
 		mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), null));
 		mainTabPane = new JTabbedPane();
 		mainPanel.add(mainTabPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
@@ -173,7 +285,7 @@ public class MainGui {
 		selectedPeriodBannerPanel = new JPanel();
 		selectedPeriodBannerPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		selectedPeriodPanel.add(selectedPeriodBannerPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 100), new Dimension(-1, 100), new Dimension(-1, 100), 0, false));
-		selectedPeriodBannerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Period"));
+		selectedPeriodBannerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Period Details"));
 		final JPanel panel1 = new JPanel();
 		panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
 		selectedPeriodPanel.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -186,25 +298,17 @@ public class MainGui {
 		panel1.add(selectedPeriodTaskStatPanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(250, -1), new Dimension(250, -1), new Dimension(250, -1), 0, false));
 		selectedPeriodTaskStatPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Task Stats"));
 		periodsPanel = new JPanel();
-		periodsPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+		periodsPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		mainTabPane.addTab("Periods", periodsPanel);
-		final JLabel label1 = new JLabel();
-		label1.setText("Period pane");
-		periodsPanel.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-		final Spacer spacer1 = new Spacer();
-		periodsPanel.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-		final Spacer spacer2 = new Spacer();
-		periodsPanel.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		periodsScrollPane = new JScrollPane();
+		periodsScrollPane.setVerticalScrollBarPolicy(22);
+		periodsPanel.add(periodsScrollPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 		tasksPanel = new JPanel();
-		tasksPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+		tasksPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
 		mainTabPane.addTab("Tasks", tasksPanel);
-		final JLabel label2 = new JLabel();
-		label2.setText("Tasks pane");
-		tasksPanel.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-		final Spacer spacer3 = new Spacer();
-		tasksPanel.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-		final Spacer spacer4 = new Spacer();
-		tasksPanel.add(spacer4, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		tasksScrollPane = new JScrollPane();
+		tasksScrollPane.setVerticalScrollBarPolicy(22);
+		tasksPanel.add(tasksScrollPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 	}
 
 	/**
