@@ -20,6 +20,7 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxO
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 /**
  * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
@@ -88,6 +90,12 @@ public class MainGui {
 	private JButton addTaskButton;
 	private JScrollPane selectedPeriodSpansPane;
 	private JButton selectedPeriodAddSpanButton;
+	private JScrollPane selectedPeriodAttsPane;
+	private JLabel selectedPeriodStartLabel;
+	private JLabel selectedPeriodEndLabel;
+	private JLabel selectedPeriodDurationLabel;
+	private JLabel selectedPeriodCompleteLabel;
+	private JButton selectedPeriodAddAttributeButton;
 
 	private JMenuBar mainMenuBar;
 
@@ -201,6 +209,30 @@ public class MainGui {
 			if (selectedPeriod == null) {
 				//TODO:: disable selected tab, switch to periods tab
 			} else {
+				// period details
+				this.selectedPeriodStartLabel.setText(TimeParser.toOutputString(selectedPeriod.getStart()));
+				this.selectedPeriodEndLabel.setText(TimeParser.toOutputString(selectedPeriod.getEnd()));
+				this.selectedPeriodDurationLabel.setText(TimeParser.toDurationString(selectedPeriod.getTotalTime()));
+				this.selectedPeriodCompleteLabel.setText(selectedPeriod.isUnCompleted() ? "No" : "Yes");
+				{
+					Object[][] periodAtts = new Object[selectedPeriod.getAttributes()
+						                                   .size()][];
+
+					int count = 0;
+					for (Map.Entry<String, String> att : selectedPeriod.getAttributes()
+						                                     .entrySet()) {
+						periodAtts[count] = new Object[2];
+
+						periodAtts[count][0] = att.getKey();
+						periodAtts[count][1] = att.getValue();
+
+						count++;
+					}
+
+					JTable attsTable = new JTable(new UnEditableTableModel(periodAtts, new String[]{"Attribute", "Value"}));
+					this.selectedPeriodAttsPane.setViewportView(attsTable);
+				}
+
 				//task details
 				{
 					Object[][] taskStats = new Object[selectedPeriod.getTasks()
@@ -229,14 +261,15 @@ public class MainGui {
 					Object[][] spanDetails = new Object[selectedPeriod.getNumTimespans()][];
 
 					int count = 0;
-					for(Timespan span : new TimespanDoer((PeriodDoer)ActionDoer.getActionDoer(KeeperObjectType.PERIOD)).search(manager, new ActionConfig())){
-						spanDetails[count] = new Object[5];
+					for (Timespan span : ((TimespanDoer) ActionDoer.getActionDoer(KeeperObjectType.SPAN)).search(manager, new ActionConfig())) {
+						spanDetails[count] = new Object[6];
 
-						spanDetails[count][0] = count++;
+						spanDetails[count][0] = count + 1;
 						spanDetails[count][1] = TimeParser.toOutputString(span.getStartTime());
 						spanDetails[count][2] = TimeParser.toOutputString(span.getEndTime());
 						spanDetails[count][3] = TimeParser.toDurationString(span.getDuration());
-						spanDetails[count][4] = span.getTask().getName();
+						spanDetails[count][4] = span.getTask()
+							                        .getName();
 						spanDetails[count][5] = new JButton("button 1");
 
 						count++;
@@ -265,6 +298,7 @@ public class MainGui {
 		//</editor-fold>
 
 		//<editor-fold desc="Periods tab">
+		//TODO:: highlight selected period row
 		{
 			List<WorkPeriod> periods = new PeriodDoer().search(this.manager, new ActionConfig());
 			Object[][] periodData = new Object[periods.size()][];
@@ -362,54 +396,89 @@ public class MainGui {
 		selectedPeriodPanel = new JPanel();
 		selectedPeriodPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
 		mainTabPane.addTab("Selected Period", selectedPeriodPanel);
-		selectedPeriodBannerPanel = new JPanel();
-		selectedPeriodBannerPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		selectedPeriodPanel.add(selectedPeriodBannerPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 100), new Dimension(-1, 100), new Dimension(-1, 100), 0, false));
-		selectedPeriodBannerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Period Details"));
 		final JPanel panel1 = new JPanel();
 		panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-		selectedPeriodPanel.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-		selectedPeriodSpansPanel = new JPanel();
-		selectedPeriodSpansPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-		panel1.add(selectedPeriodSpansPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-		selectedPeriodSpansPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spans"));
-		selectedPeriodSpansPane = new JScrollPane();
-		selectedPeriodSpansPane.setVerticalScrollBarPolicy(22);
-		selectedPeriodSpansPanel.add(selectedPeriodSpansPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		selectedPeriodPanel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 175), new Dimension(-1, 175), new Dimension(-1, 175), 0, false));
+		selectedPeriodBannerPanel = new JPanel();
+		selectedPeriodBannerPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+		panel1.add(selectedPeriodBannerPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		selectedPeriodBannerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Period Details"));
 		final JPanel panel2 = new JPanel();
-		panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		selectedPeriodSpansPanel.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-		selectedPeriodAddSpanButton = new JButton();
-		selectedPeriodAddSpanButton.setText("Add Span");
-		panel2.add(selectedPeriodAddSpanButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		panel2.setLayout(new GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
+		selectedPeriodBannerPanel.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		final JLabel label1 = new JLabel();
+		label1.setText("Start:");
+		panel2.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		final Spacer spacer1 = new Spacer();
+		panel2.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+		selectedPeriodStartLabel = new JLabel();
+		selectedPeriodStartLabel.setText("<start datetime>");
+		panel2.add(selectedPeriodStartLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		final JLabel label2 = new JLabel();
+		label2.setText("End:");
+		panel2.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodEndLabel = new JLabel();
+		selectedPeriodEndLabel.setText("<end datetime>");
+		panel2.add(selectedPeriodEndLabel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		final JLabel label3 = new JLabel();
+		label3.setText("Duration:");
+		panel2.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodDurationLabel = new JLabel();
+		selectedPeriodDurationLabel.setText("<duration>");
+		panel2.add(selectedPeriodDurationLabel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		final JLabel label4 = new JLabel();
+		label4.setText("Complete:");
+		panel2.add(label4, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodCompleteLabel = new JLabel();
+		selectedPeriodCompleteLabel.setText("<complete?>");
+		panel2.add(selectedPeriodCompleteLabel, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodAddAttributeButton = new JButton();
+		selectedPeriodAddAttributeButton.setText("Add Attribute");
+		panel2.add(selectedPeriodAddAttributeButton, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodAttsPane = new JScrollPane();
+		selectedPeriodAttsPane.setVerticalScrollBarPolicy(22);
+		selectedPeriodBannerPanel.add(selectedPeriodAttsPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 		selectedPeriodTaskStatsPane = new JScrollPane();
 		selectedPeriodTaskStatsPane.setVerticalScrollBarPolicy(22);
 		panel1.add(selectedPeriodTaskStatsPane, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(250, -1), new Dimension(250, -1), new Dimension(250, -1), 0, false));
 		selectedPeriodTaskStatsPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Task Stats"));
+		selectedPeriodSpansPanel = new JPanel();
+		selectedPeriodSpansPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+		selectedPeriodPanel.add(selectedPeriodSpansPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		selectedPeriodSpansPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spans"));
+		selectedPeriodSpansPane = new JScrollPane();
+		selectedPeriodSpansPane.setVerticalScrollBarPolicy(22);
+		selectedPeriodSpansPanel.add(selectedPeriodSpansPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+		final JPanel panel3 = new JPanel();
+		panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+		selectedPeriodSpansPanel.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		selectedPeriodAddSpanButton = new JButton();
+		selectedPeriodAddSpanButton.setText("Add Span");
+		panel3.add(selectedPeriodAddSpanButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		periodsPanel = new JPanel();
 		periodsPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
 		mainTabPane.addTab("Periods", periodsPanel);
 		periodsScrollPane = new JScrollPane();
 		periodsScrollPane.setVerticalScrollBarPolicy(22);
 		periodsPanel.add(periodsScrollPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-		final JPanel panel3 = new JPanel();
-		panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		periodsPanel.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		final JPanel panel4 = new JPanel();
+		panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+		periodsPanel.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		addPeriodButton = new JButton();
 		addPeriodButton.setText("Add Period");
-		panel3.add(addPeriodButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		panel4.add(addPeriodButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		tasksPanel = new JPanel();
 		tasksPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
 		mainTabPane.addTab("Tasks", tasksPanel);
 		tasksScrollPane = new JScrollPane();
 		tasksScrollPane.setVerticalScrollBarPolicy(22);
 		tasksPanel.add(tasksScrollPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-		final JPanel panel4 = new JPanel();
-		panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		tasksPanel.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+		final JPanel panel5 = new JPanel();
+		panel5.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+		tasksPanel.add(panel5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 		addTaskButton = new JButton();
 		addTaskButton.setText("Add Task");
-		panel4.add(addTaskButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		panel5.add(addTaskButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 	}
 
 	/**
