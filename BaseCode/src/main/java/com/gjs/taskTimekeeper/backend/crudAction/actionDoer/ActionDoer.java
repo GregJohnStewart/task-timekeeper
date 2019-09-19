@@ -1,6 +1,10 @@
 package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.*;
+import com.gjs.taskTimekeeper.backend.KeeperObject;
+import com.gjs.taskTimekeeper.backend.Task;
+import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.backend.Timespan;
+import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
@@ -288,6 +292,19 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				manager.getWorkPeriods()
 					.last()
 			);
+		}
+	}
+
+	public static ActionDoer getActionDoer(KeeperObjectType keeperObject){
+		switch (keeperObject){
+			case TASK:
+				return TASK_DOER;
+			case PERIOD:
+				return PERIOD_DOER;
+			case SPAN:
+				return TIMESPAN_DOER;
+			default:
+				throw new IllegalArgumentException("Bad keeper object given.");
 		}
 	}
 
