@@ -24,8 +24,11 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,10 +40,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +63,7 @@ public class MainGui {
 		                                            "\nFor help, please visit the Github for this project." +
 		                                            "\nPlease consider donating if you find this program was helpful to you!";
 
+	private static final boolean AUTO_SAVE_DEFAULT = false;
 	private static final int INDEX_COL_WIDTH = 35;
 	private static final int DATETIME_COL_WIDTH = 130;
 	private static final int DURATION_COL_WIDTH = 65;
@@ -98,10 +105,35 @@ public class MainGui {
 	private JButton selectedPeriodAddAttributeButton;
 
 	private JMenuBar mainMenuBar;
+	private JCheckBoxMenuItem autoSaveMenuItem;
+
+
+	//actions
+	Action saveAction = new AbstractAction("Save") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Save action performed.");
+			saveData();
+		}
+	};
+	Action reloadAction = new AbstractAction("Reload") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Reload action performed.");
+			reloadData();
+		}
+	};
 
 	//</editor-fold>
 
 	//<editor-fold desc="constructor and public methods">
+	{
+		this.saveAction.putValue(Action.ACCELERATOR_KEY,
+			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		this.reloadAction.putValue(Action.ACCELERATOR_KEY,
+			KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+	}
+
 	public MainGui(Image icon, String appTitle) {
 		LOGGER.info("Starting GUI.");
 		this.origTitle = appTitle;
@@ -117,14 +149,20 @@ public class MainGui {
 		this.mainMenuBar = new JMenuBar();
 		//File
 		JMenu menu = new JMenu("File");
-		JMenuItem menuItem = new JMenuItem("Save (ctrl + s)");
+		JMenuItem menuItem = new JMenuItem("Save");
+		menuItem.setAction(this.saveAction);
 		menu.add(menuItem);
-		//TODO:: auto save checkbox
-		menuItem = new JMenuItem("Reload from file (ctrl + r)");
+		menuItem = new JMenuItem("Reload data");
+		menuItem.setAction(reloadAction);
 		menu.add(menuItem);
 		menu.addSeparator();
 		menuItem = new JMenuItem("Close");
 		menu.add(menuItem);
+		this.mainMenuBar.add(menu);
+		//options
+		menu = new JMenu("Options");
+		this.autoSaveMenuItem = new JCheckBoxMenuItem("Auto save", AUTO_SAVE_DEFAULT);
+		menu.add(autoSaveMenuItem);
 		this.mainMenuBar.add(menu);
 		//info
 		menu = new JMenu("Info");
@@ -172,6 +210,7 @@ public class MainGui {
 
 	//<editor-fold desc="Data Loading methods">
 	private void reloadData() {
+		LOGGER.info("Reloading data from source.");
 		//read in new manager
 		//TODO:: handle errors
 		this.manager = ManagerIO.loadTimeManager();
@@ -179,30 +218,39 @@ public class MainGui {
 
 		ActionDoer.resetDoers();
 		ActionDoer.setNewestPeriodAsSelectedQuiet(this.manager);
-
+		LOGGER.info("Done reloading data, updating UI.");
 		this.updateUiData();
 	}
 
 	private void wasUpdated(boolean wasUpdated) {
 		this.changed = this.changed || wasUpdated;
-		this.updateUiData();
+		if(this.autoSaveMenuItem.getState()){
+			this.saveData();
+		}else {
+			this.updateUiData();
+		}
 	}
 
 	private void saveData() {
+		LOGGER.info("Saving data from UI.");
 		//TODO:: handle errors
 		ManagerIO.saveTimeManager(this.manager);
+		LOGGER.info("Data saved. Reloading data.");
 		this.changed = false;
-		this.updateUiData();
+		this.reloadData();
 	}
 
 	private void updateUiData() {
+		LOGGER.info("Updating UI with current time manager data.");
 		if (this.changed) {
+			LOGGER.debug("Timemanager was changed, updating title.");
 			this.mainFrame.setTitle(this.origTitle + " *");
 		} else {
 			this.mainFrame.setTitle(this.origTitle);
 		}
 
 		//<editor-fold desc="Selected Period Tab">
+		LOGGER.info("Populating selected period tab.");
 		{
 			WorkPeriod selectedPeriod = ActionDoer.getSelectedWorkPeriod();
 
@@ -221,15 +269,16 @@ public class MainGui {
 					int count = 0;
 					for (Map.Entry<String, String> att : selectedPeriod.getAttributes()
 						                                     .entrySet()) {
-						periodAtts[count] = new Object[2];
+						periodAtts[count] = new Object[3];
 
 						periodAtts[count][0] = att.getKey();
 						periodAtts[count][1] = att.getValue();
+						periodAtts[count][2] = new JButton("action1");
 
 						count++;
 					}
 
-					JTable attsTable = new JTable(new UnEditableTableModel(periodAtts, new String[]{"Attribute", "Value"}));
+					JTable attsTable = new JTable(new UnEditableTableModel(periodAtts, new String[]{"Attribute", "Value", "Action"}));
 					this.selectedPeriodAttsPane.setViewportView(attsTable);
 				}
 
@@ -298,6 +347,7 @@ public class MainGui {
 		//</editor-fold>
 
 		//<editor-fold desc="Periods tab">
+		LOGGER.info("Populating periods tab.");
 		//TODO:: highlight selected period row
 		{
 			List<WorkPeriod> periods = new PeriodDoer().search(this.manager, new ActionConfig());
@@ -342,6 +392,7 @@ public class MainGui {
 		//</editor-fold>
 
 		//<editor-fold desc="Tasks tab">
+		LOGGER.info("Populating tasks tab.");
 		{
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
 			Object[][] periodData = new Object[tasks.size()][];
