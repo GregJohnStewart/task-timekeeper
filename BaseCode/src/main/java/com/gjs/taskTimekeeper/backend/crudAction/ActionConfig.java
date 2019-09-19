@@ -10,6 +10,15 @@ import org.slf4j.LoggerFactory;
 public class ActionConfig {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConfig.class);
 
+	public ActionConfig(){
+	}
+
+	public ActionConfig(KeeperObjectType type, Action action){
+		this();
+		this.setObjectOperatingOn(type);
+		this.setAction(action);
+	}
+
 	@Option(name = "-h", aliases = {"--help"}, usage = "Show this help dialogue.")
 	private boolean showHelp = false;
 

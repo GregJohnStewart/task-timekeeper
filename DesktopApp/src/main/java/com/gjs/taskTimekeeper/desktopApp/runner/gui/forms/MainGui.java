@@ -47,6 +47,9 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +82,9 @@ public class MainGui {
 	//<editor-fold desc="member variables">
 	private TimeManager manager;
 	private boolean changed = false;
+	private ByteArrayOutputStream printStream = new ByteArrayOutputStream();
+	private ByteArrayOutputStream errorPrintStream = new ByteArrayOutputStream();
+
 
 	private final String origTitle;
 	private JFrame mainFrame;
@@ -123,11 +129,48 @@ public class MainGui {
 			reloadData();
 		}
 	};
+	Action addTaskAction = new AbstractAction("Add Task") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Add Task action hit.");
+			String newTaskName = JOptionPane.showInternalInputDialog(
+				mainPanel,
+				"Enter new task Name",
+				"New Task",
+				JOptionPane.QUESTION_MESSAGE
+			);
+			LOGGER.debug("Got the following new task name: \"{}\"", newTaskName);
+			if(newTaskName == null){
+				LOGGER.info("New task creation canceled.");
+				return;
+			}
+
+			resetStreams();
+			ActionConfig config = new ActionConfig(KeeperObjectType.TASK, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
+			config.setName(newTaskName);
+
+			boolean result = ActionDoer.doObjAction(manager, config);
+			LOGGER.debug("Result of trying to add task: {}", result);
+			wasUpdated(result);
+
+			if(!result){
+				JOptionPane.showInternalMessageDialog(
+					mainPanel,
+					new String(errorPrintStream.toByteArray()),
+					"Error",
+					JOptionPane.ERROR_MESSAGE
+				);
+			}
+		}
+	};
 
 	//</editor-fold>
 
 	//<editor-fold desc="constructor and public methods">
 	{
+		ActionDoer.setMessageOutputStream(new PrintStream(this.printStream));
+		ActionDoer.setMessageErrorStream(new PrintStream(this.errorPrintStream));
+
 		this.saveAction.putValue(Action.ACCELERATOR_KEY,
 			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 		this.reloadAction.putValue(Action.ACCELERATOR_KEY,
@@ -162,6 +205,8 @@ public class MainGui {
 		//options
 		menu = new JMenu("Options");
 		this.autoSaveMenuItem = new JCheckBoxMenuItem("Auto save", AUTO_SAVE_DEFAULT);
+		menu.add(autoSaveMenuItem);
+		this.autoSaveMenuItem = new JCheckBoxMenuItem("Save on exit", AUTO_SAVE_DEFAULT);
 		menu.add(autoSaveMenuItem);
 		this.mainMenuBar.add(menu);
 		//info
@@ -200,11 +245,25 @@ public class MainGui {
 		this.mainFrame.pack();
 		this.mainFrame.setVisible(true);
 
+		//wire buttons
+		this.addTaskButton.setAction(this.addTaskAction);
+
 		LOGGER.info("Opened window");
 	}
 
 	public boolean stillOpen() {
 		return this.mainFrame.isVisible();
+	}
+
+	private void resetStreams(){
+		try {
+			this.printStream.flush();
+			this.printStream.reset();
+			this.errorPrintStream.flush();
+			this.errorPrintStream.reset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	//<editor-fold>
 
@@ -256,7 +315,10 @@ public class MainGui {
 
 			if (selectedPeriod == null) {
 				//TODO:: disable selected tab, switch to periods tab
+				this.mainTabPane.setSelectedIndex(1);
+				this.mainTabPane.setEnabledAt(0, false);
 			} else {
+				this.mainTabPane.setEnabledAt(0, true);
 				// period details
 				this.selectedPeriodStartLabel.setText(TimeParser.toOutputString(selectedPeriod.getStart()));
 				this.selectedPeriodEndLabel.setText(TimeParser.toOutputString(selectedPeriod.getEnd()));
