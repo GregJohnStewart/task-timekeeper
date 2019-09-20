@@ -14,10 +14,10 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.UnEditableTableModel;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.UnEditableTableModel;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -47,6 +47,9 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -80,13 +83,14 @@ public class MainGui {
 	}
 
 	//<editor-fold desc="member variables">
+	//admin stuff
 	private TimeManager manager;
 	private boolean changed = false;
 	private ByteArrayOutputStream printStream = new ByteArrayOutputStream();
 	private ByteArrayOutputStream errorPrintStream = new ByteArrayOutputStream();
-
-
 	private final String origTitle;
+
+	//swing components
 	private JFrame mainFrame;
 
 	private JPanel mainPanel;
@@ -114,22 +118,52 @@ public class MainGui {
 	private JCheckBoxMenuItem autoSaveMenuItem;
 
 
-	//actions
-	Action saveAction = new AbstractAction("Save") {
+	//<editor-fold desc="Actions/Handlers">
+	private WindowListener windowListener = new WindowAdapter() {
+		@Override
+		public void windowClosing(WindowEvent e) {
+			super.windowClosing(e);
+			LOGGER.info("Window closing event.");
+			if(changed){
+				LOGGER.info("Window closing with unsaved changes.");
+				int chosen = JOptionPane.showInternalConfirmDialog(
+					mainPanel,
+					"You have unsaved changes. Save before closing?",
+					"Unsaved changes",
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.WARNING_MESSAGE
+				);
+				if(chosen == JOptionPane.YES_OPTION){
+					LOGGER.info("User chose to save the data.");
+					saveData();
+					mainFrame.dispose();
+				} else if(chosen == JOptionPane.NO_OPTION) {
+					LOGGER.info("User chose to not save the data.");
+					mainFrame.dispose();
+				} else {
+					LOGGER.info("User cancelled the close action.");
+				}
+			} else {
+				LOGGER.info("No changes to worry about.");
+				mainFrame.dispose();
+			}
+		}
+	};
+	private Action saveAction = new AbstractAction("Save") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Save action performed.");
 			saveData();
 		}
 	};
-	Action reloadAction = new AbstractAction("Reload") {
+	private Action reloadAction = new AbstractAction("Reload") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Reload action performed.");
 			reloadData();
 		}
 	};
-	Action addTaskAction = new AbstractAction("Add Task") {
+	private Action addTaskAction = new AbstractAction("Add Task") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Add Task action hit.");
@@ -163,7 +197,7 @@ public class MainGui {
 			}
 		}
 	};
-
+	//</editor-fold>
 	//</editor-fold>
 
 	//<editor-fold desc="constructor and public methods">
@@ -185,8 +219,8 @@ public class MainGui {
 		this.mainFrame = new JFrame();
 		this.mainFrame.setIconImage(icon);
 		this.mainFrame.setContentPane(this.mainPanel);
-		this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//TODO:: tell action handler to not kill process when window closes. not a problem until we do the system tray icon.
+		this.mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.mainFrame.addWindowListener(this.windowListener);
 
 		//setup menu bar
 		this.mainMenuBar = new JMenuBar();
@@ -254,7 +288,9 @@ public class MainGui {
 	public boolean stillOpen() {
 		return this.mainFrame.isVisible();
 	}
+	//<editor-fold>
 
+	//<editor-fold desc="Utility methods">
 	private void resetStreams(){
 		try {
 			this.printStream.flush();
@@ -262,7 +298,7 @@ public class MainGui {
 			this.errorPrintStream.flush();
 			this.errorPrintStream.reset();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error flushing stream(s): ", e);
 		}
 	}
 	//<editor-fold>

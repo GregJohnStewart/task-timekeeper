@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.gui.util;
+package com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;

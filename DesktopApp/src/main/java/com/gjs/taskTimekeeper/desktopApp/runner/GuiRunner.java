@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
 import java.io.InputStream;
 
 public class GuiRunner extends ModeRunner {
@@ -69,6 +69,6 @@ public class GuiRunner extends ModeRunner {
 	}
 
 	public boolean stillRunning(){
-		return mainGui.stillOpen();
+		return this.mainGui.stillOpen() || this.systemTray.stillRunning();
 	}
 }
