@@ -35,6 +35,15 @@ public class GuiRunner extends ModeRunner {
 		}
 
 		APP_TITLE = "Task Timekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
+
+		//TODO:: set the look and feel? Configurable?
+//		try {
+//			UIManager.setLookAndFeel(
+//				"javax.swing.plaf.nimbus.NimbusLookAndFeel"
+//			);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
 		LOGGER.debug("Setup gui static resources.");
 	}
 

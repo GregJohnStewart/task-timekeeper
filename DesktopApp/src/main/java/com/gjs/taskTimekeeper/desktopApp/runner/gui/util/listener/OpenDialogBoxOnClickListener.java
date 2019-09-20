@@ -1,7 +1,10 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import java.awt.Component;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -34,14 +37,14 @@ public class OpenDialogBoxOnClickListener  extends MouseAdapter {
 
 	private void showDialogBox(){
 		if(this.icon == null) {
-			JOptionPane.showMessageDialog(
+			JOptionPane.showInternalMessageDialog(
 				this.parent,
 				this.message,
 				this.title,
 				this.messageType
 			);
 		} else {
-			JOptionPane.showMessageDialog(
+			JOptionPane.showInternalMessageDialog(
 				this.parent,
 				this.message,
 				this.title,

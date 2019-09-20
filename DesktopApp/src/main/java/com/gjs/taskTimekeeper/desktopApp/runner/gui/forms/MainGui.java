@@ -124,7 +124,7 @@ public class MainGui {
 		public void windowClosing(WindowEvent e) {
 			super.windowClosing(e);
 			LOGGER.info("Window closing event.");
-			if(changed){
+			if (changed) {
 				LOGGER.info("Window closing with unsaved changes.");
 				int chosen = JOptionPane.showInternalConfirmDialog(
 					mainPanel,
@@ -133,11 +133,11 @@ public class MainGui {
 					JOptionPane.YES_NO_CANCEL_OPTION,
 					JOptionPane.WARNING_MESSAGE
 				);
-				if(chosen == JOptionPane.YES_OPTION){
+				if (chosen == JOptionPane.YES_OPTION) {
 					LOGGER.info("User chose to save the data.");
 					saveData();
 					mainFrame.dispose();
-				} else if(chosen == JOptionPane.NO_OPTION) {
+				} else if (chosen == JOptionPane.NO_OPTION) {
 					LOGGER.info("User chose to not save the data.");
 					mainFrame.dispose();
 				} else {
@@ -147,6 +147,12 @@ public class MainGui {
 				LOGGER.info("No changes to worry about.");
 				mainFrame.dispose();
 			}
+		}
+	};
+	private Action closeAction = new AbstractAction("Close") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
 		}
 	};
 	private Action saveAction = new AbstractAction("Save") {
@@ -174,7 +180,7 @@ public class MainGui {
 				JOptionPane.QUESTION_MESSAGE
 			);
 			LOGGER.debug("Got the following new task name: \"{}\"", newTaskName);
-			if(newTaskName == null){
+			if (newTaskName == null) {
 				LOGGER.info("New task creation canceled.");
 				return;
 			}
@@ -187,7 +193,7 @@ public class MainGui {
 			LOGGER.debug("Result of trying to add task: {}", result);
 			wasUpdated(result);
 
-			if(!result){
+			if (!result) {
 				JOptionPane.showInternalMessageDialog(
 					mainPanel,
 					new String(errorPrintStream.toByteArray()),
@@ -234,6 +240,7 @@ public class MainGui {
 		menu.add(menuItem);
 		menu.addSeparator();
 		menuItem = new JMenuItem("Close");
+		menuItem.setAction(closeAction);
 		menu.add(menuItem);
 		this.mainMenuBar.add(menu);
 		//options
@@ -248,7 +255,7 @@ public class MainGui {
 		menuItem = new JMenuItem("About");
 		menuItem.addMouseListener(
 			new OpenDialogBoxOnClickListener(
-				this.mainFrame,
+				this.mainPanel,
 				ABOUT_MESSAGE,
 				"About Task Timekeeper",
 				JOptionPane.INFORMATION_MESSAGE,
@@ -291,7 +298,7 @@ public class MainGui {
 	//<editor-fold>
 
 	//<editor-fold desc="Utility methods">
-	private void resetStreams(){
+	private void resetStreams() {
 		try {
 			this.printStream.flush();
 			this.printStream.reset();
@@ -319,9 +326,9 @@ public class MainGui {
 
 	private void wasUpdated(boolean wasUpdated) {
 		this.changed = this.changed || wasUpdated;
-		if(this.autoSaveMenuItem.getState()){
+		if (this.autoSaveMenuItem.getState()) {
 			this.saveData();
-		}else {
+		} else {
 			this.updateUiData();
 		}
 	}
@@ -537,8 +544,8 @@ public class MainGui {
 	private void $$$setupUI$$$() {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-		mainPanel.setMinimumSize(new Dimension(650, 500));
-		mainPanel.setPreferredSize(new Dimension(650, 500));
+		mainPanel.setMinimumSize(new Dimension(675, 500));
+		mainPanel.setPreferredSize(new Dimension(675, 500));
 		mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), null));
 		mainTabPane = new JTabbedPane();
 		mainPanel.add(mainTabPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));

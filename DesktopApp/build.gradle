@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '0.1.1.383'
+version = '0.1.1.397'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -35,6 +35,7 @@ dependencies {
     compile 'com.intellij:forms_rt:7.0.3'
     // https://mvnrepository.com/artifact/com.dorkbox/SystemTray
     //compile group: 'com.dorkbox', name: 'SystemTray', version: '3.17'
+
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
