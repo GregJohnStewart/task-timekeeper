@@ -4,7 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
@@ -21,7 +29,7 @@ public class TimeManager {
 	}
 
 	/**
-	 * Taks held by this object.
+	 * Tasks held by this object.
 	 */
 	private Set<Task> tasks = new HashSet<>();
 	/**
@@ -129,24 +137,36 @@ public class TimeManager {
 	 * @param tasks The new tasks to be held.
 	 * @return This manager object.
 	 * @throws NullPointerException If the tasks list is null or contains null values.
+	 * @throws IllegalArgumentException If the tasks list has tasks with duplicate names
 	 */
-	public TimeManager setTasks(Set<Task> tasks) throws NullPointerException {
+	public TimeManager setTasks(Set<Task> tasks) throws NullPointerException, IllegalArgumentException {
 		if (tasks == null) {
 			throw new NullPointerException("Tasks cannot be null.");
 		}
 
 		if (!tasks.isEmpty()) {
 			boolean containsNullValues = false;
-
 			try {
 				containsNullValues = tasks.contains(null);
 			} catch (NullPointerException e) {
 				//nothing to do
 			}
 			if (containsNullValues) {
-				throw new NullPointerException("Cannot hold null timespans.");
+				throw new NullPointerException("Cannot hold null tasks.");
 			}
 		}
+		//TODO:: test
+		for(Task task : tasks){
+			for(Task otherTask : tasks){
+				if(task.equals(otherTask)){
+					continue;
+				}
+				if(task.getName().equals(otherTask.getName())){
+					throw new IllegalArgumentException("Set of tasks cannot have duplicate names.");
+				}
+			}
+		}
+
 		this.tasks = tasks;
 		return this;
 	}
@@ -157,10 +177,16 @@ public class TimeManager {
 	 * @param task The task to add
 	 * @return This manager object
 	 * @throws NullPointerException If the task given is null.
+	 * @throws IllegalArgumentException If the task given's name equals the name of a task already held.
 	 */
-	public TimeManager addTask(Task task) throws NullPointerException {
+	public TimeManager addTask(Task task) throws NullPointerException, IllegalArgumentException {
 		if (task == null) {
 			throw new NullPointerException("Cannot add a null task.");
+		}
+		for(Task heldTask : this.getTasks()){
+			if(heldTask.getName().equals(task.getName())){
+				throw new IllegalArgumentException("Task with same name already present.");
+			}
 		}
 		this.getTasks().add(task);
 		return this;
@@ -202,17 +228,18 @@ public class TimeManager {
 	 * @param span The span to add
 	 * @return This manager object
 	 * @throws NullPointerException  If the span given is null
-	 * @throws IllegalStateException If there are no periods to add to.
+	 * @throws IllegalArgumentException If the task in the span is not held by the manager and it holds a duplicate name.
 	 */
-	public TimeManager addTimespan(Timespan span) throws NullPointerException, IllegalStateException {
+	public TimeManager addTimespan(Timespan span) throws NullPointerException, IllegalArgumentException {
 		if (span == null) {
 			throw new NullPointerException("Timespan cannot be null.");
 		}
 		if (this.getWorkPeriods().isEmpty()) {
 			this.addWorkPeriod(new WorkPeriod());
-			//throw new IllegalStateException("Do not have a work period to add to.");
 		}
-		this.addTask(span.getTask());
+		if(!this.getTasks().contains(span.getTask())) {
+			this.addTask(span.getTask());
+		}
 		this.workPeriods.last().addTimespan(span);
 		return this;
 	}

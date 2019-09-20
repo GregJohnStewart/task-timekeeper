@@ -19,6 +19,7 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	private String name;
 	/**
 	 * The uuid of the task. For ensuring uniqueness and allowing for comparison.
+	 * TODO:: remove this, not needed as name is now treated as unique
 	 */
 	private final UUID uuid;
 	/**
