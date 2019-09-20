@@ -6,11 +6,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -75,10 +73,8 @@ public class TimespanTest {
 	public void testCompare() {
 		LocalDateTime ldt = LocalDateTime.now();
 
-		UUID uuid = UUID.randomUUID();
-
-		Timespan main = new Timespan(new Task(uuid, "task"));
-		Timespan o = new Timespan(new Task(uuid, "task"));
+		Timespan main = new Timespan(new Task("task"));
+		Timespan o = new Timespan(new Task("task"));
 
 		assertEquals(0, main.compareTo(o));
 
@@ -101,7 +97,7 @@ public class TimespanTest {
 		main = new Timespan(new Task("task"));
 		o = new Timespan(new Task("task"));
 
-		assertNotEquals(0, main.compareTo(o));
+		assertEquals(0, main.compareTo(o));
 	}
 
 	@Test(expected = NullPointerException.class)

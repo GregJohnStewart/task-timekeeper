@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+//TODO:: rewrite these better
 public class TaskTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
 
@@ -31,15 +30,8 @@ public class TaskTest {
 
 		Task newTasktwo = new Task("task", map);
 
-		assertNotEquals(newTask, newTasktwo);
-		assertNotEquals(newTask.hashCode(), newTasktwo.hashCode());
-
-		assertNotNull(newTask.getUuid());
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void testNullUuid() {
-		new Task(null, "hello");
+		assertEquals(newTask, newTasktwo);
+		assertEquals(newTask.hashCode(), newTasktwo.hashCode());
 	}
 
 	@Test(expected = NullPointerException.class)
