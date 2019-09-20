@@ -6,9 +6,18 @@ import org.junit.Test;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class WorkPeriodTest {
 	private static final Task testTask = new Task("Test task");
@@ -199,7 +208,7 @@ public class WorkPeriodTest {
 	public void hasTimespansWithTask() {
 		WorkPeriod period = new WorkPeriod();
 
-		Timespan spanOne = new Timespan(new Task(""), now, nowPlusFive);
+		Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
 		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
 		assertFalse(period.hasTimespansWith(testTask));
@@ -215,7 +224,7 @@ public class WorkPeriodTest {
 	public void getTimespansWithTask() {
 		WorkPeriod period = new WorkPeriod();
 
-		Timespan spanOne = new Timespan(new Task(""), now, nowPlusFive);
+		Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
 		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
 		assertTrue(period.getTimespansWith(testTask).isEmpty());

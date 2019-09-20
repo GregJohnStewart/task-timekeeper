@@ -108,10 +108,15 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	 * @param name The new name of the task.
 	 * @return This task object.
 	 * @throws NullPointerException if the string given is null.
+	 * @throws IllegalArgumentException If the string given is blank or just whitespace.
 	 */
-	public Task setName(String name) throws NullPointerException {
+	public Task setName(String name) throws NullPointerException, IllegalArgumentException {
 		if (name == null) {
 			throw new NullPointerException("Name cannot be null.");
+		}
+		name = name.strip();
+		if(name.isBlank()){
+			throw new IllegalArgumentException("Name cannot just be whitespace.");
 		}
 		this.name = name;
 		return this;

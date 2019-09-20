@@ -8,25 +8,28 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TaskTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
 
 	@Test
 	public void testBasics() {
-		Task newTask = new Task("");
+		Task newTask = new Task("task");
 
-		assertEquals("", newTask.getName());
+		assertEquals("task", newTask.getName());
 
 		HashMap<String, String> map = new HashMap<>();
 		map.put("", "");
 
-		newTask = new Task("", map);
-		assertEquals("", newTask.getName());
+		newTask = new Task("task", map);
+		assertEquals("task", newTask.getName());
 		assertEquals(map, newTask.getAttributes());
 
-		Task newTasktwo = new Task("", map);
+		Task newTasktwo = new Task("task", map);
 
 		assertNotEquals(newTask, newTasktwo);
 		assertNotEquals(newTask.hashCode(), newTasktwo.hashCode());
@@ -36,7 +39,7 @@ public class TaskTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullUuid() {
-		new Task(null, "");
+		new Task(null, "hello");
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -46,7 +49,12 @@ public class TaskTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullSetAttributes() {
-		new Task("", null);
+		new Task("hello", null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testWhitespaceName(){
+		new Task("\t \n");
 	}
 
 	@Test

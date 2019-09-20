@@ -8,7 +8,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class TimespanTest {
 
@@ -53,7 +58,7 @@ public class TimespanTest {
 
 	@Test
 	public void testNotCompleteGetDuration() {
-		assertEquals(Duration.ZERO, new Timespan(new Task("")).getDuration());
+		assertEquals(Duration.ZERO, new Timespan(new Task("task")).getDuration());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -72,8 +77,8 @@ public class TimespanTest {
 
 		UUID uuid = UUID.randomUUID();
 
-		Timespan main = new Timespan(new Task(uuid, ""));
-		Timespan o = new Timespan(new Task(uuid, ""));
+		Timespan main = new Timespan(new Task(uuid, "task"));
+		Timespan o = new Timespan(new Task(uuid, "task"));
 
 		assertEquals(0, main.compareTo(o));
 
@@ -93,15 +98,15 @@ public class TimespanTest {
 		o.setStartTime(LocalDateTime.MAX);
 		assertTrue(main.compareTo(o) < 0);
 
-		main = new Timespan(new Task(""));
-		o = new Timespan(new Task(""));
+		main = new Timespan(new Task("task"));
+		o = new Timespan(new Task("task"));
 
 		assertNotEquals(0, main.compareTo(o));
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testCompareNull() {
-		new Timespan(new Task("")).compareTo(null);
+		new Timespan(new Task("task")).compareTo(null);
 	}
 
 	@Test

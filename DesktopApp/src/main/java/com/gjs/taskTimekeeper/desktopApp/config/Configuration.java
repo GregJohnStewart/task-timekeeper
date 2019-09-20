@@ -72,6 +72,7 @@ public class Configuration {
 		readFromConfigFile();
 		addEnvironmentConfig();
 		processCmdLineOps(ops);
+		//TODO:: move config placeholder processing here. Currently done elsewhere
 
 		logOutProperties();
 	}
