@@ -10,13 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Action doer to edit WorkPeriods.
  */
-public class PeriodDoer extends ActionDoer<WorkPeriod> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeriodDoer.class);
+public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkPeriodDoer.class);
 
 	/** The selected work period. If null, none are selected. */
 	protected WorkPeriod selected = null;
@@ -72,6 +79,7 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
+		LOGGER.info("Adding a new time manager.");
 		WorkPeriod period = new WorkPeriod();
 
 		if(config.getAttributeName() != null){
@@ -81,9 +89,18 @@ public class PeriodDoer extends ActionDoer<WorkPeriod> {
 					config.getAttributeVal()
 				);
 			}
+		} else {
+			LOGGER.debug("No attributes to add.");
 		}
 
+		int numBefore = manager.getWorkPeriods().size();
 		manager.addWorkPeriod(period);
+
+		if(numBefore == manager.getWorkPeriods().size()){
+			LOGGER.info("Empty period already exists, nothing happened.");
+			consoleErrorPrintln("An empty period already exists.");
+			return false;
+		}
 		consolePrintln(OutputLevel.DEFAULT, "Added new work period.");
 
 		if(config.isSelect()){

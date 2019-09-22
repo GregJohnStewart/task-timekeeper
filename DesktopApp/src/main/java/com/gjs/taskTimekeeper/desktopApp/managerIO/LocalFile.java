@@ -7,7 +7,12 @@ import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 /**
@@ -19,7 +24,7 @@ public class LocalFile extends ManagerIO {
 	@Override
 	public TimeManager load() {
 		LOGGER.trace("Reading in saved data from local file.");
-
+		//TODO:: if bad json, don't just overwrite with empty file.
 		TimeManager manager = null;
 		try(
 			InputStream is = new FileInputStream(

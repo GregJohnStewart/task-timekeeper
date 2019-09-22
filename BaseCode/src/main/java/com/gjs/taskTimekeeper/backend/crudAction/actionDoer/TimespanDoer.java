@@ -23,15 +23,15 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 	/**
 	 * The period doer also being used the ActionDoer to get the selected work period.
 	 */
-	private final PeriodDoer periodDoer;
+	private final WorkPeriodDoer workPeriodDoer;
 
-	public TimespanDoer(PeriodDoer periodDoer){
-		this.periodDoer = periodDoer;
+	public TimespanDoer(WorkPeriodDoer workPeriodDoer){
+		this.workPeriodDoer = workPeriodDoer;
 	}
 
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
-		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
+		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to add to.");
 			consoleErrorPrintln("No work period selected to add to.");
@@ -171,7 +171,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			return false;
 		}
 
-		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
+		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager(manager);
 
 		period.getTimespans().remove(span);
 
@@ -192,7 +192,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 	@Override
 	public List<Timespan> search(TimeManager manager, ActionConfig config) {
-		WorkPeriod period = this.periodDoer.getSelectedFromManager(manager);
+		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to search time spans in.");
 			consoleErrorPrintln("No work period selected to search time spans in.");

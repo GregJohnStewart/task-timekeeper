@@ -7,9 +7,9 @@ import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
-import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.PeriodDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TaskDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TimespanDoer;
+import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.WorkPeriodDoer;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
@@ -193,14 +193,22 @@ public class MainGui {
 			LOGGER.debug("Result of trying to add task: {}", result);
 			wasUpdated(result);
 
-			if (!result) {
-				JOptionPane.showInternalMessageDialog(
-					mainPanel,
-					new String(errorPrintStream.toByteArray()),
-					"Error",
-					JOptionPane.ERROR_MESSAGE
-				);
-			}
+			sendErrorIfNeeded(!result);
+		}
+	};
+	private Action addPeriodAction = new AbstractAction("Add Period") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Add Period action hit.");
+
+			resetStreams();
+			ActionConfig config = new ActionConfig(KeeperObjectType.PERIOD, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
+
+			boolean result = ActionDoer.doObjAction(manager, config);
+			LOGGER.debug("Result of trying to add task: {}", result);
+			wasUpdated(result);
+
+			sendErrorIfNeeded(!result);
 		}
 	};
 	//</editor-fold>
@@ -288,6 +296,7 @@ public class MainGui {
 
 		//wire buttons
 		this.addTaskButton.setAction(this.addTaskAction);
+		this.addPeriodButton.setAction(this.addPeriodAction);
 
 		LOGGER.info("Opened window");
 	}
@@ -306,6 +315,19 @@ public class MainGui {
 			this.errorPrintStream.reset();
 		} catch (IOException e) {
 			LOGGER.error("Error flushing stream(s): ", e);
+		}
+	}
+	private void sendError(){
+		JOptionPane.showInternalMessageDialog(
+			mainPanel,
+			new String(errorPrintStream.toByteArray()),
+			"Error",
+			JOptionPane.ERROR_MESSAGE
+		);
+	}
+	private void sendErrorIfNeeded(boolean needed){
+		if(needed){
+			sendError();
 		}
 	}
 	//<editor-fold>
@@ -357,8 +379,9 @@ public class MainGui {
 			WorkPeriod selectedPeriod = ActionDoer.getSelectedWorkPeriod();
 
 			if (selectedPeriod == null) {
-				//TODO:: disable selected tab, switch to periods tab
-				this.mainTabPane.setSelectedIndex(1);
+				if(this.mainTabPane.getSelectedIndex() == 0) {
+					this.mainTabPane.setSelectedIndex(1);
+				}
 				this.mainTabPane.setEnabledAt(0, false);
 			} else {
 				this.mainTabPane.setEnabledAt(0, true);
@@ -455,7 +478,7 @@ public class MainGui {
 		LOGGER.info("Populating periods tab.");
 		//TODO:: highlight selected period row
 		{
-			List<WorkPeriod> periods = new PeriodDoer().search(this.manager, new ActionConfig());
+			List<WorkPeriod> periods = new WorkPeriodDoer().search(this.manager, new ActionConfig());
 			Object[][] periodData = new Object[periods.size()][];
 
 			int curInd = 0;

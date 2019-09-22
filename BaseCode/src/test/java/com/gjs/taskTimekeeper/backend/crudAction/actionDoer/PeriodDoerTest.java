@@ -13,7 +13,12 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class PeriodDoerTest extends ActionDoerTest{
 
@@ -35,11 +40,14 @@ public class PeriodDoerTest extends ActionDoerTest{
 	//<editor-fold desc="Adding Tests">
 	@Test
 	public void addSimple(){
-		TimeManager manager = new TimeManager();
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+
+		int beforeCount = manager.getWorkPeriods().size();
 
 		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD)));
-
-		assertEquals(1, manager.getWorkPeriods().size());
+		assertNotEquals(manager, orig);
+		assertEquals(beforeCount + 1, manager.getWorkPeriods().size());
 
 		assertNull(ActionDoer.getSelectedWorkPeriod());
 	}
@@ -120,7 +128,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
 
 		assertTrue(period.getAttributes().containsKey("new Att"));
 		assertEquals("New val", period.getAttributes().get("new Att"));
@@ -143,7 +151,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
 
 		assertTrue(period.getAttributes().containsKey("attOne"));
 		assertEquals("New val", period.getAttributes().get("attOne"));
@@ -166,7 +174,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
 
 		assertFalse(period.getAttributes().containsKey("attOne"));
 	}
@@ -222,7 +230,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		TimeManager orig = manager.clone();
 		int selectedInd = 1;
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		assertTrue(
 			ActionDoer.doObjAction(
@@ -285,7 +293,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		TimeManager orig = manager.clone();
 		int selectedInd = 3;
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
 
@@ -308,7 +316,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		TimeManager orig = manager.clone();
 		int selectedInd = 1;
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
 
@@ -331,7 +339,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		TimeManager orig = manager.clone();
 		int selectedInd = 2;
 
-		WorkPeriod period = new PeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime after = nowPlusFifteen.plusMinutes(2);
 		LocalDateTime before = nowPlusHourFifteen.plusMinutes(2);
@@ -364,7 +372,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 		TimeManager manager = getTestManager();
 		ActionConfig config = this.getActionConfig(Action.VIEW);
 
-		Collection<WorkPeriod> results = new PeriodDoer().search(manager, config);
+		Collection<WorkPeriod> results = new WorkPeriodDoer().search(manager, config);
 		//TODO:: this, but better
 	}
 	//</editor-fold>
@@ -384,7 +392,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
 		assertNotNull(selected);
-		assertEquals(new PeriodDoer().search(manager, this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
+		assertEquals(new WorkPeriodDoer().search(manager, this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
 	}
 
 	@Test
@@ -400,7 +408,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
 		assertNotNull(selected);
-		assertEquals(new PeriodDoer().search(getTestManager(), this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
+		assertEquals(new WorkPeriodDoer().search(getTestManager(), this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
 	}
 	//</editor-fold>
 }

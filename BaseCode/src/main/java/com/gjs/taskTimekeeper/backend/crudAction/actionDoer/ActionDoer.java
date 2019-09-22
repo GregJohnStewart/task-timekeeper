@@ -250,7 +250,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	/** An instance of a task doer. */
 	private static TaskDoer TASK_DOER;
 	/** An instance of a period doer. */
-	private static PeriodDoer PERIOD_DOER;
+	private static WorkPeriodDoer PERIOD_DOER;
 	/** An instance of a timespan doer. */
 	private static TimespanDoer TIMESPAN_DOER;
 	/** If the doers have already been setup. */
@@ -266,7 +266,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		doersSetup = true;
 		TASK_DOER = new TaskDoer();
-		PERIOD_DOER = new PeriodDoer();
+		PERIOD_DOER = new WorkPeriodDoer();
 		TIMESPAN_DOER = new TimespanDoer(PERIOD_DOER);
 	}
 
