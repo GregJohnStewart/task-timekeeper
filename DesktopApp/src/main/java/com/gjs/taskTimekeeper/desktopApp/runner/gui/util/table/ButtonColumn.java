@@ -1,5 +1,8 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -31,9 +34,9 @@ import java.awt.event.MouseListener;
  *  the model row number of the button that was clicked.
  *
  */
-public class ButtonColumn extends AbstractCellEditor
-	implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener
-{
+public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ButtonColumn.class);
+
 	private JTable table;
 	private Action action;
 	private int mnemonic;
@@ -195,6 +198,7 @@ public class ButtonColumn extends AbstractCellEditor
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
+		LOGGER.trace("Button on table pushed.");
 		int row = table.convertRowIndexToModel( table.getEditingRow() );
 		fireEditingStopped();
 
@@ -217,6 +221,7 @@ public class ButtonColumn extends AbstractCellEditor
 	 */
 	public void mousePressed(MouseEvent e)
 	{
+		LOGGER.trace("Mouse pressed!");
 		if (table.isEditing()
 			    &&  table.getCellEditor() == this)
 			isButtonColumnEditor = true;
@@ -224,6 +229,7 @@ public class ButtonColumn extends AbstractCellEditor
 
 	public void mouseReleased(MouseEvent e)
 	{
+		LOGGER.trace("Mouse released!");
 		if (isButtonColumnEditor
 			    &&  table.isEditing())
 			table.getCellEditor().stopCellEditing();
@@ -231,7 +237,14 @@ public class ButtonColumn extends AbstractCellEditor
 		isButtonColumnEditor = false;
 	}
 
-	public void mouseClicked(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {
+		LOGGER.trace("Mouse clicked!");
+		if (isButtonColumnEditor
+			    &&  table.isEditing())
+			table.getCellEditor().stopCellEditing();
+
+		isButtonColumnEditor = false;
+	}
 	public void mouseEntered(MouseEvent e) {}
 	public void mouseExited(MouseEvent e) {}
 }

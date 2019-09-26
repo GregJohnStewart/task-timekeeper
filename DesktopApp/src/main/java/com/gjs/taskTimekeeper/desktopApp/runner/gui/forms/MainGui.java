@@ -17,6 +17,7 @@ import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.ButtonsCell;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.UnEditableTableModel;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -194,6 +195,31 @@ public class MainGui {
 			wasUpdated(result);
 
 			sendErrorIfNeeded(!result);
+		}
+	};
+	Action editTaskAction = new AbstractAction("Edit") {
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Editing task in row");
+		}
+	};
+	Action deleteTaskAction = new AbstractAction("Delete") {
+		public void actionPerformed(ActionEvent e) {
+			int chosen = JOptionPane.showInternalConfirmDialog(
+				mainPanel,
+				"Are you sure you want to delete this task?",
+				"Deletion Confirmation",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE
+			);
+			if (chosen != JOptionPane.YES_OPTION) {
+				LOGGER.info("User chose to cancel deleting the task.");
+				return;
+			}
+
+			JTable table = (JTable)e.getSource();
+			int modelRow = Integer.valueOf( e.getActionCommand() );
+
+			LOGGER.info("Deleting task in row # {}", modelRow);
 		}
 	};
 	private Action addPeriodAction = new AbstractAction("Add Period") {
@@ -521,6 +547,7 @@ public class MainGui {
 
 		//<editor-fold desc="Tasks tab">
 		LOGGER.info("Populating tasks tab.");
+		//TODO:: rework to use gridbaglayout to achieve table-like visuals with buttons that function.
 		{
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
 			Object[][] periodData = new Object[tasks.size()][];
@@ -529,9 +556,14 @@ public class MainGui {
 			for (Task task : tasks) {
 				periodData[curInd] = new Object[TASK_LIST_TABLE_HEADERS.length];
 
+				JButton editButton = new JButton("e");
+				editButton.setAction(editTaskAction);
+				JButton deleteButton = new JButton("d");
+				deleteButton.setAction(deleteTaskAction);
+
 				periodData[curInd][0] = curInd + 1;
 				periodData[curInd][1] = task.getName();
-				periodData[curInd][2] = new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				periodData[curInd][2] = List.of(editButton, deleteButton);//new JButton("action1");//TODO:: figure out these buttons in a table cell.
 				curInd++;
 			}
 
@@ -540,6 +572,15 @@ public class MainGui {
 				.getColumn(0)
 				.setCellRenderer(CENTER_CELL_RENDERER);
 			Utils.setColWidth(tabListTable, 0, INDEX_COL_WIDTH);
+
+			tabListTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonsCell());
+
+
+			//ButtonColumn bcTwo = new ButtonColumn(tabListTable, editTaskAction, 2);
+			//ButtonColumn bc = new ButtonColumn(tabListTable, deleteTaskAction, 3);
+			//JTable table = (JTable)e.getSource();
+			//int modelRow = Integer.valueOf( e.getActionCommand() );
+
 
 			this.tasksScrollPane.setViewportView(tabListTable);
 		}
