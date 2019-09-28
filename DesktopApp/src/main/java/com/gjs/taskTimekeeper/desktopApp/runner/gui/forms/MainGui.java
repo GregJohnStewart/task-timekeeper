@@ -547,7 +547,7 @@ public class MainGui {
 
 		//<editor-fold desc="Tasks tab">
 		LOGGER.info("Populating tasks tab.");
-		//TODO:: rework to use gridbaglayout to achieve table-like visuals with buttons that function.
+		//TODO:: rework to use gridlayout to achieve table-like visuals with buttons that function.
 		{
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
 			Object[][] periodData = new Object[tasks.size()][];
