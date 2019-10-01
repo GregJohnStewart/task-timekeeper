@@ -14,10 +14,10 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.GridBagLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.ButtonsCell;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.UnEditableTableModel;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -55,6 +55,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +78,7 @@ public class MainGui {
 	private static final DefaultTableCellRenderer CENTER_CELL_RENDERER = new DefaultTableCellRenderer();
 
 	private static final String[] PERIOD_LIST_TABLE_HEADERS = new String[]{"#", "Start", "End", "Duration", "Complete", "Actions"};
-	private static final String[] TASK_LIST_TABLE_HEADERS = new String[]{"#", "Name", "Actions"};
+	private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
 
 	static {
 		CENTER_CELL_RENDERER.setHorizontalAlignment(JLabel.CENTER);
@@ -550,39 +551,32 @@ public class MainGui {
 		//TODO:: rework to use gridlayout to achieve table-like visuals with buttons that function.
 		{
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
-			Object[][] periodData = new Object[tasks.size()][];
+			List<List<Object>> periodData = new ArrayList<>();
 
 			int curInd = 0;
 			for (Task task : tasks) {
-				periodData[curInd] = new Object[TASK_LIST_TABLE_HEADERS.length];
+				periodData.add(new ArrayList<>(TASK_LIST_TABLE_HEADERS.size()));
 
 				JButton editButton = new JButton("e");
 				editButton.setAction(editTaskAction);
 				JButton deleteButton = new JButton("d");
 				deleteButton.setAction(deleteTaskAction);
 
-				periodData[curInd][0] = curInd + 1;
-				periodData[curInd][1] = task.getName();
-				periodData[curInd][2] = List.of(editButton, deleteButton);//new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				periodData.get(curInd).add(curInd + 1);
+				periodData.get(curInd).add(task.getName());
+				periodData.get(curInd).add(List.of(editButton, deleteButton));//new JButton("action1");//TODO:: figure out these buttons in a table cell.
 				curInd++;
 			}
 
-			JTable tabListTable = new JTable(new UnEditableTableModel(periodData, TASK_LIST_TABLE_HEADERS));
-			tabListTable.getColumnModel()
-				.getColumn(0)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(tabListTable, 0, INDEX_COL_WIDTH);
-
-			tabListTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonsCell());
-
-
-			//ButtonColumn bcTwo = new ButtonColumn(tabListTable, editTaskAction, 2);
-			//ButtonColumn bc = new ButtonColumn(tabListTable, deleteTaskAction, 3);
-			//JTable table = (JTable)e.getSource();
-			//int modelRow = Integer.valueOf( e.getActionCommand() );
-
-
-			this.tasksScrollPane.setViewportView(tabListTable);
+			new GridBagLayoutHelper(
+				this.tasksScrollPane,
+				periodData,
+				TASK_LIST_TABLE_HEADERS,
+				Map.of(
+					0, (double)INDEX_COL_WIDTH,
+					2, (double)100
+				)
+			);
 		}
 		//</editor-fold>
 
