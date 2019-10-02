@@ -40,7 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
@@ -73,7 +72,6 @@ public class MainGui {
 	private static final double INDEX_COL_WIDTH = 35;
 	private static final double DATETIME_COL_WIDTH = 130;
 	private static final double DURATION_COL_WIDTH = 65;
-	private static final DefaultTableCellRenderer CENTER_CELL_RENDERER = new DefaultTableCellRenderer();
 
 	private static final List<String> PERIOD_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Complete", "Actions");
 	private static final Map<Integer, Double> PERIOD_LIST_COL_WIDTHS = Map.of(
@@ -96,11 +94,6 @@ public class MainGui {
 		3, DURATION_COL_WIDTH,
 		5, (double)85
 	);
-
-
-	static {
-		CENTER_CELL_RENDERER.setHorizontalAlignment(JLabel.CENTER);
-	}
 
 	//<editor-fold desc="member variables">
 	//admin stuff
