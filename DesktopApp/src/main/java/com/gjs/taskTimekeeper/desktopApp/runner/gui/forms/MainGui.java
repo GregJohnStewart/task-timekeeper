@@ -14,7 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableBagLayoutHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
@@ -72,13 +72,24 @@ public class MainGui {
 		                                            "\nPlease consider donating if you find this program was helpful to you!";
 
 	private static final boolean AUTO_SAVE_DEFAULT = false;
-	private static final int INDEX_COL_WIDTH = 35;
-	private static final int DATETIME_COL_WIDTH = 130;
-	private static final int DURATION_COL_WIDTH = 65;
+	private static final double INDEX_COL_WIDTH = 35;
+	private static final double DATETIME_COL_WIDTH = 130;
+	private static final double DURATION_COL_WIDTH = 65;
 	private static final DefaultTableCellRenderer CENTER_CELL_RENDERER = new DefaultTableCellRenderer();
 
 	private static final List<String> PERIOD_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Complete", "Actions");
+	private static final Map<Integer, Double> PERIOD_LIST_COL_WIDTHS = Map.of(
+		0, INDEX_COL_WIDTH,
+		1, DATETIME_COL_WIDTH,
+		2, DATETIME_COL_WIDTH,
+		3, DURATION_COL_WIDTH,
+		4, (double)85
+	);
 	private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
+	private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS = Map.of(
+		0, (double)INDEX_COL_WIDTH,
+		2, (double)85
+	);
 
 	static {
 		CENTER_CELL_RENDERER.setHorizontalAlignment(JLabel.CENTER);
@@ -458,7 +469,7 @@ public class MainGui {
 					taskStatsTable.getColumnModel()
 						.getColumn(1)
 						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 1, DURATION_COL_WIDTH);
+					Utils.setColWidth(taskStatsTable, 1, (int) DURATION_COL_WIDTH);
 					this.selectedPeriodTaskStatsPane.setViewportView(taskStatsTable);
 				}
 
@@ -485,19 +496,19 @@ public class MainGui {
 					taskStatsTable.getColumnModel()
 						.getColumn(0)
 						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 0, INDEX_COL_WIDTH);
+					Utils.setColWidth(taskStatsTable, 0, (int) INDEX_COL_WIDTH);
 					taskStatsTable.getColumnModel()
 						.getColumn(1)
 						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 1, DATETIME_COL_WIDTH);
+					Utils.setColWidth(taskStatsTable, 1, (int) DATETIME_COL_WIDTH);
 					taskStatsTable.getColumnModel()
 						.getColumn(2)
 						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 2, DATETIME_COL_WIDTH);
+					Utils.setColWidth(taskStatsTable, 2, (int) DATETIME_COL_WIDTH);
 					taskStatsTable.getColumnModel()
 						.getColumn(3)
 						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 3, DURATION_COL_WIDTH);
+					Utils.setColWidth(taskStatsTable, 3, (int) DURATION_COL_WIDTH);
 					this.selectedPeriodSpansPane.setViewportView(taskStatsTable);
 				}
 			}
@@ -531,17 +542,11 @@ public class MainGui {
 				curInd++;
 			}
 
-			new TableBagLayoutHelper(
+			new TableLayoutHelper(
 				this.periodsScrollPane,
 				periodData,
 				PERIOD_LIST_TABLE_HEADERS,
-				Map.of(
-					0, (double)INDEX_COL_WIDTH,
-					1, (double)DATETIME_COL_WIDTH,
-					2, (double)DATETIME_COL_WIDTH,
-					3, (double)DURATION_COL_WIDTH,
-					4, (double)85
-				)
+				PERIOD_LIST_COL_WIDTHS
 			);
 		}
 		//</editor-fold>
@@ -569,14 +574,11 @@ public class MainGui {
 				curInd++;
 			}
 
-			new TableBagLayoutHelper(
+			new TableLayoutHelper(
 				this.tasksScrollPane,
 				periodData,
 				TASK_LIST_TABLE_HEADERS,
-				Map.of(
-					0, (double)INDEX_COL_WIDTH,
-					2, (double)85
-				)
+				TASK_LIST_COL_WIDTHS
 			);
 		}
 		//</editor-fold>

@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TableBagLayoutHelper extends JPanel {
+public class TableLayoutHelper extends JPanel {
 
 	private static final Border BORDER = new LineBorder(Color.GRAY, 1); // new BevelBorder(BevelBorder.LOWERED);
 	private static final int ROW_HEIGHT = 19;
 	private static final Insets BUTTON_INSETS = new Insets(-2, 0, -2, 0);
 
-	private TableBagLayoutHelper(List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
+	private TableLayoutHelper(List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
 		super();
 
 		int numCols = headers.size();
@@ -49,15 +49,15 @@ public class TableBagLayoutHelper extends JPanel {
 		this.addHeaders(headers);
 		this.addContent(data);
 	}
-	public TableBagLayoutHelper(final Container pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
+	public TableLayoutHelper(final Container pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
 		this(data, headers, colWidths);
 		this.addToPane(pane);
 	}
-	public TableBagLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
+	public TableLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
 		this(data, headers, colWidths);
 		this.addToPane(pane);
 	}
-	public TableBagLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers) {
+	public TableLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers) {
 		this(data, headers, new HashMap<>());
 		this.addToPane(pane);
 	}
