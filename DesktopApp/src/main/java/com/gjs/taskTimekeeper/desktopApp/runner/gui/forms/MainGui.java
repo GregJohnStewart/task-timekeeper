@@ -14,7 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.GridBagLayoutHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableBagLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
@@ -77,7 +77,7 @@ public class MainGui {
 	private static final int DURATION_COL_WIDTH = 65;
 	private static final DefaultTableCellRenderer CENTER_CELL_RENDERER = new DefaultTableCellRenderer();
 
-	private static final String[] PERIOD_LIST_TABLE_HEADERS = new String[]{"#", "Start", "End", "Duration", "Complete", "Actions"};
+	private static final List<String> PERIOD_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Complete", "Actions");
 	private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
 
 	static {
@@ -418,6 +418,7 @@ public class MainGui {
 				this.selectedPeriodDurationLabel.setText(TimeParser.toDurationString(selectedPeriod.getTotalTime()));
 				this.selectedPeriodCompleteLabel.setText(selectedPeriod.isUnCompleted() ? "No" : "Yes");
 				{
+					//TODO:: remake with new table layout helper
 					Object[][] periodAtts = new Object[selectedPeriod.getAttributes()
 						                                   .size()][];
 
@@ -439,6 +440,7 @@ public class MainGui {
 
 				//task details
 				{
+					//TODO:: remake with new table layout helper
 					Object[][] taskStats = new Object[selectedPeriod.getTasks()
 						                                  .size()][];
 
@@ -462,6 +464,7 @@ public class MainGui {
 
 				//span details
 				{
+					//TODO:: remake with new table layout helper
 					Object[][] spanDetails = new Object[selectedPeriod.getNumTimespans()][];
 
 					int count = 0;
@@ -506,75 +509,73 @@ public class MainGui {
 		//TODO:: highlight selected period row
 		{
 			List<WorkPeriod> periods = new WorkPeriodDoer().search(this.manager, new ActionConfig());
-			Object[][] periodData = new Object[periods.size()][];
+			List<List<Object>> periodData = new ArrayList<>(periods.size());
 
 			int curInd = 0;
 			for (WorkPeriod period : periods) {
-				periodData[curInd] = new Object[PERIOD_LIST_TABLE_HEADERS.length];
+				List<Object> row = new ArrayList<>(PERIOD_LIST_TABLE_HEADERS.size());
 
-				periodData[curInd][0] = curInd + 1;
-				periodData[curInd][1] = TimeParser.toOutputString(period.getStart());
-				periodData[curInd][2] = TimeParser.toOutputString(period.getEnd());
-				periodData[curInd][3] = TimeParser.toDurationString(period.getTotalTime());
-				periodData[curInd][4] = (period.isUnCompleted() ? "No" : "Yes");
-				periodData[curInd][5] = new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				row.add(curInd + 1);
+				row.add(TimeParser.toOutputString(period.getStart()));
+				row.add(TimeParser.toOutputString(period.getEnd()));
+				row.add(TimeParser.toDurationString(period.getTotalTime()));
+				row.add((period.isUnCompleted() ? "No" : "Yes"));
+				row.add(
+					List.of(
+						new JButton("Select"),
+						new JButton("Delete")
+					)
+				);//TODO:: make real buttons
+
+				periodData.add(row);
 				curInd++;
 			}
 
-			JTable periodListTable = new JTable(new UnEditableTableModel(periodData, PERIOD_LIST_TABLE_HEADERS));
-			periodListTable.getColumnModel()
-				.getColumn(0)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(periodListTable, 0, INDEX_COL_WIDTH);
-			periodListTable.getColumnModel()
-				.getColumn(1)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(periodListTable, 1, DATETIME_COL_WIDTH);
-			periodListTable.getColumnModel()
-				.getColumn(2)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(periodListTable, 2, DATETIME_COL_WIDTH);
-			periodListTable.getColumnModel()
-				.getColumn(3)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(periodListTable, 3, DURATION_COL_WIDTH);
-			periodListTable.getColumnModel()
-				.getColumn(4)
-				.setCellRenderer(CENTER_CELL_RENDERER);
-			Utils.setColWidth(periodListTable, 4, 85);
-			this.periodsScrollPane.setViewportView(periodListTable);
+			new TableBagLayoutHelper(
+				this.periodsScrollPane,
+				periodData,
+				PERIOD_LIST_TABLE_HEADERS,
+				Map.of(
+					0, (double)INDEX_COL_WIDTH,
+					1, (double)DATETIME_COL_WIDTH,
+					2, (double)DATETIME_COL_WIDTH,
+					3, (double)DURATION_COL_WIDTH,
+					4, (double)85
+				)
+			);
 		}
 		//</editor-fold>
 
 		//<editor-fold desc="Tasks tab">
 		LOGGER.info("Populating tasks tab.");
-		//TODO:: rework to use gridlayout to achieve table-like visuals with buttons that function.
 		{
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
-			List<List<Object>> periodData = new ArrayList<>();
+			List<List<Object>> periodData = new ArrayList<>(tasks.size());
 
 			int curInd = 0;
 			for (Task task : tasks) {
-				periodData.add(new ArrayList<>(TASK_LIST_TABLE_HEADERS.size()));
+				List<Object> row = new ArrayList<>(TASK_LIST_TABLE_HEADERS.size());
 
 				JButton editButton = new JButton("e");
 				editButton.setAction(editTaskAction);
 				JButton deleteButton = new JButton("d");
 				deleteButton.setAction(deleteTaskAction);
 
-				periodData.get(curInd).add(curInd + 1);
-				periodData.get(curInd).add(task.getName());
-				periodData.get(curInd).add(List.of(editButton, deleteButton));//new JButton("action1");//TODO:: figure out these buttons in a table cell.
+				row.add(curInd + 1);
+				row.add(task.getName());
+				row.add(List.of(editButton, deleteButton));
+
+				periodData.add(row);
 				curInd++;
 			}
 
-			new GridBagLayoutHelper(
+			new TableBagLayoutHelper(
 				this.tasksScrollPane,
 				periodData,
 				TASK_LIST_TABLE_HEADERS,
 				Map.of(
 					0, (double)INDEX_COL_WIDTH,
-					2, (double)100
+					2, (double)85
 				)
 			);
 		}
