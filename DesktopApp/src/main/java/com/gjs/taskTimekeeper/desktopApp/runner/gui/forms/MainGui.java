@@ -15,10 +15,8 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.Utils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.table.UnEditableTableModel;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -439,52 +437,57 @@ public class MainGui {
 				this.selectedPeriodCompleteLabel.setText(selectedPeriod.isUnCompleted() ? "No" : "Yes");
 				{
 					//TODO:: remake with new table layout helper
-					Object[][] periodAtts = new Object[selectedPeriod.getAttributes()
-						                                   .size()][];
+					List<List<Object>>  periodAtts = new ArrayList<>(selectedPeriod.getAttributes().size());
 
 					int count = 0;
-					for (Map.Entry<String, String> att : selectedPeriod.getAttributes()
-						                                     .entrySet()) {
-						periodAtts[count] = new Object[3];
+					for (Map.Entry<String, String> att : selectedPeriod.getAttributes().entrySet()) {
+						List<Object> attRow = new ArrayList<>(3);
 
-						periodAtts[count][0] = att.getKey();
-						periodAtts[count][1] = att.getValue();
-						periodAtts[count][2] = new JButton("action1");
+						attRow.add(att.getKey());
+						attRow.add(att.getValue());
+						attRow.add(
+							List.of(
+								new JButton("Edit"),
+								new JButton("Delete")
+							)
+						);
+
+						periodAtts.add(attRow);
 
 						count++;
 					}
 
-					JTable attsTable = new JTable(new UnEditableTableModel(periodAtts, new String[]{"Attribute", "Value", "Action"}));
-					this.selectedPeriodAttsPane.setViewportView(attsTable);
+					new TableLayoutHelper(
+						this.selectedPeriodAttsPane,
+						periodAtts,
+						List.of("Attribute", "Value", "Action"),
+						Map.of(2, (double)85)
+					);
 				}
 
 				//task details
 				{
-					//TODO:: remake with new table layout helper
-					Object[][] taskStats = new Object[selectedPeriod.getTasks()
-						                                  .size()][];
+					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTasks().size());
 
-					int count = 0;
 					for (Task task : selectedPeriod.getTasks()) {
-						taskStats[count] = new Object[2];
+						List<Object> taskDetailRow = new ArrayList<>(2);
 
-						taskStats[count][0] = task.getName();
-						taskStats[count][1] = TimeParser.toDurationString(selectedPeriod.getTotalTimeWith(task));
+						taskDetailRow.add(task.getName());
+						taskDetailRow.add(TimeParser.toDurationString(selectedPeriod.getTotalTimeWith(task)));
 
-						count++;
+						taskStats.add(taskDetailRow);
 					}
 
-					JTable taskStatsTable = new JTable(new UnEditableTableModel(taskStats, new String[]{"Task Name", "Duration"}));
-					taskStatsTable.getColumnModel()
-						.getColumn(1)
-						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 1, (int) DURATION_COL_WIDTH);
-					this.selectedPeriodTaskStatsPane.setViewportView(taskStatsTable);
+					new TableLayoutHelper(
+						this.selectedPeriodTaskStatsPane,
+						taskStats,
+						List.of("Task Name", "Duration"),
+						Map.of(1, DURATION_COL_WIDTH)
+					);
 				}
 
 				//span details
 				{
-					//TODO:: remake with new table layout helper
 					List<List<Object>> spanDetails = new ArrayList<>(selectedPeriod.getNumTimespans());
 
 					int count = 0;
