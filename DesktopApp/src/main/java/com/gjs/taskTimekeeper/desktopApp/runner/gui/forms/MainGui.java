@@ -90,6 +90,15 @@ public class MainGui {
 		0, (double)INDEX_COL_WIDTH,
 		2, (double)85
 	);
+	private static final List<String> SPAN_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Task", "Actions");
+	private static final Map<Integer, Double> SPAN_LIST_COL_WIDTHS = Map.of(
+		0, INDEX_COL_WIDTH,
+		1, DATETIME_COL_WIDTH,
+		2, DATETIME_COL_WIDTH,
+		3, DURATION_COL_WIDTH,
+		5, (double)85
+	);
+
 
 	static {
 		CENTER_CELL_RENDERER.setHorizontalAlignment(JLabel.CENTER);
@@ -476,40 +485,36 @@ public class MainGui {
 				//span details
 				{
 					//TODO:: remake with new table layout helper
-					Object[][] spanDetails = new Object[selectedPeriod.getNumTimespans()][];
+					List<List<Object>> spanDetails = new ArrayList<>(selectedPeriod.getNumTimespans());
 
 					int count = 0;
 					for (Timespan span : ((TimespanDoer) ActionDoer.getActionDoer(KeeperObjectType.SPAN)).search(manager, new ActionConfig())) {
-						spanDetails[count] = new Object[6];
+						List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
 
-						spanDetails[count][0] = count + 1;
-						spanDetails[count][1] = TimeParser.toOutputString(span.getStartTime());
-						spanDetails[count][2] = TimeParser.toOutputString(span.getEndTime());
-						spanDetails[count][3] = TimeParser.toDurationString(span.getDuration());
-						spanDetails[count][4] = span.getTask()
-							                        .getName();
-						spanDetails[count][5] = new JButton("button 1");
+						spanRow.add(count + 1);
 
+						spanRow.add(TimeParser.toOutputString(span.getStartTime()));
+						spanRow.add(TimeParser.toOutputString(span.getEndTime()));
+						spanRow.add(TimeParser.toDurationString(span.getDuration()));
+						spanRow.add(span.getTask().getName());
+						spanRow.add(
+							List.of(
+								//TODO:: these
+								new JButton("Edit"),
+								new JButton("Delete")
+							)
+						);
+
+						spanDetails.add(spanRow);
 						count++;
 					}
-					JTable taskStatsTable = new JTable(new UnEditableTableModel(spanDetails, new String[]{"#", "Start", "End", "Duration", "Task", "Actions"}));
-					taskStatsTable.getColumnModel()
-						.getColumn(0)
-						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 0, (int) INDEX_COL_WIDTH);
-					taskStatsTable.getColumnModel()
-						.getColumn(1)
-						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 1, (int) DATETIME_COL_WIDTH);
-					taskStatsTable.getColumnModel()
-						.getColumn(2)
-						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 2, (int) DATETIME_COL_WIDTH);
-					taskStatsTable.getColumnModel()
-						.getColumn(3)
-						.setCellRenderer(CENTER_CELL_RENDERER);
-					Utils.setColWidth(taskStatsTable, 3, (int) DURATION_COL_WIDTH);
-					this.selectedPeriodSpansPane.setViewportView(taskStatsTable);
+
+					new TableLayoutHelper(
+						this.selectedPeriodSpansPane,
+						spanDetails,
+						SPAN_LIST_TABLE_HEADERS,
+						SPAN_LIST_COL_WIDTHS
+					);
 				}
 			}
 		}
