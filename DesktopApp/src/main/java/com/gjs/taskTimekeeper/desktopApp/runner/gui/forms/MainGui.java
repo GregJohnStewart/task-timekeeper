@@ -85,8 +85,8 @@ public class MainGui {
 	);
 	private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
 	private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS = Map.of(
-		0, (double)INDEX_COL_WIDTH,
-		2, (double)85
+		0, INDEX_COL_WIDTH,
+		2, (double)123
 	);
 	private static final List<String> SPAN_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Task", "Actions");
 	private static final Map<Integer, Double> SPAN_LIST_COL_WIDTHS = Map.of(
@@ -576,7 +576,8 @@ public class MainGui {
 
 				row.add(curInd + 1);
 				row.add(task.getName());
-				row.add(List.of(editButton, deleteButton));
+				//TODO:: finish these
+				row.add(List.of(new JButton("View"), editButton, deleteButton));
 
 				periodData.add(row);
 				curInd++;
