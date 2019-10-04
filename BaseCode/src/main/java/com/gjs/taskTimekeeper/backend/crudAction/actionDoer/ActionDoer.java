@@ -474,7 +474,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 	private static OutputLevel CONSOLE_OUTPUT_LEVEL = DEFAULT;
 
 	public static void setConsoleOutputLevel(OutputLevel level){
-		CONSOLE_OUTPUT_LEVEL = DEFAULT;
+		CONSOLE_OUTPUT_LEVEL = level;
 	}
 
 	public static void setMessageOutputStream(PrintStream stream){

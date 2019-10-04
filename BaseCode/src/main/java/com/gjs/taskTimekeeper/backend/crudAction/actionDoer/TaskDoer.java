@@ -7,7 +7,11 @@ import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -192,16 +196,21 @@ public class TaskDoer extends ActionDoer<Task> {
 
 	@Override
 	public void displayOne(TimeManager manager, Task task) {
-		System.out.println("Task:");
-		System.out.println("\tName: " + task.getName());
+		consolePrintln(OutputLevel.DEFAULT, "Task:");
+		consolePrintln(OutputLevel.DEFAULT, "\tName: " + task.getName());
 
-		for(Map.Entry<String, String> att : task.getAttributes().entrySet()){
-			System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+		if(task.getAttributes().isEmpty()){
+			consolePrintln(OutputLevel.DEFAULT, "\tNo Attributes");
+		}else {
+			consolePrintln(OutputLevel.DEFAULT, "\tAttributes:");
+			for (Map.Entry<String, String> att : task.getAttributes()
+				                                     .entrySet()) {
+				consolePrintln(OutputLevel.DEFAULT, "\t\t" + att.getKey() + ": " + att.getValue());
+			}
 		}
 
-		System.out.println("\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
-		System.out.println("\tSpans with task: " + manager.getTimespansWith(task).size());
-
+		consolePrintln(OutputLevel.DEFAULT, "\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
+		consolePrintln(OutputLevel.DEFAULT, "\tSpans with task: " + manager.getTimespansWith(task).size());
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
@@ -56,12 +57,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.gjs.taskTimekeeper.backend.crudAction.Action.VIEW;
+
 /**
  * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
  */
 public class MainGui {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainGui.class);
 
+	//<editor-fold desc="Static members">
 	private static final String ABOUT_MESSAGE = "Task Timekeeper\n\nVersion: " + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class) +
 		                                            "\nUsing Lib version: " + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class) +
 		                                            "\n\nThis program is made for you to easily keep track of time spent on tasks." +
@@ -94,7 +98,16 @@ public class MainGui {
 		3, DURATION_COL_WIDTH,
 		5, (double)85
 	);
+	//</editor-fold>
+	//<editor-fold desc="Static methods">
+	private static String getFromPrintStreamForMessageOutput(ByteArrayOutputStream stream){
+		String output = stream.toString();
 
+		output = output.replace("\t", "    ");
+
+		return output;
+	}
+	//</editor-fold>
 	//<editor-fold desc="member variables">
 	//admin stuff
 	private TimeManager manager;
@@ -209,6 +222,31 @@ public class MainGui {
 			sendErrorIfNeeded(!result);
 		}
 	};
+	private class ViewTaskAction extends IndexAction {
+		public ViewTaskAction(String name, int index) {
+			super(name, index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Viewing task at index {}", this.getIndex());
+			resetStreams();
+
+			ActionDoer.doObjAction(manager, new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()));
+
+			if(errorPrintStream.size() != 0){
+				LOGGER.warn("Some kind of error happened in trying to view the task at index {}", this.getIndex());
+				sendError();
+			}else{
+				JOptionPane.showInternalMessageDialog(
+					mainPanel,
+					getFromPrintStreamForMessageOutput(printStream),
+					"Task View",
+					JOptionPane.INFORMATION_MESSAGE
+				);
+			}
+		}
+	}
 	Action editTaskAction = new AbstractAction("Edit") {
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Editing task in row");
@@ -229,7 +267,7 @@ public class MainGui {
 			}
 
 			JTable table = (JTable)e.getSource();
-			int modelRow = Integer.valueOf( e.getActionCommand() );
+			int modelRow = Integer.valueOf(e.getActionCommand());
 
 			LOGGER.info("Deleting task in row # {}", modelRow);
 		}
@@ -346,6 +384,7 @@ public class MainGui {
 
 	//<editor-fold desc="Utility methods">
 	private void resetStreams() {
+		LOGGER.info("Resetting printstreams.");
 		try {
 			this.printStream.flush();
 			this.printStream.reset();
@@ -358,7 +397,7 @@ public class MainGui {
 	private void sendError(){
 		JOptionPane.showInternalMessageDialog(
 			mainPanel,
-			new String(errorPrintStream.toByteArray()),
+			getFromPrintStreamForMessageOutput(errorPrintStream),
 			"Error",
 			JOptionPane.ERROR_MESSAGE
 		);
@@ -386,7 +425,9 @@ public class MainGui {
 
 	private void wasUpdated(boolean wasUpdated) {
 		this.changed = this.changed || wasUpdated;
+		LOGGER.debug("Was data changed? {}", this.changed);
 		if (this.autoSaveMenuItem.getState()) {
+			LOGGER.debug("Saving data after change automatically.");
 			this.saveData();
 		} else {
 			this.updateUiData();
@@ -429,7 +470,6 @@ public class MainGui {
 				this.selectedPeriodDurationLabel.setText(TimeParser.toDurationString(selectedPeriod.getTotalTime()));
 				this.selectedPeriodCompleteLabel.setText(selectedPeriod.isUnCompleted() ? "No" : "Yes");
 				{
-					//TODO:: remake with new table layout helper
 					List<List<Object>>  periodAtts = new ArrayList<>(selectedPeriod.getAttributes().size());
 
 					int count = 0;
@@ -558,19 +598,21 @@ public class MainGui {
 			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
 			List<List<Object>> periodData = new ArrayList<>(tasks.size());
 
-			int curInd = 0;
+			int curInd = 1;
 			for (Task task : tasks) {
 				List<Object> row = new ArrayList<>(TASK_LIST_TABLE_HEADERS.size());
 
+				JButton viewButton = new JButton("View");
+				viewButton.setAction(new ViewTaskAction("View", curInd));
 				JButton editButton = new JButton("e");
 				editButton.setAction(editTaskAction);
 				JButton deleteButton = new JButton("d");
 				deleteButton.setAction(deleteTaskAction);
 
-				row.add(curInd + 1);
+				row.add(curInd);
 				row.add(task.getName());
 				//TODO:: finish these
-				row.add(List.of(new JButton("View"), editButton, deleteButton));
+				row.add(List.of(viewButton, editButton, deleteButton));
 
 				periodData.add(row);
 				curInd++;
