@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.TaskEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.gjs.taskTimekeeper.backend.crudAction.Action.EDIT;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.REMOVE;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.VIEW;
 
@@ -254,7 +256,34 @@ public class MainGui {
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Editing task at index {}", this.getIndex());
 			resetStreams();
-			//TODO:: this
+
+			Task task = (Task) ActionDoer.getActionDoer(KeeperObjectType.TASK)
+				            .search(manager, new ActionConfig())
+				            .get(this.getIndex() - 1);
+
+			TaskEditHelper helper = new TaskEditHelper();
+
+			int response = JOptionPane.showConfirmDialog(
+				mainPanel,
+				helper.getForm(task),
+				"Task Edit",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			if(response == JOptionPane.OK_OPTION){
+				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.TASK, EDIT);
+				taskChangeConfig.setName(task.getName());
+
+				taskChangeConfig.setNewName(helper.getName());
+				//TODO:: add att editing
+
+				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+
+				LOGGER.debug("Result of trying to edit task: {}", result);
+				handleResult(result);
+			} else {
+				LOGGER.info("Task editing form was cancelled.");
+			}
 		}
 	}
 	private class DeleteTaskAction extends IndexAction {
