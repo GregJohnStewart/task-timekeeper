@@ -39,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -57,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.gjs.taskTimekeeper.backend.crudAction.Action.REMOVE;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.VIEW;
 
 /**
@@ -217,14 +217,12 @@ public class MainGui {
 
 			boolean result = ActionDoer.doObjAction(manager, config);
 			LOGGER.debug("Result of trying to add task: {}", result);
-			wasUpdated(result);
-
-			sendErrorIfNeeded(!result);
+			handleResult(result);
 		}
 	};
 	private class ViewTaskAction extends IndexAction {
-		public ViewTaskAction(String name, int index) {
-			super(name, index);
+		public ViewTaskAction(int index) {
+			super("View", index);
 		}
 
 		@Override
@@ -247,31 +245,43 @@ public class MainGui {
 			}
 		}
 	}
-	Action editTaskAction = new AbstractAction("Edit") {
-		public void actionPerformed(ActionEvent e) {
-			LOGGER.info("Editing task in row");
+	private class EditTaskAction extends IndexAction {
+		public EditTaskAction(int index) {
+			super("Edit", index);
 		}
-	};
-	Action deleteTaskAction = new AbstractAction("Delete") {
+
+		@Override
 		public void actionPerformed(ActionEvent e) {
-			int chosen = JOptionPane.showInternalConfirmDialog(
-				mainPanel,
-				"Are you sure you want to delete this task?",
-				"Deletion Confirmation",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.WARNING_MESSAGE
-			);
+			LOGGER.info("Editing task at index {}", this.getIndex());
+			resetStreams();
+			//TODO:: this
+		}
+	}
+	private class DeleteTaskAction extends IndexAction {
+		public DeleteTaskAction(int index) {
+			super("Delete", index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Deleting task at index {}", this.getIndex());
+
+			int chosen = deleteConfirm("Are you sure you want to delete this task?");
 			if (chosen != JOptionPane.YES_OPTION) {
 				LOGGER.info("User chose to cancel deleting the task.");
 				return;
 			}
 
-			JTable table = (JTable)e.getSource();
-			int modelRow = Integer.valueOf(e.getActionCommand());
+			resetStreams();
 
-			LOGGER.info("Deleting task in row # {}", modelRow);
+			boolean result = ActionDoer.doObjAction(
+				manager,
+				new ActionConfig(KeeperObjectType.TASK, REMOVE).setIndex(this.getIndex())
+			);
+			LOGGER.debug("Result of trying to remove task: {}", result);
+			handleResult(result);
 		}
-	};
+	}
 	private Action addPeriodAction = new AbstractAction("Add Period") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -281,10 +291,8 @@ public class MainGui {
 			ActionConfig config = new ActionConfig(KeeperObjectType.PERIOD, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
 
 			boolean result = ActionDoer.doObjAction(manager, config);
-			LOGGER.debug("Result of trying to add task: {}", result);
-			wasUpdated(result);
-
-			sendErrorIfNeeded(!result);
+			LOGGER.debug("Result of trying to add period: {}", result);
+			handleResult(result);
 		}
 	};
 	//</editor-fold>
@@ -407,11 +415,45 @@ public class MainGui {
 			sendError();
 		}
 	}
+	private int deleteConfirm(String message){
+		return JOptionPane.showInternalConfirmDialog(
+			this.mainPanel,
+			message,
+			"Deletion Confirmation",
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.WARNING_MESSAGE
+		);
+	}
+	private void handleResult(boolean result){
+		wasUpdated(result);
+		sendErrorIfNeeded(!result);
+	}
 	//<editor-fold>
 
 	//<editor-fold desc="Data Loading methods">
 	private void reloadData() {
 		LOGGER.info("Reloading data from source.");
+
+		if (changed) {
+			LOGGER.info("Reloading data with unsaved changes.");
+			int chosen = JOptionPane.showInternalConfirmDialog(
+				mainPanel,
+				"You have unsaved changes. Are you sure you want to reload the data?",
+				"Unsaved changes",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE
+			);
+			if (chosen == JOptionPane.YES_OPTION) {
+				LOGGER.info("User chose to save the data.");
+			} else {
+				LOGGER.info("User chose to not save the data.");
+				return;
+			}
+		} else {
+			LOGGER.info("No changes to worry about.");
+			mainFrame.dispose();
+		}
+
 		//read in new manager
 		//TODO:: handle errors
 		this.manager = ManagerIO.loadTimeManager();
@@ -602,16 +644,15 @@ public class MainGui {
 			for (Task task : tasks) {
 				List<Object> row = new ArrayList<>(TASK_LIST_TABLE_HEADERS.size());
 
-				JButton viewButton = new JButton("View");
-				viewButton.setAction(new ViewTaskAction("View", curInd));
+				JButton viewButton = new JButton("v");
+				viewButton.setAction(new ViewTaskAction(curInd));
 				JButton editButton = new JButton("e");
-				editButton.setAction(editTaskAction);
+				editButton.setAction(new EditTaskAction(curInd));
 				JButton deleteButton = new JButton("d");
-				deleteButton.setAction(deleteTaskAction);
+				deleteButton.setAction(new DeleteTaskAction(curInd));
 
 				row.add(curInd);
 				row.add(task.getName());
-				//TODO:: finish these
 				row.add(List.of(viewButton, editButton, deleteButton));
 
 				periodData.add(row);

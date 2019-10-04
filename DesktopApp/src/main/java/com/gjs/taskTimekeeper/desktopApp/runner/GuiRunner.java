@@ -56,7 +56,6 @@ public class GuiRunner extends ModeRunner {
 			} catch (InterruptedException e) {
 				LOGGER.warn("Wait interrupted.", e);
 			}
-			//LOGGER.trace("Waiting for UI components to close.");
 		}
 		LOGGER.info("All UI components closed. Exiting.");
 	}
