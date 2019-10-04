@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
@@ -54,6 +55,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -324,6 +326,28 @@ public class MainGui {
 			handleResult(result);
 		}
 	};
+	private class SelectPeriodAction extends IndexAction {
+		public SelectPeriodAction(int index) {
+			super("Select", index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Selecting period at index {}", this.getIndex());
+			resetStreams();
+
+			ActionDoer.doObjAction(
+				manager,
+				new ActionConfig(KeeperObjectType.PERIOD, VIEW).setSelect(true).setIndex(this.getIndex())
+			);
+
+			if(errorPrintStream.size() != 0) {
+				LOGGER.warn("Some kind of error happened in trying to view the task at index {}", this.getIndex());
+				sendError();
+			}
+			updateUiData();
+		}
+	}
 	//</editor-fold>
 	//</editor-fold>
 
@@ -629,23 +653,31 @@ public class MainGui {
 
 		//<editor-fold desc="Periods tab">
 		LOGGER.info("Populating periods tab.");
-		//TODO:: highlight selected period row
 		{
 			List<WorkPeriod> periods = new WorkPeriodDoer().search(this.manager, new ActionConfig());
 			List<List<Object>> periodData = new ArrayList<>(periods.size());
+			Map<Integer, Color> rowColors = new HashMap<>();
 
-			int curInd = 0;
+
+			int curInd = 1;
 			for (WorkPeriod period : periods) {
 				List<Object> row = new ArrayList<>(PERIOD_LIST_TABLE_HEADERS.size());
 
-				row.add(curInd + 1);
+				JButton select = new JButton("S");
+				select.setAction(new SelectPeriodAction(curInd));
+
+				if(ActionDoer.getSelectedWorkPeriod() != null && ActionDoer.getSelectedWorkPeriod().equals(period)){
+					rowColors.put(curInd, Color.CYAN);
+				}
+
+				row.add(curInd);
 				row.add(TimeParser.toOutputString(period.getStart()));
 				row.add(TimeParser.toOutputString(period.getEnd()));
 				row.add(TimeParser.toDurationString(period.getTotalTime()));
 				row.add((period.isUnCompleted() ? "No" : "Yes"));
 				row.add(
 					List.of(
-						new JButton("Select"),
+						select,
 						new JButton("Delete")
 					)
 				);//TODO:: make real buttons
@@ -658,7 +690,8 @@ public class MainGui {
 				this.periodsScrollPane,
 				periodData,
 				PERIOD_LIST_TABLE_HEADERS,
-				PERIOD_LIST_COL_WIDTHS
+				PERIOD_LIST_COL_WIDTHS,
+				rowColors
 			);
 		}
 		//</editor-fold>

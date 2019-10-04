@@ -79,7 +79,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 	@Override
 	protected boolean add(TimeManager manager, ActionConfig config) {
-		LOGGER.info("Adding a new time manager.");
+		LOGGER.info("Adding a new work period.");
 		WorkPeriod period = new WorkPeriod();
 
 		if(config.getAttributeName() != null){
@@ -245,22 +245,22 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 	@Override
 	public void displayOne(TimeManager manager, WorkPeriod workPeriod) {
 
-		System.out.println("Period:");
-		System.out.println("\tStart: " + TimeParser.toOutputString(workPeriod.getStart()));
-		System.out.println("\t  End: " + TimeParser.toOutputString(workPeriod.getEnd()));
-		System.out.println("\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
-		System.out.println("\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
-		System.out.println("\t# Spans: " + workPeriod.getNumTimespans());
-		System.out.println("\tComplete: " + (workPeriod.isUnCompleted() ? "No" : "Yes"));
+		consolePrintln(OutputLevel.DEFAULT, "Period:");
+		consolePrintln(OutputLevel.DEFAULT, "\tStart: " + TimeParser.toOutputString(workPeriod.getStart()));
+		consolePrintln(OutputLevel.DEFAULT, "\t  End: " + TimeParser.toOutputString(workPeriod.getEnd()));
+		consolePrintln(OutputLevel.DEFAULT, "\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
+		consolePrintln(OutputLevel.DEFAULT, "\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
+		consolePrintln(OutputLevel.DEFAULT, "\t# Spans: " + workPeriod.getNumTimespans());
+		consolePrintln(OutputLevel.DEFAULT, "\tComplete: " + (workPeriod.isUnCompleted() ? "No" : "Yes"));
 
 		for(Map.Entry<String, String> att : workPeriod.getAttributes().entrySet()){
-			System.out.println("\t"+ att.getKey() + ": " + att.getValue());
+			consolePrintln(OutputLevel.DEFAULT, "\t"+ att.getKey() + ": " + att.getValue());
 		}
 
-		System.out.println("\tTime spent on tasks:");
+		consolePrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
 		for(Task curTask : workPeriod.getTasks()){
 			Duration duration = workPeriod.getTotalTimeWith(curTask);
-			System.out.println("\t\t" + curTask.getName() + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
+			consolePrintln(OutputLevel.DEFAULT, "\t\t" + curTask.getName() + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
 		}
 	}
 
@@ -277,7 +277,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 			if(config.isSelect()){
 				LOGGER.info("Selecting new Work Period.");
-				System.out.println("Selecting the following period:");
+				consolePrintln(OutputLevel.DEFAULT, "Selecting the following period:");
 				this.setSelected(result);
 			}
 

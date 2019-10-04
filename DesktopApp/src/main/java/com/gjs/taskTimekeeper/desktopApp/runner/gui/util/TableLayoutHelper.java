@@ -18,17 +18,17 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Label;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class TableLayoutHelper extends JPanel {
 
 	private static final Border BORDER = new LineBorder(Color.GRAY, 1); // new BevelBorder(BevelBorder.LOWERED);
+	private static final Color DEFAULT_ROW_COLOR = Color.WHITE; // new BevelBorder(BevelBorder.LOWERED);
 	private static final int ROW_HEIGHT = 19;
 	private static final Insets BUTTON_INSETS = new Insets(-2, 0, -2, 0);
 
-	private TableLayoutHelper(List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
+	private TableLayoutHelper(List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths, Map<Integer, Color> rowColors) {
 		super();
 
 		int numCols = headers.size();
@@ -47,18 +47,22 @@ public class TableLayoutHelper extends JPanel {
 		this.setLayout(layout);
 
 		this.addHeaders(headers);
-		this.addContent(data);
+		this.addContent(data, rowColors);
 	}
-	public TableLayoutHelper(final Container pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
-		this(data, headers, colWidths);
+	public TableLayoutHelper(final Container pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths, Map<Integer, Color> rowColors) {
+		this(data, headers, colWidths, rowColors);
+		this.addToPane(pane);
+	}
+	public TableLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths, Map<Integer, Color> rowColors) {
+		this(data, headers, colWidths, rowColors);
 		this.addToPane(pane);
 	}
 	public TableLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers, Map<Integer, Double> colWidths) {
-		this(data, headers, colWidths);
+		this(data, headers, colWidths, Map.of());
 		this.addToPane(pane);
 	}
 	public TableLayoutHelper(final JScrollPane pane, List<List<Object>> data, List<String> headers) {
-		this(data, headers, new HashMap<>());
+		this(data, headers, Map.of(), Map.of());
 		this.addToPane(pane);
 	}
 
@@ -87,10 +91,10 @@ public class TableLayoutHelper extends JPanel {
 		}
 	}
 
-	public void addContent(List<List<Object>> data){
+	public void addContent(List<List<Object>> data, Map<Integer, Color> rowColors){
 		int i = 1;
 		for(List<Object> row : data){
-			addContentToTablePanel(this, row, i);
+			addContentToTablePanel(this, row, i, rowColors.getOrDefault(i, DEFAULT_ROW_COLOR));
 			i++;
 		}
 	}
@@ -99,9 +103,9 @@ public class TableLayoutHelper extends JPanel {
 		panelToAddTo.add(component, new TableLayoutConstraints(col, row));
 	}
 
-	private static JLabel makeLabel(String text){
+	private static JLabel makeLabel(String text, Color bgColor){
 		JLabel newLabel = new JLabel(text);
-		newLabel.setBackground(Color.WHITE);
+		newLabel.setBackground(bgColor);
 		newLabel.setOpaque(true);
 		newLabel.setBorder(BORDER);
 		return newLabel;
@@ -128,18 +132,18 @@ public class TableLayoutHelper extends JPanel {
 		}
 	}
 
-	private static void addContentToTablePanel(JPanel panelToAddTo, List<Object> content, int row) throws IllegalArgumentException {
+	private static void addContentToTablePanel(JPanel panelToAddTo, List<Object> content, int row, Color bgColor) throws IllegalArgumentException {
 		int col = 0;
 		for(Object item : content){
 			if(item instanceof String) {
-				addToPanel(panelToAddTo, makeLabel((String) item), col, row);
+				addToPanel(panelToAddTo, makeLabel((String) item, bgColor), col, row);
 			} else if(item instanceof Number || item instanceof Character){
-				addToPanel(panelToAddTo, makeLabel(String.valueOf(item)), col, row);
+				addToPanel(panelToAddTo, makeLabel(String.valueOf(item), bgColor), col, row);
 			} else if(item instanceof Component){
 				addToPanel(panelToAddTo, (Component) item, col, row);
 			} else if(item instanceof List) {
 				JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-				innerPanel.setBackground(Color.WHITE);
+				innerPanel.setBackground(bgColor);
 				innerPanel.setBorder(BORDER);
 				addContentToPanel(innerPanel, (List) item);
 				addToPanel(panelToAddTo, innerPanel, col, row);
