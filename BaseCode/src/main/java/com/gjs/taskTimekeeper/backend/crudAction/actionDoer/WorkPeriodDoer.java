@@ -48,11 +48,13 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 	 * @return The selected work period object from the TimeManager given. Null if not found.
 	 */
 	public WorkPeriod getSelectedFromManager(TimeManager manager){
-		for(WorkPeriod period : manager.getWorkPeriods()){
-			if(period.equals(this.getSelected())){
-				this.setSelected(period);
-				consolePrintln(OutputLevel.VERBOSE, "There was a selected work period.");
-				return period;
+		if(this.getSelected() != null) {
+			for (WorkPeriod period : manager.getWorkPeriods()) {
+				if (period.equals(this.getSelected())) {
+					this.setSelected(period);
+					consolePrintln(OutputLevel.VERBOSE, "There was a selected work period.");
+					return period;
+				}
 			}
 		}
 		consolePrintln(OutputLevel.DEFAULT, "No period selected.");
@@ -155,6 +157,17 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		return modified;
 	}
 
+	protected void deselectIfRemoved(TimeManager manager){
+		LOGGER.info("Determining if selected period was removed.");
+		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		if(selected != null && !manager.getWorkPeriods().contains(selected)){
+			this.setSelected(null);
+			LOGGER.info("Selected period was removed.");
+		}else{
+			LOGGER.info("Selected period was not removed.");
+		}
+	}
+
 	@Override
 	protected boolean remove(TimeManager manager, ActionConfig config) {
 		if(manager.getWorkPeriods().isEmpty()){
@@ -162,10 +175,15 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 			consoleErrorPrintln("No period(s) to remove.");
 			return false;
 		}
+		boolean result = false;
 		if(config.getIndex() != null){
-			return this.removeOne(manager, config);
+			result = this.removeOne(manager, config);
+			this.deselectIfRemoved(manager);
+			return result;
 		}else if(config.getBefore() != null || config.getAfter() != null){
-			return this.removeBeforeAfter(manager, config);
+			result = this.removeBeforeAfter(manager, config);
+			this.deselectIfRemoved(manager);
+			return result;
 		}
 		LOGGER.warn("No period(s) specified to remove.");
 		consoleErrorPrintln("No period(s) specified to remove.");

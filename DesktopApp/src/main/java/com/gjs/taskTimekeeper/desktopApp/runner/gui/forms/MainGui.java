@@ -348,6 +348,31 @@ public class MainGui {
 			updateUiData();
 		}
 	}
+	private class DeletePeriodAction extends IndexAction {
+		public DeletePeriodAction(int index) {
+			super("Delete", index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Deleting Period at index {}", this.getIndex());
+
+			int chosen = deleteConfirm("Are you sure you want to delete this period?");
+			if (chosen != JOptionPane.YES_OPTION) {
+				LOGGER.info("User chose to cancel deleting the period.");
+				return;
+			}
+
+			resetStreams();
+
+			boolean result = ActionDoer.doObjAction(
+				manager,
+				new ActionConfig(KeeperObjectType.PERIOD, REMOVE).setIndex(this.getIndex())
+			);
+			LOGGER.debug("Result of trying to remove period: {}", result);
+			handleResult(result);
+		}
+	}
 	//</editor-fold>
 	//</editor-fold>
 
@@ -504,7 +529,6 @@ public class MainGui {
 			}
 		} else {
 			LOGGER.info("No changes to worry about.");
-			mainFrame.dispose();
 		}
 
 		//read in new manager
@@ -665,9 +689,12 @@ public class MainGui {
 
 				JButton select = new JButton("S");
 				select.setAction(new SelectPeriodAction(curInd));
+				JButton delete = new JButton("D");
+				delete.setAction(new DeletePeriodAction(curInd));
 
 				if(ActionDoer.getSelectedWorkPeriod() != null && ActionDoer.getSelectedWorkPeriod().equals(period)){
 					rowColors.put(curInd, Color.CYAN);
+					select.setEnabled(false);
 				}
 
 				row.add(curInd);
@@ -678,7 +705,7 @@ public class MainGui {
 				row.add(
 					List.of(
 						select,
-						new JButton("Delete")
+						delete
 					)
 				);//TODO:: make real buttons
 
@@ -729,8 +756,7 @@ public class MainGui {
 			);
 		}
 		//</editor-fold>
-
-		//TODO:: rest of this
+		LOGGER.info("Finished updating UI.");
 	}
 	//</editor-fold>
 
