@@ -30,6 +30,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -373,6 +374,46 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+	private Action addSpanAction = new AbstractAction("Add Span") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Add timespan action hit.");
+
+			JComboBox<String> comboBox = new JComboBox<>();
+
+			for(Task task : manager.getTasks()){
+				comboBox.addItem(task.getName());
+			}
+			comboBox.setSelectedIndex(-1);
+
+			JPanel panel = new JPanel();
+			panel.add(new JLabel("Task for new span:"));
+			panel.add(comboBox);
+
+			int response = JOptionPane.showConfirmDialog(
+				mainPanel,
+				panel,
+				"Select a Task",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			String taskname = null;
+			if(response == JOptionPane.OK_OPTION){
+				taskname = (String)comboBox.getSelectedItem();
+			} else {
+				LOGGER.info("Task editing form was cancelled.");
+				return;
+			}
+
+			resetStreams();
+			ActionConfig config = new ActionConfig(KeeperObjectType.SPAN, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
+			config.setName(taskname);
+
+			boolean result = ActionDoer.doObjAction(manager, config);
+			LOGGER.debug("Result of trying to add span to selected period: {}", result);
+			handleResult(result);
+		}
+	};
 	//</editor-fold>
 	//</editor-fold>
 
@@ -670,6 +711,7 @@ public class MainGui {
 						SPAN_LIST_TABLE_HEADERS,
 						SPAN_LIST_COL_WIDTHS
 					);
+					this.selectedPeriodAddSpanButton.setAction(this.addSpanAction);
 				}
 			}
 		}
