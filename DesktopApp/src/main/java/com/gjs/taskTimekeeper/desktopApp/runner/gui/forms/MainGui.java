@@ -101,7 +101,7 @@ public class MainGui {
 		1, DATETIME_COL_WIDTH,
 		2, DATETIME_COL_WIDTH,
 		3, DURATION_COL_WIDTH,
-		5, (double)85
+		5, (double)156
 	);
 	//</editor-fold>
 	//<editor-fold desc="Static methods">
@@ -374,6 +374,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+	//TODO:: more span buttons (complete existing, new span that completes the rest, etc)
 	private Action addSpanAction = new AbstractAction("Add Span") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -414,6 +415,30 @@ public class MainGui {
 			handleResult(result);
 		}
 	};
+	private class DeleteSpanAction extends IndexAction {
+		public DeleteSpanAction(int index) {
+			super("Delete", index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Deleting span from selected period at index {}", this.getIndex());
+
+			int chosen = deleteConfirm("Are you sure you want to delete this span?");
+			if (chosen != JOptionPane.YES_OPTION) {
+				LOGGER.info("User chose to cancel deleting the span.");
+				return;
+			}
+
+			resetStreams();
+			boolean result = ActionDoer.doObjAction(
+				manager,
+				new ActionConfig(KeeperObjectType.SPAN, REMOVE).setIndex(this.getIndex())
+			);
+			LOGGER.debug("Result of trying to remove span: {}", result);
+			handleResult(result);
+		}
+	}
 	//</editor-fold>
 	//</editor-fold>
 
@@ -683,9 +708,12 @@ public class MainGui {
 				{
 					List<List<Object>> spanDetails = new ArrayList<>(selectedPeriod.getNumTimespans());
 
-					int count = 0;
+					int count = 1;
 					for (Timespan span : ((TimespanDoer) ActionDoer.getActionDoer(KeeperObjectType.SPAN)).search(manager, new ActionConfig())) {
 						List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
+
+						JButton delete = new JButton("D");
+						delete.setAction(new DeleteSpanAction(count));
 
 						spanRow.add(count + 1);
 
@@ -697,7 +725,8 @@ public class MainGui {
 							List.of(
 								//TODO:: these
 								new JButton("Edit"),
-								new JButton("Delete")
+								new JButton("Complete"),
+								delete
 							)
 						);
 
