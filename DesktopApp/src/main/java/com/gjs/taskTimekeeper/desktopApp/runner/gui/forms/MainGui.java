@@ -28,7 +28,10 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -381,6 +384,8 @@ public class MainGui {
 			LOGGER.info("Add timespan action hit.");
 
 			JComboBox<String> comboBox = new JComboBox<>();
+			JCheckBox startNowBox = new JCheckBox("Start now");
+			startNowBox.setSelected(true);
 
 			for(Task task : manager.getTasks()){
 				comboBox.addItem(task.getName());
@@ -388,19 +393,27 @@ public class MainGui {
 			comboBox.setSelectedIndex(-1);
 
 			JPanel panel = new JPanel();
-			panel.add(new JLabel("Task for new span:"));
-			panel.add(comboBox);
+			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+			JPanel temp = new JPanel();
+			temp.add(new JLabel("Task for new span:"));
+			temp.add(comboBox);
+			panel.add(temp);
+			temp = new JPanel();
+			panel.add(Box.createHorizontalStrut(15));
+			panel.add(startNowBox);
+			panel.add(temp);
 
-			int response = JOptionPane.showConfirmDialog(
+
+			int response = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
 				panel,
 				"Select a Task",
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
 			);
-			String taskname = null;
+			String taskName = null;
 			if(response == JOptionPane.OK_OPTION){
-				taskname = (String)comboBox.getSelectedItem();
+				taskName = (String)comboBox.getSelectedItem();
 			} else {
 				LOGGER.info("Task editing form was cancelled.");
 				return;
@@ -408,7 +421,11 @@ public class MainGui {
 
 			resetStreams();
 			ActionConfig config = new ActionConfig(KeeperObjectType.SPAN, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
-			config.setName(taskname);
+			if(startNowBox.isSelected()){
+				LOGGER.debug("Told to start the span now");
+				config.setStart("NOW");
+			}
+			config.setName(taskName);
 
 			boolean result = ActionDoer.doObjAction(manager, config);
 			LOGGER.debug("Result of trying to add span to selected period: {}", result);
@@ -715,7 +732,7 @@ public class MainGui {
 						JButton delete = new JButton("D");
 						delete.setAction(new DeleteSpanAction(count));
 
-						spanRow.add(count + 1);
+						spanRow.add(count);
 
 						spanRow.add(TimeParser.toOutputString(span.getStartTime()));
 						spanRow.add(TimeParser.toOutputString(span.getEndTime()));
