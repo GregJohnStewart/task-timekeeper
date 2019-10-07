@@ -16,6 +16,8 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	/**
 	 * The task this timespan is associated with.
 	 */
+	//@JsonSerialize(using = TaskNameSerializer.class)
+	//@JsonDeserialize(using = TaskNameDeserializer.class)
 	private Task task;
 	/**
 	 * The start time of this span.
@@ -54,7 +56,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	}
 
 	/**
-	 * Constructor to set the task
+	 * Constructor to set the task and datetimes
 	 *
 	 * @param task      The task to set
 	 * @param startTime The time this span started at.
@@ -267,3 +269,4 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		return new Timespan(this.task.clone(), this.startTime, this.endTime);
 	}
 }
+

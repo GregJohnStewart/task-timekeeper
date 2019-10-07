@@ -21,7 +21,7 @@ public class GuiRunnerTest {
 
 	@Ignore("Will create the window but not destroy it")
 	@Test
-	public void run() {
+	public void runGui() {
 		//figure out how to close automatically for testing
 		new GuiRunner().run();
 	}
