@@ -74,8 +74,14 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			}
 		}
 
-		consolePrintln(OutputLevel.DEFAULT, "New timespan added.");
-		return period.addTimespan(newSpan);
+		boolean result = period.addTimespan(newSpan);
+		if(!result){
+			LOGGER.warn("Timespan not added, was there already an empty one?");
+			consoleErrorPrintln("Timespan not added. Was there already an empty one?");
+		}else {
+			consolePrintln(OutputLevel.DEFAULT, "New timespan added.");
+		}
+		return result;
 	}
 
 	@Override
