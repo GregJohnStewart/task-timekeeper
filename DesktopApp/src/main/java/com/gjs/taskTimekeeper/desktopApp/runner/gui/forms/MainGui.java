@@ -272,7 +272,7 @@ public class MainGui {
 
 			TaskEditHelper helper = new TaskEditHelper();
 
-			int response = JOptionPane.showInternalConfirmDialog(
+			int response = JOptionPane.showConfirmDialog(
 				mainPanel,
 				helper.getForm(task),
 				"Task Edit",
@@ -482,7 +482,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
-	private Action editSelectedPeriodAction = new AbstractAction("Edit Attributes") {
+	private Action editSelectedPeriodAttributesAction = new AbstractAction("Edit Attributes") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Editing attributes of selected period.");
@@ -501,6 +501,7 @@ public class MainGui {
 				ActionConfig attributeChangeConfig = new ActionConfig(KeeperObjectType.PERIOD, EDIT);
 
 				attributeChangeConfig.setAttributes(helper.getAttributes());
+				LOGGER.debug("New attributes of selected period: {}", attributeChangeConfig.getAttributes());
 
 				boolean result = ActionDoer.doObjAction(manager, attributeChangeConfig);
 
@@ -597,7 +598,7 @@ public class MainGui {
 		//wire buttons
 		this.addTaskButton.setAction(this.addTaskAction);
 		this.addPeriodButton.setAction(this.addPeriodAction);
-		this.selectedPeriodEditAttributesButton.setAction(this.editSelectedPeriodAction);
+		this.selectedPeriodEditAttributesButton.setAction(this.editSelectedPeriodAttributesAction);
 
 		LOGGER.info("Opened window");
 	}
