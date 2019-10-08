@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.Timespan;
@@ -17,6 +18,7 @@ import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.SpanEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.options.GuiOptions;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
@@ -53,7 +55,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -79,7 +86,6 @@ public class MainGui {
 		                                            "\nFor help, please visit the Github for this project." +
 		                                            "\nPlease consider donating if you find this program was helpful to you!";
 
-	private static final boolean AUTO_SAVE_DEFAULT = false;
 	private static final double INDEX_COL_WIDTH = 35;
 	private static final double DATETIME_COL_WIDTH = 130;
 	private static final double DURATION_COL_WIDTH = 65;
@@ -120,6 +126,7 @@ public class MainGui {
 	//<editor-fold desc="member variables">
 	//admin stuff
 	private TimeManager manager;
+	private GuiOptions options = null;
 	private boolean changed = false;
 	private ByteArrayOutputStream printStream = new ByteArrayOutputStream();
 	private ByteArrayOutputStream errorPrintStream = new ByteArrayOutputStream();
@@ -151,6 +158,8 @@ public class MainGui {
 
 	private JMenuBar mainMenuBar;
 	private JCheckBoxMenuItem autoSaveMenuItem;
+	private JCheckBoxMenuItem saveOnExitMenuItem;
+	private JCheckBoxMenuItem selectNewPeriodMenuItem;
 
 	//</editor-fold>
 	//<editor-fold desc="Actions/Handlers">
@@ -160,14 +169,19 @@ public class MainGui {
 			super.windowClosing(e);
 			LOGGER.info("Window closing event.");
 			if (changed) {
-				LOGGER.info("Window closing with unsaved changes.");
-				int chosen = JOptionPane.showInternalConfirmDialog(
-					mainPanel,
-					"You have unsaved changes. Save before closing?",
-					"Unsaved changes",
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.WARNING_MESSAGE
-				);
+				int chosen;
+				if(!options.isSaveOnExit()) {
+					LOGGER.info("Window closing with unsaved changes.");
+					chosen = JOptionPane.showInternalConfirmDialog(
+						mainPanel,
+						"You have unsaved changes. Save before closing?",
+						"Unsaved changes",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.WARNING_MESSAGE
+					);
+				}else{
+					chosen = JOptionPane.YES_OPTION;
+				}
 				if (chosen == JOptionPane.YES_OPTION) {
 					LOGGER.info("User chose to save the data.");
 					saveData();
@@ -329,6 +343,10 @@ public class MainGui {
 
 			resetStreams();
 			ActionConfig config = new ActionConfig(KeeperObjectType.PERIOD, ADD);
+
+			if(options.isSelectNewPeriods()){
+				config.setSelect(true);
+			}
 
 			boolean result = ActionDoer.doObjAction(manager, config);
 			LOGGER.debug("Result of trying to add period: {}", result);
@@ -516,6 +534,16 @@ public class MainGui {
 			}
 		}
 	};
+
+	private class OptionChangedAction extends AbstractAction {
+		public OptionChangedAction(String name){
+			super(name);
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			updateUiOptions();
+		}
+	}
 	//</editor-fold>
 
 	//<editor-fold desc="constructor and public methods">
@@ -558,10 +586,17 @@ public class MainGui {
 		//options
 		//TODO:: implement these
 		menu = new JMenu("Options");
-		this.autoSaveMenuItem = new JCheckBoxMenuItem("Auto save", AUTO_SAVE_DEFAULT);
-		menu.add(autoSaveMenuItem);
-		this.autoSaveMenuItem = new JCheckBoxMenuItem("Save on exit", AUTO_SAVE_DEFAULT);
-		menu.add(autoSaveMenuItem);
+		this.autoSaveMenuItem = new JCheckBoxMenuItem();
+		this.autoSaveMenuItem.setAction(new OptionChangedAction("Auto save"));
+		menu.add(this.autoSaveMenuItem);
+		this.saveOnExitMenuItem = new JCheckBoxMenuItem();
+		this.saveOnExitMenuItem.setAction(new OptionChangedAction("Save on exit"));
+		menu.add(this.saveOnExitMenuItem);
+		menu.addSeparator();
+		this.selectNewPeriodMenuItem = new JCheckBoxMenuItem();
+		this.selectNewPeriodMenuItem.setAction(new OptionChangedAction("Select new periods"));
+		menu.add(this.selectNewPeriodMenuItem);
+
 		this.mainMenuBar.add(menu);
 		//info
 		menu = new JMenu("Info");
@@ -604,13 +639,14 @@ public class MainGui {
 		this.addPeriodButton.setAction(this.addPeriodAction);
 		this.selectedPeriodEditAttributesButton.setAction(this.editSelectedPeriodAttributesAction);
 
+		this.loadUiOptions();
 		LOGGER.info("Opened window");
 	}
 
 	public boolean stillOpen() {
 		return this.mainFrame.isVisible();
 	}
-	//<editor-fold>
+	//</editor-fold>
 
 	//<editor-fold desc="Utility methods">
 	private void resetStreams() {
@@ -654,7 +690,62 @@ public class MainGui {
 		wasUpdated(result);
 		sendErrorIfNeeded(!result);
 	}
-	//<editor-fold>
+
+	private void loadUiOptions(){
+		LOGGER.info("Reading in saved options.");
+		try(
+			InputStream is = new FileInputStream(
+				Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class)
+			)
+		) {
+			this.options = TimeManager.MAPPER.readValue(is, GuiOptions.class);
+		} catch (MismatchedInputException e){
+			LOGGER.debug("Empty gui options file. Starting with new set of options.");
+		} catch (IOException e) {
+			LOGGER.error("FAILED to read in gui options data: ", e);
+
+			JOptionPane.showInternalMessageDialog(
+				mainFrame,
+				"FAILED to read gui options in. Error: \n"+ e.getMessage(),
+				"Error",
+				JOptionPane.WARNING_MESSAGE
+			);
+		}
+
+		if(this.options == null){
+			this.options = new GuiOptions();
+		}
+
+		autoSaveMenuItem.setSelected(this.options.isAutoSave());
+		saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
+		selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
+	}
+
+	private void updateUiOptions(){
+		this.options.setAutoSave(autoSaveMenuItem.isSelected());
+		this.options.setSaveOnExit(saveOnExitMenuItem.isSelected());
+		this.options.setSelectNewPeriods(selectNewPeriodMenuItem.isSelected());
+
+		LOGGER.trace("Writing out ui options data.");
+		try(
+			OutputStream os = new FileOutputStream(
+				Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class)
+			)
+		){
+			TimeManager.MAPPER.writeValue(os, this.options);
+		} catch (IOException e) {
+			LOGGER.error("FAILED to write changes to gui options file. Error: ", e);
+
+			JOptionPane.showInternalMessageDialog(
+				mainFrame,
+				"FAILED to write gui options out. Change not saved. Error: \n"+ e.getMessage(),
+				"Error",
+				JOptionPane.WARNING_MESSAGE
+			);
+		}
+		LOGGER.trace("Done writing out ui options.");
+	}
+	//</editor-fold>
 
 	//<editor-fold desc="Data Loading methods">
 	private void reloadData() {
@@ -693,7 +784,7 @@ public class MainGui {
 	private void wasUpdated(boolean wasUpdated) {
 		this.changed = this.changed || wasUpdated;
 		LOGGER.debug("Was data changed? {}", this.changed);
-		if (this.autoSaveMenuItem.getState()) {
+		if (this.options.isAutoSave()) {
 			LOGGER.debug("Saving data after change automatically.");
 			this.saveData();
 		} else {

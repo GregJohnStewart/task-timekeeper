@@ -15,12 +15,14 @@ public enum ConfigKeys {
 	LIB_VERSION("lib.version"),
 	//Other config
 	CONFIG_FILE("configFile", "TKPR_CONFIG_FILE", true, false),
+	UI_OPTIONS_FILE("uiOptionsFile", "TKPR_UI_CONFIG_FILE", true, false),
 	SAVE_FILE("saveFile", "TKPR_SAVE_FILE", true, true),
 	RUN_MODE("run.mode", "TKPR_MODE"),
 	//Running config, for single mode
 	SINGLE_MODE_HELP("consoleHelp"),
 	//default values
 	DEFAULT_CONFIG_FILE("default.configFile", CONFIG_FILE),
+	DEFAULT_UI_OPTIONS_FILE("default.uiOptionsFile", UI_OPTIONS_FILE),
 	DEFAULT_SAVE_FILE("default.saveFile", SAVE_FILE),
 	DEFAULT_RUN_MODE("default.runMode", RUN_MODE),
 	//static files

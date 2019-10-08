@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '0.1.1.730'
+version = '0.1.1.746'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -93,6 +93,7 @@ lib.version = ${project(":BaseCode").version}
 
 # default save file location
 default.configFile = {HOME}/.timeKeeper/config.cfg
+default.uiOptionsFile = {HOME}/.timeKeeper/ui-config.cfg
 default.saveFile = {HOME}/.timeKeeper/save.tks
 # default run mode
 default.runMode = SINGLE
