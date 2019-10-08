@@ -22,3 +22,27 @@ The Manager works off of several objects:
 ## Desktop App
 
 The desktop app is located [here](DesktopApp/README.md). You can run it either as a cli or gui.
+
+## Misc notes
+
+### Versioning
+
+The versioning in this project follows the following loose guidelines:
+
+`<major>.<minor>.<micro>.<build>`
+
+#### Major
+
+This version describes a large set of changes; this is bumped when backwards incompatible changes are made and when enough changes warrants it
+
+#### Minor 
+
+This version describes minor but significant changes, such as in small behaviors and improvement tweaks
+
+#### Micro
+
+This version describes tiny changes, such as tweaks in output wording, spelling, or format. These changes would not affect behavior (at least significantly)
+
+#### Build
+
+This version is automatically incremented at build time, simply a counter for the number of builds.

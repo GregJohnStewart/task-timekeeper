@@ -152,7 +152,7 @@ public class MainGui {
 	private JMenuBar mainMenuBar;
 	private JCheckBoxMenuItem autoSaveMenuItem;
 
-
+	//</editor-fold>
 	//<editor-fold desc="Actions/Handlers">
 	private WindowListener windowListener = new WindowAdapter() {
 		@Override
@@ -418,6 +418,7 @@ public class MainGui {
 			}
 		}
 	};
+
 	private class EditSpanAction extends IndexAction {
 		public EditSpanAction(int index) {
 			super("Edit", index);
@@ -458,6 +459,7 @@ public class MainGui {
 			}
 		}
 	}
+
 	private class DeleteSpanAction extends IndexAction {
 		public DeleteSpanAction(int index) {
 			super("Delete", index);
@@ -482,6 +484,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+
 	private Action editSelectedPeriodAttributesAction = new AbstractAction("Edit Attributes") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -492,7 +495,8 @@ public class MainGui {
 
 			int response = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
-				helper.getForm(ActionDoer.getSelectedWorkPeriod().getAttributes()),
+				helper.getForm(ActionDoer.getSelectedWorkPeriod()
+					               .getAttributes()),
 				"Selected Period attribute Edit",
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
@@ -512,7 +516,6 @@ public class MainGui {
 			}
 		}
 	};
-	//</editor-fold>
 	//</editor-fold>
 
 	//<editor-fold desc="constructor and public methods">
@@ -553,6 +556,7 @@ public class MainGui {
 		menu.add(menuItem);
 		this.mainMenuBar.add(menu);
 		//options
+		//TODO:: implement these
 		menu = new JMenu("Options");
 		this.autoSaveMenuItem = new JCheckBoxMenuItem("Auto save", AUTO_SAVE_DEFAULT);
 		menu.add(autoSaveMenuItem);
@@ -851,7 +855,7 @@ public class MainGui {
 						select,
 						delete
 					)
-				);//TODO:: make real buttons
+				);
 
 				periodData.add(row);
 				curInd++;
