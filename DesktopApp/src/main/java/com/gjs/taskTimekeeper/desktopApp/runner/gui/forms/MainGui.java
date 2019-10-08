@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.SpanEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
@@ -283,7 +284,7 @@ public class MainGui {
 				taskChangeConfig.setName(task.getName());
 
 				taskChangeConfig.setNewName(helper.getName());
-				//TODO:: add att editing
+				taskChangeConfig.setAttributes(helper.getAttributes());
 
 				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
 
@@ -417,7 +418,6 @@ public class MainGui {
 			}
 		}
 	};
-
 	private class EditSpanAction extends IndexAction {
 		public EditSpanAction(int index) {
 			super("Edit", index);
@@ -458,7 +458,6 @@ public class MainGui {
 			}
 		}
 	}
-
 	private class DeleteSpanAction extends IndexAction {
 		public DeleteSpanAction(int index) {
 			super("Delete", index);
@@ -483,6 +482,35 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+	private Action editSelectedPeriodAction = new AbstractAction("Edit Attributes") {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Editing attributes of selected period.");
+			resetStreams();
+
+			AttributeEditor helper = new AttributeEditor();
+
+			int response = JOptionPane.showInternalConfirmDialog(
+				mainPanel,
+				helper.getForm(ActionDoer.getSelectedWorkPeriod().getAttributes()),
+				"Selected Period attribute Edit",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			if (response == JOptionPane.OK_OPTION) {
+				ActionConfig attributeChangeConfig = new ActionConfig(KeeperObjectType.PERIOD, EDIT);
+
+				attributeChangeConfig.setAttributes(helper.getAttributes());
+
+				boolean result = ActionDoer.doObjAction(manager, attributeChangeConfig);
+
+				LOGGER.debug("Result of trying to edit selected period attributes: {}", result);
+				handleResult(result);
+			} else {
+				LOGGER.info("Editing of selected period attribute form was cancelled.");
+			}
+		}
+	};
 	//</editor-fold>
 	//</editor-fold>
 
@@ -569,6 +597,7 @@ public class MainGui {
 		//wire buttons
 		this.addTaskButton.setAction(this.addTaskAction);
 		this.addPeriodButton.setAction(this.addPeriodAction);
+		this.selectedPeriodEditAttributesButton.setAction(this.editSelectedPeriodAction);
 
 		LOGGER.info("Opened window");
 	}
