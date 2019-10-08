@@ -127,12 +127,12 @@
                               <text value="&lt;complete?&gt;"/>
                             </properties>
                           </component>
-                          <component id="93f29" class="javax.swing.JButton" binding="selectedPeriodAddAttributeButton">
+                          <component id="93f29" class="javax.swing.JButton" binding="selectedPeriodEditAttributesButton">
                             <constraints>
                               <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                             </constraints>
                             <properties>
-                              <text value="Add Attribute"/>
+                              <text value="Edit Attributes"/>
                             </properties>
                           </component>
                         </children>

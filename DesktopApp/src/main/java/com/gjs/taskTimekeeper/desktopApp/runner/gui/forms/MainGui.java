@@ -14,8 +14,8 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.SpanEditHelper;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.TaskEditHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.SpanEditHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
@@ -89,12 +89,12 @@ public class MainGui {
 		1, DATETIME_COL_WIDTH,
 		2, DATETIME_COL_WIDTH,
 		3, DURATION_COL_WIDTH,
-		4, (double)85
+		4, (double) 85
 	);
 	private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
 	private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS = Map.of(
 		0, INDEX_COL_WIDTH,
-		2, (double)123
+		2, (double) 123
 	);
 	private static final List<String> SPAN_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Task", "Actions");
 	private static final Map<Integer, Double> SPAN_LIST_COL_WIDTHS = Map.of(
@@ -102,17 +102,19 @@ public class MainGui {
 		1, DATETIME_COL_WIDTH,
 		2, DATETIME_COL_WIDTH,
 		3, DURATION_COL_WIDTH,
-		5, (double)85
+		5, (double) 85
 	);
+
 	//</editor-fold>
 	//<editor-fold desc="Static methods">
-	private static String getFromPrintStreamForMessageOutput(ByteArrayOutputStream stream){
+	private static String getFromPrintStreamForMessageOutput(ByteArrayOutputStream stream) {
 		String output = stream.toString();
 
 		output = output.replace("\t", "    ");
 
 		return output;
 	}
+
 	//</editor-fold>
 	//<editor-fold desc="member variables">
 	//admin stuff
@@ -144,7 +146,7 @@ public class MainGui {
 	private JLabel selectedPeriodEndLabel;
 	private JLabel selectedPeriodDurationLabel;
 	private JLabel selectedPeriodCompleteLabel;
-	private JButton selectedPeriodAddAttributeButton;
+	private JButton selectedPeriodEditAttributesButton;
 
 	private JMenuBar mainMenuBar;
 	private JCheckBoxMenuItem autoSaveMenuItem;
@@ -226,6 +228,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	};
+
 	private class ViewTaskAction extends IndexAction {
 		public ViewTaskAction(int index) {
 			super("View", index);
@@ -238,10 +241,10 @@ public class MainGui {
 
 			ActionDoer.doObjAction(manager, new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()));
 
-			if(errorPrintStream.size() != 0){
+			if (errorPrintStream.size() != 0) {
 				LOGGER.warn("Some kind of error happened in trying to view the task at index {}", this.getIndex());
 				sendError();
-			}else{
+			} else {
 				JOptionPane.showInternalMessageDialog(
 					mainPanel,
 					getFromPrintStreamForMessageOutput(printStream),
@@ -251,6 +254,7 @@ public class MainGui {
 			}
 		}
 	}
+
 	private class EditTaskAction extends IndexAction {
 		public EditTaskAction(int index) {
 			super("Edit", index);
@@ -262,8 +266,8 @@ public class MainGui {
 			resetStreams();
 
 			Task task = (Task) ActionDoer.getActionDoer(KeeperObjectType.TASK)
-				            .search(manager, new ActionConfig())
-				            .get(this.getIndex() - 1);
+				                   .search(manager, new ActionConfig())
+				                   .get(this.getIndex() - 1);
 
 			TaskEditHelper helper = new TaskEditHelper();
 
@@ -274,7 +278,7 @@ public class MainGui {
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
 			);
-			if(response == JOptionPane.OK_OPTION){
+			if (response == JOptionPane.OK_OPTION) {
 				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.TASK, EDIT);
 				taskChangeConfig.setName(task.getName());
 
@@ -290,6 +294,7 @@ public class MainGui {
 			}
 		}
 	}
+
 	private class DeleteTaskAction extends IndexAction {
 		public DeleteTaskAction(int index) {
 			super("Delete", index);
@@ -315,6 +320,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+
 	private Action addPeriodAction = new AbstractAction("Add Period") {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -328,6 +334,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	};
+
 	private class SelectPeriodAction extends IndexAction {
 		public SelectPeriodAction(int index) {
 			super("Select", index);
@@ -340,16 +347,18 @@ public class MainGui {
 
 			ActionDoer.doObjAction(
 				manager,
-				new ActionConfig(KeeperObjectType.PERIOD, VIEW).setSelect(true).setIndex(this.getIndex())
+				new ActionConfig(KeeperObjectType.PERIOD, VIEW).setSelect(true)
+					.setIndex(this.getIndex())
 			);
 
-			if(errorPrintStream.size() != 0) {
+			if (errorPrintStream.size() != 0) {
 				LOGGER.warn("Some kind of error happened in trying to view the task at index {}", this.getIndex());
 				sendError();
 			}
 			updateUiData();
 		}
 	}
+
 	private class DeletePeriodAction extends IndexAction {
 		public DeletePeriodAction(int index) {
 			super("Delete", index);
@@ -375,6 +384,7 @@ public class MainGui {
 			handleResult(result);
 		}
 	}
+
 	//TODO:: more span buttons (complete existing, new span that completes the rest, etc)
 	private Action addSpanAction = new AbstractAction("Add Span") {
 		@Override
@@ -391,7 +401,7 @@ public class MainGui {
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
 			);
-			if(response == JOptionPane.OK_OPTION){
+			if (response == JOptionPane.OK_OPTION) {
 				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, ADD);
 
 				taskChangeConfig.setName(helper.getTaskName());
@@ -407,6 +417,7 @@ public class MainGui {
 			}
 		}
 	};
+
 	private class EditSpanAction extends IndexAction {
 		public EditSpanAction(int index) {
 			super("Edit", index);
@@ -418,8 +429,8 @@ public class MainGui {
 			resetStreams();
 
 			Timespan span = (Timespan) ActionDoer.getActionDoer(KeeperObjectType.SPAN)
-				                   .search(manager, new ActionConfig())
-				                   .get(this.getIndex() - 1);
+				                           .search(manager, new ActionConfig())
+				                           .get(this.getIndex() - 1);
 
 			SpanEditHelper helper = new SpanEditHelper();
 
@@ -430,7 +441,7 @@ public class MainGui {
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
 			);
-			if(response == JOptionPane.OK_OPTION){
+			if (response == JOptionPane.OK_OPTION) {
 				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, EDIT);
 
 				taskChangeConfig.setIndex(this.getIndex());
@@ -447,6 +458,7 @@ public class MainGui {
 			}
 		}
 	}
+
 	private class DeleteSpanAction extends IndexAction {
 		public DeleteSpanAction(int index) {
 			super("Delete", index);
@@ -578,7 +590,8 @@ public class MainGui {
 			LOGGER.error("Error flushing stream(s): ", e);
 		}
 	}
-	private void sendError(){
+
+	private void sendError() {
 		JOptionPane.showInternalMessageDialog(
 			mainPanel,
 			getFromPrintStreamForMessageOutput(errorPrintStream),
@@ -586,12 +599,14 @@ public class MainGui {
 			JOptionPane.ERROR_MESSAGE
 		);
 	}
-	private void sendErrorIfNeeded(boolean needed){
-		if(needed){
+
+	private void sendErrorIfNeeded(boolean needed) {
+		if (needed) {
 			sendError();
 		}
 	}
-	private int deleteConfirm(String message){
+
+	private int deleteConfirm(String message) {
 		return JOptionPane.showInternalConfirmDialog(
 			this.mainPanel,
 			message,
@@ -600,7 +615,8 @@ public class MainGui {
 			JOptionPane.WARNING_MESSAGE
 		);
 	}
-	private void handleResult(boolean result){
+
+	private void handleResult(boolean result) {
 		wasUpdated(result);
 		sendErrorIfNeeded(!result);
 	}
@@ -675,7 +691,7 @@ public class MainGui {
 			WorkPeriod selectedPeriod = ActionDoer.getSelectedWorkPeriod();
 
 			if (selectedPeriod == null) {
-				if(this.mainTabPane.getSelectedIndex() == 0) {
+				if (this.mainTabPane.getSelectedIndex() == 0) {
 					this.mainTabPane.setSelectedIndex(1);
 				}
 				this.mainTabPane.setEnabledAt(0, false);
@@ -687,37 +703,30 @@ public class MainGui {
 				this.selectedPeriodDurationLabel.setText(TimeParser.toDurationString(selectedPeriod.getTotalTime()));
 				this.selectedPeriodCompleteLabel.setText(selectedPeriod.isUnCompleted() ? "No" : "Yes");
 				{
-					List<List<Object>>  periodAtts = new ArrayList<>(selectedPeriod.getAttributes().size());
+					List<List<Object>> periodAtts = new ArrayList<>(selectedPeriod.getAttributes()
+						                                                .size());
 
-					int count = 0;
-					for (Map.Entry<String, String> att : selectedPeriod.getAttributes().entrySet()) {
-						List<Object> attRow = new ArrayList<>(3);
+					for (Map.Entry<String, String> att : selectedPeriod.getAttributes()
+						                                     .entrySet()) {
+						List<Object> attRow = new ArrayList<>(2);
 
 						attRow.add(att.getKey());
 						attRow.add(att.getValue());
-						attRow.add(
-							List.of(
-								new JButton("Edit"),
-								new JButton("Delete")
-							)
-						);
 
 						periodAtts.add(attRow);
-
-						count++;
 					}
 
 					new TableLayoutHelper(
 						this.selectedPeriodAttsPane,
 						periodAtts,
-						List.of("Attribute", "Value", "Action"),
-						Map.of(2, (double)85)
+						List.of("Attribute", "Value")
 					);
 				}
 
 				//task details
 				{
-					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTasks().size());
+					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTasks()
+						                                               .size());
 
 					for (Task task : selectedPeriod.getTasks()) {
 						List<Object> taskDetailRow = new ArrayList<>(2);
@@ -754,7 +763,8 @@ public class MainGui {
 						spanRow.add(TimeParser.toOutputString(span.getStartTime()));
 						spanRow.add(TimeParser.toOutputString(span.getEndTime()));
 						spanRow.add(TimeParser.toDurationString(span.getDuration()));
-						spanRow.add(span.getTask().getName());
+						spanRow.add(span.getTask()
+							            .getName());
 						spanRow.add(
 							List.of(
 								edit,
@@ -795,7 +805,8 @@ public class MainGui {
 				JButton delete = new JButton("D");
 				delete.setAction(new DeletePeriodAction(curInd));
 
-				if(ActionDoer.getSelectedWorkPeriod() != null && ActionDoer.getSelectedWorkPeriod().equals(period)){
+				if (ActionDoer.getSelectedWorkPeriod() != null && ActionDoer.getSelectedWorkPeriod()
+					                                                  .equals(period)) {
 					rowColors.put(curInd, Color.CYAN);
 					select.setEnabled(false);
 				}
@@ -925,9 +936,9 @@ public class MainGui {
 		selectedPeriodCompleteLabel = new JLabel();
 		selectedPeriodCompleteLabel.setText("<complete?>");
 		panel2.add(selectedPeriodCompleteLabel, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-		selectedPeriodAddAttributeButton = new JButton();
-		selectedPeriodAddAttributeButton.setText("Add Attribute");
-		panel2.add(selectedPeriodAddAttributeButton, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+		selectedPeriodEditAttributesButton = new JButton();
+		selectedPeriodEditAttributesButton.setText("Edit Attributes");
+		panel2.add(selectedPeriodEditAttributesButton, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 		selectedPeriodAttsPane = new JScrollPane();
 		selectedPeriodAttsPane.setVerticalScrollBarPolicy(22);
 		selectedPeriodBannerPanel.add(selectedPeriodAttsPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));

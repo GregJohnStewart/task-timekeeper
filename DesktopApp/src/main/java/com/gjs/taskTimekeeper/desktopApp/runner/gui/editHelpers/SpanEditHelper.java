@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.gui;
+package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
 import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.Timespan;

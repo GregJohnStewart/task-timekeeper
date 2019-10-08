@@ -72,6 +72,10 @@ public class ActionConfig {
 	@Option(name = "-en", aliases = {"en", "--end", "end"}, usage = "Specifying datetime something ends at.")
 	private String end = null;
 
+	//TODO:: implement for work period and timespan and document
+	@Option(name= "--atts", usage = "Specifies attribute value pairs, typically overwriting existing ones. Format: att,val;att2,val2")
+	private String attributes = null;
+
 	public ActionConfig setShowHelp(boolean showHelp) {
 		this.showHelp = showHelp;
 		return this;
@@ -231,6 +235,15 @@ public class ActionConfig {
 
 	public ActionConfig setSelect(boolean select) {
 		this.select = select;
+		return this;
+	}
+
+	public String getAttributes() {
+		return attributes;
+	}
+
+	public ActionConfig setAttributes(String attributes) {
+		this.attributes = attributes;
 		return this;
 	}
 }
