@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.SpanEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.TaskEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
@@ -28,12 +29,8 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -63,6 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.EDIT;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.REMOVE;
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.VIEW;
@@ -104,7 +102,7 @@ public class MainGui {
 		1, DATETIME_COL_WIDTH,
 		2, DATETIME_COL_WIDTH,
 		3, DURATION_COL_WIDTH,
-		5, (double)156
+		5, (double)85
 	);
 	//</editor-fold>
 	//<editor-fold desc="Static methods">
@@ -220,7 +218,7 @@ public class MainGui {
 			}
 
 			resetStreams();
-			ActionConfig config = new ActionConfig(KeeperObjectType.TASK, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
+			ActionConfig config = new ActionConfig(KeeperObjectType.TASK, ADD);
 			config.setName(newTaskName);
 
 			boolean result = ActionDoer.doObjAction(manager, config);
@@ -269,7 +267,7 @@ public class MainGui {
 
 			TaskEditHelper helper = new TaskEditHelper();
 
-			int response = JOptionPane.showConfirmDialog(
+			int response = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
 				helper.getForm(task),
 				"Task Edit",
@@ -323,7 +321,7 @@ public class MainGui {
 			LOGGER.info("Add Period action hit.");
 
 			resetStreams();
-			ActionConfig config = new ActionConfig(KeeperObjectType.PERIOD, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
+			ActionConfig config = new ActionConfig(KeeperObjectType.PERIOD, ADD);
 
 			boolean result = ActionDoer.doObjAction(manager, config);
 			LOGGER.debug("Result of trying to add period: {}", result);
@@ -382,56 +380,73 @@ public class MainGui {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Add timespan action hit.");
+			resetStreams();
 
-			JComboBox<String> comboBox = new JComboBox<>();
-			JCheckBox startNowBox = new JCheckBox("Start now");
-			startNowBox.setSelected(true);
-
-			for(Task task : manager.getTasks()){
-				comboBox.addItem(task.getName());
-			}
-			comboBox.setSelectedIndex(-1);
-
-			JPanel panel = new JPanel();
-			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-			JPanel temp = new JPanel();
-			temp.add(new JLabel("Task for new span:"));
-			temp.add(comboBox);
-			panel.add(temp);
-			temp = new JPanel();
-			panel.add(Box.createHorizontalStrut(15));
-			panel.add(startNowBox);
-			panel.add(temp);
-
+			SpanEditHelper helper = new SpanEditHelper();
 
 			int response = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
-				panel,
-				"Select a Task",
+				helper.getForm(manager.getTasks()),
+				"Timespan Add",
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE
 			);
-			String taskName = null;
 			if(response == JOptionPane.OK_OPTION){
-				taskName = (String)comboBox.getSelectedItem();
+				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, ADD);
+
+				taskChangeConfig.setName(helper.getTaskName());
+				taskChangeConfig.setStart(helper.getStartField());
+				taskChangeConfig.setEnd(helper.getEndField());
+
+				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+
+				LOGGER.debug("Result of trying to add span: {}", result);
+				handleResult(result);
 			} else {
-				LOGGER.info("Task editing form was cancelled.");
-				return;
+				LOGGER.info("Span add form was cancelled.");
 			}
-
-			resetStreams();
-			ActionConfig config = new ActionConfig(KeeperObjectType.SPAN, com.gjs.taskTimekeeper.backend.crudAction.Action.ADD);
-			if(startNowBox.isSelected()){
-				LOGGER.debug("Told to start the span now");
-				config.setStart("NOW");
-			}
-			config.setName(taskName);
-
-			boolean result = ActionDoer.doObjAction(manager, config);
-			LOGGER.debug("Result of trying to add span to selected period: {}", result);
-			handleResult(result);
 		}
 	};
+	private class EditSpanAction extends IndexAction {
+		public EditSpanAction(int index) {
+			super("Edit", index);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			LOGGER.info("Editing span from selected period at index {}", this.getIndex());
+			resetStreams();
+
+			Timespan span = (Timespan) ActionDoer.getActionDoer(KeeperObjectType.SPAN)
+				                   .search(manager, new ActionConfig())
+				                   .get(this.getIndex() - 1);
+
+			SpanEditHelper helper = new SpanEditHelper();
+
+			int response = JOptionPane.showInternalConfirmDialog(
+				mainPanel,
+				helper.getForm(manager.getTasks(), span),
+				"Timespan Edit",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+			if(response == JOptionPane.OK_OPTION){
+				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, EDIT);
+
+				taskChangeConfig.setIndex(this.getIndex());
+				taskChangeConfig.setName(helper.getTaskName());
+				taskChangeConfig.setStart(helper.getStartField());
+				taskChangeConfig.setEnd(helper.getEndField());
+
+				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+
+				LOGGER.debug("Result of trying to edit span: {}", result);
+				handleResult(result);
+			} else {
+				LOGGER.info("Span editing form was cancelled.");
+			}
+		}
+	}
 	private class DeleteSpanAction extends IndexAction {
 		public DeleteSpanAction(int index) {
 			super("Delete", index);
@@ -729,6 +744,8 @@ public class MainGui {
 					for (Timespan span : ((TimespanDoer) ActionDoer.getActionDoer(KeeperObjectType.SPAN)).search(manager, new ActionConfig())) {
 						List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
 
+						JButton edit = new JButton("E");
+						edit.setAction(new EditSpanAction(count));
 						JButton delete = new JButton("D");
 						delete.setAction(new DeleteSpanAction(count));
 
@@ -740,9 +757,7 @@ public class MainGui {
 						spanRow.add(span.getTask().getName());
 						spanRow.add(
 							List.of(
-								//TODO:: these
-								new JButton("Edit"),
-								new JButton("Complete"),
+								edit,
 								delete
 							)
 						);
