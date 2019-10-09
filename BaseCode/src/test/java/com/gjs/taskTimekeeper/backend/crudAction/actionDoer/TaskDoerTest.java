@@ -11,7 +11,11 @@ import org.junit.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TaskDoerTest extends ActionDoerTest {
 
@@ -59,6 +63,26 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertTrue(newTask.getAttributes().containsKey(newTaskAttKey));
 		assertEquals(newTaskAttVal, newTask.getAttributes().get(newTaskAttKey));
 
+	}
+	@Test
+	public void addWithNameAndAtts() {
+		ActionConfig config = this.getActionConfig(Action.ADD);
+		String newTaskName = "New Test Task";
+
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+
+		config.setName(newTaskName);
+		config.setAttributes("attOne,valOne;attTwo,valTwo;");
+
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertNotEquals(managerOrig, manager);
+
+		Task newTask = manager.getTaskByName(newTaskName);
+
+		assertNotNull(newTask);
+		assertEquals("valOne", newTask.getAttributes().get("attOne"));
+		assertEquals("valTwo", newTask.getAttributes().get("attTwo"));
 	}
 
 	@Test
@@ -169,6 +193,24 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertNotEquals(managerOrig, manager);
 
 		assertEquals("New task one name", task.getName());
+	}
+
+	@Test
+	public void editAttributes(){
+		TimeManager manager = getTestManager();
+		TimeManager managerOrig = manager.clone();
+		ActionConfig config = getActionConfig(Action.EDIT);
+
+		Task task = manager.getTaskByName(TASK_ONE_NAME);
+
+		config.setName(TASK_ONE_NAME);
+		config.setAttributes("attOne,valOne;attTwo,valTwo");
+
+		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertNotEquals(managerOrig, manager);
+
+		assertEquals("valOne", task.getAttributes().get("attOne"));
+		assertEquals("valTwo", task.getAttributes().get("attTwo"));
 	}
 
 	@Test

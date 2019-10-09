@@ -14,7 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class TimespanDoerTest extends ActionDoerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoerTest.class);
@@ -131,6 +135,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
 
 		assertEquals(task, ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTask());
+//		assertSame(task, ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTask());
 	}
 
 	@Test
@@ -157,6 +162,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task, span.getTask());
+//		assertSame(task, span.getTask());
 		assertTrue(start.isEqual(span.getStartTime()));
 		assertTrue(end.isEqual(span.getEndTime()));
 	}
@@ -183,6 +189,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task, span.getTask());
+//		assertSame(task, span.getTask());
 		assertTrue(start.isEqual(span.getStartTime()));
 		assertNull(span.getEndTime());
 	}
@@ -209,6 +216,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task, span.getTask());
+//		assertSame(task, span.getTask());
 		assertNull(span.getStartTime());
 		assertTrue(end.isEqual(span.getEndTime()));
 	}

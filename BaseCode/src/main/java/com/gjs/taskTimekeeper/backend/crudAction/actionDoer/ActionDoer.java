@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
 import static com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel.DEFAULT;
@@ -468,7 +470,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		return true;
 	}
 
-
+	//TODO:: move to own class
 	private static PrintStream MESSAGE_OUTPUT_STREAM = System.out;
 	private static PrintStream MESSAGE_ERROR_STREAM = System.err;
 	private static OutputLevel CONSOLE_OUTPUT_LEVEL = DEFAULT;
@@ -522,5 +524,23 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		if(CONSOLE_OUTPUT_LEVEL != NONE) {
 			MESSAGE_ERROR_STREAM.print(output);
 		}
+	}
+
+	protected static Map<String, String> parseAttributes(String attString) throws IllegalArgumentException{
+		if(attString == null){
+			throw new IllegalArgumentException("Attribute string was null.");
+		}
+		Map<String, String> output = new HashMap<>();
+		if(!attString.equals("EMPTY")) {
+			String[] attPairs = attString.split(";");
+			for (String attPairString : attPairs) {
+				String[] attPair = attPairString.split(",");
+				if (attPair.length != 2) {
+					throw new IllegalArgumentException("Bad attribute pairs given. Bad pair: " + attPairString);
+				}
+				output.put(attPair[0], attPair[1]);
+			}
+		}
+		return output;
 	}
 }

@@ -78,6 +78,21 @@ public class PeriodDoerTest extends ActionDoerTest{
 	}
 
 	@Test
+	public void addWithAttributes(){
+		TimeManager manager = new TimeManager();
+
+		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD)
+			                                           .setAttributes("attOne,valOne;attTwo,valTwo;").setSelect(true)));
+
+		assertEquals(1, manager.getWorkPeriods().size());
+
+		WorkPeriod period = manager.getWorkPeriods().first();
+
+		assertEquals("valOne", period.getAttributes().get("attOne"));
+		assertEquals("valTwo", period.getAttributes().get("attTwo"));
+	}
+
+	@Test
 	public void addWithExisting(){
 		TimeManager manager = getTestManager();
 		int origSize = manager.getWorkPeriods().size();
@@ -109,6 +124,29 @@ public class PeriodDoerTest extends ActionDoerTest{
 			)
 		);
 		assertEquals(orig, manager);
+	}
+
+	@Test
+	public void editAtts(){
+		TimeManager manager = getTestManager();
+		TimeManager orig = manager.clone();
+		int selectedInd = 2;
+
+		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+
+		assertTrue(
+			ActionDoer.doObjAction(
+				manager,
+				this.getActionConfig(Action.EDIT).setAttributes("attOne,valOne;attTwo,valTwo;")
+			)
+		);
+
+		assertNotEquals(orig, manager);
+
+		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
+
+		assertEquals("valOne", period.getAttributes().get("attOne"));
+		assertEquals("valTwo", period.getAttributes().get("attTwo"));
 	}
 
 	@Test

@@ -84,6 +84,12 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		LOGGER.info("Adding a new work period.");
 		WorkPeriod period = new WorkPeriod();
 
+		if(config.getAttributeName() != null && config.getAttributes() != null){
+			LOGGER.warn("Cannot process both single attribute and set of attributes.");
+			consoleErrorPrintln("Cannot process both single attribute and set of attributes.");
+			return false;
+		}
+
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
 				period.getAttributes().put(
@@ -93,6 +99,17 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 			}
 		} else {
 			LOGGER.debug("No attributes to add.");
+		}
+		if(config.getAttributes() != null){
+			Map<String, String> newAtts;
+			try{
+				newAtts = ActionDoer.parseAttributes(config.getAttributes());
+			}catch (IllegalArgumentException e){
+				LOGGER.warn("Attribute string given was invalid. Error: ", e);
+				consoleErrorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				return false;
+			}
+			period.setAttributes(newAtts);
 		}
 
 		int numBefore = manager.getWorkPeriods().size();
@@ -129,6 +146,11 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 			consoleErrorPrintln("No period selected to edit.");
 			return false;
 		}
+		if(config.getAttributeName() != null && config.getAttributes() != null){
+			LOGGER.warn("Cannot process both single attribute and set of attributes.");
+			consoleErrorPrintln("Cannot process both single attribute and set of attributes.");
+			return false;
+		}
 
 		boolean modified = false;
 
@@ -145,6 +167,22 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 				boolean contained = period.getAttributes().containsKey(config.getAttributeName());
 				period.getAttributes().remove(config.getAttributeName());
 				modified = contained;
+			}
+		}
+		if(config.getAttributes() != null){
+			Map<String, String> newAtts;
+			try{
+				newAtts = ActionDoer.parseAttributes(config.getAttributes());
+			}catch (IllegalArgumentException e){
+				LOGGER.warn("Attribute string given was invalid. Error: ", e);
+				consoleErrorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				return false;
+			}
+			if(!period.getAttributes().equals(newAtts)) {
+				period.setAttributes(newAtts);
+				modified = true;
+			}else{
+				LOGGER.debug("Attribute map given same as what was already held.");
 			}
 		}
 

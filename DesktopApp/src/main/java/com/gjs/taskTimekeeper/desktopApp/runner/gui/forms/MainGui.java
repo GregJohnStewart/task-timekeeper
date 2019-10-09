@@ -297,8 +297,14 @@ public class MainGui {
 				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.TASK, EDIT);
 				taskChangeConfig.setName(task.getName());
 
-				taskChangeConfig.setNewName(helper.getName());
-				taskChangeConfig.setAttributes(helper.getAttributes());
+				if(!taskChangeConfig.getName().equals(helper.getName())) {
+					taskChangeConfig.setNewName(helper.getName());
+				}
+				if(helper.getAttributes().isBlank()){
+					taskChangeConfig.setAttributes("EMPTY");
+				}else{
+					taskChangeConfig.setAttributes(helper.getAttributes());
+				}
 
 				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
 
@@ -522,7 +528,12 @@ public class MainGui {
 			if (response == JOptionPane.OK_OPTION) {
 				ActionConfig attributeChangeConfig = new ActionConfig(KeeperObjectType.PERIOD, EDIT);
 
-				attributeChangeConfig.setAttributes(helper.getAttributes());
+				if(helper.getAttributes().isBlank()){
+					attributeChangeConfig.setAttributes("EMPTY");
+				}else{
+					attributeChangeConfig.setAttributes(helper.getAttributes());
+				}
+
 				LOGGER.debug("New attributes of selected period: {}", attributeChangeConfig.getAttributes());
 
 				boolean result = ActionDoer.doObjAction(manager, attributeChangeConfig);
@@ -584,7 +595,6 @@ public class MainGui {
 		menu.add(menuItem);
 		this.mainMenuBar.add(menu);
 		//options
-		//TODO:: implement these
 		menu = new JMenu("Options");
 		this.autoSaveMenuItem = new JCheckBoxMenuItem();
 		this.autoSaveMenuItem.setAction(new OptionChangedAction("Auto save"));

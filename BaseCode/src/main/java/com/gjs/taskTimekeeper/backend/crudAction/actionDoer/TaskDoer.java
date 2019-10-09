@@ -34,6 +34,11 @@ public class TaskDoer extends ActionDoer<Task> {
 			consoleErrorPrintln("ERROR:: Duplicate task name given.");
 			return false;
 		}
+		if(config.getAttributeName() != null && config.getAttributes() != null){
+			LOGGER.warn("Cannot process both single attribute and set of attributes.");
+			consoleErrorPrintln("Cannot process both single attribute and set of attributes.");
+			return false;
+		}
 
 		Task newTask = new Task(config.getName());
 
@@ -41,6 +46,17 @@ public class TaskDoer extends ActionDoer<Task> {
 			if(config.getAttributeVal() != null){
 				newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
 			}
+		}
+		if(config.getAttributes() != null){
+			Map<String, String> newAtts;
+			try{
+				newAtts = ActionDoer.parseAttributes(config.getAttributes());
+			}catch (IllegalArgumentException e){
+				LOGGER.warn("Attribute string given was invalid. Error: ", e);
+				consoleErrorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				return false;
+			}
+			newTask.setAttributes(newAtts);
 		}
 
 		consolePrintln(OutputLevel.VERBOSE, "New task details:");
@@ -84,16 +100,25 @@ public class TaskDoer extends ActionDoer<Task> {
 			consoleErrorPrintln("No task found to edit.");
 			return false;
 		}
+		if(config.getAttributeName() != null && config.getAttributes() != null){
+			LOGGER.warn("Cannot process both single attribute and set of attributes.");
+			consoleErrorPrintln("Cannot process both single attribute and set of attributes.");
+			return false;
+		}
 
 		boolean modified = false;
 		if(config.getNewName() != null){
 			if(!editingTask.getName().equals(config.getNewName())){
-				//TODO:: error check that name given isn't present and is not empty whitespace
+				if(manager.getTaskByName(config.getNewName()) != null){
+					consoleErrorPrintln("New name was already present.");
+					return false;
+				}
 				modified = true;
 				editingTask.setName(config.getNewName());
 				consolePrintln(OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
 			}else{
-				consolePrintln(OutputLevel.DEFAULT, "Name was already the new name value.");
+				consoleErrorPrintln("Name was already the new name value.");
+				return false;
 			}
 		}
 
@@ -111,6 +136,22 @@ public class TaskDoer extends ActionDoer<Task> {
 						.remove(config.getAttributeName());
 					consolePrintln(OutputLevel.VERBOSE, "Removed attribute: " + config.getAttributeName());
 				}
+			}
+		}
+		if(config.getAttributes() != null){
+			Map<String, String> newAtts;
+			try{
+				newAtts = ActionDoer.parseAttributes(config.getAttributes());
+			}catch (IllegalArgumentException e){
+				LOGGER.warn("Attribute string given was invalid. Error: ", e);
+				consoleErrorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				return false;
+			}
+			if(!editingTask.getAttributes().equals(newAtts)) {
+				editingTask.setAttributes(newAtts);
+				modified = true;
+			}else{
+				LOGGER.debug("Attribute map given same as what was already held.");
 			}
 		}
 

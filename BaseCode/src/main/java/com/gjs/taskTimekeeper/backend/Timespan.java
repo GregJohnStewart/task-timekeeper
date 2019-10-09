@@ -18,6 +18,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 */
 	//@JsonSerialize(using = TaskNameSerializer.class)
 	//@JsonDeserialize(using = TaskNameDeserializer.class)
+		//TODO:: make a String, as a name reference
 	private Task task;
 	/**
 	 * The start time of this span.
