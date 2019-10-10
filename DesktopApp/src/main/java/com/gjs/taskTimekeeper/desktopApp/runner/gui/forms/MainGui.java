@@ -12,6 +12,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TaskDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TimespanDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.WorkPeriodDoer;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
@@ -295,7 +296,7 @@ public class MainGui {
 			);
 			if (response == JOptionPane.OK_OPTION) {
 				ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.TASK, EDIT);
-				taskChangeConfig.setName(task.getName());
+				taskChangeConfig.setName(task.getName().getName());
 
 				if(!taskChangeConfig.getName().equals(helper.getName())) {
 					taskChangeConfig.setNewName(helper.getName());
@@ -863,11 +864,11 @@ public class MainGui {
 					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTaskNames()
 						                                               .size());
 
-					for (Task task : selectedPeriod.getTaskNames()) {
+					for (Name taskName : selectedPeriod.getTaskNames()) {
 						List<Object> taskDetailRow = new ArrayList<>(2);
 
-						taskDetailRow.add(task.getName());
-						taskDetailRow.add(TimeParser.toDurationString(selectedPeriod.getTotalTimeWith(task)));
+						taskDetailRow.add(taskName.getName());
+						taskDetailRow.add(TimeParser.toDurationString(selectedPeriod.getTotalTimeWith(taskName)));
 
 						taskStats.add(taskDetailRow);
 					}
@@ -990,7 +991,7 @@ public class MainGui {
 				deleteButton.setAction(new DeleteTaskAction(curInd));
 
 				row.add(curInd);
-				row.add(task.getName());
+				row.add(task.getName().getName());
 				row.add(List.of(viewButton, editButton, deleteButton));
 
 				periodData.add(row);

@@ -64,7 +64,7 @@ public class SpanEditHelper {
 		output.setLayout(new BoxLayout(output, BoxLayout.Y_AXIS));
 
 		for(Task task : tasks){
-			taskSelect.addItem(task.getName());
+			taskSelect.addItem(task.getName().getName());
 		}
 		taskSelect.setSelectedIndex(-1);
 

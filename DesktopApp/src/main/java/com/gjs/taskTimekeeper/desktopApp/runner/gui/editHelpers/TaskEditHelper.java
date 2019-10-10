@@ -18,7 +18,7 @@ public class TaskEditHelper extends AttributeEditor {
 	}
 
 	public JComponent getForm(Task task){
-		this.nameField.setText(task.getName());
+		this.nameField.setText(task.getName().getName());
 
 		JPanel output = new JPanel();
 		output.setLayout(new BoxLayout(output, BoxLayout.Y_AXIS));
