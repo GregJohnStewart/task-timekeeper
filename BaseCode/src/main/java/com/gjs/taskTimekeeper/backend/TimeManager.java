@@ -100,7 +100,7 @@ public class TimeManager {
 		}
 		this.workPeriods = workPeriods;
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			for(Name task : period.getTasks()){
+			for(Name task : period.getTaskNames()){
 				if(this.getTaskByName(task) == null){
 					this.addTask(new Task(task));
 				}
@@ -193,7 +193,7 @@ public class TimeManager {
 		SortedSet<Task> toKeep = new TreeSet<>();
 
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			for(Name taskName : period.getTasks()){
+			for(Name taskName : period.getTaskNames()){
 				Task task = this.getTaskByName(taskName);
 				if(task != null){
 					toKeep.add(task);
@@ -217,7 +217,7 @@ public class TimeManager {
 			throw new NullPointerException("Work period cannot be null.");
 		}
 		this.getWorkPeriods().add(workPeriod);
-		for(Name curTask : workPeriod.getTasks()){
+		for(Name curTask : workPeriod.getTaskNames()){
 			if(this.getTaskByName(curTask) == null){
 				this.addTask(new Task(curTask));
 			}
@@ -240,7 +240,7 @@ public class TimeManager {
 		if (this.getWorkPeriods().isEmpty()) {
 			this.addWorkPeriod(new WorkPeriod());
 		}
-		if(!this.getTasks().contains(span.getTaskName())) {
+		if(this.getTaskByName(span.getTaskName()) == null) {
 			this.addTask(new Task(span.getTaskName()));
 		}
 		this.workPeriods.last().addTimespan(span);
@@ -402,6 +402,22 @@ public class TimeManager {
 				}
 			}
 
+			base = !thisIt.hasNext() && !oIt.hasNext();
+		}else{
+			return false;
+		}
+
+		// re-check work tasks held. Needed because th TreeSet uses compare() to determine equality, which doesn't consider attributes
+		if(base){
+			Iterator<Task> thisIt = this.getTasks().iterator();
+			Iterator<Task> oIt = manager.getTasks().iterator();
+			while(thisIt.hasNext() && oIt.hasNext()){
+				Task thisCur = thisIt.next();
+				Task oCur = oIt.next();
+				if(!thisCur.equals(oCur)){
+					return false;
+				}
+			}
 			return !thisIt.hasNext() && !oIt.hasNext();
 		}else{
 			return false;

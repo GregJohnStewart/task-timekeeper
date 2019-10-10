@@ -40,7 +40,14 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 		Timespan newSpan;
 		{
-			Task task = manager.getTaskByName(config.getName());
+			Task task;
+			try {
+				task = manager.getTaskByName(config.getName());
+			}catch (Exception e){
+				LOGGER.error("Bad task name given. Error: ", e);
+				consoleErrorPrintln("Error with task name given: " + e.getMessage());
+				return false;
+			}
 			if(task == null){
 				LOGGER.error("No or invalid task name given.");
 				consoleErrorPrintln("No or invalid task name given.");

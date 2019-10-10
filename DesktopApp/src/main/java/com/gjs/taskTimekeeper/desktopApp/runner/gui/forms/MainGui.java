@@ -860,10 +860,10 @@ public class MainGui {
 
 				//task details
 				{
-					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTasks()
+					List<List<Object>> taskStats = new ArrayList<>(selectedPeriod.getTaskNames()
 						                                               .size());
 
-					for (Task task : selectedPeriod.getTasks()) {
+					for (Task task : selectedPeriod.getTaskNames()) {
 						List<Object> taskDetailRow = new ArrayList<>(2);
 
 						taskDetailRow.add(task.getName());

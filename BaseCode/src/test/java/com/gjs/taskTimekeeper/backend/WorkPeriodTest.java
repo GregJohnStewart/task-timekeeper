@@ -307,16 +307,16 @@ public class WorkPeriodTest {
 	public void getTasks() {
 		WorkPeriod period = new WorkPeriod();
 
-		assertTrue(period.getTasks().isEmpty());
+		assertTrue(period.getTaskNames().isEmpty());
 
 		period.addTimespan(new Timespan(testTask));
 
-		assertFalse(period.getTasks().isEmpty());
-		assertTrue(period.getTasks().contains(testTask));
+		assertFalse(period.getTaskNames().isEmpty());
+		assertTrue(period.getTaskNames().contains(testTask.getName()));
 
 		period.addTimespan(new Timespan(testTaskTwo));
 
-		assertTrue(period.getTasks().containsAll(Arrays.asList(testTask, testTaskTwo)));
+		assertTrue(period.getTaskNames().containsAll(Arrays.asList(testTask.getName(), testTaskTwo.getName())));
 	}
 
 	@Test

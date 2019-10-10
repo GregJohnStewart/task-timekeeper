@@ -134,7 +134,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		assertNotEquals(orig, manager);
 		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
 
-		assertEquals(task, ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTaskName());
+		assertEquals(task.getName(), ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTaskName());
 //		assertSame(task, ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTask());
 	}
 
@@ -161,7 +161,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
-		assertEquals(task, span.getTaskName());
+		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
 		assertTrue(start.isEqual(span.getStartTime()));
 		assertTrue(end.isEqual(span.getEndTime()));
@@ -188,7 +188,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
-		assertEquals(task, span.getTaskName());
+		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
 		assertTrue(start.isEqual(span.getStartTime()));
 		assertNull(span.getEndTime());
@@ -215,7 +215,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
-		assertEquals(task, span.getTaskName());
+		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
 		assertNull(span.getStartTime());
 		assertTrue(end.isEqual(span.getEndTime()));
@@ -374,7 +374,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
 
-		assertEquals(newTask, span.getTaskName());
+		assertEquals(newTask.getName(), span.getTaskName());
 	}
 
 	@Test

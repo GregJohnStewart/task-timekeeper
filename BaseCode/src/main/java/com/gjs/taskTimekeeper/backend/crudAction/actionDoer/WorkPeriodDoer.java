@@ -314,7 +314,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		}
 
 		consolePrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
-		for(Name curTask : workPeriod.getTasks()){
+		for(Name curTask : workPeriod.getTaskNames()){
 			Duration duration = workPeriod.getTotalTimeWith(curTask);
 			consolePrintln(OutputLevel.DEFAULT, "\t\t" + curTask + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
 		}
@@ -430,7 +430,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
 		output.add(period.isUnCompleted() ? "No" : "Yes");
 
-		SortedSet<Name> tasks = period.getTasks();
+		SortedSet<Name> tasks = period.getTaskNames();
 
 		if(tasks.isEmpty()) {
 			output.add("");

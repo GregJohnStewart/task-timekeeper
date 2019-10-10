@@ -332,7 +332,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 */
 	public boolean hasTimespansWith(Task task) {
 		for (Timespan span : this.getTimespans()) {
-			if (span.getTaskName().equals(task)) {
+			if (span.getTaskName().equals(task.getName())) {
 				return true;
 			}
 		}
@@ -345,7 +345,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 * @return A list of tasks that are held by the Timespans in this period.
 	 */
 	@JsonIgnore
-	public SortedSet<Name> getTasks() {
+	public SortedSet<Name> getTaskNames() {
 		SortedSet<Name> tasks = new TreeSet<>();
 
 		for (Timespan span : this.getTimespans()) {

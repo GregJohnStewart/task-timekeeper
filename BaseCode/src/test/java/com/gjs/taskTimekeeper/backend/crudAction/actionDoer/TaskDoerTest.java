@@ -6,6 +6,7 @@ import com.gjs.taskTimekeeper.backend.Timespan;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -192,7 +193,7 @@ public class TaskDoerTest extends ActionDoerTest {
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
-		assertEquals("New task one name", task.getName());
+		assertEquals("New task one name", task.getName().getName());
 	}
 
 	@Test
@@ -318,14 +319,14 @@ public class TaskDoerTest extends ActionDoerTest {
 	@Test
 	public void remove() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
-		String newTaskName = "New Test Task";
+		Name newTaskName = new Name("New Test Task");
 		TimeManager manager = getTestManager();
 		Task testTask = new Task(newTaskName);
 		manager.addTask(testTask);
 		TimeManager managerOrig = manager.clone();
 
 		//remove
-		config.setName(newTaskName);
+		config.setName(newTaskName.getName());
 		assertTrue(ActionDoer.doObjAction(manager, config));
 		assertNotEquals(managerOrig, manager);
 
@@ -349,7 +350,7 @@ public class TaskDoerTest extends ActionDoerTest {
 	@Test
 	public void removeWithIndex() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
-		String newTaskName = "New Test Task";
+		Name newTaskName = new Name("New Test Task");
 		TimeManager manager = getTestManager();
 		Task testTask = new Task(newTaskName);
 		manager.addTask(testTask);

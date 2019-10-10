@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.backend;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.gjs.taskTimekeeper.backend.utils.Name;
 
 import java.time.Duration;
@@ -109,6 +110,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		}
 		return setTask(task.getName());
 	}
+	@JsonSetter
 	public Timespan setTaskName(Name taskName) throws NullPointerException {
 		if (taskName == null) {
 			throw new NullPointerException("Task name cannot be null.");

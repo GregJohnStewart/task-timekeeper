@@ -263,18 +263,21 @@ public class TaskDoer extends ActionDoer<Task> {
 		LOGGER.info("Viewing one or more tasks.");
 
 		{
-			Task task = manager.getTaskByName(config.getName());
-			if(task != null){
-				LOGGER.debug("Found a task that matched the name.");
-				this.displayOne(manager, task);
-				return;
-			}
-			task = this.getAtIndex(manager, config);
+			if(config.getName() != null) {
+				Task task = manager.getTaskByName(config.getName());
+				if (task != null) {
+					LOGGER.debug("Found a task that matched the name.");
+					this.displayOne(manager, task);
+					return;
+				}
+			}else {
+				Task task = this.getAtIndex(manager, config);
 
-			if(task != null){
-				LOGGER.debug("Found a task at the given index.");
-				this.displayOne(manager, task);
-				return;
+				if (task != null) {
+					LOGGER.debug("Found a task at the given index.");
+					this.displayOne(manager, task);
+					return;
+				}
 			}
 		}
 

@@ -20,13 +20,13 @@ public class TaskTest {
 	public void testBasics() {
 		Task newTask = new Task("task");
 
-		assertEquals("task", newTask.getName());
+		assertEquals("task", newTask.getName().getName());
 
 		HashMap<String, String> map = new HashMap<>();
 		map.put("", "");
 
 		newTask = new Task("task", map);
-		assertEquals("task", newTask.getName());
+		assertEquals("task", newTask.getName().getName());
 		assertEquals(map, newTask.getAttributes());
 
 		Task newTasktwo = new Task("task", map);

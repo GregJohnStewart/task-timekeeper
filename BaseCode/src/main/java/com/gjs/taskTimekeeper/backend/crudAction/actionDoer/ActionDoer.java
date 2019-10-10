@@ -8,6 +8,7 @@ import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -456,7 +457,15 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			consoleErrorPrintln("No work period selected.");
 			return false;
 		}
-		Task task = manager.getTaskByName(config.getName());
+		Name taskName;
+		try{
+			taskName = new Name(config.getName());
+		} catch (Exception e) {
+			LOGGER.error("Bad task name given: ", e);
+			consoleErrorPrintln("Bad task name given: " + e.getMessage());
+			return false;
+		}
+		Task task = manager.getTaskByName(taskName);
 		if(task == null){
 			LOGGER.error("No task with name specified.");
 			consoleErrorPrintln("No task with name specified.");

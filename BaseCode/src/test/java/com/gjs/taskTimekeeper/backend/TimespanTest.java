@@ -25,19 +25,19 @@ public class TimespanTest {
 
 		Timespan newSpan = new Timespan(testTask);
 
-		assertEquals(testTask, newSpan.getTaskName());
+		assertEquals(testTask.getName(), newSpan.getTaskName());
 		assertNull(newSpan.getStartTime());
 		assertNull(newSpan.getEndTime());
 		assertFalse(newSpan.isComplete());
 
 		newSpan = new Timespan(testTask, ldt);
-		assertEquals(testTask, newSpan.getTaskName());
+		assertEquals(testTask.getName(), newSpan.getTaskName());
 		assertEquals(ldt, newSpan.getStartTime());
 		assertNull(newSpan.getEndTime());
 		assertFalse(newSpan.isComplete());
 
 		newSpan = new Timespan(testTask, ldt, ldt);
-		assertEquals(testTask, newSpan.getTaskName());
+		assertEquals(testTask.getName(), newSpan.getTaskName());
 		assertEquals(ldt, newSpan.getStartTime());
 		assertEquals(ldt, newSpan.getEndTime());
 		assertTrue(newSpan.isComplete());
@@ -115,7 +115,7 @@ public class TimespanTest {
 
 		Timespan deserialized = mapper.readValue(serialization, Timespan.class);
 
-		assertTrue(span.equals(deserialized));
+		assertEquals(span, deserialized);
 	}
 
 }

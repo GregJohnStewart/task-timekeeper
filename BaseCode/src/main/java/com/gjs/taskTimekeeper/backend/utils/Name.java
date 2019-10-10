@@ -1,5 +1,8 @@
 package com.gjs.taskTimekeeper.backend.utils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 /**
@@ -9,11 +12,11 @@ import java.util.Objects;
 public class Name implements Comparable<Name> {
 	/**
 	 * Validates the name string given. Returns the validated and sanitized name.
-	 * TODO:: test
+	 *
 	 * @param name The name to validate and sanitize.
 	 * @return The validated and sanitized name.
 	 */
-	public String validateName(String name){
+	public static String validateName(String name){
 		if(name == null){
 			throw new IllegalArgumentException("Name cannot be null.");
 		}
@@ -32,7 +35,10 @@ public class Name implements Comparable<Name> {
 	 * Constructor to make the name. Uses {@link #validateName(String)} to validate.
 	 * @param name The name string to set.
 	 */
-	public Name(String name) {
+	@JsonCreator
+	public Name(
+		@JsonProperty("name") String name
+	) {
 		this.name = validateName(name);
 	}
 
