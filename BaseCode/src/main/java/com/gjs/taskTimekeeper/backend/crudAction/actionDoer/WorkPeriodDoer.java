@@ -1,10 +1,10 @@
 package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Action doer to edit WorkPeriods.
@@ -314,9 +314,9 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		}
 
 		consolePrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
-		for(Task curTask : workPeriod.getTasks()){
+		for(Name curTask : workPeriod.getTasks()){
 			Duration duration = workPeriod.getTotalTimeWith(curTask);
-			consolePrintln(OutputLevel.DEFAULT, "\t\t" + curTask.getName() + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
+			consolePrintln(OutputLevel.DEFAULT, "\t\t" + curTask + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
 		}
 	}
 
@@ -430,20 +430,20 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
 		output.add(period.isUnCompleted() ? "No" : "Yes");
 
-		Set<Task> tasks = period.getTasks();
+		SortedSet<Name> tasks = period.getTasks();
 
 		if(tasks.isEmpty()) {
 			output.add("");
 		}else {
 			StringBuilder sb = new StringBuilder();
-			Iterator<Task> taskIt = tasks.iterator();
+			Iterator<Name> taskIt = tasks.iterator();
 
 			while(taskIt.hasNext()){
-				Task curTask = taskIt.next();
+				Name curTask = taskIt.next();
 
 				Duration duration = period.getTotalTimeWith(curTask);
 
-				sb.append(curTask.getName());
+				sb.append(curTask);
 				sb.append(" (");
 				sb.append(duration.toHoursPart());
 				sb.append(':');

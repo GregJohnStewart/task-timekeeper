@@ -102,7 +102,7 @@ public class TaskDoerTest extends ActionDoerTest {
 		TimeManager managerOrig = manager.clone();
 
 		config.setName(
-			manager.getTasks().iterator().next().getName()
+			manager.getTasks().iterator().next().getName().toString()
 		);
 
 		assertFalse(ActionDoer.doObjAction(manager, config));

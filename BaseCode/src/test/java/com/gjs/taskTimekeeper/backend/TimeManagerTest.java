@@ -6,10 +6,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TimeManagerTest {
 	private static final Task testTask = new Task("Test task");
@@ -107,7 +109,7 @@ public class TimeManagerTest {
 	public void setTasks() {
 		TimeManager manager = new TimeManager();
 
-		Set<Task> tasks = new TreeSet<>();
+		SortedSet<Task> tasks = new TreeSet<>();
 
 		manager.setTasks(tasks);
 

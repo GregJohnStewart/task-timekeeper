@@ -4,6 +4,7 @@ package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
 import com.gjs.taskTimekeeper.backend.Task;
 import com.gjs.taskTimekeeper.backend.TimeManager;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +30,15 @@ public class TaskDoer extends ActionDoer<Task> {
 			return false;
 		}
 		//check we aren't duplicating names
-		if(manager.getTaskByName(config.getName()) != null){
-			LOGGER.warn("Duplicate task name given. Not adding new task.");
-			consoleErrorPrintln("ERROR:: Duplicate task name given.");
+		try {
+			if (manager.getTaskByName(config.getName()) != null) {
+				LOGGER.warn("Duplicate task name given. Not adding new task.");
+				consoleErrorPrintln("ERROR:: Duplicate task name given.");
+				return false;
+			}
+		}catch (Exception e){
+			LOGGER.warn("Invalid task name given. Not adding new task.");
+			consoleErrorPrintln("Invalid task name given. Not adding new task.");
 			return false;
 		}
 		if(config.getAttributeName() != null && config.getAttributes() != null){
@@ -40,7 +47,7 @@ public class TaskDoer extends ActionDoer<Task> {
 			return false;
 		}
 
-		Task newTask = new Task(config.getName());
+		Task newTask = new Task(new Name(config.getName()));
 
 		if(config.getAttributeName() != null){
 			if(config.getAttributeVal() != null){
@@ -108,16 +115,13 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		boolean modified = false;
 		if(config.getNewName() != null){
-			if(!editingTask.getName().equals(config.getNewName())){
-				if(manager.getTaskByName(config.getNewName()) != null){
-					consoleErrorPrintln("New name was already present.");
-					return false;
-				}
+			try{
+				manager.updateTaskName(editingTask, new Name(config.getNewName()));
 				modified = true;
-				editingTask.setName(config.getNewName());
 				consolePrintln(OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
-			}else{
-				consoleErrorPrintln("Name was already the new name value.");
+			}catch (IllegalArgumentException e){
+				LOGGER.warn("Invalid new name given. ", e);
+				consoleErrorPrintln("Invalid new name given. Error: \n"+e.getMessage());
 				return false;
 			}
 		}
@@ -206,7 +210,7 @@ public class TaskDoer extends ActionDoer<Task> {
 		List<String> output = new ArrayList<>();
 
 		output.add("" + rowNum);
-		output.add(object.getName());
+		output.add(object.getName().toString());
 
 		return output;
 	}

@@ -90,7 +90,7 @@ public class SpanEditHelper {
 
 	public JComponent getForm(Collection<Task> tasks, Timespan span){
 		JComponent output = this.getForm(tasks);
-		this.taskSelect.setSelectedItem(span.getTask().getName());
+		this.taskSelect.setSelectedItem(span.getTaskName().getName());
 		this.startField.setText(TimeParser.toOutputString(span.getStartTime()));
 		this.endField.setText(TimeParser.toOutputString(span.getEndTime()));
 		return output;

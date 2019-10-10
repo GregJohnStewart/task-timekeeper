@@ -3,14 +3,13 @@ package com.gjs.taskTimekeeper.backend;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -31,7 +30,7 @@ public class TimeManager {
 	/**
 	 * Tasks held by this object.
 	 */
-	private Set<Task> tasks = new HashSet<>();
+	private SortedSet<Task> tasks = new TreeSet<>();
 	/**
 	 * Work periods held by this object.
 	 */
@@ -49,7 +48,7 @@ public class TimeManager {
 	 * @param tasks The tasks to set.
 	 * @throws NullPointerException If the set of tasks if null.
 	 */
-	public TimeManager(Set<Task> tasks) throws NullPointerException {
+	public TimeManager(SortedSet<Task> tasks) throws NullPointerException {
 		this();
 		this.setTasks(tasks);
 	}
@@ -61,7 +60,7 @@ public class TimeManager {
 	 * @param workPeriods The work periods to set.
 	 * @throws NullPointerException If either tasks or work periods are set.
 	 */
-	public TimeManager(Set<Task> tasks, SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
+	public TimeManager(SortedSet<Task> tasks, SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
 		this(tasks);
 		this.setWorkPeriods(workPeriods);
 	}
@@ -101,7 +100,11 @@ public class TimeManager {
 		}
 		this.workPeriods = workPeriods;
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			this.tasks.addAll(period.getTasks());
+			for(Name task : period.getTasks()){
+				if(this.getTaskByName(task) == null){
+					this.addTask(new Task(task));
+				}
+			}
 		}
 		if (cleanupTasks) {
 			this.cleanupTasks();
@@ -127,7 +130,7 @@ public class TimeManager {
 	 *
 	 * @return The tasks held.
 	 */
-	public Set<Task> getTasks() {
+	public SortedSet<Task> getTasks() {
 		return tasks;
 	}
 
@@ -139,7 +142,7 @@ public class TimeManager {
 	 * @throws NullPointerException If the tasks list is null or contains null values.
 	 * @throws IllegalArgumentException If the tasks list has tasks with duplicate names
 	 */
-	public TimeManager setTasks(Set<Task> tasks) throws NullPointerException, IllegalArgumentException {
+	public TimeManager setTasks(SortedSet<Task> tasks) throws NullPointerException, IllegalArgumentException {
 		if (tasks == null) {
 			throw new NullPointerException("Tasks cannot be null.");
 		}
@@ -153,17 +156,6 @@ public class TimeManager {
 			}
 			if (containsNullValues) {
 				throw new NullPointerException("Cannot hold null tasks.");
-			}
-		}
-		//TODO:: test
-		for(Task task : tasks){
-			for(Task otherTask : tasks){
-				if(task.equals(otherTask)){
-					continue;
-				}
-				if(task.getName().equals(otherTask.getName())){
-					throw new IllegalArgumentException("Set of tasks cannot have duplicate names.");
-				}
 			}
 		}
 
@@ -198,16 +190,23 @@ public class TimeManager {
 	 * @return This manager object
 	 */
 	public TimeManager cleanupTasks() {
-		this.tasks.clear();
+		SortedSet<Task> toKeep = new TreeSet<>();
+
 		for (WorkPeriod period : this.getWorkPeriods()) {
-			this.tasks.addAll(period.getTasks());
+			for(Name taskName : period.getTasks()){
+				Task task = this.getTaskByName(taskName);
+				if(task != null){
+					toKeep.add(task);
+				}
+			}
 		}
 
+		this.setTasks(toKeep);
 		return this;
 	}
 
 	/**
-	 * Adds a work period
+	 * Adds a work period. If any spans in the period aren't in the existing task list, they are added.
 	 *
 	 * @param workPeriod The work period to add
 	 * @return This manager object
@@ -218,7 +217,11 @@ public class TimeManager {
 			throw new NullPointerException("Work period cannot be null.");
 		}
 		this.getWorkPeriods().add(workPeriod);
-		this.tasks.addAll(workPeriod.getTasks());
+		for(Name curTask : workPeriod.getTasks()){
+			if(this.getTaskByName(curTask) == null){
+				this.addTask(new Task(curTask));
+			}
+		}
 		return this;
 	}
 
@@ -237,8 +240,8 @@ public class TimeManager {
 		if (this.getWorkPeriods().isEmpty()) {
 			this.addWorkPeriod(new WorkPeriod());
 		}
-		if(!this.getTasks().contains(span.getTask())) {
-			this.addTask(span.getTask());
+		if(!this.getTasks().contains(span.getTaskName())) {
+			this.addTask(new Task(span.getTaskName()));
 		}
 		this.workPeriods.last().addTimespan(span);
 		return this;
@@ -315,7 +318,13 @@ public class TimeManager {
 	 * @param name The name of the task to get.
 	 * @return The task if the name matched. Null if no task has the exact name.
 	 */
-	public Task getTaskByName(String name){
+	public Task getTaskByName(String name) throws IllegalArgumentException, NullPointerException {
+		return this.getTaskByName(new Name(name));
+	}
+	public Task getTaskByName(Name name) throws NullPointerException{
+		if(name == null){
+			throw new NullPointerException("Name can't be null.");
+		}
 		for(Task task : this.tasks){
 			if(task.getName().equals(name)){
 				return task;
@@ -332,7 +341,7 @@ public class TimeManager {
 	public List<Task> getTasksByNamePattern(Pattern pattern){
 		List<Task> tasks = new LinkedList<>();
 		for(Task task : this.tasks){
-			if(pattern.matcher(task.getName()).matches()){
+			if(pattern.matcher(task.getName().getName()).matches()){
 				tasks.add(task);
 			}
 		}
@@ -348,7 +357,31 @@ public class TimeManager {
 		return this.getTasksByNamePattern(Pattern.compile(pattern));
 	}
 
-	@Override
+	public void updateTaskName(Name oldName, Name newName){
+		if(oldName == null || newName == null){
+			throw new NullPointerException("Either new or old name given to update with was null.");
+		}
+		if(oldName.equals(newName)){
+			throw new IllegalArgumentException("Old task name was the same as the new name.");
+		}
+		if(this.getTaskByName(newName) != null){
+			throw new IllegalArgumentException("New task name was already present.");
+		}
+		Task taskWithOldName = this.getTaskByName(oldName);
+		if(this.getTaskByName(oldName) == null){
+			throw new IllegalArgumentException("Old task name wasn't the name of any task.");
+		}
+
+		for(Timespan span : this.getTimespansWith(taskWithOldName)){
+			span.setTaskName(newName);
+		}
+		taskWithOldName.setName(newName);
+	}
+	public void updateTaskName(Task task, Name newName){
+		this.updateTaskName(task.getName(), newName);
+	}
+
+		@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof TimeManager)) return false;
@@ -395,7 +428,7 @@ public class TimeManager {
 
 		for(WorkPeriod period : newPeriods){
 			for (Timespan span : period.getTimespans()) {
-				span.setTask(newManager.getTaskByName(span.getTask().getName()));
+				span.setTaskName(newManager.getTaskByName(span.getTaskName()));
 			}
 			newManager.addWorkPeriod(period);
 		}

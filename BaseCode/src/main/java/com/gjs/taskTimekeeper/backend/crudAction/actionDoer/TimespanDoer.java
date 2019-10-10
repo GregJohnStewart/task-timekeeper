@@ -156,7 +156,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		}
 
 		if(newTask != null){
-			span.setTask(newTask);
+			span.setTaskName(newTask);
 			modified = true;
 		}
 
@@ -230,7 +230,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		output.add(TimeParser.toOutputString(timespan.getStartTime()));
 		output.add(TimeParser.toOutputString(timespan.getEndTime()));
 		output.add(TimeParser.toDurationString(timespan.getDuration()));
-		output.add(timespan.getTask().getName());
+		output.add(timespan.getTaskName().toString());
 
 		return output;
 	}

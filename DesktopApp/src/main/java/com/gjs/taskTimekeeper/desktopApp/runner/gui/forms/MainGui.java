@@ -898,7 +898,7 @@ public class MainGui {
 						spanRow.add(TimeParser.toOutputString(span.getStartTime()));
 						spanRow.add(TimeParser.toOutputString(span.getEndTime()));
 						spanRow.add(TimeParser.toDurationString(span.getDuration()));
-						spanRow.add(span.getTask()
+						spanRow.add(span.getTaskName()
 							            .getName());
 						spanRow.add(
 							List.of(

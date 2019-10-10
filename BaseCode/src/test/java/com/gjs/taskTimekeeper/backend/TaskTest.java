@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.backend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class TaskTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullSetName() {
-		new Task(null);
+		new Task((Name)null);
 	}
 
 	@Test(expected = NullPointerException.class)

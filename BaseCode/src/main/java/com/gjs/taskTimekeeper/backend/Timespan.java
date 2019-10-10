@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.backend;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -16,10 +17,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	/**
 	 * The task this timespan is associated with.
 	 */
-	//@JsonSerialize(using = TaskNameSerializer.class)
-	//@JsonDeserialize(using = TaskNameDeserializer.class)
-		//TODO:: make a String, as a name reference
-	private Task task;
+	private Name taskName;
 	/**
 	 * The start time of this span.
 	 */
@@ -41,6 +39,9 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 * @throws NullPointerException If the task given is null
 	 */
 	public Timespan(Task task) throws NullPointerException {
+		this.setTaskName(task);
+	}
+	public Timespan(Name task) throws NullPointerException {
 		this.setTask(task);
 	}
 
@@ -55,6 +56,10 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		this(task);
 		this.setStartTime(startTime);
 	}
+	public Timespan(Name task, LocalDateTime startTime) throws NullPointerException {
+		this(task);
+		this.setStartTime(startTime);
+	}
 
 	/**
 	 * Constructor to set the task and datetimes
@@ -64,9 +69,17 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 * @param endTime   The time this span ended at.
 	 * @throws NullPointerException If the task given is null
 	 */
+	public Timespan(
+		Task task,
+		LocalDateTime startTime,
+		LocalDateTime endTime
+	) throws NullPointerException {
+		this(task, startTime);
+		this.setEndTime(endTime);
+	}
 	@JsonCreator
 	public Timespan(
-		@JsonProperty("task") Task task,
+		@JsonProperty("taskName") Name task,
 		@JsonProperty("startTime") LocalDateTime startTime,
 		@JsonProperty("endTime") LocalDateTime endTime
 	) throws NullPointerException {
@@ -75,12 +88,12 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	}
 
 	/**
-	 * Gets the {@link #task}.
+	 * Gets the {@link #taskName}.
 	 *
-	 * @return The {@link #task} this span is associated with
+	 * @return The {@link #taskName} this span is associated with
 	 */
-	public Task getTask() {
-		return task;
+	public Name getTaskName() {
+		return taskName;
 	}
 
 	/**
@@ -90,11 +103,24 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 * @return This span object
 	 * @throws NullPointerException If the task given is null
 	 */
-	public Timespan setTask(Task task) throws NullPointerException {
+	public Timespan setTaskName(Task task) throws NullPointerException {
 		if (task == null) {
 			throw new NullPointerException("Task cannot be null.");
 		}
-		this.task = task;
+		return setTask(task.getName());
+	}
+	public Timespan setTaskName(Name taskName) throws NullPointerException {
+		if (taskName == null) {
+			throw new NullPointerException("Task name cannot be null.");
+		}
+		return setTask(taskName);
+	}
+
+	public Timespan setTask(Name taskName) throws NullPointerException {
+		if (taskName == null) {
+			throw new NullPointerException("Task name cannot be null.");
+		}
+		this.taskName = taskName;
 		return this;
 	}
 
@@ -205,14 +231,14 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		if (this == o) return true;
 		if (!(o instanceof Timespan)) return false;
 		Timespan timespan = (Timespan) o;
-		return getTask().equals(timespan.getTask()) &&
+		return getTaskName().equals(timespan.getTaskName()) &&
 			Objects.equals(getStartTime(), timespan.getStartTime()) &&
 			Objects.equals(getEndTime(), timespan.getEndTime());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getTask(), getStartTime(), getEndTime());
+		return Objects.hash(getTaskName(), getStartTime(), getEndTime());
 	}
 
 	/**
@@ -235,7 +261,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		}
 		//if one or both don't have start time
 		if (!this.hasStartTime() && !o.hasStartTime()) {
-			return this.getTask().compareTo(o.getTask());
+			return this.getTaskName().compareTo(o.getTaskName());
 		}
 		if (!o.hasStartTime()) {
 			return -1;
@@ -259,7 +285,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		}
 		//if end times the same, compare tasks
 		if (compareResult == 0) {
-			compareResult = this.task.compareTo(o.getTask());
+			compareResult = this.taskName.compareTo(o.getTaskName());
 		}
 
 		return compareResult;
@@ -267,7 +293,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 
 	@Override
 	public Timespan clone() {
-		return new Timespan(this.task.clone(), this.startTime, this.endTime);
+		return new Timespan(this.taskName, this.startTime, this.endTime);
 	}
 }
 

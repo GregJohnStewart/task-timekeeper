@@ -2,10 +2,18 @@ package com.gjs.taskTimekeeper.backend;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -193,11 +201,11 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 * @return the total time defined by all completed timespans with the task given.
 	 */
 	@JsonIgnore
-	public Duration getTotalTimeWith(Task task){
+	public Duration getTotalTimeWith(Name task){
 		Duration duration = Duration.ZERO;
 
 		for (Timespan span : this.getTimespans()) {
-			if(task != null && !span.getTask().equals(task)){
+			if(task != null && !span.getTaskName().equals(task)){
 				continue;
 			}
 			try {
@@ -312,7 +320,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 */
 	public Collection<Timespan> getTimespansWith(Task task) {
 		return this.getTimespans().stream().filter((Timespan span) -> {
-			return span.getTask().equals(task);
+			return span.getTaskName().equals(task.getName());
 		}).collect(Collectors.toList());
 	}
 
@@ -324,7 +332,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 */
 	public boolean hasTimespansWith(Task task) {
 		for (Timespan span : this.getTimespans()) {
-			if (span.getTask().equals(task)) {
+			if (span.getTaskName().equals(task)) {
 				return true;
 			}
 		}
@@ -337,11 +345,11 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	 * @return A list of tasks that are held by the Timespans in this period.
 	 */
 	@JsonIgnore
-	public Set<Task> getTasks() {
-		Set<Task> tasks = new TreeSet<>();
+	public SortedSet<Name> getTasks() {
+		SortedSet<Name> tasks = new TreeSet<>();
 
 		for (Timespan span : this.getTimespans()) {
-			tasks.add(span.getTask());
+			tasks.add(span.getTaskName());
 		}
 
 		return tasks;

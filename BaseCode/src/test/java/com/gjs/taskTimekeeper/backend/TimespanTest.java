@@ -25,19 +25,19 @@ public class TimespanTest {
 
 		Timespan newSpan = new Timespan(testTask);
 
-		assertEquals(testTask, newSpan.getTask());
+		assertEquals(testTask, newSpan.getTaskName());
 		assertNull(newSpan.getStartTime());
 		assertNull(newSpan.getEndTime());
 		assertFalse(newSpan.isComplete());
 
 		newSpan = new Timespan(testTask, ldt);
-		assertEquals(testTask, newSpan.getTask());
+		assertEquals(testTask, newSpan.getTaskName());
 		assertEquals(ldt, newSpan.getStartTime());
 		assertNull(newSpan.getEndTime());
 		assertFalse(newSpan.isComplete());
 
 		newSpan = new Timespan(testTask, ldt, ldt);
-		assertEquals(testTask, newSpan.getTask());
+		assertEquals(testTask, newSpan.getTaskName());
 		assertEquals(ldt, newSpan.getStartTime());
 		assertEquals(ldt, newSpan.getEndTime());
 		assertTrue(newSpan.isComplete());
@@ -51,7 +51,7 @@ public class TimespanTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullTask() {
-		new Timespan(null);
+		new Timespan((Task)null);
 	}
 
 	@Test

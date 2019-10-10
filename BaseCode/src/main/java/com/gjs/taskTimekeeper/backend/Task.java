@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.backend;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gjs.taskTimekeeper.backend.utils.Name;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	/**
 	 * The name of the task.
 	 */
-	private String name;
+	private Name name;
 	/**
 	 * Any attributes the user wants to add (charge number, for example)
 	 */
@@ -28,11 +29,13 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	 * Constructor to set the name of the task.
 	 *
 	 * @param name The name of the task.
-	 * @throws NullPointerException if the string given is null.
-	 * @throws IllegalArgumentException if the name is invalid. See {@link #setName(String)}
+	 * @throws NullPointerException if the name given is null.
 	 */
-	public Task(String name) throws NullPointerException, IllegalArgumentException {
+	public Task(Name name) throws NullPointerException {
 		this.setName(name);
+	}
+	public Task(String name) throws NullPointerException, IllegalArgumentException {
+		this.setName(new Name(name));
 	}
 
 	/**
@@ -40,14 +43,21 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	 *
 	 * @param name       The name of the task.
 	 * @param attributes The attributes for the task.
-	 * @throws IllegalArgumentException if the name is invalid. See {@link #setName(String)}
+	 * @throws IllegalArgumentException if the name is invalid. See {@link #setName(Name)}
 	 */
 	@JsonCreator
 	public Task(
 		@JsonProperty("name")
-		String name,
+			Name name,
 		@JsonProperty("attributes")
-		Map<String, String> attributes) throws NullPointerException, IllegalArgumentException {
+			Map<String, String> attributes) throws NullPointerException, IllegalArgumentException {
+		this(name);
+		this.setAttributes(attributes);
+	}
+	public Task(
+		String name,
+		Map<String, String> attributes
+	) throws NullPointerException, IllegalArgumentException {
 		this(name);
 		this.setAttributes(attributes);
 	}
@@ -57,7 +67,7 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	 *
 	 * @return The name of the task.
 	 */
-	public String getName() {
+	public Name getName() {
 		return name;
 	}
 
@@ -69,13 +79,9 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	 * @throws NullPointerException if the string given is null.
 	 * @throws IllegalArgumentException If the string given is blank or just whitespace.
 	 */
-	public Task setName(String name) throws NullPointerException, IllegalArgumentException {
+	public Task setName(Name name) throws NullPointerException, IllegalArgumentException {
 		if (name == null) {
 			throw new NullPointerException("Name cannot be null.");
-		}
-		name = name.strip();
-		if(name.isBlank()){
-			throw new IllegalArgumentException("Name cannot just be whitespace.");
 		}
 		this.name = name;
 		return this;
