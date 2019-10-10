@@ -88,7 +88,7 @@ public class MainGui {
 		                                            "\nPlease consider donating if you find this program was helpful to you!";
 
 	private static final double INDEX_COL_WIDTH = 35;
-	private static final double DATETIME_COL_WIDTH = 130;
+	private static final double DATETIME_COL_WIDTH = 140;
 	private static final double DURATION_COL_WIDTH = 65;
 
 	private static final List<String> PERIOD_LIST_TABLE_HEADERS = List.of("#", "Start", "End", "Duration", "Complete", "Actions");
@@ -223,25 +223,30 @@ public class MainGui {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			LOGGER.info("Add Task action hit.");
-			String newTaskName = JOptionPane.showInternalInputDialog(
+			TaskEditHelper helper = new TaskEditHelper();
+			int result = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
-				"Enter new task Name",
+				helper.getForm(),
 				"New Task",
-				JOptionPane.QUESTION_MESSAGE
+				JOptionPane.OK_CANCEL_OPTION
 			);
-			LOGGER.debug("Got the following new task name: \"{}\"", newTaskName);
-			if (newTaskName == null) {
+			LOGGER.debug("Got the following new task name: \"{}\"", result);
+			if (result != JOptionPane.OK_OPTION) {
 				LOGGER.info("New task creation canceled.");
 				return;
 			}
 
 			resetStreams();
 			ActionConfig config = new ActionConfig(KeeperObjectType.TASK, ADD);
-			config.setName(newTaskName);
+			config.setName(helper.getName());
+			String atts = helper.getAttributes();
+			if(!atts.isBlank()){
+				config.setAttributes(atts);
+			}
 
-			boolean result = ActionDoer.doObjAction(manager, config);
-			LOGGER.debug("Result of trying to add task: {}", result);
-			handleResult(result);
+			boolean addResult = ActionDoer.doObjAction(manager, config);
+			LOGGER.debug("Result of trying to add task: {}", addResult);
+			handleResult(addResult);
 		}
 	};
 

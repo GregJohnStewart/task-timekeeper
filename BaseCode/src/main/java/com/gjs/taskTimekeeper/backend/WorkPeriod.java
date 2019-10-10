@@ -47,8 +47,7 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
 	public WorkPeriod(Collection<Timespan> timespans) throws NullPointerException {
 		this();
 		if (timespans instanceof SortedSet) {
-			//noinspection unchecked
-			this.setTimespans((SortedSet) timespans);
+			this.setTimespans(timespans);
 		} else {
 			this.setTimespans(timespans);
 		}

@@ -142,7 +142,6 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 		if(period == null){
 			LOGGER.warn("No period selected. Cannot edit it.");
-			System.err.println("No period selected.");
 			consoleErrorPrintln("No period selected to edit.");
 			return false;
 		}
@@ -245,7 +244,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 	private boolean removeBeforeAfter(TimeManager manager, ActionConfig config){
 		LOGGER.info("Removing periods before or after given datetimes.");
-		System.out.println("Removing periods before or after given datetimes.");
+		consolePrintln(OutputLevel.DEFAULT, "Removing periods before or after given datetimes.");
 
 		LocalDateTime before = null;
 		if(config.getBefore() != null){

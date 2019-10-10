@@ -180,14 +180,14 @@ public class TaskDoer extends ActionDoer<Task> {
 
 		if(taskToRemove == null){
 			LOGGER.info("No task with the name given found or at index given.");
-			System.out.println("No task with the name given found or at index given.");
+			consoleErrorPrintln("No task with the name given found or at index given.");
 			return false;
 		}
 
 		if(!manager.getTimespansWith(taskToRemove).isEmpty()){
 			//TODO:: test
 			LOGGER.warn("Task part of one or more time spans. Cannot remove task.");
-			System.err.println("Task given part of one or more time spans. Cannot remove.");
+			consoleErrorPrintln("Task given part of one or more time spans. Cannot remove.");
 			return false;
 		}
 
