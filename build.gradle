@@ -17,13 +17,16 @@ subprojects {
         description "Increments the build number in the version config."
 
         doLast {
-            def ver = version
-            String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
-            int increment = lastNumber.toInteger() + 1
+            def doIncrement = false;
+            if(doIncrement) {
+                def ver = version
+                String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
+                int increment = lastNumber.toInteger() + 1
 
-            String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-            String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
-            buildFile.setText(result)
+                String firstNumber = ver.substring(0, ver.lastIndexOf("."))
+                String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
+                buildFile.setText(result)
+            }
         }
     }
 }
