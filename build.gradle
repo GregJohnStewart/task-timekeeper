@@ -20,5 +20,5 @@ subprojects {
 task updateWrapper(type: Wrapper) {
     group "wrapper"
     description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
-    gradleVersion = '5.2'
+    gradleVersion = '5.6.1'
 }
