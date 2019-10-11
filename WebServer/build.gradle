@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-version = '0.0.0.19'
+version = '0.0.0.35'
 
 sourceCompatibility = 1.8
 
