@@ -6,6 +6,8 @@ import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.backend.utils.OutputLevel;
+import com.gjs.taskTimekeeper.backend.utils.Outputter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Before
 	public void before(){
-		ActionDoer.setConsoleOutputLevel(OutputLevel.VERBOSE);
+		Outputter.setOutputLevelThreshold(OutputLevel.VERBOSE);
 		ActionDoer.resetDoers();
 	}
 

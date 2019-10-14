@@ -9,10 +9,10 @@ import com.gjs.taskTimekeeper.backend.crudAction.Action;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.backend.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel.DEFAULT;
-import static com.gjs.taskTimekeeper.backend.crudAction.actionDoer.OutputLevel.NONE;
+import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.DEFAULT;
 
 /**
  * Main class to be used to perform actions. Provides a 'main' method ({@link #doAction(TimeManager, ActionConfig)} to perform said action.
@@ -95,7 +94,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			return results.get(config.getIndex() - 1);
 		}catch (IndexOutOfBoundsException e){
 			LOGGER.warn("Index given was out of bounds for the search.", e);
-			consoleErrorPrintln("Index given was out of bounds for the search.");
+			Outputter.consoleErrorPrintln("Index given was out of bounds for the search.");
 		}
 
 		return null;
@@ -245,7 +244,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				break;
 			default:
 				LOGGER.warn("No action given.");
-				consoleErrorPrintln("No action given.");
+				Outputter.consoleErrorPrintln("No action given.");
 		}
 		return changed;
 	}
@@ -333,12 +332,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		if(config.getAction() == null){
 			LOGGER.warn("No action given.");
-			consolePrintln(DEFAULT, "No action given. Doing nothing.");
+			Outputter.consolePrintln(DEFAULT, "No action given. Doing nothing.");
 			return false;
 		}
 		if(config.getObjectOperatingOn() == null){
 			LOGGER.error("No object specified to operate on.");
-			consoleErrorPrintln("No object specified to operate on");
+			Outputter.consoleErrorPrintln("No object specified to operate on");
 			return false;
 		}
 		switch (config.getObjectOperatingOn()){
@@ -369,7 +368,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			case "selectnewest": {
 				if(manager.getWorkPeriods().isEmpty()){
 					LOGGER.warn("No periods to select.");
-					consoleErrorPrintln("No periods to select.");
+					Outputter.consoleErrorPrintln("No periods to select.");
 					return false;
 				}
 				ActionConfig actionConfig = new ActionConfig()
@@ -395,7 +394,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			//TODO:: taskStats -> view amount of time spent on what tasks in a period.
 			default:
 				LOGGER.error("No valid special command given.");
-				consoleErrorPrintln("No valid special command given.");
+				Outputter.consoleErrorPrintln("No valid special command given.");
 				return false;
 		}
 	}
@@ -409,13 +408,13 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			consoleErrorPrintln("No work period selected.");
+			Outputter.consoleErrorPrintln("No work period selected.");
 			return false;
 		}
 
 		if(selected.isUnCompleted()){
 			LOGGER.debug("Attempting to finish spans in selected periods.");
-			consolePrintln(DEFAULT, "Attempting to finish spans in selected periods.");
+			Outputter.consolePrintln(DEFAULT, "Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
 			LocalDateTime now = LocalDateTime.now();
 			for(Timespan span : selected.getUnfinishedTimespans()){
@@ -436,7 +435,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			}
 			if(finishedCount > 0){
 				LOGGER.info("Finished {} spans.", finishedCount);
-				consolePrintln(DEFAULT, "Finished " + finishedCount + " spans.");
+				Outputter.consolePrintln(DEFAULT, "Finished " + finishedCount + " spans.");
 				return true;
 			}
 		}
@@ -454,7 +453,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			consoleErrorPrintln("No work period selected.");
+			Outputter.consoleErrorPrintln("No work period selected.");
 			return false;
 		}
 		Name taskName;
@@ -462,77 +461,21 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			taskName = new Name(config.getName());
 		} catch (Exception e) {
 			LOGGER.error("Bad task name given: ", e);
-			consoleErrorPrintln("Bad task name given: " + e.getMessage());
+			Outputter.consoleErrorPrintln("Bad task name given: " + e.getMessage());
 			return false;
 		}
 		Task task = manager.getTaskByName(taskName);
 		if(task == null){
 			LOGGER.error("No task with name specified.");
-			consoleErrorPrintln("No task with name specified.");
+			Outputter.consoleErrorPrintln("No task with name specified.");
 			return false;
 		}
 		//finish unfinished spans
 		completeSpansInSelected(manager);
 
 		selected.addTimespan(new Timespan(task, LocalDateTime.now()));
-		consolePrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
+		Outputter.consolePrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
 		return true;
-	}
-
-	//TODO:: move to own class
-	private static PrintStream MESSAGE_OUTPUT_STREAM = System.out;
-	private static PrintStream MESSAGE_ERROR_STREAM = System.err;
-	private static OutputLevel CONSOLE_OUTPUT_LEVEL = DEFAULT;
-
-	public static void setConsoleOutputLevel(OutputLevel level){
-		CONSOLE_OUTPUT_LEVEL = level;
-	}
-
-	public static void setMessageOutputStream(PrintStream stream){
-		if(stream == null){
-			throw new IllegalArgumentException();
-		}
-		MESSAGE_OUTPUT_STREAM = stream;
-	}
-
-	public static void setMessageErrorStream(PrintStream stream){
-		if(stream == null){
-			throw new IllegalArgumentException();
-		}
-		MESSAGE_ERROR_STREAM = stream;
-	}
-
-	private static boolean canOutput(OutputLevel level){
-		if(CONSOLE_OUTPUT_LEVEL == NONE){
-			return false;
-		}
-
-		return CONSOLE_OUTPUT_LEVEL == level ||
-			       level == DEFAULT;
-	}
-
-	protected static void consolePrintln(OutputLevel level, String output){
-		if(canOutput(level)) {
-			MESSAGE_OUTPUT_STREAM.println(output);
-		}
-	}
-
-	protected static void consolePrint(OutputLevel level, String output){
-		if(canOutput(level)){
-			MESSAGE_OUTPUT_STREAM.print(output);
-		}
-	}
-
-	protected static void consoleErrorPrintln(String output){
-		if(CONSOLE_OUTPUT_LEVEL != NONE) {
-			MESSAGE_ERROR_STREAM.println(output);
-		}
-	}
-
-	protected static void consoleErrorPrint(String output){
-		if(CONSOLE_OUTPUT_LEVEL != NONE) {
-			MESSAGE_ERROR_STREAM.print(output);
-		}
 	}
 
 	protected static Map<String, String> parseAttributes(String attString) throws IllegalArgumentException{

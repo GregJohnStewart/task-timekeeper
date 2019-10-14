@@ -13,6 +13,7 @@ import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.TimespanDoer;
 import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.WorkPeriodDoer;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.backend.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
@@ -565,8 +566,8 @@ public class MainGui {
 
 	//<editor-fold desc="constructor and public methods">
 	{
-		ActionDoer.setMessageOutputStream(new PrintStream(this.printStream));
-		ActionDoer.setMessageErrorStream(new PrintStream(this.errorPrintStream));
+		Outputter.setMessageOutputStream(new PrintStream(this.printStream));
+		Outputter.setMessageErrorStream(new PrintStream(this.errorPrintStream));
 
 		this.saveAction.putValue(Action.ACCELERATOR_KEY,
 			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
