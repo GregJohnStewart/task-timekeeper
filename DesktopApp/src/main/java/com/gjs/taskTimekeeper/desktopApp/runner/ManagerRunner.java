@@ -31,7 +31,7 @@ public class ManagerRunner extends ModeRunner {
 		LOGGER.info("Running the interactive command line manager mode.");
 
 		System.out.println("Manager Mode");
-		//TODO:: more detail (file locs, etc)
+		//TODO:: more detail (file locs, etc), move to Outputter for outputting
 
 		String input;
 		while(true){

@@ -566,8 +566,8 @@ public class MainGui {
 
 	//<editor-fold desc="constructor and public methods">
 	{
-		Outputter.setMessageOutputStream(new PrintStream(this.printStream));
-		Outputter.setMessageErrorStream(new PrintStream(this.errorPrintStream));
+		ActionDoer.getOutputter().setMessageOutputStream(new PrintStream(this.printStream));
+		ActionDoer.getOutputter().setMessageErrorStream(new PrintStream(this.errorPrintStream));
 
 		this.saveAction.putValue(Action.ACCELERATOR_KEY,
 			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));

@@ -30,6 +30,15 @@ import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.DEFAULT;
 public abstract class ActionDoer <T extends KeeperObject> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
 
+	protected static Outputter OUTPUTTER = new Outputter();
+
+	public static void setOutputter(Outputter outputter){
+		OUTPUTTER = outputter;
+	}
+	public static Outputter getOutputter(){
+		return OUTPUTTER;
+	}
+
 	/**
 	 * Adds an object to the time manager.
 	 * @param manager The manager being dealt with
@@ -94,7 +103,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			return results.get(config.getIndex() - 1);
 		}catch (IndexOutOfBoundsException e){
 			LOGGER.warn("Index given was out of bounds for the search.", e);
-			Outputter.consoleErrorPrintln("Index given was out of bounds for the search.");
+			OUTPUTTER.errorPrintln("Index given was out of bounds for the search.");
 		}
 
 		return null;
@@ -244,7 +253,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 				break;
 			default:
 				LOGGER.warn("No action given.");
-				Outputter.consoleErrorPrintln("No action given.");
+				OUTPUTTER.errorPrintln("No action given.");
 		}
 		return changed;
 	}
@@ -332,12 +341,12 @@ public abstract class ActionDoer <T extends KeeperObject> {
 
 		if(config.getAction() == null){
 			LOGGER.warn("No action given.");
-			Outputter.consolePrintln(DEFAULT, "No action given. Doing nothing.");
+			OUTPUTTER.normPrintln(DEFAULT, "No action given. Doing nothing.");
 			return false;
 		}
 		if(config.getObjectOperatingOn() == null){
 			LOGGER.error("No object specified to operate on.");
-			Outputter.consoleErrorPrintln("No object specified to operate on");
+			OUTPUTTER.errorPrintln("No object specified to operate on");
 			return false;
 		}
 		switch (config.getObjectOperatingOn()){
@@ -368,7 +377,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			case "selectnewest": {
 				if(manager.getWorkPeriods().isEmpty()){
 					LOGGER.warn("No periods to select.");
-					Outputter.consoleErrorPrintln("No periods to select.");
+					OUTPUTTER.errorPrintln("No periods to select.");
 					return false;
 				}
 				ActionConfig actionConfig = new ActionConfig()
@@ -394,7 +403,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			//TODO:: taskStats -> view amount of time spent on what tasks in a period.
 			default:
 				LOGGER.error("No valid special command given.");
-				Outputter.consoleErrorPrintln("No valid special command given.");
+				OUTPUTTER.errorPrintln("No valid special command given.");
 				return false;
 		}
 	}
@@ -408,13 +417,13 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			Outputter.consoleErrorPrintln("No work period selected.");
+			OUTPUTTER.errorPrintln("No work period selected.");
 			return false;
 		}
 
 		if(selected.isUnCompleted()){
 			LOGGER.debug("Attempting to finish spans in selected periods.");
-			Outputter.consolePrintln(DEFAULT, "Attempting to finish spans in selected periods.");
+			OUTPUTTER.normPrintln(DEFAULT, "Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
 			LocalDateTime now = LocalDateTime.now();
 			for(Timespan span : selected.getUnfinishedTimespans()){
@@ -435,7 +444,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			}
 			if(finishedCount > 0){
 				LOGGER.info("Finished {} spans.", finishedCount);
-				Outputter.consolePrintln(DEFAULT, "Finished " + finishedCount + " spans.");
+				OUTPUTTER.normPrintln(DEFAULT, "Finished " + finishedCount + " spans.");
 				return true;
 			}
 		}
@@ -453,7 +462,7 @@ public abstract class ActionDoer <T extends KeeperObject> {
 		WorkPeriod selected = PERIOD_DOER.getSelectedFromManager(manager);
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			Outputter.consoleErrorPrintln("No work period selected.");
+			OUTPUTTER.errorPrintln("No work period selected.");
 			return false;
 		}
 		Name taskName;
@@ -461,20 +470,20 @@ public abstract class ActionDoer <T extends KeeperObject> {
 			taskName = new Name(config.getName());
 		} catch (Exception e) {
 			LOGGER.error("Bad task name given: ", e);
-			Outputter.consoleErrorPrintln("Bad task name given: " + e.getMessage());
+			OUTPUTTER.errorPrintln("Bad task name given: " + e.getMessage());
 			return false;
 		}
 		Task task = manager.getTaskByName(taskName);
 		if(task == null){
 			LOGGER.error("No task with name specified.");
-			Outputter.consoleErrorPrintln("No task with name specified.");
+			OUTPUTTER.errorPrintln("No task with name specified.");
 			return false;
 		}
 		//finish unfinished spans
 		completeSpansInSelected(manager);
 
 		selected.addTimespan(new Timespan(task, LocalDateTime.now()));
-		Outputter.consolePrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
+		OUTPUTTER.normPrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
 		return true;
 	}
 

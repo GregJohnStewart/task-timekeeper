@@ -7,7 +7,6 @@ import com.gjs.taskTimekeeper.backend.WorkPeriod;
 import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.backend.utils.OutputLevel;
-import com.gjs.taskTimekeeper.backend.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +35,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to add to.");
-			Outputter.consoleErrorPrintln("No work period selected to add to.");
+			OUTPUTTER.errorPrintln("No work period selected to add to.");
 			return false;
 		}
 
@@ -47,12 +46,12 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 				task = manager.getTaskByName(config.getName());
 			}catch (Exception e){
 				LOGGER.error("Bad task name given. Error: ", e);
-				Outputter.consoleErrorPrintln("Error with task name given: " + e.getMessage());
+				OUTPUTTER.errorPrintln("Error with task name given: " + e.getMessage());
 				return false;
 			}
 			if(task == null){
 				LOGGER.error("No or invalid task name given.");
-				Outputter.consoleErrorPrintln("No or invalid task name given.");
+				OUTPUTTER.errorPrintln("No or invalid task name given.");
 				return false;
 			}
 			newSpan = new Timespan(task);
@@ -62,7 +61,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime start = TimeParser.parse(config.getStart());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
-				Outputter.consoleErrorPrintln("Malformed starting datetime given.");
+				OUTPUTTER.errorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			newSpan.setStartTime(start);
@@ -71,14 +70,14 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			LocalDateTime end = TimeParser.parse(config.getEnd());
 			if(end == null){
 				LOGGER.error("Malformed starting datetime given.");
-				Outputter.consoleErrorPrintln("Malformed starting datetime given.");
+				OUTPUTTER.errorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 			try {
 				newSpan.setEndTime(end);
 			}catch (IllegalArgumentException e){
 				LOGGER.error("End time cannot be before start time.");
-				Outputter.consoleErrorPrintln("End time cannot be before start time.");
+				OUTPUTTER.errorPrintln("End time cannot be before start time.");
 				return false;
 			}
 		}
@@ -86,9 +85,9 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		boolean result = period.addTimespan(newSpan);
 		if(!result){
 			LOGGER.warn("Timespan not added, was there already an empty one?");
-			Outputter.consoleErrorPrintln("Timespan not added. Was there already an empty one?");
+			OUTPUTTER.errorPrintln("Timespan not added. Was there already an empty one?");
 		}else {
-			Outputter.consolePrintln(OutputLevel.DEFAULT, "New timespan added.");
+			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "New timespan added.");
 		}
 		return result;
 	}
@@ -98,7 +97,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		Timespan span = this.getAtIndex(manager, config);
 		if(span == null){
 			LOGGER.error("No span at given index.");
-			Outputter.consoleErrorPrintln("No span at given index.");
+			OUTPUTTER.errorPrintln("No span at given index.");
 			return false;
 		}
 
@@ -109,7 +108,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			start = TimeParser.parse(config.getStart());
 			if(start == null){
 				LOGGER.error("Malformed starting datetime given.");
-				Outputter.consoleErrorPrintln("Malformed starting datetime given.");
+				OUTPUTTER.errorPrintln("Malformed starting datetime given.");
 				return false;
 			}
 		}
@@ -117,7 +116,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			end = TimeParser.parse(config.getEnd());
 			if(end == null){
 				LOGGER.error("Malformed ending datetime given.");
-				Outputter.consoleErrorPrintln("Malformed ending datetime given.");
+				OUTPUTTER.errorPrintln("Malformed ending datetime given.");
 				return false;
 			}
 		}
@@ -127,7 +126,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 			newTask = manager.getTaskByName(config.getName());
 			if(newTask == null){
 				LOGGER.error("New task given does not exist in manager.");
-				Outputter.consoleErrorPrintln("New task given does not exist in manager");
+				OUTPUTTER.errorPrintln("New task given does not exist in manager");
 				return false;
 			}
 		}
@@ -136,7 +135,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		if(start != null && end != null){
 			if(start.isAfter(end)){
 				LOGGER.error("Start given was after end given.");
-				Outputter.consoleErrorPrintln("Start given was after end given.");
+				OUTPUTTER.errorPrintln("Start given was after end given.");
 				return false;
 			}
 			span.setEndTime(null);
@@ -150,7 +149,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 				modified = true;
 			} catch (IllegalArgumentException e) {
 				LOGGER.error("Invalid start datetime given: ", e);
-				Outputter.consoleErrorPrintln("Invalid start datetime given. Is it after the end datetime?");
+				OUTPUTTER.errorPrintln("Invalid start datetime given. Is it after the end datetime?");
 				return false;
 			}
 		} else if(end != null){
@@ -159,7 +158,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 				modified = true;
 			} catch (IllegalArgumentException e) {
 				LOGGER.error("Invalid end datetime given: ", e);
-				Outputter.consoleErrorPrintln("Invalid end datetime given. Is it before the start datetime?");
+				OUTPUTTER.errorPrintln("Invalid end datetime given. Is it before the start datetime?");
 				return false;
 			}
 		}
@@ -170,9 +169,9 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		}
 
 		if(modified){
-			Outputter.consolePrintln(OutputLevel.DEFAULT, "Timespan modified.");
+			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Timespan modified.");
 		} else {
-			Outputter.consolePrintln(OutputLevel.DEFAULT, "Timespan not modified.");
+			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Timespan not modified.");
 		}
 		return modified;
 	}
@@ -182,7 +181,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		Timespan span = this.getAtIndex(manager, config);
 		if(span == null){
 			LOGGER.error("No span at given index.");
-			Outputter.consoleErrorPrintln("No span at given index.");
+			OUTPUTTER.errorPrintln("No span at given index.");
 			return false;
 		}
 
@@ -190,7 +189,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 
 		period.getTimespans().remove(span);
 
-		Outputter.consolePrintln(OutputLevel.DEFAULT, "Timespan removed.");
+		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Timespan removed.");
 		//TODO:: add functionality for before/ after datetime?
 		return true;
 	}
@@ -210,7 +209,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager(manager);
 		if(period == null){
 			LOGGER.error("No work period selected to search time spans in.");
-			Outputter.consoleErrorPrintln("No work period selected to search time spans in.");
+			OUTPUTTER.errorPrintln("No work period selected to search time spans in.");
 			return null;
 		}
 

@@ -8,38 +8,53 @@ import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.NONE;
 
 /**
  * Class to handle outputting action and other runtime information to a printstream.
- *
- * Meant to be used staticly, all instances that use this will be used shared streams.
- *
- * TODO:: move to non static class to use?
  */
 public final class Outputter {
-	private static PrintStream MESSAGE_OUTPUT_STREAM;
-	private static PrintStream MESSAGE_ERROR_STREAM;
-	private static OutputLevel OUTPUT_LEVEL_THRESHOLD = DEFAULT;
-
-	private Outputter(){
-		//prevent instantiation
-	}
+	private static Outputter DEFAULT_OUTPUTTER;
 
 	static {
-		resetStreamsToDefault();
+		DEFAULT_OUTPUTTER = new Outputter();
+	}
+
+	public static Outputter getDefaultOutputter(){
+		return DEFAULT_OUTPUTTER;
+	}
+
+	private PrintStream MESSAGE_OUTPUT_STREAM;
+	private PrintStream MESSAGE_ERROR_STREAM;
+	private OutputLevel OUTPUT_LEVEL_THRESHOLD = DEFAULT;
+
+	public Outputter(){
+		this(System.out, System.err);
+	}
+	public Outputter(OutputLevel threshold){
+		this();
+		this.setOutputLevelThreshold(threshold);
+	}
+
+	public Outputter(PrintStream normStream, PrintStream errStream){
+		this.setMessageOutputStream(normStream);
+		this.setMessageErrorStream(errStream);
+	}
+	public Outputter(OutputLevel threshold, PrintStream normStream, PrintStream errStream){
+		this(normStream, errStream);
+		this.setOutputLevelThreshold(threshold);
+	}
+	public Outputter(OutputStream normStream, OutputStream errStream){
+		this.setMessageOutputStream(normStream);
+		this.setMessageErrorStream(errStream);
+	}
+	public Outputter(OutputLevel threshold, OutputStream normStream, OutputStream errStream){
+		this(normStream, errStream);
+		this.setOutputLevelThreshold(threshold);
 	}
 
 	//<editor-fold desc="Public methods">
 	/**
-	 * Resets the streams to their default printstreams. ({@link System#out} for normal, {@link System#err} for error.
-	 */
-	public static void resetStreamsToDefault(){
-		MESSAGE_OUTPUT_STREAM = System.out;
-		MESSAGE_ERROR_STREAM = System.err;
-	}
-
-	/**
 	 * Sets the threshold to use when determining whether or not to output.
 	 * @param level The level to set.
 	 */
-	public static void setOutputLevelThreshold(OutputLevel level){
+	public void setOutputLevelThreshold(OutputLevel level){
 		if(level == null){
 			throw new IllegalArgumentException("Output level cannot be null");
 		}
@@ -50,29 +65,30 @@ public final class Outputter {
 	 * Sets the normal output message printstream.
 	 * @param stream The printstream to use for normal output.
 	 */
-	public static void setMessageOutputStream(PrintStream stream){
+	public void setMessageOutputStream(PrintStream stream){
 		MESSAGE_OUTPUT_STREAM = stream;
 	}
 	/**
 	 * Sets the normal output message outputstream. Wraps the stream given in a PrintStream
 	 * @param stream The outputstream to use for normal output.
 	 */
-	public static void setMessageOutputStream(OutputStream stream){
-		setMessageOutputStream(new PrintStream(stream));
+	public void setMessageOutputStream(OutputStream stream){
+		setMessageOutputStream((stream == null?null:new PrintStream(stream)));
 	}
 
 	/**
 	 * Sets the error output message printstream.
 	 * @param stream The printstream to use for error output.
 	 */
-	public static void setMessageErrorStream(PrintStream stream){
+	public void setMessageErrorStream(PrintStream stream){
 		MESSAGE_ERROR_STREAM = stream;
-	}/**
+	}
+	/**
 	 * Sets the error output message outputstream. Wraps the stream given in a PrintStream
 	 * @param stream The outputstream to use for error output.
 	 */
-	public static void setMessageErrorStream(OutputStream stream){
-		setMessageErrorStream(new PrintStream(stream));
+	public void setMessageErrorStream(OutputStream stream){
+		setMessageErrorStream((stream == null?null:new PrintStream(stream)));
 	}
 
 	/**
@@ -80,7 +96,7 @@ public final class Outputter {
 	 * @param level The level of the message
 	 * @return If the message is to be output
 	 */
-	public static boolean canOutput(OutputLevel level){
+	public boolean canOutput(OutputLevel level){
 		if(MESSAGE_OUTPUT_STREAM == null){
 			return false;
 		}
@@ -96,11 +112,11 @@ public final class Outputter {
 	 * Determines if an error message can be output.
 	 * @return If the message is to be output
 	 */
-	public static boolean canOutputErr(){
-		if(MESSAGE_OUTPUT_STREAM == null){
+	public boolean canOutputErr(){
+		if(MESSAGE_ERROR_STREAM == null){
 			return false;
 		}
-		return OUTPUT_LEVEL_THRESHOLD == NONE;
+		return OUTPUT_LEVEL_THRESHOLD != NONE;
 	}
 	//</editor-fold>
 
@@ -110,7 +126,7 @@ public final class Outputter {
 	 * @param level The level this message is.
 	 * @param output The message to output.
 	 */
-	public static void consolePrintln(OutputLevel level, String output){
+	public void normPrintln(OutputLevel level, String output){
 		if(canOutput(level)) {
 			MESSAGE_OUTPUT_STREAM.println(output);
 		}
@@ -121,7 +137,7 @@ public final class Outputter {
 	 * @param level The level this message is.
 	 * @param output The message to output.
 	 */
-	public static void consolePrint(OutputLevel level, String output){
+	public void normPrint(OutputLevel level, String output){
 		if(canOutput(level)){
 			MESSAGE_OUTPUT_STREAM.print(output);
 		}
@@ -131,7 +147,7 @@ public final class Outputter {
 	 * Prints to the error print stream as a line. Ignores threshold unless it is {@link OutputLevel#NONE}
 	 * @param output The string to output.
 	 */
-	public static void consoleErrorPrintln(String output){
+	public void errorPrintln(String output){
 		if(canOutputErr()) {
 			MESSAGE_ERROR_STREAM.println(output);
 		}
@@ -141,7 +157,7 @@ public final class Outputter {
 	 * Prints to the error print stream. Ignores threshold unless it is {@link OutputLevel#NONE}
 	 * @param output The string to output.
 	 */
-	public static void consoleErrorPrint(String output){
+	public void errorPrint(String output){
 		if(canOutputErr()) {
 			MESSAGE_ERROR_STREAM.print(output);
 		}

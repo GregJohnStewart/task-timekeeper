@@ -30,7 +30,7 @@ public class PeriodDoerTest extends ActionDoerTest{
 
 	@Before
 	public void before(){
-		Outputter.setOutputLevelThreshold(OutputLevel.VERBOSE);
+		ActionDoer.getOutputter().setOutputLevelThreshold(OutputLevel.VERBOSE);
 		ActionDoer.resetDoers();
 	}
 
