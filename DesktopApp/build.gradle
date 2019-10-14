@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '1.0.0.19'
+version = '1.0.0.20'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -122,13 +122,10 @@ task incrementBuildVersion {
 
     doLast {
         def ver = version
-        //println ver
         String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
         int increment = lastNumber.toInteger() + 1
-        //println "Build number: " + increment
 
         String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        //println firstNumber
         String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
         buildFile.setText(result)
     }

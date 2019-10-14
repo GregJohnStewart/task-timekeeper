@@ -8,6 +8,22 @@
  * in the user guide at https://docs.gradle.org/3.4.1/userguide/multi_project_builds.html
  */
 
+
+// for resolving quarkus plugin dependencies
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'io.quarkus') {
+                useModule("io.quarkus:quarkus-gradle-plugin:${requested.version}")
+            }
+        }
+    }
+}
+
 rootProject.name = 'Task-Timekeeper'
 include 'BaseCode'
 include 'DesktopApp'

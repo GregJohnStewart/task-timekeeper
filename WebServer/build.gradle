@@ -1,18 +1,32 @@
 
 plugins {
     id 'java'
+    id 'io.quarkus' version '0.24.0'
 }
+//apply plugin: 'io.quarkus'
 
-version = '0.0.0.4'
+version = '0.0.0.5'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile project(":BaseCode")
+
+    implementation enforcedPlatform('io.quarkus:quarkus-bom:0.24.0')
+    implementation 'io.quarkus:quarkus-resteasy'
+    //implementation 'io.quarkus:quarkus-resteasy-jackson'
+    implementation 'io.quarkus:quarkus-elytron-security'
+
+    testCompile group: 'io.quarkus', name: 'quarkus-junit5', version: '0.24.0'
+    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task incrementBuildVersion {
@@ -21,13 +35,10 @@ task incrementBuildVersion {
 
     doLast {
         def ver = version
-        //println ver
         String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
         int increment = lastNumber.toInteger() + 1
-        //println "Build number: " + increment
 
         String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        //println firstNumber
         String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
         buildFile.setText(result)
     }

@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '2.0.1.13'
+version = '2.0.1.15'
 sourceCompatibility = 1.11
 
 repositories {
@@ -33,13 +33,10 @@ task incrementBuildVersion {
 
     doLast {
         def ver = version
-        //println ver
         String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
         int increment = lastNumber.toInteger() + 1
-        //println "Build number: " + increment
 
         String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        //println firstNumber
         String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
         buildFile.setText(result)
     }
