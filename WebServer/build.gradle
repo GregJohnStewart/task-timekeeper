@@ -5,7 +5,7 @@ plugins {
 }
 //apply plugin: 'io.quarkus'
 
-version = '0.0.0.9'
+version = '0.0.0.12'
 
 sourceCompatibility = 1.11
 
@@ -29,23 +29,8 @@ test {
     useJUnitPlatform()
 }
 
-task incrementBuildVersion {
-    group "build"
-    description "Increments the build number in the version config."
-
-    doLast {
-        def ver = version
-        String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
-        int increment = lastNumber.toInteger() + 1
-
-        String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
-        buildFile.setText(result)
-    }
-}
-
 compileJava {
-    println "Webserver version at compile time: " + version
+    println "WebServer version at compile time: " + version
     dependsOn ':BaseCode:test'
     dependsOn 'incrementBuildVersion';
 }

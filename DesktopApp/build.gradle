@@ -8,7 +8,7 @@ plugins {
 
 sourceCompatibility = 1.11
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '1.0.0.26'
+version = '1.0.0.29'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -116,20 +116,20 @@ task deleteGenertatedResources(type: Delete) {
     }
 }
 
-task incrementBuildVersion {
-    group "build"
-    description "Increments the build number in the version config."
-
-    doLast {
-        def ver = version
-        String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
-        int increment = lastNumber.toInteger() + 1
-
-        String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
-        buildFile.setText(result)
-    }
-}
+//task incrementBuildVersion {
+//    group "build"
+//    description "Increments the build number in the version config."
+//
+//    doLast {
+//        def ver = version
+//        String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
+//        int increment = lastNumber.toInteger() + 1
+//
+//        String firstNumber = ver.substring(0, ver.lastIndexOf("."))
+//        String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
+//        buildFile.setText(result)
+//    }
+//}
 
 compileJava {
     println "DesktopApp version at compile time: " + version

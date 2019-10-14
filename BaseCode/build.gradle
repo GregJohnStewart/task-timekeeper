@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '3.0.0.2'
+version = '3.0.0.5'
 sourceCompatibility = 1.11
 
 repositories {
@@ -25,21 +25,6 @@ dependencies {
     compile 'args4j:args4j:2.33'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-task incrementBuildVersion {
-    group "build"
-    description "Increments the build number in the version config."
-
-    doLast {
-        def ver = version
-        String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
-        int increment = lastNumber.toInteger() + 1
-
-        String firstNumber = ver.substring(0, ver.lastIndexOf("."))
-        String result = buildFile.getText().replaceFirst("version = '$version'", "version = '" + firstNumber + "." + increment + "'")
-        buildFile.setText(result)
-    }
 }
 
 compileJava {
