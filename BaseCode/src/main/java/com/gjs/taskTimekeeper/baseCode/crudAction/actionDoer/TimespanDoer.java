@@ -190,7 +190,7 @@ public class TimespanDoer extends ActionDoer<Timespan> {
 		period.getTimespans().remove(span);
 
 		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Timespan removed.");
-		//TODO:: add functionality for before/ after datetime?
+		//TODO:: add functionality for before/ after datetime, use search
 		return true;
 	}
 

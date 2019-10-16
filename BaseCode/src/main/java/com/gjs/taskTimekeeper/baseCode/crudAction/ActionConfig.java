@@ -72,7 +72,6 @@ public class ActionConfig {
 	@Option(name = "-en", aliases = {"en", "--end", "end"}, usage = "Specifying datetime something ends at.")
 	private String end = null;
 
-	//TODO:: implement for work period and timespan and document
 	@Option(name= "--atts", usage = "Specifies attribute value pairs, typically overwriting existing ones. Format: att,val;att2,val2")
 	private String attributes = null;
 

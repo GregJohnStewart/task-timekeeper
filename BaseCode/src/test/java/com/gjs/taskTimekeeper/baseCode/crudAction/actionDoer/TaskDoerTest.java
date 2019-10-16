@@ -310,6 +310,7 @@ public class TaskDoerTest extends ActionDoerTest {
 
 		//dont remove task that has a span associated with it
 		manager.addTimespan(new Timespan(testTask));
+		config.setName(newTaskName);
 
 		assertTrue(manager.getTasks().contains(testTask));
 		assertFalse(ActionDoer.doObjAction(manager, config));
