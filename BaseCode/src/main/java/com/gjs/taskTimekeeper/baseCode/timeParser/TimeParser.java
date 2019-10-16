@@ -1,10 +1,17 @@
 package com.gjs.taskTimekeeper.baseCode.timeParser;
 
+import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
@@ -12,8 +19,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TimeParser {
+/**
+ * Class to handle Time parsing. Not instantiable, use the static classes.
+ */
+public final class TimeParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TimeParser.class);
+
+	private TimeParser(){
+		//prevent instantiation
+	}
 
 	protected enum DateTimeParsedType{
 		DATETIME,
@@ -21,10 +35,15 @@ public class TimeParser {
 		TIME
 	}
 
-	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M h:m a y"); //DateTimeFormatter.ofPattern("d/L h:m a");
+	/** The default date/time formatter to use in parsing and formatting */
+	private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M h:m a y");
+	/** The list of supported formatters */
 	private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
+	/** A map of special date/time strings and the methods to get them, for processing those special datetime strings */
 	private static final Map<String, Method> TIME_VALUES = new HashMap<>();
+	/** The default start of a week */
 	private static final DayOfWeek WEEK_START = DayOfWeek.MONDAY;
+	/** List of acceptable formats for use with help outputs **/
 	private static final List<String> ACCEPTABLE_FORMATS_FOR_HELP = new ArrayList<>();
 
 	/**
@@ -127,6 +146,7 @@ public class TimeParser {
 						return LocalTime.from(parsed).atDate(LocalDate.now());
 				}
 			}catch (DateTimeException e){
+				//go to the next datetime format to see if it works
 				continue;
 			}
 		}
@@ -138,13 +158,24 @@ public class TimeParser {
 		return string.trim();
 	}
 
-	public static void outputHelp(){
+	/**
+	 * Outputs the help information to the outputter given.
+	 * @param outputter The outputter to use to output the help.
+	 */
+	public static void outputHelp(Outputter outputter){
 		LOGGER.info("Listing available date/time formats.");
-		System.out.println("Date/Time formats available for use:");
+		outputter.normPrintln(OutputLevel.DEFAULT, "Date/Time formats available for use:");
 		for(String curFormat : ACCEPTABLE_FORMATS_FOR_HELP){
-			System.out.println("\t" + curFormat);
+			outputter.normPrintln(OutputLevel.DEFAULT, "\t" + curFormat);
 		}
-		System.out.println("More info on using these patterns can be found here: https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html");
+		outputter.normPrintln(OutputLevel.DEFAULT, "More info on using these patterns can be found here: https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html");
+	}
+
+	/**
+	 * Outputs the help information to the {@link Outputter#getDefaultOutputter() default outputter}
+	 */
+	public static void outputHelp() {
+		outputHelp(Outputter.getDefaultOutputter());
 	}
 
 	/**

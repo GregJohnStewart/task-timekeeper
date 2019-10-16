@@ -34,7 +34,15 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	private Duration duration;
 
 	/**
-	 * Constructor to set the task
+	 * Constructor to set the task name.
+	 * @param taskName The task name to use
+	 * @throws NullPointerException If the task name given is null
+	 */
+	public Timespan(Name taskName) throws NullPointerException {
+		this.setTaskName(taskName);
+	}
+	/**
+	 * Constructor to set the task name with a task
 	 *
 	 * @param task The task to set
 	 * @throws NullPointerException If the task given is null
@@ -42,12 +50,20 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	public Timespan(Task task) throws NullPointerException {
 		this.setTaskName(task);
 	}
-	public Timespan(Name task) throws NullPointerException {
-		this.setTask(task);
-	}
 
 	/**
-	 * Constructor to set the task
+	 * Constructor to set the task name and a starting datetime.
+	 *
+	 * @param task      The task to set
+	 * @param startTime The time this span started at.
+	 * @throws NullPointerException If the task given is null
+	 */
+	public Timespan(Name task, LocalDateTime startTime) throws NullPointerException {
+		this(task);
+		this.setStartTime(startTime);
+	}
+	/**
+	 * Constructor to set the task name with a task and a starting datetime.
 	 *
 	 * @param task      The task to set
 	 * @param startTime The time this span started at.
@@ -57,11 +73,6 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		this(task);
 		this.setStartTime(startTime);
 	}
-	public Timespan(Name task, LocalDateTime startTime) throws NullPointerException {
-		this(task);
-		this.setStartTime(startTime);
-	}
-
 	/**
 	 * Constructor to set the task and datetimes
 	 *
@@ -69,21 +80,31 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 * @param startTime The time this span started at.
 	 * @param endTime   The time this span ended at.
 	 * @throws NullPointerException If the task given is null
+	 * @throws IllegalArgumentException If the datetimes used were invalid.
 	 */
 	public Timespan(
 		Task task,
 		LocalDateTime startTime,
 		LocalDateTime endTime
-	) throws NullPointerException {
+	) throws NullPointerException, IllegalArgumentException {
 		this(task, startTime);
 		this.setEndTime(endTime);
 	}
+
+	/**
+	 * Constructor to set the task name and a starting and ending datetime.
+	 * @param task The task name to use
+	 * @param startTime The starting time for the span
+	 * @param endTime The ending time for the span
+	 * @throws NullPointerException If the task name is null
+	 * @throws IllegalArgumentException If the datetimes used were invalid.
+	 */
 	@JsonCreator
 	public Timespan(
 		@JsonProperty("taskName") Name task,
 		@JsonProperty("startTime") LocalDateTime startTime,
 		@JsonProperty("endTime") LocalDateTime endTime
-	) throws NullPointerException {
+	) throws NullPointerException, IllegalArgumentException {
 		this(task, startTime);
 		this.setEndTime(endTime);
 	}
@@ -108,17 +129,18 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 		if (task == null) {
 			throw new NullPointerException("Task cannot be null.");
 		}
-		return setTask(task.getName());
-	}
-	@JsonSetter
-	public Timespan setTaskName(Name taskName) throws NullPointerException {
-		if (taskName == null) {
-			throw new NullPointerException("Task name cannot be null.");
-		}
-		return setTask(taskName);
+		return this.setTaskName(task.getName());
 	}
 
-	public Timespan setTask(Name taskName) throws NullPointerException {
+	/**
+	 * Sets the task this span is associated with.
+	 *
+	 * @param taskName The task name to set
+	 * @return This span object
+	 * @throws NullPointerException If the task given is null
+	 */
+	@JsonSetter
+	public Timespan setTaskName(Name taskName) throws NullPointerException {
 		if (taskName == null) {
 			throw new NullPointerException("Task name cannot be null.");
 		}
@@ -253,7 +275,7 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
 	 * 1 if this has no start
 	 * this.getTask().compare(o.getTask()) if no start times or times are equal
 	 *
-	 * @param o
+	 * @param o The timespan to compare to
 	 * @return
 	 */
 	@Override

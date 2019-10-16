@@ -7,7 +7,7 @@ import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.NONE;
 
 /**
- * Class to handle outputting action and other runtime information to a printstream.
+ * Class to handle outputting action and other runtime information to a printstream (or other outputstreams).
  */
 public final class Outputter {
 	private static Outputter DEFAULT_OUTPUTTER;

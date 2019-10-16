@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class OutputterTest {
 	private ByteArrayOutputStream testNormStream = new ByteArrayOutputStream();
@@ -50,6 +53,10 @@ public class OutputterTest {
 	//</editor-fold>
 
 	//<editor-fold desc="Can Output tests">
+	@Test(expected = IllegalArgumentException.class)
+	public void cantSetNullOutputLevel(){
+		new Outputter(null, null).setOutputLevelThreshold(null);
+	}
 	@Test
 	public void canOutputNormTest(){
 		Outputter outputter = new Outputter(OutputLevel.DEFAULT, this.testNormStream, this.testErrorStream);
@@ -59,6 +66,10 @@ public class OutputterTest {
 		outputter = new Outputter(OutputLevel.VERBOSE, this.testNormStream, this.testErrorStream);
 		assertTrue(outputter.canOutput(OutputLevel.DEFAULT));
 		assertTrue(outputter.canOutput(OutputLevel.VERBOSE));
+
+		outputter = new Outputter(OutputLevel.NONE, this.testNormStream, this.testErrorStream);
+		assertFalse(outputter.canOutput(OutputLevel.DEFAULT));
+		assertFalse(outputter.canOutput(OutputLevel.VERBOSE));
 
 		outputter = new Outputter(OutputLevel.VERBOSE, null, this.testErrorStream);
 		assertFalse(outputter.canOutput(OutputLevel.DEFAULT));
@@ -75,7 +86,14 @@ public class OutputterTest {
 		outputter = new Outputter(OutputLevel.DEFAULT, this.testNormStream, null);
 		assertFalse(outputter.canOutputErr());
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Can Output tests">
+	@Test
+	public void canGetDefault(){
+		Outputter def = Outputter.getDefaultOutputter();
+		assertNotNull(def);
+	}
 	//</editor-fold>
 
 }
