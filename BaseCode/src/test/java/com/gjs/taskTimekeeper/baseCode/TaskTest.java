@@ -1,7 +1,7 @@
-package com.gjs.taskTimekeeper.backend;
+package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

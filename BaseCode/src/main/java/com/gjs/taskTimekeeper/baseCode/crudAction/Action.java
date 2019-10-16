@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.backend.crudAction;
+package com.gjs.taskTimekeeper.baseCode.crudAction;
 
 /**
  * Enum to describe what type of action to take.

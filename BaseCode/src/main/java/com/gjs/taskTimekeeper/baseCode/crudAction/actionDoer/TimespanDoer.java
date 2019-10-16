@@ -1,12 +1,12 @@
-package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
+package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.Task;
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.Timespan;
-import com.gjs.taskTimekeeper.backend.WorkPeriod;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
-import com.gjs.taskTimekeeper.backend.utils.OutputLevel;
+import com.gjs.taskTimekeeper.baseCode.Task;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.Timespan;
+import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

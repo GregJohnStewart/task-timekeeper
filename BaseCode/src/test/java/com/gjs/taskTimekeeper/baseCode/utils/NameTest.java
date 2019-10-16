@@ -1,6 +1,6 @@
-package com.gjs.taskTimekeeper.backend.utils;
+package com.gjs.taskTimekeeper.baseCode.utils;
 
-import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import org.junit.Test;
 
 import java.io.IOException;

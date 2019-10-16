@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.managerIO;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.gjs.taskTimekeeper.backend.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import org.slf4j.Logger;

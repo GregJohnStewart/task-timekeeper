@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.backend.timeParser;
+package com.gjs.taskTimekeeper.baseCode.timeParser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

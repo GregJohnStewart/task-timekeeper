@@ -1,9 +1,9 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.actionDoer.ActionDoer;
-import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;

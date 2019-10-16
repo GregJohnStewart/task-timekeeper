@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
-import com.gjs.taskTimekeeper.backend.Task;
+import com.gjs.taskTimekeeper.baseCode.Task;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;

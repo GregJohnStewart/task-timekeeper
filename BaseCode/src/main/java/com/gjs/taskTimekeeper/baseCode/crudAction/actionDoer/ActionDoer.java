@@ -1,15 +1,15 @@
-package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
+package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.KeeperObject;
-import com.gjs.taskTimekeeper.backend.Task;
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.Timespan;
-import com.gjs.taskTimekeeper.backend.WorkPeriod;
-import com.gjs.taskTimekeeper.backend.crudAction.Action;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.backend.utils.Name;
-import com.gjs.taskTimekeeper.backend.utils.Outputter;
+import com.gjs.taskTimekeeper.baseCode.KeeperObject;
+import com.gjs.taskTimekeeper.baseCode.Task;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.Timespan;
+import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.gjs.taskTimekeeper.backend.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.DEFAULT;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 
 /**
  * Main class to be used to perform actions. Provides a 'main' method ({@link #doAction(TimeManager, ActionConfig)} to perform said action.

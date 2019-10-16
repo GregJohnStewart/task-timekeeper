@@ -1,12 +1,12 @@
-package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
+package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.Task;
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.Timespan;
-import com.gjs.taskTimekeeper.backend.crudAction.Action;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.Task;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.Timespan;
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import org.junit.Test;
 
 import java.util.Collection;

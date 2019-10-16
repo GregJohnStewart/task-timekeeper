@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.backend;
+package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

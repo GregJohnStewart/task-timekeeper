@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.backend;
+package com.gjs.taskTimekeeper.baseCode;
 
 import org.junit.Before;
 import org.junit.Test;

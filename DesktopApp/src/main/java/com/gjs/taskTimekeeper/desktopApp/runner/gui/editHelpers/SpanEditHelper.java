@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
-import com.gjs.taskTimekeeper.backend.Task;
-import com.gjs.taskTimekeeper.backend.Timespan;
-import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.Task;
+import com.gjs.taskTimekeeper.baseCode.Timespan;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;

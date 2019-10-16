@@ -1,13 +1,12 @@
-package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
+package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.WorkPeriod;
-import com.gjs.taskTimekeeper.backend.crudAction.Action;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.backend.timeParser.TimeParser;
-import com.gjs.taskTimekeeper.backend.utils.OutputLevel;
-import com.gjs.taskTimekeeper.backend.utils.Outputter;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class PeriodDoerTest extends ActionDoerTest{
+public class PeriodDoerTest extends ActionDoerTest {
 
 	public PeriodDoerTest() {
 		super(KeeperObjectType.PERIOD);

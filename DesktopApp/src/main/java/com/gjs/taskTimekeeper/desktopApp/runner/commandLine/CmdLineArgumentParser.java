@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;

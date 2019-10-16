@@ -1,8 +1,8 @@
-package com.gjs.taskTimekeeper.backend;
+package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
 
 import java.util.HashMap;
 import java.util.Map;

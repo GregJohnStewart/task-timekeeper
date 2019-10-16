@@ -1,9 +1,9 @@
-package com.gjs.taskTimekeeper.backend.crudAction.actionDoer;
+package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.backend.TimeManager;
-import com.gjs.taskTimekeeper.backend.crudAction.Action;
-import com.gjs.taskTimekeeper.backend.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.backend.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

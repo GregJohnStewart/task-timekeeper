@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.backend.utils;
+package com.gjs.taskTimekeeper.baseCode.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,6 @@ import java.util.Objects;
 
 /**
  * A name class to provide built in validation of names. Immutable.
- * TODO:: test
  */
 public class Name implements Comparable<Name> {
 	/**

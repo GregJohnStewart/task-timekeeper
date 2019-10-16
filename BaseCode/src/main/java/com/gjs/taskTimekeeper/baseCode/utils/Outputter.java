@@ -1,10 +1,10 @@
-package com.gjs.taskTimekeeper.backend.utils;
+package com.gjs.taskTimekeeper.baseCode.utils;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.DEFAULT;
-import static com.gjs.taskTimekeeper.backend.utils.OutputLevel.NONE;
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.NONE;
 
 /**
  * Class to handle outputting action and other runtime information to a printstream.

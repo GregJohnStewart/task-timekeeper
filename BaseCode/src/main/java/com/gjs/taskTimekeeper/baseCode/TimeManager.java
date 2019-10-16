@@ -1,9 +1,9 @@
-package com.gjs.taskTimekeeper.backend;
+package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.gjs.taskTimekeeper.backend.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
 
 import java.util.Collection;
 import java.util.Iterator;
