@@ -17,7 +17,39 @@ Run the installer, run the command (`tasktimekeeper` from cli or `Task Timekeepe
 
 ## Linux
 
-TODO:: detail this for different distros
+### Ubuntu/ Debian based
+
+#### Gui
+
+You might be able to install by simply double clicking on th installer. Follow prompts.
+
+#### CLI
+
+`sudo apt install ./Task-Timekeeper-<version>.deb`
+
+[Source (StackOverflow)](https://unix.stackexchange.com/questions/159094/how-to-install-a-deb-file-by-dpkg-i-or-by-apt)
+
+### RHEL/ CentOs/ RPM based
+
+#### Gui
+
+You might be able to install by simply double clicking on th installer. Follow prompts.
+
+#### CLI
+
+[Source (RootUsers)](https://www.rootusers.com/how-to-install-an-rpm-file-in-linux/)
+
+##### Yum
+
+`sudo yum install Task-Timekeeper-<version>.rpm`
+
+##### DNF
+
+`sudo dnf install Task-Timekeeper-<version>.rpm`
+
+##### RPM
+
+`sudo rpm -i Task-Timekeeper-<version>.rpm`
 
 ## Mac
 

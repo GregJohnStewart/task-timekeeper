@@ -2,4 +2,6 @@
 
 Overall, Hopefully the GUI is simple enough to use. If not, this guide should help clear things up.
 
-Its currently unimplemented, so good luck.
+To run from the desktop, simply run the program named "Task Timekeeper GUI"
+
+To run from the command line, simply run: `tasktimekeeper --mode gui`

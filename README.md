@@ -3,7 +3,7 @@ All-in one tool for keeping track of time spent on tasks
 
 The base code behind all the projects is located in the BaseCode project.
 
-Implementations can be found in [DesktopApp](DesktopApp)
+Implementations can be found in [DesktopApp](DesktopApp) and [WebServer](WebServer)
 
 ## How it works
 
@@ -19,9 +19,17 @@ The Manager works off of several objects:
    - timespans are added to a period to describe how long certain tasks were worked for that period 
    - Example: a workday where I worked on a project from 1:00 to 2:00
 
+## Known Issues
+
+This is a list of known issues, if any.
+
+### Webserver
+
+ - The webserver is very much in development. If you see test errors in the project, just ignore them. Tentatively waiting for GraalVm to support Java11 to continue.
+
 ## Desktop App
 
-The desktop app is located [here](DesktopApp/README.md). You can run it either as a cli or gui.
+The desktop app is located [here](DesktopApp). You can run it either as a cli or gui, and lets you jump into using the tool.
 
 ## Misc notes
 

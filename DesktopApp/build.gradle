@@ -178,7 +178,7 @@ setupBuilder {
     mainJar = 'DesktopApp-' + version + '.jar'
 
     // https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
-    //TODO:: associate file type
+    //TODO:: associate file type(s)?
     desktopStarter {
         displayName = "Task Timekeeper GUI"
         description = progDesc + "\nThis opens the program in GUI mode."

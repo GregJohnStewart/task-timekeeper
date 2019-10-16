@@ -1,6 +1,6 @@
 # Task-Timekeeper Webserver
 
-This is the webserver implementation of Task-timekeeper.
+This is the webserver implementation of Task-timekeeper. Currently nonfunctional, very much in development
 
 ## The Stack
 
