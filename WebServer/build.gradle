@@ -1,11 +1,10 @@
-
 plugins {
     id 'java'
     id 'io.quarkus' version '0.24.0'
 }
 //apply plugin: 'io.quarkus'
 
-version = '0.0.0.12'
+version = '0.0.0.21'
 
 sourceCompatibility = 1.11
 
@@ -18,10 +17,10 @@ dependencies {
 
     implementation enforcedPlatform('io.quarkus:quarkus-bom:0.24.0')
     implementation 'io.quarkus:quarkus-resteasy'
-    //implementation 'io.quarkus:quarkus-resteasy-jackson'
+    implementation 'io.quarkus:quarkus-jackson'
     implementation 'io.quarkus:quarkus-elytron-security'
 
-    testCompile group: 'io.quarkus', name: 'quarkus-junit5', version: '0.24.0'
+    testImplementation 'io.quarkus:quarkus-junit5'
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
 }
 
