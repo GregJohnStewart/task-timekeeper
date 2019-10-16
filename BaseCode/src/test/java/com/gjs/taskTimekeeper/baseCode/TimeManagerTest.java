@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -280,7 +281,7 @@ public class TimeManagerTest {
 
 	@Test
 	public void serialization() throws IOException {
-		ObjectMapper mapper = TimeManager.MAPPER;
+		ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
 
 		TimeManager manager = new TimeManager();
 

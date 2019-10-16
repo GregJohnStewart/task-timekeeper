@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.desktopApp.managerIO;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class LocalFile extends ManagerIO {
 				Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)
 			)
 		) {
-			manager = TimeManager.MAPPER.readValue(is, TimeManager.class);
+			manager = ObjectMapperUtilities.getDefaultMapper().readValue(is, TimeManager.class);
 		} catch (MismatchedInputException e){
 			LOGGER.debug("Empty save file. Starting with new manager.");
 			System.out.println("New data initialized.");
@@ -54,7 +55,7 @@ public class LocalFile extends ManagerIO {
 				Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)
 			)
 		){
-			TimeManager.MAPPER.writeValue(os, manager);
+			ObjectMapperUtilities.getDefaultMapper().writeValue(os, manager);
 		} catch (IOException e) {
 			LOGGER.error("FAILED to write changes to save file. Error: ", e);
 			System.err.println("FAILED to write changes to save file. File might have become corrupt or failed to save changes.");

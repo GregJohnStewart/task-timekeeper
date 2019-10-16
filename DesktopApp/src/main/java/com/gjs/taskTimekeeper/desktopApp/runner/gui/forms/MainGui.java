@@ -13,7 +13,7 @@ import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.TimespanDoer;
 import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.WorkPeriodDoer;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
-import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
@@ -715,7 +715,7 @@ public class MainGui {
 				Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class)
 			)
 		) {
-			this.options = TimeManager.MAPPER.readValue(is, GuiOptions.class);
+			this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
 		} catch (MismatchedInputException e){
 			LOGGER.debug("Empty gui options file. Starting with new set of options.");
 		} catch (IOException e) {
@@ -749,7 +749,7 @@ public class MainGui {
 				Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class)
 			)
 		){
-			TimeManager.MAPPER.writeValue(os, this.options);
+			ObjectMapperUtilities.getDefaultMapper().writeValue(os, this.options);
 		} catch (IOException e) {
 			LOGGER.error("FAILED to write changes to gui options file. Error: ", e);
 

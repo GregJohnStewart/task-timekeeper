@@ -1,8 +1,6 @@
 package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 
 import java.util.Collection;
@@ -18,15 +16,6 @@ import java.util.regex.Pattern;
  * Overall manager of WorkPeriods. Handles high level tasks.
  */
 public class TimeManager {
-	/**
-	 * Pre-configured object mapper to be compatible with Java's LocalDateTime objects.
-	 */
-	public static final ObjectMapper MAPPER = new ObjectMapper();
-
-	static {
-		MAPPER.registerModule(new JavaTimeModule());
-	}
-
 	/**
 	 * Tasks held by this object.
 	 */

@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.managerIO;
 
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,11 +13,11 @@ public abstract class ManagerIO {
 	public abstract void save(TimeManager manager);
 
 	protected static TimeManager fromInputStream(InputStream is) throws IOException {
-		return TimeManager.MAPPER.readValue(is, TimeManager.class);
+		return ObjectMapperUtilities.getDefaultMapper().readValue(is, TimeManager.class);
 	}
 
 	protected static void toOutputStream(OutputStream os, TimeManager manager) throws IOException {
-		TimeManager.MAPPER.writeValue(os, manager);
+		ObjectMapperUtilities.getDefaultMapper().writeValue(os, manager);
 	}
 
 	public static ManagerIO getProperIO(){

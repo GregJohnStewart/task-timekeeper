@@ -19,6 +19,7 @@ import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 
 /**
  * Main class to be used to perform actions. Provides a 'main' method ({@link #doAction(TimeManager, ActionConfig)} to perform said action.
+ * TODO:: make as an instantiable class to make it easy to be multithreaded
  * @param <T> For extending object action doers, the object the action performs operations on.
  */
 public abstract class ActionDoer <T extends KeeperObject> {

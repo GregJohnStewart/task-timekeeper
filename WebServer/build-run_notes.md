@@ -6,3 +6,4 @@
  - Have Graalvm installed
    - [Linux Instructions](https://gist.github.com/ricardozanini/fa65e485251913e1467837b1c5a8ed28)
  - Graalvm_home set
+ - https://quarkus.io/guides/building-native-image-guide.html#prerequisites

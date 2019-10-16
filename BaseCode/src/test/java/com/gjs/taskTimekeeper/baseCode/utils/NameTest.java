@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.baseCode.utils;
 
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,9 +33,9 @@ public class NameTest {
 	public void serializationTest() throws IOException {
 		Name testName = new Name("testName");
 
-		String nameJson = TimeManager.MAPPER.writeValueAsString(testName);
+		String nameJson = ObjectMapperUtilities.getDefaultMapper().writeValueAsString(testName);
 
-		Name otherTestName = TimeManager.MAPPER.readValue(nameJson, Name.class);
+		Name otherTestName = ObjectMapperUtilities.getDefaultMapper().readValue(nameJson, Name.class);
 		assertEquals(testName, otherTestName);
 	}
 	//</editor-fold>

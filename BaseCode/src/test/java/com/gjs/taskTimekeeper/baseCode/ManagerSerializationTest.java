@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.baseCode;
 
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -57,11 +58,11 @@ public class ManagerSerializationTest {
 
 	@Test
 	public void testDeserialization() throws IOException {
-		String output = TimeManager.MAPPER.writeValueAsString(this.manager);
+		String output = ObjectMapperUtilities.getDefaultMapper().writeValueAsString(this.manager);
 
 		LOGGER.debug("Serialized time manager: {}", output);
 
-		TimeManager deserialized = TimeManager.MAPPER.readValue(output, TimeManager.class);
+		TimeManager deserialized = ObjectMapperUtilities.getDefaultMapper().readValue(output, TimeManager.class);
 
 		assertEquals(this.manager, deserialized);
 	}
