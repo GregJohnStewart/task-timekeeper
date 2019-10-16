@@ -4,7 +4,7 @@ plugins {
 }
 //apply plugin: 'io.quarkus'
 
-version = '0.0.0.21'
+version = '0.0.0.22'
 
 sourceCompatibility = 1.11
 
