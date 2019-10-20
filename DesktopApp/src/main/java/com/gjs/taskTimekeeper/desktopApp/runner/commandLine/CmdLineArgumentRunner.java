@@ -2,7 +2,6 @@ package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
@@ -74,11 +73,11 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
 		if(selectLatest){
 			LOGGER.trace("Selecting the latest period.");
-			ActionDoer.setNewestPeriodAsSelectedQuiet(manager);
+			manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
 		}
 
 		//Do action. If returns true, data was changed.
-		if (ActionDoer.doObjAction(manager, actionConfig)) {
+		if (manager.doCrudAction(actionConfig)) {
 			ManagerIO.saveTimeManager(manager);
 		}
 

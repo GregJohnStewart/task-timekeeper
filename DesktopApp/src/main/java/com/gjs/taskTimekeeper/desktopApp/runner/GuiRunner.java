@@ -1,8 +1,5 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer;
-import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
-import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
@@ -46,7 +43,6 @@ public class GuiRunner extends ModeRunner {
 	@Override
 	public void run() {
 		LOGGER.info("Running the GUI mode.");
-		ActionDoer.getOutputter().setOutputLevelThreshold(OutputLevel.DEFAULT);
 		runMainGui();
 		runSystemTrayIcon();
 		LOGGER.debug("Running UI components");

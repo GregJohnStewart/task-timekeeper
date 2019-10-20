@@ -1,46 +1,55 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.Timespan;
 import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
 import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer.OUTPUTTER;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer.doObjAction;
 import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 
 /**
  * Handles doing the special tasks
  */
-public class SpecialDoer {
+public class SpecialDoer extends ActionDoer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpecialDoer.class);
+
+	private final CrudOperator operator;
+
+	public SpecialDoer(CrudOperator operator) {
+		super(operator.getManager());
+		this.operator = operator;
+	}
+
+	public SpecialDoer(CrudOperator operator, Outputter outputter) {
+		super(operator.getManager(), outputter);
+		this.operator = operator;
+	}
 
 	/**
 	 * Processes special commands from the command line.
-	 * @param manager The manager being dealt with
 	 * @param config The configuration from command line
 	 * @return If the manager was changed in any way.
 	 */
-	public static boolean processSpecial(TimeManager manager, ActionConfig config){
+	public boolean processSpecial(ActionConfig config){
 		switch (config.getSpecialAction().toLowerCase()){
 			case "completespans": {
-				return completeSpansInSelected(manager);
+				return this.completeSpansInSelected();
 			}
 			case "newspan":
-				return completeOldSpansAndAddNewInSelected(manager, config);
+				return this.completeOldSpansAndAddNewInSelected(config);
 			case "selectnewest": {
 				if(manager.getWorkPeriods().isEmpty()){
 					LOGGER.warn("No periods to select.");
-					OUTPUTTER.errorPrintln("No periods to select.");
+					outputter.errorPrintln("No periods to select.");
 					return false;
 				}
 				ActionConfig actionConfig = new ActionConfig()
@@ -48,15 +57,15 @@ public class SpecialDoer {
 					                            .setAction(Action.VIEW)
 					                            .setIndex(1)
 					                            .setSelect(true);
-				return doObjAction(manager, actionConfig);
+				return this.operator.doObjAction(actionConfig);
 			}
 			case "newperiod": {
-				boolean result = completeSpansInSelected(manager);
+				boolean result = this.completeSpansInSelected();
 				ActionConfig actionConfig = new ActionConfig()
 					                            .setObjectOperatingOn(KeeperObjectType.PERIOD)
 					                            .setAction(ADD)
 					                            .setSelect(true);
-				return doObjAction(manager, actionConfig) || result;
+				return this.operator.doObjAction(actionConfig) || result;
 			}
 			//TODO:: "lastWeeksPeriods"
 			//TODO:: "thisWeeksPeriods"
@@ -66,27 +75,26 @@ public class SpecialDoer {
 			//TODO:: taskStats -> view amount of time spent on what tasks in a period.
 			default:
 				LOGGER.error("No valid special command given.");
-				OUTPUTTER.errorPrintln("No valid special command given.");
+				this.outputter.errorPrintln("No valid special command given.");
 				return false;
 		}
 	}
 
 	/**
 	 * Finishes all spans in selected work period.
-	 * @param manager The manager being dealt with.
 	 * @return True if any spans were actually finished.
 	 */
-	private static boolean completeSpansInSelected(TimeManager manager){
-		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+	private boolean completeSpansInSelected(){
+		WorkPeriod selected = this.operator.getSelectedWorkPeriod();
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			OUTPUTTER.errorPrintln("No work period selected.");
+			this.outputter.errorPrintln("No work period selected.");
 			return false;
 		}
 
 		if(selected.isUnCompleted()){
 			LOGGER.debug("Attempting to finish spans in selected periods.");
-			OUTPUTTER.normPrintln(DEFAULT, "Attempting to finish spans in selected periods.");
+			this.outputter.normPrintln(DEFAULT, "Attempting to finish spans in selected periods.");
 			int finishedCount = 0;
 			LocalDateTime now = LocalDateTime.now();
 			for(Timespan span : selected.getUnfinishedTimespans()){
@@ -107,7 +115,7 @@ public class SpecialDoer {
 			}
 			if(finishedCount > 0){
 				LOGGER.info("Finished {} spans.", finishedCount);
-				OUTPUTTER.normPrintln(DEFAULT, "Finished " + finishedCount + " spans.");
+				this.outputter.normPrintln(DEFAULT, "Finished " + finishedCount + " spans.");
 				return true;
 			}
 		}
@@ -116,16 +124,15 @@ public class SpecialDoer {
 
 	/**
 	 * Finishes all old spans in selected work period and starts a new work period.
-	 * @param manager The time manager being dealt with.
 	 * @param config The configuration used to do the action.
 	 * @return If the manager was changed during the operation.
 	 */
-	private static boolean completeOldSpansAndAddNewInSelected(TimeManager manager, ActionConfig config){
+	private boolean completeOldSpansAndAddNewInSelected(ActionConfig config){
 		LOGGER.info("Setting up config for adding a span.");
-		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		WorkPeriod selected = this.operator.getSelectedWorkPeriod();
 		if(selected == null){
 			LOGGER.error("No work period selected.");
-			OUTPUTTER.errorPrintln("No work period selected.");
+			outputter.errorPrintln("No work period selected.");
 			return false;
 		}
 		Name taskName;
@@ -133,20 +140,20 @@ public class SpecialDoer {
 			taskName = new Name(config.getName());
 		} catch (Exception e) {
 			LOGGER.error("Bad task name given: ", e);
-			OUTPUTTER.errorPrintln("Bad task name given: " + e.getMessage());
+			outputter.errorPrintln("Bad task name given: " + e.getMessage());
 			return false;
 		}
 		Task task = manager.getTaskByName(taskName);
 		if(task == null){
 			LOGGER.error("No task with name specified.");
-			OUTPUTTER.errorPrintln("No task with name specified.");
+			outputter.errorPrintln("No task with name specified.");
 			return false;
 		}
 		//finish unfinished spans
-		completeSpansInSelected(manager);
+		this.completeSpansInSelected();
 
 		selected.addTimespan(new Timespan(task, LocalDateTime.now()));
-		OUTPUTTER.normPrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
+		outputter.normPrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
 		return true;
 	}
 

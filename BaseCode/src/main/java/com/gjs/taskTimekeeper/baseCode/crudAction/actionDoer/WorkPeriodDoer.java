@@ -6,6 +6,7 @@ import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,18 +24,28 @@ import java.util.SortedSet;
 /**
  * Action doer to edit WorkPeriods.
  */
-public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
+public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorkPeriodDoer.class);
 
 	/** The selected work period. If null, none are selected. */
 	protected WorkPeriod selected = null;
+
+	//TODO:: implement
+	private boolean selectFirstIfNoneSelected = false;
+
+	public WorkPeriodDoer(TimeManager manager){
+		super(manager);
+	}
+
+	public WorkPeriodDoer(TimeManager manager, Outputter outputter){
+		super(manager, outputter);
+	}
 
 	/**
 	 * Gets the currently selected work period.
 	 *
 	 * The selected work period set will .equals() that in the time manager given but will be a different object between runs (assuming between runs the TimeManager is reloaded).
 	 *
-	 * Use {@link #getSelectedFromManager(TimeManager)} to get the selected work period object that is part of the manager.
 	 * @return The currently selected work period.
 	 */
 	protected WorkPeriod getSelected(){
@@ -43,22 +54,21 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 	/**
 	 * Gets the work period from the time manager. Also resets the work period held to it, if found.
-	 *
+	 * TODO:: this still necessary?
 	 * If not found, nulls out the held selected object.
-	 * @param manager The manager to get the selected work period from.
 	 * @return The selected work period object from the TimeManager given. Null if not found.
 	 */
-	public WorkPeriod getSelectedFromManager(TimeManager manager){
+	public WorkPeriod getSelectedFromManager(){
 		if(this.getSelected() != null) {
 			for (WorkPeriod period : manager.getWorkPeriods()) {
 				if (period.equals(this.getSelected())) {
 					this.setSelected(period);
-					OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "There was a selected work period.");
+					outputter.normPrintln(OutputLevel.VERBOSE, "There was a selected work period.");
 					return period;
 				}
 			}
 		}
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "No period selected.");
+		outputter.normPrintln(OutputLevel.DEFAULT, "No period selected.");
 		this.setSelected(null);
 		return null;
 	}
@@ -81,13 +91,13 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 	}
 
 	@Override
-	protected boolean add(TimeManager manager, ActionConfig config) {
+	protected boolean add(ActionConfig config) {
 		LOGGER.info("Adding a new work period.");
 		WorkPeriod period = new WorkPeriod();
 
 		if(config.getAttributeName() != null && config.getAttributes() != null){
 			LOGGER.warn("Cannot process both single attribute and set of attributes.");
-			OUTPUTTER.errorPrintln("Cannot process both single attribute and set of attributes.");
+			outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
 			return false;
 		}
 
@@ -107,7 +117,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 				newAtts = ActionDoer.parseAttributes(config.getAttributes());
 			}catch (IllegalArgumentException e){
 				LOGGER.warn("Attribute string given was invalid. Error: ", e);
-				OUTPUTTER.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				outputter.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
 				return false;
 			}
 			period.setAttributes(newAtts);
@@ -118,14 +128,14 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 		if(numBefore == manager.getWorkPeriods().size()){
 			LOGGER.info("Empty period already exists, nothing happened.");
-			OUTPUTTER.errorPrintln("An empty period already exists.");
+			outputter.errorPrintln("An empty period already exists.");
 			return false;
 		}
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Added new work period.");
+		outputter.normPrintln(OutputLevel.DEFAULT, "Added new work period.");
 
 		if(config.isSelect()){
 			this.setSelected(period);
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Selected the new work period.");
+			outputter.normPrintln(OutputLevel.DEFAULT, "Selected the new work period.");
 		}
 
 		return true;
@@ -133,22 +143,21 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 	/**
 	 * Edits the selected WorkPeriod
-	 * @param manager The manager being dealt with
 	 * @param config The configuration to provide details for the change.
 	 * @return
 	 */
 	@Override
-	protected boolean edit(TimeManager manager, ActionConfig config) {
-		WorkPeriod period = this.getSelectedFromManager(manager);
+	protected boolean edit(ActionConfig config) {
+		WorkPeriod period = this.getSelectedFromManager();
 
 		if(period == null){
 			LOGGER.warn("No period selected. Cannot edit it.");
-			OUTPUTTER.errorPrintln("No period selected to edit.");
+			outputter.errorPrintln("No period selected to edit.");
 			return false;
 		}
 		if(config.getAttributeName() != null && config.getAttributes() != null){
 			LOGGER.warn("Cannot process both single attribute and set of attributes.");
-			OUTPUTTER.errorPrintln("Cannot process both single attribute and set of attributes.");
+			outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
 			return false;
 		}
 
@@ -175,7 +184,7 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 				newAtts = ActionDoer.parseAttributes(config.getAttributes());
 			}catch (IllegalArgumentException e){
 				LOGGER.warn("Attribute string given was invalid. Error: ", e);
-				OUTPUTTER.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				outputter.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
 				return false;
 			}
 			if(!period.getAttributes().equals(newAtts)) {
@@ -187,17 +196,17 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		}
 
 		if(modified){
-			OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "Period was modified.");
+			outputter.normPrintln(OutputLevel.VERBOSE, "Period was modified.");
 		} else {
-			OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "Period was not modified.");
+			outputter.normPrintln(OutputLevel.VERBOSE, "Period was not modified.");
 		}
 
 		return modified;
 	}
 
-	protected void deselectIfRemoved(TimeManager manager){
+	protected void deselectIfRemoved(){
 		LOGGER.info("Determining if selected period was removed.");
-		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		WorkPeriod selected = this.getSelectedFromManager();
 		if(selected != null && !manager.getWorkPeriods().contains(selected)){
 			this.setSelected(null);
 			LOGGER.info("Selected period was removed.");
@@ -207,35 +216,35 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 	}
 
 	@Override
-	protected boolean remove(TimeManager manager, ActionConfig config) {
+	protected boolean remove(ActionConfig config) {
 		if(manager.getWorkPeriods().isEmpty()){
 			LOGGER.warn("No period(s) to remove.");
-			OUTPUTTER.errorPrintln("No period(s) to remove.");
+			outputter.errorPrintln("No period(s) to remove.");
 			return false;
 		}
 		boolean result = false;
 		if(config.getIndex() != null){
 			result = this.removeOne(manager, config);
-			this.deselectIfRemoved(manager);
+			this.deselectIfRemoved();
 			return result;
 		}else if(config.getBefore() != null || config.getAfter() != null){
 			result = this.removeBeforeAfter(manager, config);
-			this.deselectIfRemoved(manager);
+			this.deselectIfRemoved();
 			return result;
 		}
 		LOGGER.warn("No period(s) specified to remove.");
-		OUTPUTTER.errorPrintln("No period(s) specified to remove.");
+		outputter.errorPrintln("No period(s) specified to remove.");
 		return false;
 	}
 
 	private boolean removeOne(TimeManager manager, ActionConfig config){
 		LOGGER.info("Removing one period.");
-		OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "Removing a single period.");
+		outputter.normPrintln(OutputLevel.VERBOSE, "Removing a single period.");
 
-		WorkPeriod period = this.getAtIndex(manager, config);
+		WorkPeriod period = this.getAtIndex(config);
 		if(period == null){
 			LOGGER.warn("No work period at this index.");
-			OUTPUTTER.errorPrintln("No work period at this index.");
+			outputter.errorPrintln("No work period at this index.");
 			return false;
 		}
 
@@ -245,14 +254,14 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 	private boolean removeBeforeAfter(TimeManager manager, ActionConfig config){
 		LOGGER.info("Removing periods before or after given datetimes.");
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Removing periods before or after given datetimes.");
+		outputter.normPrintln(OutputLevel.DEFAULT, "Removing periods before or after given datetimes.");
 
 		LocalDateTime before = null;
 		if(config.getBefore() != null){
 			before = TimeParser.parse(config.getBefore());
 			if(before == null){
 				LOGGER.warn("Could not parse a datetime from before datetime. Erring datetime: \"{}\"", config.getBefore());
-				OUTPUTTER.errorPrintln("No datetime could be parsed from before datetime.");
+				outputter.errorPrintln("No datetime could be parsed from before datetime.");
 				return false;
 			}
 		}
@@ -262,14 +271,14 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 			after = TimeParser.parse(config.getAfter());
 			if(after == null){
 				LOGGER.warn("Could not parse a datetime from after datetime. Erring datetime: \"{}\"", config.getAfter());
-				OUTPUTTER.errorPrintln("No datetime could be parsed from after datetime.");
+				outputter.errorPrintln("No datetime could be parsed from after datetime.");
 				return false;
 			}
 		}
 
 		if(before != null && after != null && after.isAfter(before)){
 			LOGGER.warn("The before datetime was after the after datetime.");
-			OUTPUTTER.errorPrintln("The before datetime was after the after datetime.");
+			outputter.errorPrintln("The before datetime was after the after datetime.");
 			return false;
 		}
 
@@ -293,38 +302,38 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 		int numRemoved = manager.getWorkPeriods().size() - periodsToKeep.size();
 
 		LOGGER.debug("Removed {} periods.", numRemoved);
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Removing " + numRemoved + " periods.");
+		outputter.normPrintln(OutputLevel.DEFAULT, "Removing " + numRemoved + " periods.");
 
 		return manager.getWorkPeriods().retainAll(periodsToKeep);
 	}
 
 	@Override
-	public void displayOne(TimeManager manager, WorkPeriod workPeriod) {
+	public void displayOne(WorkPeriod workPeriod) {
 
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Period:");
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tStart: " + TimeParser.toOutputString(workPeriod.getStart()));
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\t  End: " + TimeParser.toOutputString(workPeriod.getEnd()));
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\t# Spans: " + workPeriod.getNumTimespans());
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tComplete: " + (workPeriod.isUnCompleted() ? "No" : "Yes"));
+		outputter.normPrintln(OutputLevel.DEFAULT, "Period:");
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tStart: " + TimeParser.toOutputString(workPeriod.getStart()));
+		outputter.normPrintln(OutputLevel.DEFAULT, "\t  End: " + TimeParser.toOutputString(workPeriod.getEnd()));
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tTotal time: " + TimeParser.toDurationString(workPeriod.getTotalTime()));
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tSelected: " + (this.isSelected(workPeriod) ? "Yes" : "No"));
+		outputter.normPrintln(OutputLevel.DEFAULT, "\t# Spans: " + workPeriod.getNumTimespans());
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tComplete: " + (workPeriod.isUnCompleted() ? "No" : "Yes"));
 
 		for(Map.Entry<String, String> att : workPeriod.getAttributes().entrySet()){
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\t"+ att.getKey() + ": " + att.getValue());
+			outputter.normPrintln(OutputLevel.DEFAULT, "\t"+ att.getKey() + ": " + att.getValue());
 		}
 
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
 		for(Name curTask : workPeriod.getTaskNames()){
 			Duration duration = workPeriod.getTotalTimeWith(curTask);
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\t\t" + curTask + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
+			outputter.normPrintln(OutputLevel.DEFAULT, "\t\t" + curTask + " " + duration.toHoursPart() + ":" + duration.toMinutesPart());
 		}
 	}
 
 	@Override
-	public void view(TimeManager manager, ActionConfig config) {
+	public void view(ActionConfig config) {
 		LOGGER.info("Viewing periods.");
 		if(config.getIndex() != null){
-			WorkPeriod result = this.getAtIndex(manager, config);
+			WorkPeriod result = this.getAtIndex(config);
 			if(result == null){
 				LOGGER.warn("No result found at index.");
 				System.err.println("No result found at index.");
@@ -333,22 +342,22 @@ public class WorkPeriodDoer extends ActionDoer<WorkPeriod> {
 
 			if(config.isSelect()){
 				LOGGER.info("Selecting new Work Period.");
-				OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Selecting the following period:");
+				outputter.normPrintln(OutputLevel.DEFAULT, "Selecting the following period:");
 				this.setSelected(result);
 			}
 
-			this.displayOne(manager, result);
+			this.displayOne(result);
 
 			return;
 		}
 
-		List<WorkPeriod> results = this.search(manager, config);
+		List<WorkPeriod> results = this.search(config);
 
 		this.printView("Periods", results);
 	}
 
 	@Override
-	public List<WorkPeriod> search(TimeManager manager, ActionConfig config) {
+	public List<WorkPeriod> search(ActionConfig config) {
 		List<WorkPeriod> results = new LinkedList<>(manager.getWorkPeriods());
 
 		//remove results as necessary

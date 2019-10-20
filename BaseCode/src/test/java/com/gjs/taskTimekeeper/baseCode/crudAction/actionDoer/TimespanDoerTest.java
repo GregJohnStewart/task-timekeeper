@@ -6,7 +6,6 @@ import com.gjs.taskTimekeeper.baseCode.Timespan;
 import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,36 +25,30 @@ public class TimespanDoerTest extends ActionDoerTest {
 		super(KeeperObjectType.SPAN);
 	}
 
-	private TimeManager manager = getTestManager();
-
 	@Before
 	public void before(){
-		ActionDoer.resetDoers();
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		LOGGER.info("Finished setup of timespan doer test.");
+		this.selectPeriodAt(1);
 	}
-
-	@After
-	public void after(){
-		ActionDoer.resetDoers();
-	}
+//
+//	@After
+//	public void after(){
+//		ActionDoer.resetDoers();
+//	}
 
 	//<editor-fold desc="Adding Tests">
 	@Test
 	public void addNoneSelected() {
-		ActionDoer.resetDoers();
-		TimeManager orig = this.manager.clone();
+		this.manager.getCrudOperator().getWorkPeriodDoer().setSelected(null);
 		assertFalse(
-			ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setName(((Task)(getTestManager().getTasks().toArray()[0])).getName().toString()))
+			manager.doCrudAction(this.getActionConfig(Action.ADD).setName(((Task)(getTestManager().getTasks().toArray()[0])).getName().toString()))
 		);
 		assertEquals(orig, this.manager);
 	}
 
 	@Test
 	public void addNoTask() {
-		TimeManager orig = this.manager.clone();
 		assertFalse(
-			ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.ADD))
+			manager.doCrudAction(this.getActionConfig(Action.ADD))
 		);
 		assertEquals(orig, this.manager);
 	}
@@ -64,19 +57,16 @@ public class TimespanDoerTest extends ActionDoerTest {
 	public void addBadTask() {
 		TimeManager orig = this.manager.clone();
 		assertFalse(
-			ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.ADD).setName("bad task name"))
+			manager.doCrudAction(this.getActionConfig(Action.ADD).setName("bad task name"))
 		);
 		assertEquals(orig, this.manager);
 	}
 
 	@Test
 	public void addBadStart() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = this.manager.clone();
+		this.createNewPeriodAndSelect();
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(((Task)(getTestManager().getTasks().toArray()[0])).getName().toString())
 					.setStart("bad start datetime")
@@ -87,12 +77,9 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addBadEnd() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = this.manager.clone();
+		this.createNewPeriodAndSelect();
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(((Task)(getTestManager().getTasks().toArray()[0])).getName().toString())
 					.setEnd("bad end datetime")
@@ -103,12 +90,9 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addStartAfterEnd() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = this.manager.clone();
+		this.createNewPeriodAndSelect();
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(((Task)(getTestManager().getTasks().toArray()[0])).getName().toString())
 					.setStart(TimeParser.toOutputString(nowPlusFifteen))
@@ -120,36 +104,30 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addNoDatetimes() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = manager.clone();
+		this.createNewPeriodAndSelect();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(task.getName().toString())
 			)
 		);
 		assertNotEquals(orig, manager);
-		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(1, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 
-		assertEquals(task.getName(), ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTaskName());
+		assertEquals(task.getName(), manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first().getTaskName());
 //		assertSame(task, ActionDoer.getSelectedWorkPeriod().getTimespans().first().getTask());
 	}
 
 	@Test
 	public void addWithDatetimes() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = manager.clone();
+		this.createNewPeriodAndSelect();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(nowPlusFive));
 		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(nowPlusTen));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(task.getName().toString())
 					.setStart(TimeParser.toOutputString(start))
@@ -157,9 +135,9 @@ public class TimespanDoerTest extends ActionDoerTest {
 			)
 		);
 		assertNotEquals(orig, manager);
-		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(1, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 
-		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span =  manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
@@ -169,24 +147,21 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addWithStartDatetime() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = manager.clone();
+		this.createNewPeriodAndSelect();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(nowPlusFive));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(task.getName().toString())
 					.setStart(TimeParser.toOutputString(start))
 			)
 		);
 		assertNotEquals(orig, manager);
-		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(1, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 
-		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span =  manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
@@ -196,24 +171,21 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addWithEndDatetime() {
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
-		ActionDoer.doObjAction(this.manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
-		TimeManager orig = manager.clone();
+		this.createNewPeriodAndSelect();
 		Task task = (Task)getTestManager().getTasks().toArray()[0];
 		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(nowPlusTen));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.ADD)
 					.setName(task.getName().toString())
 					.setEnd(TimeParser.toOutputString(end))
 			)
 		);
 		assertNotEquals(orig, manager);
-		assertEquals(1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(1, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 
-		Timespan span =  ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span =  manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(task.getName(), span.getTaskName());
 //		assertSame(task, span.getTask());
@@ -225,10 +197,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 	//<editor-fold desc="Edit Tests">
 	@Test
 	public void editNoInput(){
-		TimeManager orig = this.manager.clone();
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 			)
@@ -238,11 +208,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editBadIndex(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(0)
 					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
@@ -254,11 +221,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editMalformedStart(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart("bad datetime")
@@ -270,11 +234,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editBadStart(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(6)))
@@ -284,8 +245,7 @@ public class TimespanDoerTest extends ActionDoerTest {
 		assertEquals(orig, this.manager);
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusWeeks(50)))
@@ -296,11 +256,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editMalformedEnd(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(5)))
@@ -312,11 +269,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editBadEnd(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setEnd(TimeParser.toOutputString(nowPlusHourFifteen.minusWeeks(50)))
@@ -327,11 +281,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void ediBadStartEnd(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(nowPlusHourFifteen.plusMinutes(6)))
@@ -343,11 +294,8 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void ediBadTask(){
-		TimeManager orig = this.manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setName("bad task name")
@@ -358,13 +306,10 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editTask(){
-		TimeManager orig = this.manager.clone();
-
-		Task newTask = (Task) this.manager.getTaskByName(TASK_ONE_NAME);
+		Task newTask = this.manager.getTaskByName(TASK_ONE_NAME);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setName(newTask.getName().toString())
@@ -372,21 +317,18 @@ public class TimespanDoerTest extends ActionDoerTest {
 		);
 		assertNotEquals(orig, this.manager);
 
-		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span = manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 
 		assertEquals(newTask.getName(), span.getTaskName());
 	}
 
 	@Test
 	public void editStart(){
-		TimeManager orig = this.manager.clone();
-
-		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span = manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(span.getStartTime().minusWeeks(1)));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(start))
@@ -399,14 +341,14 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editEnd(){
-		TimeManager orig = this.manager.clone();
-
-		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span = manager.getCrudOperator()
+			                .getSelectedWorkPeriod()
+			                .getTimespans()
+			                .first();
 		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(span.getEndTime().plusWeeks(1)));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setEnd(TimeParser.toOutputString(end))
@@ -419,15 +361,12 @@ public class TimespanDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editStartEnd(){
-		TimeManager orig = this.manager.clone();
-
-		Timespan span = ActionDoer.getSelectedWorkPeriod().getTimespans().first();
+		Timespan span = manager.getCrudOperator().getSelectedWorkPeriod().getTimespans().first();
 		LocalDateTime end = TimeParser.parse(TimeParser.toOutputString(span.getEndTime().plusMinutes(1)));
 		LocalDateTime start = TimeParser.parse(TimeParser.toOutputString(span.getStartTime().minusMinutes(1)));
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				this.manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT)
 					.setIndex(1)
 					.setStart(TimeParser.toOutputString(start))
@@ -444,40 +383,37 @@ public class TimespanDoerTest extends ActionDoerTest {
 	//<editor-fold desc="Remove Tests">
 	@Test
 	public void removeBadIndex() {
-		TimeManager orig = this.manager.clone();
-		int prevCount = ActionDoer.getSelectedWorkPeriod().getNumTimespans();
+		int prevCount = manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans();
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE)
 					.setIndex(0)
 			)
 		);
 		assertEquals(orig, this.manager);
 
-		assertEquals(prevCount, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(prevCount, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 	}
 
 	@Test
 	public void remove() {
-		TimeManager manager = getTestManager();
-		int prevCount = ActionDoer.getSelectedWorkPeriod().getNumTimespans();
+		int prevCount = manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans();
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE)
 					.setIndex(1)
 			)
 		);
 
-		assertEquals(prevCount - 1, ActionDoer.getSelectedWorkPeriod().getNumTimespans());
+		assertEquals(prevCount - 1, manager.getCrudOperator().getSelectedWorkPeriod().getNumTimespans());
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="View/ Search Tests">
+	//TODO:: improve these
 	@Test
 	public void view() {
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
+		manager.doCrudAction(this.getActionConfig(Action.VIEW));
 	}
 	//</editor-fold>
 }

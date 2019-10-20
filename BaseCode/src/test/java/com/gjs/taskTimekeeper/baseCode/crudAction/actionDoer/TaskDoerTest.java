@@ -29,13 +29,11 @@ public class TaskDoerTest extends ActionDoerTest {
 	public void addWithJustName(){
 		ActionConfig config = this.getActionConfig(Action.ADD);
 		String newTaskName = "New Test Task";
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
 		config.setName(newTaskName);
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		Task newTask = manager.getTaskByName(newTaskName);
 
@@ -48,15 +46,13 @@ public class TaskDoerTest extends ActionDoerTest {
 		String newTaskName = "New Test Task";
 		String newTaskAttKey = "keyyy";
 		String newTaskAttVal = "valueable info";
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
 		config.setName(newTaskName);
 		config.setAttributeName(newTaskAttKey);
 		config.setAttributeVal(newTaskAttVal);
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		Task newTask = manager.getTaskByName(newTaskName);
 
@@ -70,14 +66,11 @@ public class TaskDoerTest extends ActionDoerTest {
 		ActionConfig config = this.getActionConfig(Action.ADD);
 		String newTaskName = "New Test Task";
 
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
-
 		config.setName(newTaskName);
 		config.setAttributes("attOne,valOne;attTwo,valTwo;");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		Task newTask = manager.getTaskByName(newTaskName);
 
@@ -89,25 +82,21 @@ public class TaskDoerTest extends ActionDoerTest {
 	@Test
 	public void cantAddWithoutName(){
 		ActionConfig config = this.getActionConfig(Action.ADD);
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void cantAddDuplicateName(){
 		ActionConfig config = this.getActionConfig(Action.ADD);
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
 		config.setName(
 			manager.getTasks().iterator().next().getName().toString()
 		);
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 	//</editor-fold>
 
@@ -120,58 +109,50 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void failsEditWithNoNameIndex(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 		setupEditRequest(config);
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void failsEditWithBothNameIndex(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 		setupEditRequest(config);
 
 		config.setName(TASK_ONE_NAME);
 		config.setIndex(1);
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void failsEditWithBadName(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 		setupEditRequest(config);
 
 		config.setName("some bad name");
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void failsEditWithBadIndex(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 		setupEditRequest(config);
 
 		config.setIndex(manager.getTasks().size() + 1);
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 
 		config.setIndex(0);
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
@@ -181,8 +162,6 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editName(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 
 		Task task = manager.getTaskByName(TASK_ONE_NAME);
@@ -190,16 +169,14 @@ public class TaskDoerTest extends ActionDoerTest {
 		config.setName(TASK_ONE_NAME);
 		config.setNewName("New task one name");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		assertEquals("New task one name", task.getName().getName());
 	}
 
 	@Test
 	public void editAttributes(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 
 		Task task = manager.getTaskByName(TASK_ONE_NAME);
@@ -207,8 +184,8 @@ public class TaskDoerTest extends ActionDoerTest {
 		config.setName(TASK_ONE_NAME);
 		config.setAttributes("attOne,valOne;attTwo,valTwo");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		assertEquals("valOne", task.getAttributes().get("attOne"));
 		assertEquals("valTwo", task.getAttributes().get("attTwo"));
@@ -216,8 +193,6 @@ public class TaskDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editAttribute(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 
 		Task task = manager.getTaskByName(TASK_ONE_NAME);
@@ -226,16 +201,14 @@ public class TaskDoerTest extends ActionDoerTest {
 		config.setAttributeName("attOne");
 		config.setAttributeVal("new attribute value");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		assertEquals("new attribute value", task.getAttributes().get("attOne"));
 	}
 
 	@Test
 	public void editAddAttribute(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 
 		Task task = manager.getTaskByName(TASK_ONE_NAME);
@@ -244,16 +217,14 @@ public class TaskDoerTest extends ActionDoerTest {
 		config.setAttributeName("new attribute");
 		config.setAttributeVal("new attribute value");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		assertEquals("new attribute value", task.getAttributes().get("new attribute"));
 	}
 
 	@Test
 	public void editRemoveAttribute(){
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 		ActionConfig config = getActionConfig(Action.EDIT);
 
 		Task task = manager.getTaskByName(TASK_ONE_NAME);
@@ -261,16 +232,16 @@ public class TaskDoerTest extends ActionDoerTest {
 		config.setName(TASK_ONE_NAME);
 		config.setAttributeName("attOne");
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		assertFalse(task.getAttributes().containsKey("attOne"));
 
 		//don't die if try to remove attribute that doesn't exist
-		managerOrig = manager.clone();
+		this.updateOrig();
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 
 		assertFalse(task.getAttributes().containsKey("attOne"));
 	}
@@ -280,63 +251,58 @@ public class TaskDoerTest extends ActionDoerTest {
 	@Test
 	public void dontRemoveWithoutSpecifyingTask() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void dontRemoveWithWrongTaskName() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
-		TimeManager manager = getTestManager();
-		TimeManager managerOrig = manager.clone();
 
 		//don't remove anything when wrong task name
 		config.setName("Wrong task name");
-		assertFalse(ActionDoer.doObjAction(manager, config));
-		assertEquals(managerOrig, manager);
+		assertFalse(manager.doCrudAction(config));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void dontRemoveWithSpanAssociated() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
 		String newTaskName = "New Test Task";
-		TimeManager manager = getTestManager();
 		Task testTask = new Task(newTaskName);
 		manager.addTask(testTask);
-		TimeManager managerOrig = manager.clone();
 
 		//dont remove task that has a span associated with it
 		manager.addTimespan(new Timespan(testTask));
 		config.setName(newTaskName);
+		this.updateOrig();
 
 		assertTrue(manager.getTasks().contains(testTask));
-		assertFalse(ActionDoer.doObjAction(manager, config));
+		assertFalse(manager.doCrudAction(config));
 		assertTrue(manager.getTasks().contains(testTask));
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void remove() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
 		Name newTaskName = new Name("New Test Task");
-		TimeManager manager = getTestManager();
 		Task testTask = new Task(newTaskName);
 		manager.addTask(testTask);
-		TimeManager managerOrig = manager.clone();
+		this.updateOrig();
 
 		//remove
 		config.setName(newTaskName.getName());
-		assertTrue(ActionDoer.doObjAction(manager, config));
-		assertNotEquals(managerOrig, manager);
+		assertTrue(manager.doCrudAction(config));
+		assertNotEquals(orig, manager);
 
 		//test removal with index
 		manager = getTestManager();
 		manager.addTask(testTask);
 		config = this.getActionConfig(Action.REMOVE);
 
-		List<Task> tasks = new TaskDoer().search(managerOrig, this.getActionConfig(Action.VIEW));
+		List<Task> tasks = orig.getCrudOperator().getTaskDoer().search(this.getActionConfig(Action.VIEW));
 		for(Task task : tasks){
 			if(task.getName().equals(newTaskName)){
 				config.setIndex(tasks.indexOf(task) + 1);
@@ -344,7 +310,7 @@ public class TaskDoerTest extends ActionDoerTest {
 			}
 		}
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertTrue(manager.doCrudAction(config));
 		assertEquals(2, manager.getTasks().size());
 	}
 
@@ -352,17 +318,16 @@ public class TaskDoerTest extends ActionDoerTest {
 	public void removeWithIndex() {
 		ActionConfig config = this.getActionConfig(Action.REMOVE);
 		Name newTaskName = new Name("New Test Task");
-		TimeManager manager = getTestManager();
 		Task testTask = new Task(newTaskName);
 		manager.addTask(testTask);
-		TimeManager managerOrig = manager.clone();
+		this.updateOrig();
 
 		//test removal with index
 		manager = getTestManager();
 		manager.addTask(testTask);
 		config = this.getActionConfig(Action.REMOVE);
 
-		List<Task> tasks = new TaskDoer().search(managerOrig, this.getActionConfig(Action.VIEW));
+		List<Task> tasks = orig.getCrudOperator().getTaskDoer().search(this.getActionConfig(Action.VIEW));
 		for(Task task : tasks){
 			if(task.getName().equals(newTaskName)){
 				config.setIndex(tasks.indexOf(task) + 1);
@@ -370,7 +335,7 @@ public class TaskDoerTest extends ActionDoerTest {
 			}
 		}
 
-		assertTrue(ActionDoer.doObjAction(manager, config));
+		assertTrue(manager.doCrudAction(config));
 		assertEquals(2, manager.getTasks().size());
 	}
 	//</editor-fold>
@@ -379,9 +344,9 @@ public class TaskDoerTest extends ActionDoerTest {
 	@Test
 	public void view() {
 		//This prints out to console; meat of this test in search().
-		//TODO:: hijack Sytem.out and see what prints?
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setName("Test Task"));
+		//TODO:: hijack outputter and see what prints?
+		manager.doCrudAction(this.getActionConfig(Action.VIEW));
+		manager.doCrudAction(this.getActionConfig(Action.VIEW).setName("Test Task"));
 	}
 
 	@Test
@@ -389,7 +354,7 @@ public class TaskDoerTest extends ActionDoerTest {
 		TimeManager manager = getTestManager();
 		ActionConfig config = this.getActionConfig(Action.VIEW);
 
-		Collection<Task> results = new TaskDoer().search(manager, config);
+		Collection<Task> results = manager.getCrudOperator().getTaskDoer().search(config);
 
 		assertEquals(manager.getTasks().size(), results.size());
 

@@ -1,12 +1,15 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class SpecialCommandTest extends ActionDoerTest {
 	public SpecialCommandTest() {
@@ -16,20 +19,15 @@ public class SpecialCommandTest extends ActionDoerTest {
 	//<editor-fold desc="Misc tests">
 	@Test
 	public void noValidCommand(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("")
 			)
 		);
 		assertEquals(orig, manager);
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("some bad special command")
 			)
 		);
@@ -39,43 +37,31 @@ public class SpecialCommandTest extends ActionDoerTest {
 	//<editor-fold desc="completeSpans tests">
 	@Test
 	public void completespanNoSelectedPeriod(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
-				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			manager.doCrudAction(
+				new ActionConfig().setSpecialAction("completespans")
 			)
 		);
 		assertEquals(orig, manager);
 	}
 	@Test
 	public void completespanCompletedSelectedPeriod(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(2));
+		this.selectPeriodAt(2);
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
-				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			manager.doCrudAction(
+				new ActionConfig().setSpecialAction("completespans")
 			)
 		);
 		assertEquals(orig, manager);
 	}
 	@Test
 	public void completeSpans(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+		this.selectPeriodAt(1);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
-				new ActionConfig().setSpecialAction("completespans").setName(TASK_ONE_NAME)
+			manager.doCrudAction(
+				new ActionConfig().setSpecialAction("completespans")
 			)
 		);
 		assertNotEquals(orig, manager);
@@ -85,12 +71,8 @@ public class SpecialCommandTest extends ActionDoerTest {
 	//<editor-fold desc="newspan tests">
 	@Test
 	public void newspanNoSelectedPeriod(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("newspan").setName(TASK_ONE_NAME)
 			)
 		);
@@ -98,29 +80,22 @@ public class SpecialCommandTest extends ActionDoerTest {
 	}
 	@Test
 	public void newspanNoTaskName(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+		this.selectPeriodAt(1);
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("newspan")
 			)
 		);
 		assertEquals(orig, manager);
 	}
+
 	@Test
 	public void newspan(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+		this.selectPeriodAt(1);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("newspan").setName(TASK_ONE_NAME)
 			)
 		);
@@ -130,54 +105,45 @@ public class SpecialCommandTest extends ActionDoerTest {
 	//</editor-fold>
 	//<editor-fold desc="selectnewest tests">
 	@Test
-	public void selectnewestNoPeriods(){
-		TimeManager manager = new TimeManager();
-		TimeManager orig = manager.clone();
+	public void selectNewestNoPeriods(){
+		this.manager = new TimeManager();
+		this.updateOrig();
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("selectnewest")
 			)
 		);
 		assertEquals(orig, manager);
 
-		assertNull(ActionDoer.getSelectedWorkPeriod());
+		assertNull(manager.getCrudOperator().getSelectedWorkPeriod());
 	}
 	@Test
 	public void selectnewest(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(2));
+		this.selectPeriodAt(2);
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("selectnewest")
 			)
 		);
 		assertEquals(orig, manager);
-		assertNotNull(ActionDoer.getSelectedWorkPeriod());
+		assertNotNull(manager.getCrudOperator().getSelectedWorkPeriod());
 		//TODO:: verify
 	}
 	//</editor-fold>
 	//<editor-fold desc="newPeriod tests">
 	@Test
 	public void newPeriod(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setObjectOperatingOn(KeeperObjectType.PERIOD).setSelect(true).setIndex(1));
+		this.selectPeriodAt(1);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig().setSpecialAction("newPeriod")
 			)
 		);
 		assertNotEquals(orig, manager);
-		assertNotNull(ActionDoer.getSelectedWorkPeriod());
+		assertNotNull(manager.getCrudOperator().getSelectedWorkPeriod());
 		//TODO:: verify
 	}
 	//</editor-fold>

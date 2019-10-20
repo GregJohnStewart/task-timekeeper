@@ -7,13 +7,10 @@ import com.gjs.taskTimekeeper.baseCode.Timespan;
 import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.ActionDoer;
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.TaskDoer;
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.TimespanDoer;
-import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.WorkPeriodDoer;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
@@ -63,7 +60,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -245,7 +241,7 @@ public class MainGui {
 				config.setAttributes(atts);
 			}
 
-			boolean addResult = ActionDoer.doObjAction(manager, config);
+			boolean addResult = manager.doCrudAction(config);
 			LOGGER.debug("Result of trying to add task: {}", addResult);
 			handleResult(addResult);
 		}
@@ -261,7 +257,7 @@ public class MainGui {
 			LOGGER.info("Viewing task at index {}", this.getIndex());
 			resetStreams();
 
-			ActionDoer.doObjAction(manager, new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()));
+			manager.doCrudAction(new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()));
 
 			if (errorPrintStream.size() != 0) {
 				LOGGER.warn("Some kind of error happened in trying to view the task at index {}", this.getIndex());
@@ -287,8 +283,8 @@ public class MainGui {
 			LOGGER.info("Editing task at index {}", this.getIndex());
 			resetStreams();
 
-			Task task = (Task) ActionDoer.getActionDoer(KeeperObjectType.TASK)
-				                   .search(manager, new ActionConfig())
+			Task task = (Task) manager.getCrudOperator().getTaskDoer()
+				                   .search()
 				                   .get(this.getIndex() - 1);
 
 			TaskEditHelper helper = new TaskEditHelper();
@@ -313,7 +309,7 @@ public class MainGui {
 					taskChangeConfig.setAttributes(helper.getAttributes());
 				}
 
-				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+				boolean result = manager.doCrudAction(taskChangeConfig);
 
 				LOGGER.debug("Result of trying to edit task: {}", result);
 				handleResult(result);
@@ -340,8 +336,7 @@ public class MainGui {
 
 			resetStreams();
 
-			boolean result = ActionDoer.doObjAction(
-				manager,
+			boolean result = manager.doCrudAction(
 				new ActionConfig(KeeperObjectType.TASK, REMOVE).setIndex(this.getIndex())
 			);
 			LOGGER.debug("Result of trying to remove task: {}", result);
@@ -361,7 +356,7 @@ public class MainGui {
 				config.setSelect(true);
 			}
 
-			boolean result = ActionDoer.doObjAction(manager, config);
+			boolean result = manager.doCrudAction(config);
 			LOGGER.debug("Result of trying to add period: {}", result);
 			handleResult(result);
 		}
@@ -377,8 +372,7 @@ public class MainGui {
 			LOGGER.info("Selecting period at index {}", this.getIndex());
 			resetStreams();
 
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				new ActionConfig(KeeperObjectType.PERIOD, VIEW).setSelect(true)
 					.setIndex(this.getIndex())
 			);
@@ -408,8 +402,7 @@ public class MainGui {
 
 			resetStreams();
 
-			boolean result = ActionDoer.doObjAction(
-				manager,
+			boolean result = manager.doCrudAction(
 				new ActionConfig(KeeperObjectType.PERIOD, REMOVE).setIndex(this.getIndex())
 			);
 			LOGGER.debug("Result of trying to remove period: {}", result);
@@ -440,7 +433,7 @@ public class MainGui {
 				taskChangeConfig.setStart(helper.getStartField());
 				taskChangeConfig.setEnd(helper.getEndField());
 
-				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+				boolean result = manager.doCrudAction(taskChangeConfig);
 
 				LOGGER.debug("Result of trying to add span: {}", result);
 				handleResult(result);
@@ -460,8 +453,8 @@ public class MainGui {
 			LOGGER.info("Editing span from selected period at index {}", this.getIndex());
 			resetStreams();
 
-			Timespan span = (Timespan) ActionDoer.getActionDoer(KeeperObjectType.SPAN)
-				                           .search(manager, new ActionConfig())
+			Timespan span = (Timespan) manager.getCrudOperator().getTimespanDoer()
+				                           .search()
 				                           .get(this.getIndex() - 1);
 
 			SpanEditHelper helper = new SpanEditHelper();
@@ -481,7 +474,7 @@ public class MainGui {
 				taskChangeConfig.setStart(helper.getStartField());
 				taskChangeConfig.setEnd(helper.getEndField());
 
-				boolean result = ActionDoer.doObjAction(manager, taskChangeConfig);
+				boolean result = manager.doCrudAction(taskChangeConfig);
 
 				LOGGER.debug("Result of trying to edit span: {}", result);
 				handleResult(result);
@@ -507,8 +500,7 @@ public class MainGui {
 			}
 
 			resetStreams();
-			boolean result = ActionDoer.doObjAction(
-				manager,
+			boolean result = manager.doCrudAction(
 				new ActionConfig(KeeperObjectType.SPAN, REMOVE).setIndex(this.getIndex())
 			);
 			LOGGER.debug("Result of trying to remove span: {}", result);
@@ -526,7 +518,7 @@ public class MainGui {
 
 			int response = JOptionPane.showInternalConfirmDialog(
 				mainPanel,
-				helper.getForm(ActionDoer.getSelectedWorkPeriod()
+				helper.getForm(manager.getCrudOperator().getSelectedWorkPeriod()
 					               .getAttributes()),
 				"Selected Period attribute Edit",
 				JOptionPane.OK_CANCEL_OPTION,
@@ -543,7 +535,7 @@ public class MainGui {
 
 				LOGGER.debug("New attributes of selected period: {}", attributeChangeConfig.getAttributes());
 
-				boolean result = ActionDoer.doObjAction(manager, attributeChangeConfig);
+				boolean result = manager.doCrudAction(attributeChangeConfig);
 
 				LOGGER.debug("Result of trying to edit selected period attributes: {}", result);
 				handleResult(result);
@@ -566,9 +558,6 @@ public class MainGui {
 
 	//<editor-fold desc="constructor and public methods">
 	{
-		ActionDoer.getOutputter().setMessageOutputStream(new PrintStream(this.printStream));
-		ActionDoer.getOutputter().setMessageErrorStream(new PrintStream(this.errorPrintStream));
-
 		this.saveAction.putValue(Action.ACCELERATOR_KEY,
 			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
 		this.reloadAction.putValue(Action.ACCELERATOR_KEY,
@@ -792,8 +781,8 @@ public class MainGui {
 		this.manager = ManagerIO.loadTimeManager();
 		this.changed = false;
 
-		ActionDoer.resetDoers();
-		ActionDoer.setNewestPeriodAsSelectedQuiet(this.manager);
+		this.manager.getCrudOperator().setOutputter(new Outputter(this.printStream, this.errorPrintStream));
+		this.manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
 		LOGGER.info("Done reloading data, updating UI.");
 		this.updateUiData();
 	}
@@ -830,7 +819,7 @@ public class MainGui {
 		//<editor-fold desc="Selected Period Tab">
 		LOGGER.info("Populating selected period tab.");
 		{
-			WorkPeriod selectedPeriod = ActionDoer.getSelectedWorkPeriod();
+			WorkPeriod selectedPeriod = this.manager.getCrudOperator().getSelectedWorkPeriod();
 
 			if (selectedPeriod == null) {
 				if (this.mainTabPane.getSelectedIndex() == 0) {
@@ -892,7 +881,7 @@ public class MainGui {
 					List<List<Object>> spanDetails = new ArrayList<>(selectedPeriod.getNumTimespans());
 
 					int count = 1;
-					for (Timespan span : ((TimespanDoer) ActionDoer.getActionDoer(KeeperObjectType.SPAN)).search(manager, new ActionConfig())) {
+					for (Timespan span : manager.getCrudOperator().getTimespanDoer().search()) {
 						List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
 
 						JButton edit = new JButton("E");
@@ -933,7 +922,7 @@ public class MainGui {
 		//<editor-fold desc="Periods tab">
 		LOGGER.info("Populating periods tab.");
 		{
-			List<WorkPeriod> periods = new WorkPeriodDoer().search(this.manager, new ActionConfig());
+			List<WorkPeriod> periods = this.manager.getCrudOperator().getWorkPeriodDoer().search();
 			List<List<Object>> periodData = new ArrayList<>(periods.size());
 			Map<Integer, Color> rowColors = new HashMap<>();
 
@@ -947,8 +936,8 @@ public class MainGui {
 				JButton delete = new JButton("D");
 				delete.setAction(new DeletePeriodAction(curInd));
 
-				if (ActionDoer.getSelectedWorkPeriod() != null && ActionDoer.getSelectedWorkPeriod()
-					                                                  .equals(period)) {
+				if (this.manager.getCrudOperator().getSelectedWorkPeriod() != null &&
+					    this.manager.getCrudOperator().getSelectedWorkPeriod().equals(period)) {
 					rowColors.put(curInd, Color.CYAN);
 					select.setEnabled(false);
 				}
@@ -982,7 +971,7 @@ public class MainGui {
 		//<editor-fold desc="Tasks tab">
 		LOGGER.info("Populating tasks tab.");
 		{
-			List<Task> tasks = new TaskDoer().search(this.manager, new ActionConfig());
+			List<Task> tasks = manager.getCrudOperator().getTaskDoer().search();
 			List<List<Object>> periodData = new ArrayList<>(tasks.size());
 
 			int curInd = 1;

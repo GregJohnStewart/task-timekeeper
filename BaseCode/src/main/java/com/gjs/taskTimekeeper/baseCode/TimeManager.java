@@ -1,6 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.CrudOperator;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 
 import java.util.Collection;
@@ -24,11 +26,15 @@ public class TimeManager {
 	 * Work periods held by this object.
 	 */
 	private SortedSet<WorkPeriod> workPeriods = new TreeSet<>();
+	/** The object to handle CRUD operations */
+	@JsonIgnore
+	private final CrudOperator crudOperator;
 
 	/**
 	 * Default constructor
 	 */
 	public TimeManager() {
+		this.crudOperator = new CrudOperator(this);
 	}
 
 	/**
@@ -52,6 +58,14 @@ public class TimeManager {
 	public TimeManager(SortedSet<Task> tasks, SortedSet<WorkPeriod> workPeriods) throws NullPointerException {
 		this(tasks);
 		this.setWorkPeriods(workPeriods);
+	}
+
+	public CrudOperator getCrudOperator(){
+		return this.crudOperator;
+	}
+
+	public boolean doCrudAction(ActionConfig config){
+		return this.getCrudOperator().doObjAction(config);
 	}
 
 	/**

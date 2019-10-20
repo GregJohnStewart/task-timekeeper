@@ -7,7 +7,7 @@ import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
-import org.junit.After;
+import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import org.junit.Before;
 
 import java.time.LocalDateTime;
@@ -81,9 +81,29 @@ public abstract class ActionDoerTest {
 		return config;
 	}
 
+	protected TimeManager manager = getTestManager();
+	protected TimeManager orig = manager.clone();
+
+	protected void updateOrig(TimeManager manager){
+		this.orig = manager.clone();
+	}
+
+	protected void updateOrig(){
+		this.updateOrig(this.manager);
+	}
+
+	protected void createNewPeriodAndSelect(){
+		manager.doCrudAction(this.getActionConfig(Action.ADD).setObjectOperatingOn(KeeperObjectType.PERIOD));
+		this.selectPeriodAt(1);
+		this.updateOrig();
+	}
+
+	protected void selectPeriodAt(int index){
+		manager.doCrudAction(new ActionConfig(KeeperObjectType.PERIOD, Action.VIEW).setSelect(true).setIndex(index));
+	}
+
 	@Before
-	@After
-	public void resetDoers(){
-		ActionDoer.resetDoers();
+	public void setOutputterVerbosity(){
+		manager.getCrudOperator().setOutputLevelThreshold(OutputLevel.VERBOSE);
 	}
 }

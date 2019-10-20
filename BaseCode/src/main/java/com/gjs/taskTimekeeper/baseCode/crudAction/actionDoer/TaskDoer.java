@@ -5,6 +5,7 @@ import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,32 +19,40 @@ import java.util.stream.Collectors;
 /**
  * The action doer to handle managing Tasks.
  */
-public class TaskDoer extends ActionDoer<Task> {
+public class TaskDoer extends CrudDoer<Task> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
 
+	public TaskDoer(TimeManager manager){
+		super(manager);
+	}
+
+	public TaskDoer(TimeManager manager, Outputter outputter){
+		super(manager, outputter);
+	}
+
 	@Override
-	protected boolean add(TimeManager manager, ActionConfig config) {
+	protected boolean add(ActionConfig config) {
 		//ensure we have a name for the new task
 		if(config.getName() == null){
 			LOGGER.warn("No task name given for the new task. Not adding new task.");
-			OUTPUTTER.errorPrintln("ERROR:: No task name given for the new task.");
+			outputter.errorPrintln("ERROR:: No task name given for the new task.");
 			return false;
 		}
 		//check we aren't duplicating names
 		try {
 			if (manager.getTaskByName(config.getName()) != null) {
 				LOGGER.warn("Duplicate task name given. Not adding new task.");
-				OUTPUTTER.errorPrintln("ERROR:: Duplicate task name given.");
+				outputter.errorPrintln("ERROR:: Duplicate task name given.");
 				return false;
 			}
 		}catch (Exception e){
 			LOGGER.warn("Invalid task name given. Not adding new task.");
-			OUTPUTTER.errorPrintln("Invalid task name given. Not adding new task.");
+			outputter.errorPrintln("Invalid task name given. Not adding new task.");
 			return false;
 		}
 		if(config.getAttributeName() != null && config.getAttributes() != null){
 			LOGGER.warn("Cannot process both single attribute and set of attributes.");
-			OUTPUTTER.errorPrintln("Cannot process both single attribute and set of attributes.");
+			outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
 			return false;
 		}
 
@@ -60,56 +69,56 @@ public class TaskDoer extends ActionDoer<Task> {
 				newAtts = ActionDoer.parseAttributes(config.getAttributes());
 			}catch (IllegalArgumentException e){
 				LOGGER.warn("Attribute string given was invalid. Error: ", e);
-				OUTPUTTER.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				outputter.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
 				return false;
 			}
 			newTask.setAttributes(newAtts);
 		}
 
-		OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "New task details:");
-		OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "\tName: " + newTask.getName());
+		outputter.normPrintln(OutputLevel.VERBOSE, "New task details:");
+		outputter.normPrintln(OutputLevel.VERBOSE, "\tName: " + newTask.getName());
 		if(!newTask.getAttributes().isEmpty()){
-			OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "\t(custom attribute) " + config.getAttributeName() + ": " + config.getAttributeVal());
+			outputter.normPrintln(OutputLevel.VERBOSE, "\t(custom attribute) " + config.getAttributeName() + ": " + config.getAttributeVal());
 		}
 
 		manager.addTask(newTask);
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "New task added.");
+		outputter.normPrintln(OutputLevel.DEFAULT, "New task added.");
 		return true;
 	}
 
 	@Override
-	protected boolean edit(TimeManager manager, ActionConfig config) {
+	protected boolean edit(ActionConfig config) {
 		Task editingTask = null;
 		if(config.getName() != null && config.getIndex() != null){
 			LOGGER.warn("Error: Both name and search index were used to specify which task to edit.");
-			OUTPUTTER.errorPrintln("ERROR:: Cannot give both name and index to specify which task to edit.");
+			outputter.errorPrintln("ERROR:: Cannot give both name and index to specify which task to edit.");
 			return false;
 		}else if(config.getName() != null){
 			editingTask = manager.getTaskByName(config.getName());
 		}else if(config.getIndex() != null){
 			int index = config.getIndex() - 1;
-			List<Task> searchResults = this.search(manager, config);
+			List<Task> searchResults = this.search(config);
 			if(index >= 0 && index < searchResults.size()) {
-				editingTask = this.search(manager, config).get(index);
-				OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Editing task: " + editingTask.getName());
+				editingTask = this.search(config).get(index);
+				outputter.normPrintln(OutputLevel.DEFAULT, "Editing task: " + editingTask.getName());
 			}else{
 				LOGGER.warn("Index given was out of bounds for referencing tasks.");
-				OUTPUTTER.errorPrintln("ERROR: Index given was out of bounds.");
+				outputter.errorPrintln("ERROR: Index given was out of bounds.");
 				return false;
 			}
 		}else{
 			LOGGER.warn("No task name or index entered to look up task to change.");
-			OUTPUTTER.errorPrintln("ERROR:: Nothing given to specify which task to edit.");
+			outputter.errorPrintln("ERROR:: Nothing given to specify which task to edit.");
 			return false;
 		}
 		if(editingTask == null){
 			LOGGER.warn("No task found with name or index given.");
-			OUTPUTTER.errorPrintln("No task found to edit.");
+			outputter.errorPrintln("No task found to edit.");
 			return false;
 		}
 		if(config.getAttributeName() != null && config.getAttributes() != null){
 			LOGGER.warn("Cannot process both single attribute and set of attributes.");
-			OUTPUTTER.errorPrintln("Cannot process both single attribute and set of attributes.");
+			outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
 			return false;
 		}
 
@@ -118,10 +127,10 @@ public class TaskDoer extends ActionDoer<Task> {
 			try{
 				manager.updateTaskName(editingTask, new Name(config.getNewName()));
 				modified = true;
-				OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
+				outputter.normPrintln(OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
 			}catch (IllegalArgumentException e){
 				LOGGER.warn("Invalid new name given. ", e);
-				OUTPUTTER.errorPrintln("Invalid new name given. Error: \n"+e.getMessage());
+				outputter.errorPrintln("Invalid new name given. Error: \n"+e.getMessage());
 				return false;
 			}
 		}
@@ -131,14 +140,14 @@ public class TaskDoer extends ActionDoer<Task> {
 				if(!config.getAttributeVal().equals(editingTask.getAttributes().get(config.getAttributeName()))){
 					modified = true;
 					editingTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
-					OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "Set attribute " + config.getAttributeName() + " to " + config.getAttributeVal());
+					outputter.normPrintln(OutputLevel.VERBOSE, "Set attribute " + config.getAttributeName() + " to " + config.getAttributeVal());
 				}
 			}else{
 				if(editingTask.getAttributes().containsKey(config.getAttributeName())) {
 					modified = true;
 					editingTask.getAttributes()
 						.remove(config.getAttributeName());
-					OUTPUTTER.normPrintln(OutputLevel.VERBOSE, "Removed attribute: " + config.getAttributeName());
+					outputter.normPrintln(OutputLevel.VERBOSE, "Removed attribute: " + config.getAttributeName());
 				}
 			}
 		}
@@ -148,7 +157,7 @@ public class TaskDoer extends ActionDoer<Task> {
 				newAtts = ActionDoer.parseAttributes(config.getAttributes());
 			}catch (IllegalArgumentException e){
 				LOGGER.warn("Attribute string given was invalid. Error: ", e);
-				OUTPUTTER.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
+				outputter.errorPrintln("Attribute string given was invalid. Error: "+ e.getMessage());
 				return false;
 			}
 			if(!editingTask.getAttributes().equals(newAtts)) {
@@ -160,14 +169,14 @@ public class TaskDoer extends ActionDoer<Task> {
 		}
 
 		if(!modified){
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Task not modified.");
+			outputter.normPrintln(OutputLevel.DEFAULT, "Task not modified.");
 		}
 
 		return modified;
 	}
 
 	@Override
-	protected boolean remove(TimeManager manager, ActionConfig config) {
+	protected boolean remove(ActionConfig config) {
 		Task taskToRemove = null;
 
 		if(config.getName() != null){
@@ -175,18 +184,18 @@ public class TaskDoer extends ActionDoer<Task> {
 		}
 
 		if(config.getIndex() != null) {
-			taskToRemove = this.getAtIndex(manager, config);
+			taskToRemove = this.getAtIndex(config);
 		}
 
 		if(taskToRemove == null){
 			LOGGER.info("No task with the name given found or at index given.");
-			OUTPUTTER.errorPrintln("No task with the name given found or at index given.");
+			outputter.errorPrintln("No task with the name given found or at index given.");
 			return false;
 		}
 
 		if(!manager.getTimespansWith(taskToRemove).isEmpty()){
 			LOGGER.warn("Task part of one or more time spans. Cannot remove task.");
-			OUTPUTTER.errorPrintln("Task given part of one or more time spans. Cannot remove.");
+			outputter.errorPrintln("Task given part of one or more time spans. Cannot remove.");
 			return false;
 		}
 
@@ -215,7 +224,7 @@ public class TaskDoer extends ActionDoer<Task> {
 	}
 
 	@Override
-	public List<Task> search(TimeManager manager, ActionConfig config) {
+	public List<Task> search(ActionConfig config) {
 		List<Task> output = null;
 
 		if(config.getName() != null){
@@ -239,26 +248,26 @@ public class TaskDoer extends ActionDoer<Task> {
 	}
 
 	@Override
-	public void displayOne(TimeManager manager, Task task) {
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "Task:");
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tName: " + task.getName());
+	public void displayOne(Task task) {
+		outputter.normPrintln(OutputLevel.DEFAULT, "Task:");
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tName: " + task.getName());
 
 		if(task.getAttributes().isEmpty()){
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tNo Attributes");
+			outputter.normPrintln(OutputLevel.DEFAULT, "\tNo Attributes");
 		}else {
-			OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tAttributes:");
+			outputter.normPrintln(OutputLevel.DEFAULT, "\tAttributes:");
 			for (Map.Entry<String, String> att : task.getAttributes()
 				                                     .entrySet()) {
-				OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\t\t" + att.getKey() + ": " + att.getValue());
+				outputter.normPrintln(OutputLevel.DEFAULT, "\t\t" + att.getKey() + ": " + att.getValue());
 			}
 		}
 
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
-		OUTPUTTER.normPrintln(OutputLevel.DEFAULT, "\tSpans with task: " + manager.getTimespansWith(task).size());
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tPeriods with task: " + manager.getWorkPeriodsWith(task).size());
+		outputter.normPrintln(OutputLevel.DEFAULT, "\tSpans with task: " + manager.getTimespansWith(task).size());
 	}
 
 	@Override
-	public void view(TimeManager manager, ActionConfig config) {
+	public void view(ActionConfig config) {
 		LOGGER.info("Viewing one or more tasks.");
 
 		{
@@ -266,21 +275,21 @@ public class TaskDoer extends ActionDoer<Task> {
 				Task task = manager.getTaskByName(config.getName());
 				if (task != null) {
 					LOGGER.debug("Found a task that matched the name.");
-					this.displayOne(manager, task);
+					this.displayOne(task);
 					return;
 				}
 			}else {
-				Task task = this.getAtIndex(manager, config);
+				Task task = this.getAtIndex(config);
 
 				if (task != null) {
 					LOGGER.debug("Found a task at the given index.");
-					this.displayOne(manager, task);
+					this.displayOne(task);
 					return;
 				}
 			}
 		}
 
-		List<Task> results = this.search(manager, config);
+		List<Task> results = this.search(config);
 
 		this.printView("Tasks", results);
 	}

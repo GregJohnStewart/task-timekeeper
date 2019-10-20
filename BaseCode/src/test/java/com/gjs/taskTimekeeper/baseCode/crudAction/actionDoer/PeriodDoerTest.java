@@ -6,14 +6,12 @@ import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -27,48 +25,34 @@ public class PeriodDoerTest extends ActionDoerTest {
 		super(KeeperObjectType.PERIOD);
 	}
 
-	@Before
-	public void before(){
-		ActionDoer.getOutputter().setOutputLevelThreshold(OutputLevel.VERBOSE);
-		ActionDoer.resetDoers();
-	}
-
-	@After
-	public void after(){
-		ActionDoer.resetDoers();
-	}
-
 	//<editor-fold desc="Adding Tests">
 	@Test
 	public void addSimple(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		int beforeCount = manager.getWorkPeriods().size();
 
-		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD)));
+		assertTrue(manager.doCrudAction(this.getActionConfig(Action.ADD)));
 		assertNotEquals(manager, orig);
 		assertEquals(beforeCount + 1, manager.getWorkPeriods().size());
 
-		assertNull(ActionDoer.getSelectedWorkPeriod());
+		assertNull(manager.getCrudOperator().getSelectedWorkPeriod());
 	}
 
 	@Test
 	public void addAndSelectSimple(){
 		TimeManager manager = new TimeManager();
 
-		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setSelect(true)));
+		assertTrue(manager.doCrudAction(this.getActionConfig(Action.ADD).setSelect(true)));
 
 		assertEquals(1, manager.getWorkPeriods().size());
 
-		assertEquals(manager.getWorkPeriods().first(), ActionDoer.getSelectedWorkPeriod());
+		assertEquals(manager.getWorkPeriods().first(), manager.getCrudOperator().getSelectedWorkPeriod());
 	}
 
 	@Test
 	public void addWithAttributeSimple(){
 		TimeManager manager = new TimeManager();
 
-		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName("newAttName").setAttributeVal("val").setSelect(true)));
+		assertTrue(manager.doCrudAction(this.getActionConfig(Action.ADD).setAttributeName("newAttName").setAttributeVal("val").setSelect(true)));
 
 		assertEquals(1, manager.getWorkPeriods().size());
 
@@ -82,7 +66,7 @@ public class PeriodDoerTest extends ActionDoerTest {
 	public void addWithAttributes(){
 		TimeManager manager = new TimeManager();
 
-		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD)
+		assertTrue(manager.doCrudAction(this.getActionConfig(Action.ADD)
 			                                           .setAttributes("attOne,valOne;attTwo,valTwo;").setSelect(true)));
 
 		assertEquals(1, manager.getWorkPeriods().size());
@@ -95,14 +79,13 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void addWithExisting(){
-		TimeManager manager = getTestManager();
 		int origSize = manager.getWorkPeriods().size();
 
-		assertTrue(ActionDoer.doObjAction(manager, this.getActionConfig(Action.ADD).setAttributeName("testAtt").setAttributeVal("theVal")));
+		assertTrue(manager.doCrudAction(this.getActionConfig(Action.ADD).setAttributeName("testAtt").setAttributeVal("theVal")));
 
 		assertEquals(origSize + 1, manager.getWorkPeriods().size());
 
-		assertNull(ActionDoer.getSelectedWorkPeriod());
+		assertNull(manager.getCrudOperator().getSelectedWorkPeriod());
 
 		WorkPeriod period = manager.getWorkPeriods().last();
 
@@ -112,15 +95,10 @@ public class PeriodDoerTest extends ActionDoerTest {
 	//</editor-fold>
 
 	//<editor-fold desc="Editing Tests">
-
 	@Test
 	public void editFailNoneSelected(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT).setAttributeName("new Att").setAttributeVal("New val")
 			)
 		);
@@ -129,22 +107,18 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editAtts(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 2;
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		this.selectPeriodAt(selectedInd);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT).setAttributes("attOne,valOne;attTwo,valTwo;")
 			)
 		);
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
+		WorkPeriod period = manager.getCrudOperator().getSelectedWorkPeriod();
 
 		assertEquals("valOne", period.getAttributes().get("attOne"));
 		assertEquals("valTwo", period.getAttributes().get("attTwo"));
@@ -152,22 +126,18 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editAddAtt(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 2;
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		this.selectPeriodAt(selectedInd);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT).setAttributeName("new Att").setAttributeVal("New val")
 			)
 		);
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(1);
+		WorkPeriod period = manager.getCrudOperator().getSelectedWorkPeriod();
 
 		assertTrue(period.getAttributes().containsKey("new Att"));
 		assertEquals("New val", period.getAttributes().get("new Att"));
@@ -175,22 +145,18 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editChangeAtt(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 1;
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		this.selectPeriodAt(selectedInd);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT).setAttributeName("attOne").setAttributeVal("New val")
 			)
 		);
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+		WorkPeriod period = manager.getCrudOperator().getSelectedWorkPeriod();
 
 		assertTrue(period.getAttributes().containsKey("attOne"));
 		assertEquals("New val", period.getAttributes().get("attOne"));
@@ -198,22 +164,18 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void editRemoveAtt(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 3;
-
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
+		this.selectPeriodAt(selectedInd);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.EDIT).setAttributeName("attOne")
 			)
 		);
 
 		assertNotEquals(orig, manager);
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(0);
+		WorkPeriod period = manager.getCrudOperator().getSelectedWorkPeriod();
 
 		assertFalse(period.getAttributes().containsKey("attOne"));
 	}
@@ -222,12 +184,11 @@ public class PeriodDoerTest extends ActionDoerTest {
 	//<editor-fold desc="Removing Tests">
 	@Test
 	public void removeNoPeriods(){
-		TimeManager manager = new TimeManager();
-		TimeManager orig = manager.clone();
+		manager = new TimeManager();
+		orig = manager.clone();
 
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setIndex(1)
 			)
 		);
@@ -237,12 +198,8 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeOneBadIndex(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setIndex(0)
 			)
 		);
@@ -251,12 +208,8 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeNoSpecify(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE)
 			)
 		);
@@ -265,15 +218,12 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeAtIndex(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 1;
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = manager.getCrudOperator().getWorkPeriodDoer().search(getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setIndex(selectedInd)
 			)
 		);
@@ -284,12 +234,8 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeBeforeBadDatetime(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setBefore("bad dateTime")
 			)
 		);
@@ -298,12 +244,8 @@ public class PeriodDoerTest extends ActionDoerTest {
 	}
 	@Test
 	public void removeAfterBadDatetime(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setAfter("bad dateTime")
 			)
 		);
@@ -313,12 +255,8 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeBeforeAfterAfter(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
-
 		assertFalse(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(nowPlusFive)).setAfter(TimeParser.toOutputString(nowPlusFifteen))
 			)
 		);
@@ -328,17 +266,14 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeBefore(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 3;
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = manager.getCrudOperator().getWorkPeriodDoer().search(getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setBefore(TimeParser.toOutputString(dateTime))
 			)
 		);
@@ -351,17 +286,14 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeAfter(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 1;
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = manager.getCrudOperator().getWorkPeriodDoer().search(getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime dateTime = nowPlusFifteen.plusMinutes(2);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE).setAfter(TimeParser.toOutputString(dateTime))
 			)
 		);
@@ -374,18 +306,15 @@ public class PeriodDoerTest extends ActionDoerTest {
 
 	@Test
 	public void removeBetween(){
-		TimeManager manager = getTestManager();
-		TimeManager orig = manager.clone();
 		int selectedInd = 2;
 
-		WorkPeriod period = new WorkPeriodDoer().search(manager, getActionConfig(Action.VIEW)).get(selectedInd - 1);
+		WorkPeriod period = manager.getCrudOperator().getWorkPeriodDoer().search(getActionConfig(Action.VIEW)).get(selectedInd - 1);
 
 		LocalDateTime after = nowPlusFifteen.plusMinutes(2);
 		LocalDateTime before = nowPlusHourFifteen.plusMinutes(2);
 
 		assertTrue(
-			ActionDoer.doObjAction(
-				manager,
+			manager.doCrudAction(
 				this.getActionConfig(Action.REMOVE)
 					.setBefore(TimeParser.toOutputString(before))
 					.setAfter(TimeParser.toOutputString(after))
@@ -402,16 +331,17 @@ public class PeriodDoerTest extends ActionDoerTest {
 	//<editor-fold desc="View/Search Tests">
 	@Test
 	public void view() {
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setIndex(1));
+		assertFalse(manager.doCrudAction(this.getActionConfig(Action.VIEW)));
+		assertFalse(manager.doCrudAction(this.getActionConfig(Action.VIEW).setIndex(1)));
+
+		assertEquals(orig, manager);
 	}
 
 	@Test
 	public void search() {
-		TimeManager manager = getTestManager();
 		ActionConfig config = this.getActionConfig(Action.VIEW);
 
-		Collection<WorkPeriod> results = new WorkPeriodDoer().search(manager, config);
+		Collection<WorkPeriod> results = manager.getCrudOperator().getWorkPeriodDoer().search(config);
 		//TODO:: this, but better
 	}
 	//</editor-fold>
@@ -419,35 +349,21 @@ public class PeriodDoerTest extends ActionDoerTest {
 	//<editor-fold desc="Selecting">
 	@Test
 	public void selecting(){
-		TimeManager manager = getTestManager();
 		int selectedInd = 2;
 
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true));
+		manager.doCrudAction(this.getActionConfig(Action.VIEW).setSelect(true));
 
-		assertNull(ActionDoer.getSelectedWorkPeriod());
+		assertNull(manager.getCrudOperator().getSelectedWorkPeriod());
 
-		ActionDoer.doObjAction(manager, this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
+		manager.doCrudAction(this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
 
-		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
+		WorkPeriod selected = manager.getCrudOperator().getSelectedWorkPeriod();
+
 		assertNotNull(selected);
-		assertEquals(new WorkPeriodDoer().search(manager, this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
-	}
-
-	@Test
-	public void remembersSelected(){
-		int selectedInd = 2;
-
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setSelect(true));
-
-		assertNull(ActionDoer.getSelectedWorkPeriod());
-
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW).setSelect(true).setIndex(selectedInd));
-		ActionDoer.doObjAction(getTestManager(), this.getActionConfig(Action.VIEW));
-
-		WorkPeriod selected = ActionDoer.getSelectedWorkPeriod();
-		assertNotNull(selected);
-		assertEquals(new WorkPeriodDoer().search(getTestManager(), this.getActionConfig(Action.VIEW)).get(selectedInd - 1), selected);
+		assertSame(
+			manager.getCrudOperator().getWorkPeriodDoer().search(this.getActionConfig(Action.VIEW)).get(selectedInd - 1),
+			selected
+		);
 	}
 	//</editor-fold>
 }
