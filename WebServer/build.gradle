@@ -4,9 +4,9 @@ plugins {
 }
 //apply plugin: 'io.quarkus'
 
-version = '0.0.0.46'
+version = '0.0.0.53'
 
-sourceCompatibility = 1.11
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -18,7 +18,7 @@ dependencies {
     implementation enforcedPlatform('io.quarkus:quarkus-bom:0.25.0')
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-jackson'
-    implementation 'io.quarkus:quarkus-elytron-security'
+    //implementation 'io.quarkus:quarkus-elytron-security'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
