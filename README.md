@@ -1,6 +1,8 @@
 # task-timekeeper
 All-in one tool for keeping track of time spent on tasks
 
+[![Build Status](https://travis-ci.com/GregJohnStewart/task-timekeeper.svg?branch=master)](https://travis-ci.com/GregJohnStewart/task-timekeeper)
+
 The base code behind all the projects is located in the [BaseCode](BaseCode) project.
 
 Implementations can be found in [DesktopApp](DesktopApp) and [WebServer](WebServer)
