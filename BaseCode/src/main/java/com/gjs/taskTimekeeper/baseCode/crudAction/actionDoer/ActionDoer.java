@@ -43,11 +43,14 @@ public abstract class ActionDoer  {
 	}
 
 	protected static Map<String, String> parseAttributes(String attString) throws IllegalArgumentException {
+		LOGGER.debug("Parsing attribute string.");
 		if(attString == null){
+			LOGGER.warn("Attribute string was null.");
 			throw new IllegalArgumentException("Attribute string was null.");
 		}
 		Map<String, String> output = new HashMap<>();
 		if(!attString.equals("EMPTY")) {
+			LOGGER.debug("Attribute string is {} characters long.", attString.length());
 			String[] attPairs = attString.split(";");
 			for (String attPairString : attPairs) {
 				String[] attPair = attPairString.split(",");
@@ -56,6 +59,7 @@ public abstract class ActionDoer  {
 				}
 				output.put(attPair[0], attPair[1]);
 			}
+			LOGGER.debug("Resulting att map has {} pairs.", output.size());
 		}
 		return output;
 	}

@@ -30,9 +30,6 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 	/** The selected work period. If null, none are selected. */
 	protected WorkPeriod selected = null;
 
-	//TODO:: implement
-	private boolean selectFirstIfNoneSelected = false;
-
 	public WorkPeriodDoer(TimeManager manager){
 		super(manager);
 	}
@@ -50,27 +47,6 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 	 */
 	protected WorkPeriod getSelected(){
 		return selected;
-	}
-
-	/**
-	 * Gets the work period from the time manager. Also resets the work period held to it, if found.
-	 * TODO:: this still necessary?
-	 * If not found, nulls out the held selected object.
-	 * @return The selected work period object from the TimeManager given. Null if not found.
-	 */
-	public WorkPeriod getSelectedFromManager(){
-		if(this.getSelected() != null) {
-			for (WorkPeriod period : manager.getWorkPeriods()) {
-				if (period.equals(this.getSelected())) {
-					this.setSelected(period);
-					outputter.normPrintln(OutputLevel.VERBOSE, "There was a selected work period.");
-					return period;
-				}
-			}
-		}
-		outputter.normPrintln(OutputLevel.DEFAULT, "No period selected.");
-		this.setSelected(null);
-		return null;
 	}
 
 	/**
@@ -148,7 +124,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 	 */
 	@Override
 	protected boolean edit(ActionConfig config) {
-		WorkPeriod period = this.getSelectedFromManager();
+		WorkPeriod period = this.getSelected();
 
 		if(period == null){
 			LOGGER.warn("No period selected. Cannot edit it.");
@@ -206,7 +182,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 
 	protected void deselectIfRemoved(){
 		LOGGER.info("Determining if selected period was removed.");
-		WorkPeriod selected = this.getSelectedFromManager();
+		WorkPeriod selected = this.getSelected();
 		if(selected != null && !manager.getWorkPeriods().contains(selected)){
 			this.setSelected(null);
 			LOGGER.info("Selected period was removed.");

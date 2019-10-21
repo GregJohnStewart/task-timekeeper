@@ -34,6 +34,13 @@ public class Task extends KeeperObject implements Comparable<Task>{
 	public Task(Name name) throws NullPointerException {
 		this.setName(name);
 	}
+
+	/**
+	 * Constructor to set the name of the task with a bare String.
+	 * @param name The name to give the task
+	 * @throws NullPointerException If the string given is null
+	 * @throws IllegalArgumentException if the name is invalid. See {@link #setName(Name)}
+	 */
 	public Task(String name) throws NullPointerException, IllegalArgumentException {
 		this.setName(new Name(name));
 	}
@@ -50,10 +57,18 @@ public class Task extends KeeperObject implements Comparable<Task>{
 		@JsonProperty("name")
 			Name name,
 		@JsonProperty("attributes")
-			Map<String, String> attributes) throws NullPointerException, IllegalArgumentException {
+			Map<String, String> attributes) throws NullPointerException {
 		this(name);
 		this.setAttributes(attributes);
 	}
+
+	/**
+	 * Constructor to set name and attributes.
+	 *
+	 * @param name       The name of the task.
+	 * @param attributes The attributes for the task.
+	 * @throws IllegalArgumentException if the name is invalid. See {@link #setName(Name)}
+	 */
 	public Task(
 		String name,
 		Map<String, String> attributes

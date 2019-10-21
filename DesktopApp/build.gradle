@@ -6,9 +6,9 @@ plugins {
     id "de.inetsoftware.setupbuilder" version "4.8.6"
 }
 
-sourceCompatibility = 1.11
+sourceCompatibility = 1.8
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '1.1.0.1'
+version = '2.0.0.2'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information

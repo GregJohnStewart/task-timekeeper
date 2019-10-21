@@ -27,19 +27,24 @@ public class TimespanDoer extends CrudDoer<Timespan> {
 	 */
 	private final WorkPeriodDoer workPeriodDoer;
 
-	//TODO:: validate time managers are the same
-	public TimespanDoer(WorkPeriodDoer workPeriodDoer, TimeManager manager){
+	public TimespanDoer(WorkPeriodDoer workPeriodDoer, TimeManager manager) throws IllegalArgumentException {
 		super(manager);
 		this.workPeriodDoer = workPeriodDoer;
+		if(this.manager != workPeriodDoer.manager){
+			throw new IllegalArgumentException("Work period doer given had a different time manager than the one given.");
+		}
 	}
-	public TimespanDoer(WorkPeriodDoer workPeriodDoer, TimeManager manager, Outputter outputter){
+	public TimespanDoer(WorkPeriodDoer workPeriodDoer, TimeManager manager, Outputter outputter) throws IllegalArgumentException {
 		super(manager, outputter);
 		this.workPeriodDoer = workPeriodDoer;
+		if(this.manager != workPeriodDoer.manager){
+			throw new IllegalArgumentException("Work period doer given had a different time manager than the one given.");
+		}
 	}
 
 	@Override
 	protected boolean add(ActionConfig config) {
-		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager();
+		WorkPeriod period = this.workPeriodDoer.getSelected();
 		if(period == null){
 			LOGGER.error("No work period selected to add to.");
 			outputter.errorPrintln("No work period selected to add to.");
@@ -192,7 +197,7 @@ public class TimespanDoer extends CrudDoer<Timespan> {
 			return false;
 		}
 
-		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager();
+		WorkPeriod period = this.workPeriodDoer.getSelected();
 
 		period.getTimespans().remove(span);
 
@@ -213,7 +218,7 @@ public class TimespanDoer extends CrudDoer<Timespan> {
 
 	@Override
 	public List<Timespan> search(ActionConfig config) {
-		WorkPeriod period = this.workPeriodDoer.getSelectedFromManager();
+		WorkPeriod period = this.workPeriodDoer.getSelected();
 		if(period == null){
 			LOGGER.error("No work period selected to search time spans in.");
 			outputter.errorPrintln("No work period selected to search time spans in.");
