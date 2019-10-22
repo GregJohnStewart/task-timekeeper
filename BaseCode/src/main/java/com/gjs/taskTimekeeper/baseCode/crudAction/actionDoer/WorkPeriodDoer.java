@@ -7,9 +7,6 @@ import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Action doer to edit WorkPeriods. */
 public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
@@ -312,15 +311,12 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 
         outputter.normPrintln(OutputLevel.DEFAULT, "\tTime spent on tasks:");
         for (Name curTask : workPeriod.getTaskNames()) {
-            Duration duration = workPeriod.getTotalTimeWith(curTask);
             outputter.normPrintln(
                     OutputLevel.DEFAULT,
                     "\t\t"
                             + curTask
                             + " "
-                            + duration.toHoursPart()
-                            + ":"
-                            + duration.toMinutesPart());
+                            + TimeParser.toDurationString(workPeriod.getTotalTimeWith(curTask)));
         }
     }
 
@@ -430,8 +426,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
 
         output.add(TimeParser.toOutputString(period.getStart()));
         output.add(TimeParser.toOutputString(period.getEnd()));
-        Duration totalTime = period.getTotalTime();
-        output.add(totalTime.toHoursPart() + ":" + totalTime.toMinutesPart());
+        output.add(TimeParser.toDurationString(period.getTotalTime()));
         output.add(period.isUnCompleted() ? "No" : "Yes");
 
         SortedSet<Name> tasks = period.getTaskNames();

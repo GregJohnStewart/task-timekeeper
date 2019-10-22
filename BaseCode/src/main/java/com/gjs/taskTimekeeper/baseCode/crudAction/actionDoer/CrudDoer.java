@@ -4,12 +4,11 @@ import com.gjs.taskTimekeeper.baseCode.KeeperObject;
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class CrudDoer<T extends KeeperObject> extends ActionDoer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrudDoer.class);
@@ -253,7 +252,9 @@ public abstract class CrudDoer<T extends KeeperObject> extends ActionDoer {
 
         for (int width : colWidths) {
             builder.append("+-");
-            builder.append("-".repeat(width + 1));
+            for (int i = 0; i <= (width); i++) {
+                builder.append("-");
+            }
         }
         builder.append('+');
         return builder.toString();
