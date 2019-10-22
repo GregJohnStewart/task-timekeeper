@@ -1,17 +1,19 @@
 package com.gjs.taskTimekeeper.baseCode;
 
+import static org.junit.Assert.assertEquals;
+
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class ManagerSerializationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerSerializationTest.class);
@@ -38,16 +40,21 @@ public class ManagerSerializationTest {
                         Map.of("att2", "value")));
         manager.addWorkPeriod(
                 new WorkPeriod(
-                        List.of(
-                                new Timespan(
-                                        task,
-                                        LocalDateTime.now().plusMinutes(20),
-                                        LocalDateTime.now().plusMinutes(25)),
-                                new Timespan(
-                                        task,
-                                        LocalDateTime.now().plusMinutes(30),
-                                        LocalDateTime.now().plusMinutes(35))),
-                        Map.of("att3", "value2")));
+                        Stream.of(
+                                        new Timespan(
+                                                task,
+                                                LocalDateTime.now().plusMinutes(20),
+                                                LocalDateTime.now().plusMinutes(25)),
+                                        new Timespan(
+                                                task,
+                                                LocalDateTime.now().plusMinutes(30),
+                                                LocalDateTime.now().plusMinutes(35)))
+                                .collect(Collectors.toList()),
+                        new HashMap<>() {
+                            {
+                                put("att3", "value2");
+                            }
+                        }));
     }
 
     @Test
