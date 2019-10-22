@@ -2,7 +2,6 @@ package com.gjs.taskTimekeeper.baseCode.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 /** A name class to provide built in validation of names. Immutable. */
@@ -17,8 +16,8 @@ public class Name implements Comparable<Name> {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }
-        String validated = name.strip();
-        if (validated.isBlank()) {
+        String validated = name.trim();
+        if (validated.isEmpty()) {
             throw new IllegalArgumentException("Name cannot just be whitespace.");
         }
 

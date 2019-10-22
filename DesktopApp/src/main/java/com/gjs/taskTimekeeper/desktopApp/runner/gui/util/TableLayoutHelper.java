@@ -2,13 +2,6 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui.util;
 
 import info.clearthought.layout.TableLayout;
 import info.clearthought.layout.TableLayoutConstraints;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -18,8 +11,15 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Label;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class TableLayoutHelper extends JPanel {
 
@@ -81,13 +81,13 @@ public class TableLayoutHelper extends JPanel {
             List<List<Object>> data,
             List<String> headers,
             Map<Integer, Double> colWidths) {
-        this(data, headers, colWidths, Map.of());
+        this(data, headers, colWidths, new HashMap<>());
         this.addToPane(pane);
     }
 
     public TableLayoutHelper(
             final JScrollPane pane, List<List<Object>> data, List<String> headers) {
-        this(data, headers, Map.of(), Map.of());
+        this(data, headers, new HashMap<>(), new HashMap<>());
         this.addToPane(pane);
     }
 

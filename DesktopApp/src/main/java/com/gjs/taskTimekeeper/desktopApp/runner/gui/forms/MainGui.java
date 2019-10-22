@@ -1,5 +1,10 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
+
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.Task;
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
@@ -25,25 +30,6 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClick
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -62,14 +48,28 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** https://www.jetbrains.com/help/idea/designing-gui-major-steps.html */
 public class MainGui {
@@ -90,26 +90,38 @@ public class MainGui {
     private static final double DURATION_COL_WIDTH = 65;
 
     private static final List<String> PERIOD_LIST_TABLE_HEADERS =
-            List.of("#", "Start", "End", "Duration", "Complete", "Actions");
+            Arrays.asList("#", "Start", "End", "Duration", "Complete", "Actions");
     private static final Map<Integer, Double> PERIOD_LIST_COL_WIDTHS =
-            Map.of(
-                    0, INDEX_COL_WIDTH,
-                    1, DATETIME_COL_WIDTH,
-                    2, DATETIME_COL_WIDTH,
-                    3, DURATION_COL_WIDTH,
-                    4, (double) 85);
-    private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(1, DATETIME_COL_WIDTH);
+                    put(2, DATETIME_COL_WIDTH);
+                    put(3, DURATION_COL_WIDTH);
+                    put(4, (double) 85);
+                }
+            };
+    private static final List<String> TASK_LIST_TABLE_HEADERS =
+            Arrays.asList("#", "Name", "Actions");
     private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS =
-            Map.of(0, INDEX_COL_WIDTH, 2, (double) 123);
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(4, (double) 123);
+                }
+            };
     private static final List<String> SPAN_LIST_TABLE_HEADERS =
-            List.of("#", "Start", "End", "Duration", "Task", "Actions");
+            Arrays.asList("#", "Start", "End", "Duration", "Task", "Actions");
     private static final Map<Integer, Double> SPAN_LIST_COL_WIDTHS =
-            Map.of(
-                    0, INDEX_COL_WIDTH,
-                    1, DATETIME_COL_WIDTH,
-                    2, DATETIME_COL_WIDTH,
-                    3, DURATION_COL_WIDTH,
-                    5, (double) 85);
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(1, DATETIME_COL_WIDTH);
+                    put(2, DATETIME_COL_WIDTH);
+                    put(3, DURATION_COL_WIDTH);
+                    put(5, (double) 85);
+                }
+            };
 
     // </editor-fold>
     // <editor-fold desc="Static methods">
@@ -242,8 +254,8 @@ public class MainGui {
                     resetStreams();
                     ActionConfig config = new ActionConfig(KeeperObjectType.TASK, ADD);
                     config.setName(helper.getName());
-                    String atts = helper.getAttributes();
-                    if (!atts.isBlank()) {
+                    String atts = helper.getAttributes().trim();
+                    if (!atts.isEmpty()) {
                         config.setAttributes(atts);
                     }
 
@@ -314,7 +326,7 @@ public class MainGui {
                 if (!taskChangeConfig.getName().equals(helper.getName())) {
                     taskChangeConfig.setNewName(helper.getName());
                 }
-                if (helper.getAttributes().isBlank()) {
+                if (helper.getAttributes().trim().isEmpty()) {
                     taskChangeConfig.setAttributes("EMPTY");
                 } else {
                     taskChangeConfig.setAttributes(helper.getAttributes());
@@ -553,7 +565,7 @@ public class MainGui {
                         ActionConfig attributeChangeConfig =
                                 new ActionConfig(KeeperObjectType.PERIOD, EDIT);
 
-                        if (helper.getAttributes().isBlank()) {
+                        if (helper.getAttributes().trim().isEmpty()) {
                             attributeChangeConfig.setAttributes("EMPTY");
                         } else {
                             attributeChangeConfig.setAttributes(helper.getAttributes());
@@ -875,7 +887,9 @@ public class MainGui {
                     }
 
                     new TableLayoutHelper(
-                            this.selectedPeriodAttsPane, periodAtts, List.of("Attribute", "Value"));
+                            this.selectedPeriodAttsPane,
+                            periodAtts,
+                            Arrays.asList("Attribute", "Value"));
                 }
 
                 // task details
@@ -897,8 +911,12 @@ public class MainGui {
                     new TableLayoutHelper(
                             this.selectedPeriodTaskStatsPane,
                             taskStats,
-                            List.of("Task Name", "Duration"),
-                            Map.of(1, DURATION_COL_WIDTH));
+                            Arrays.asList("Task Name", "Duration"),
+                            new HashMap<Integer, Double>() {
+                                {
+                                    put(1, DURATION_COL_WIDTH);
+                                }
+                            });
                 }
 
                 // span details
@@ -921,7 +939,7 @@ public class MainGui {
                         spanRow.add(TimeParser.toOutputString(span.getEndTime()));
                         spanRow.add(TimeParser.toDurationString(span.getDuration()));
                         spanRow.add(span.getTaskName().getName());
-                        spanRow.add(List.of(edit, delete));
+                        spanRow.add(Arrays.asList(edit, delete));
 
                         spanDetails.add(spanRow);
                         count++;
@@ -965,7 +983,7 @@ public class MainGui {
                 row.add(TimeParser.toOutputString(period.getEnd()));
                 row.add(TimeParser.toDurationString(period.getTotalTime()));
                 row.add((period.isUnCompleted() ? "No" : "Yes"));
-                row.add(List.of(select, delete));
+                row.add(Arrays.asList(select, delete));
 
                 periodData.add(row);
                 curInd++;
@@ -999,7 +1017,7 @@ public class MainGui {
 
                 row.add(curInd);
                 row.add(task.getName().getName());
-                row.add(List.of(viewButton, editButton, deleteButton));
+                row.add(Arrays.asList(viewButton, editButton, deleteButton));
 
                 periodData.add(row);
                 curInd++;

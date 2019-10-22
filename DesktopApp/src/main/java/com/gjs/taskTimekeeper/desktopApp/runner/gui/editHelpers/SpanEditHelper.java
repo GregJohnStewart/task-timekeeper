@@ -3,7 +3,9 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 import com.gjs.taskTimekeeper.baseCode.Task;
 import com.gjs.taskTimekeeper.baseCode.Timespan;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-
+import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -12,9 +14,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
-import java.util.Collection;
 
 public class SpanEditHelper {
     private static final int COL_SIZE = 15;
@@ -46,11 +45,11 @@ public class SpanEditHelper {
     }
 
     public String getStartField() {
-        return startField.getText().isBlank() ? null : startField.getText();
+        return startField.getText().trim().isEmpty() ? null : startField.getText();
     }
 
     public String getEndField() {
-        return endField.getText().isBlank() ? null : endField.getText();
+        return endField.getText().trim().isEmpty() ? null : endField.getText();
     }
 
     public String getTaskName() {
