@@ -92,24 +92,35 @@ public class MainGui {
     private static final List<String> PERIOD_LIST_TABLE_HEADERS =
             Arrays.asList("#", "Start", "End", "Duration", "Complete", "Actions");
     private static final Map<Integer, Double> PERIOD_LIST_COL_WIDTHS =
-            Map.of(
-                    0, INDEX_COL_WIDTH,
-                    1, DATETIME_COL_WIDTH,
-                    2, DATETIME_COL_WIDTH,
-                    3, DURATION_COL_WIDTH,
-                    4, (double) 85);
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(1, DATETIME_COL_WIDTH);
+                    put(2, DATETIME_COL_WIDTH);
+                    put(3, DURATION_COL_WIDTH);
+                    put(4, (double) 85);
+                }
+            };
     private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
     private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS =
-            Map.of(0, INDEX_COL_WIDTH, 2, (double) 123);
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(4, (double) 123);
+                }
+            };
     private static final List<String> SPAN_LIST_TABLE_HEADERS =
-            List.of("#", "Start", "End", "Duration", "Task", "Actions");
+            Arrays.asList("#", "Start", "End", "Duration", "Task", "Actions");
     private static final Map<Integer, Double> SPAN_LIST_COL_WIDTHS =
-            Map.of(
-                    0, INDEX_COL_WIDTH,
-                    1, DATETIME_COL_WIDTH,
-                    2, DATETIME_COL_WIDTH,
-                    3, DURATION_COL_WIDTH,
-                    5, (double) 85);
+            new HashMap<Integer, Double>() {
+                {
+                    put(0, INDEX_COL_WIDTH);
+                    put(1, DATETIME_COL_WIDTH);
+                    put(2, DATETIME_COL_WIDTH);
+                    put(3, DURATION_COL_WIDTH);
+                    put(5, (double) 85);
+                }
+            };
 
     // </editor-fold>
     // <editor-fold desc="Static methods">
