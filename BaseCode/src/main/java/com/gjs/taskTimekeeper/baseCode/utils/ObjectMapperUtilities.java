@@ -3,16 +3,16 @@ package com.gjs.taskTimekeeper.baseCode.utils;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /** Default Jackson ObjectMapper utilities for serializing Timekeeper objects. */
 public class ObjectMapperUtilities {
     private static final ObjectMapper DEFAULT_MAPPER;
-    private static final Collection<Module> EXTRA_MODULES = List.of(new JavaTimeModule());
+    private static final Collection<Module> EXTRA_MODULES = new ArrayList<>(1);
 
     static {
+        EXTRA_MODULES.add(new JavaTimeModule());
         DEFAULT_MAPPER = getTimeManagerObjectMapper();
     }
 
