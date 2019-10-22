@@ -13,57 +13,56 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-//TODO:: rewrite these better
+// TODO:: rewrite these better
 public class TaskTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskTest.class);
 
-	@Test
-	public void testBasics() {
-		Task newTask = new Task("task");
+    @Test
+    public void testBasics() {
+        Task newTask = new Task("task");
 
-		assertEquals("task", newTask.getName().getName());
+        assertEquals("task", newTask.getName().getName());
 
-		HashMap<String, String> map = new HashMap<>();
-		map.put("", "");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("", "");
 
-		newTask = new Task("task", map);
-		assertEquals("task", newTask.getName().getName());
-		assertEquals(map, newTask.getAttributes());
+        newTask = new Task("task", map);
+        assertEquals("task", newTask.getName().getName());
+        assertEquals(map, newTask.getAttributes());
 
-		Task newTasktwo = new Task("task", map);
+        Task newTasktwo = new Task("task", map);
 
-		assertEquals(newTask, newTasktwo);
-		assertEquals(newTask.hashCode(), newTasktwo.hashCode());
-	}
+        assertEquals(newTask, newTasktwo);
+        assertEquals(newTask.hashCode(), newTasktwo.hashCode());
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void testNullSetName() {
-		new Task((Name)null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void testNullSetName() {
+        new Task((Name) null);
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void testNullSetAttributes() {
-		new Task("hello", null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void testNullSetAttributes() {
+        new Task("hello", null);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testWhitespaceName(){
-		new Task("\t \n");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void testWhitespaceName() {
+        new Task("\t \n");
+    }
 
-	@Test
-	public void serialization() throws IOException {
-		ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
+    @Test
+    public void serialization() throws IOException {
+        ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
 
-		Task testTask = new Task("test task");
+        Task testTask = new Task("test task");
 
-		testTask.getAttributes().put("testAtt", "value");
+        testTask.getAttributes().put("testAtt", "value");
 
-		String string = mapper.writeValueAsString(testTask);
+        String string = mapper.writeValueAsString(testTask);
 
-		Task deserializedTask = mapper.readValue(string, Task.class);
+        Task deserializedTask = mapper.readValue(string, Task.class);
 
-		assertTrue(testTask.equals(deserializedTask));
-	}
-
+        assertTrue(testTask.equals(deserializedTask));
+    }
 }

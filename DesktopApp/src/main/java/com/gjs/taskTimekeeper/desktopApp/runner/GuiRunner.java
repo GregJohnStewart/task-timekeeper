@@ -12,60 +12,64 @@ import java.awt.Image;
 import java.io.InputStream;
 
 public class GuiRunner extends ModeRunner {
-	private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
-	private static final Image ICON;
-	private static final String APP_TITLE;
-	private static final long WAIT_TIME = 100;
+    private static final Image ICON;
+    private static final String APP_TITLE;
+    private static final long WAIT_TIME = 100;
 
-	static {
-		try(InputStream is = GuiRunner.class.getClassLoader().getResourceAsStream(
-			Configuration.getProperty(ConfigKeys.STATIC_GUI_ICON, String.class)
-		)
-		){
-			if(is == null){
-				throw new IllegalStateException("Desktop icon image not found.");
-			}
-			ICON = ImageIO.read(is);
-		}catch (Exception e){
-			LOGGER.error("FAILED to read in icon image. Error: ", e);
-			throw new RuntimeException(e);
-		}
+    static {
+        try (InputStream is =
+                GuiRunner.class
+                        .getClassLoader()
+                        .getResourceAsStream(
+                                Configuration.getProperty(
+                                        ConfigKeys.STATIC_GUI_ICON, String.class))) {
+            if (is == null) {
+                throw new IllegalStateException("Desktop icon image not found.");
+            }
+            ICON = ImageIO.read(is);
+        } catch (Exception e) {
+            LOGGER.error("FAILED to read in icon image. Error: ", e);
+            throw new RuntimeException(e);
+        }
 
-		APP_TITLE = "Task Timekeeper v" + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
+        APP_TITLE =
+                "Task Timekeeper v"
+                        + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
 
-		LOGGER.debug("Setup gui static resources.");
-	}
+        LOGGER.debug("Setup gui static resources.");
+    }
 
-	private MainGui mainGui;
-	private MainSystemTray systemTray;
+    private MainGui mainGui;
+    private MainSystemTray systemTray;
 
-	@Override
-	public void run() {
-		LOGGER.info("Running the GUI mode.");
-		runMainGui();
-		runSystemTrayIcon();
-		LOGGER.debug("Running UI components");
+    @Override
+    public void run() {
+        LOGGER.info("Running the GUI mode.");
+        runMainGui();
+        runSystemTrayIcon();
+        LOGGER.debug("Running UI components");
 
-		while(this.stillRunning()){
-			try {
-				Thread.sleep(WAIT_TIME);
-			} catch (InterruptedException e) {
-				LOGGER.warn("Wait interrupted.", e);
-			}
-		}
-		LOGGER.info("All UI components closed. Exiting.");
-	}
+        while (this.stillRunning()) {
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (InterruptedException e) {
+                LOGGER.warn("Wait interrupted.", e);
+            }
+        }
+        LOGGER.info("All UI components closed. Exiting.");
+    }
 
-	private void runMainGui(){
-		this.mainGui = new MainGui(ICON, APP_TITLE);
-	}
+    private void runMainGui() {
+        this.mainGui = new MainGui(ICON, APP_TITLE);
+    }
 
-	private void runSystemTrayIcon(){
-		this.systemTray = new MainSystemTray(ICON, APP_TITLE);
-	}
+    private void runSystemTrayIcon() {
+        this.systemTray = new MainSystemTray(ICON, APP_TITLE);
+    }
 
-	public boolean stillRunning(){
-		return this.mainGui.stillOpen() || this.systemTray.stillRunning();
-	}
+    public boolean stillRunning() {
+        return this.mainGui.stillOpen() || this.systemTray.stillRunning();
+    }
 }

@@ -4,11 +4,11 @@ import java.awt.Image;
 
 public class MainSystemTray {
 
-	public MainSystemTray(Image icon, String appTitle){
-		//TODO:: this. find a library that works, default system tray does not work.
-	}
+    public MainSystemTray(Image icon, String appTitle) {
+        // TODO:: this. find a library that works, default system tray does not work.
+    }
 
-	public boolean stillRunning(){
-		return false;
-	}
+    public boolean stillRunning() {
+        return false;
+    }
 }

@@ -7,16 +7,16 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class CmdLineArgumentRunnerTest {
 
-	@Test
-	public void canSplitProperly() throws CmdLineException {
-		CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, "hello world");
-		assertArrayEquals(new String[]{"hello", "world"}, runner.getParser().getArgsGotten());
+    @Test
+    public void canSplitProperly() throws CmdLineException {
+        CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, "hello world");
+        assertArrayEquals(new String[] {"hello", "world"}, runner.getParser().getArgsGotten());
 
-		runner = new CmdLineArgumentRunner(true, "hello\\ there\\ world");
-		assertArrayEquals(new String[]{"hello there world"}, runner.getParser().getArgsGotten());
+        runner = new CmdLineArgumentRunner(true, "hello\\ there\\ world");
+        assertArrayEquals(new String[] {"hello there world"}, runner.getParser().getArgsGotten());
 
-		runner = new CmdLineArgumentRunner(true, "hello\\ there, world");
-		assertArrayEquals(new String[]{"hello there,", "world"}, runner.getParser().getArgsGotten());
-	}
-
+        runner = new CmdLineArgumentRunner(true, "hello\\ there, world");
+        assertArrayEquals(
+                new String[] {"hello there,", "world"}, runner.getParser().getArgsGotten());
+    }
 }

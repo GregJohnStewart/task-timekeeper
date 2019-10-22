@@ -15,313 +15,311 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TimeManagerTest {
-	private static final Task testTask = new Task("Test task");
-	private static final Task testTaskTwo = new Task("Test task Two");
+    private static final Task testTask = new Task("Test task");
+    private static final Task testTaskTwo = new Task("Test task Two");
 
-	private static final LocalDateTime now = LocalDateTime.now();
-	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
-	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
+    private static final LocalDateTime now = LocalDateTime.now();
+    private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
+    private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
-	@Test
-	public void basicsTest() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void basicsTest() {
+        TimeManager manager = new TimeManager();
 
-		TreeSet<Task> tasks = new TreeSet<>();
+        TreeSet<Task> tasks = new TreeSet<>();
 
-		manager = new TimeManager(tasks);
+        manager = new TimeManager(tasks);
 
-		assertEquals(tasks, manager.getTasks());
+        assertEquals(tasks, manager.getTasks());
 
-		TreeSet<WorkPeriod> periods = new TreeSet<>();
+        TreeSet<WorkPeriod> periods = new TreeSet<>();
 
-		manager = new TimeManager(tasks, periods);
+        manager = new TimeManager(tasks, periods);
 
-		assertEquals(periods, manager.getWorkPeriods());
-		manager.hashCode();
-	}
+        assertEquals(periods, manager.getWorkPeriods());
+        manager.hashCode();
+    }
 
-	@Test
-	public void setWorkPeriods() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void setWorkPeriods() {
+        TimeManager manager = new TimeManager();
 
-		TreeSet<WorkPeriod> periods = new TreeSet<>();
+        TreeSet<WorkPeriod> periods = new TreeSet<>();
 
-		manager.setWorkPeriods(periods);
+        manager.setWorkPeriods(periods);
 
-		assertTrue(manager.getWorkPeriods().isEmpty());
-		assertEquals(periods, manager.getWorkPeriods());
+        assertTrue(manager.getWorkPeriods().isEmpty());
+        assertEquals(periods, manager.getWorkPeriods());
 
-		periods.add(new WorkPeriod().addTimespans(new Timespan(testTask)));
+        periods.add(new WorkPeriod().addTimespans(new Timespan(testTask)));
 
-		manager.setWorkPeriods(periods);
+        manager.setWorkPeriods(periods);
 
-		assertFalse(manager.getWorkPeriods().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getWorkPeriods().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test
-	public void setWorkPeriodsWithTrue() {
-		TimeManager manager = new TimeManager();
-		manager.addTask(testTask);
+    @Test
+    public void setWorkPeriodsWithTrue() {
+        TimeManager manager = new TimeManager();
+        manager.addTask(testTask);
 
-		TreeSet<WorkPeriod> periods = new TreeSet<>();
+        TreeSet<WorkPeriod> periods = new TreeSet<>();
 
-		manager.setWorkPeriods(periods, true);
-		assertTrue(manager.getTasks().isEmpty());
+        manager.setWorkPeriods(periods, true);
+        assertTrue(manager.getTasks().isEmpty());
 
-		WorkPeriod periodOne = new WorkPeriod();
-		periodOne.addTimespan(new Timespan(testTask));
-		periods.add(periodOne);
+        WorkPeriod periodOne = new WorkPeriod();
+        periodOne.addTimespan(new Timespan(testTask));
+        periods.add(periodOne);
 
-		manager.setWorkPeriods(periods, true);
-		assertFalse(manager.getTasks().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
+        manager.setWorkPeriods(periods, true);
+        assertFalse(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
 
-		periods.clear();
+        periods.clear();
 
-		manager.setWorkPeriods(periods, true);
-		assertTrue(manager.getTasks().isEmpty());
-	}
+        manager.setWorkPeriods(periods, true);
+        assertTrue(manager.getTasks().isEmpty());
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void setWorkPeriodsWithNull() {
-		new TimeManager().setWorkPeriods(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void setWorkPeriodsWithNull() {
+        new TimeManager().setWorkPeriods(null);
+    }
 
-	@Test
-	public void addWorkPeriod() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void addWorkPeriod() {
+        TimeManager manager = new TimeManager();
 
-		WorkPeriod period = new WorkPeriod().addTimespans(new Timespan(testTask));
+        WorkPeriod period = new WorkPeriod().addTimespans(new Timespan(testTask));
 
-		manager.addWorkPeriod(period);
+        manager.addWorkPeriod(period);
 
-		assertFalse(manager.getWorkPeriods().isEmpty());
-		assertTrue(manager.getWorkPeriods().contains(period));
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getWorkPeriods().isEmpty());
+        assertTrue(manager.getWorkPeriods().contains(period));
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void addWorkPeriodWithNull() {
-		new TimeManager().addWorkPeriod(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void addWorkPeriodWithNull() {
+        new TimeManager().addWorkPeriod(null);
+    }
 
-	@Test
-	public void setTasks() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void setTasks() {
+        TimeManager manager = new TimeManager();
 
-		SortedSet<Task> tasks = new TreeSet<>();
+        SortedSet<Task> tasks = new TreeSet<>();
 
-		manager.setTasks(tasks);
+        manager.setTasks(tasks);
 
-		assertEquals(tasks, manager.getTasks());
+        assertEquals(tasks, manager.getTasks());
 
-		tasks.add(testTask);
+        tasks.add(testTask);
 
-		manager.setTasks(tasks);
+        manager.setTasks(tasks);
 
-		assertFalse(manager.getTasks().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void setTasksWithNull() {
-		new TimeManager().setTasks(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void setTasksWithNull() {
+        new TimeManager().setTasks(null);
+    }
 
-	@Test
-	public void addTasks() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void addTasks() {
+        TimeManager manager = new TimeManager();
 
-		manager.addTask(testTask);
+        manager.addTask(testTask);
 
-		assertFalse(manager.getTasks().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test
-	public void cleanupTasks() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void cleanupTasks() {
+        TimeManager manager = new TimeManager();
 
-		manager.addTask(testTask);
-		manager.cleanupTasks();
+        manager.addTask(testTask);
+        manager.cleanupTasks();
 
-		assertTrue(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().isEmpty());
 
-		manager.addWorkPeriod(new WorkPeriod().addTimespans(new Timespan(testTask)));
-		manager.cleanupTasks();
+        manager.addWorkPeriod(new WorkPeriod().addTimespans(new Timespan(testTask)));
+        manager.cleanupTasks();
 
-		assertFalse(manager.getTasks().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test
-	public void addTask() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void addTask() {
+        TimeManager manager = new TimeManager();
 
-		manager.addTask(testTask);
+        manager.addTask(testTask);
 
-		assertFalse(manager.getTasks().isEmpty());
-		assertTrue(manager.getTasks().contains(testTask));
-	}
+        assertFalse(manager.getTasks().isEmpty());
+        assertTrue(manager.getTasks().contains(testTask));
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void addTaskWithNull() {
-		new TimeManager().addTask(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void addTaskWithNull() {
+        new TimeManager().addTask(null);
+    }
 
-	@Test
-	public void addTimespan() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void addTimespan() {
+        TimeManager manager = new TimeManager();
 
-		WorkPeriod finishedPeriod = new WorkPeriod();
-		Timespan finishedTimespan = new Timespan(testTask, now, nowPlusFive);
+        WorkPeriod finishedPeriod = new WorkPeriod();
+        Timespan finishedTimespan = new Timespan(testTask, now, nowPlusFive);
 
-		manager.addWorkPeriod(finishedPeriod);
+        manager.addWorkPeriod(finishedPeriod);
 
-		manager.addTimespan(finishedTimespan);
+        manager.addTimespan(finishedTimespan);
 
-		assertTrue(finishedPeriod.getTimespans().contains(finishedTimespan));
-		assertTrue(manager.getTasks().contains(testTask));
+        assertTrue(finishedPeriod.getTimespans().contains(finishedTimespan));
+        assertTrue(manager.getTasks().contains(testTask));
 
-		WorkPeriod unfinishedPeriod = new WorkPeriod();//.addTimespans(new Timespan(testTask, nowPlusFive, nowPlusTen));
-		Timespan unfinishedTimespan = new Timespan(testTaskTwo, nowPlusTen);
+        WorkPeriod unfinishedPeriod =
+                new WorkPeriod(); // .addTimespans(new Timespan(testTask, nowPlusFive, nowPlusTen));
+        Timespan unfinishedTimespan = new Timespan(testTaskTwo, nowPlusTen);
 
-		manager.addWorkPeriod(unfinishedPeriod);
-		manager.addTimespan(unfinishedTimespan);
+        manager.addWorkPeriod(unfinishedPeriod);
+        manager.addTimespan(unfinishedTimespan);
 
-		assertTrue(unfinishedPeriod.getTimespans().contains(unfinishedTimespan));
-		assertTrue(manager.getTasks().contains(testTaskTwo));
-	}
+        assertTrue(unfinishedPeriod.getTimespans().contains(unfinishedTimespan));
+        assertTrue(manager.getTasks().contains(testTaskTwo));
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void addTimespanWithNull() {
-		new TimeManager().addTimespan(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void addTimespanWithNull() {
+        new TimeManager().addTimespan(null);
+    }
 
-	@Test()
-	public void addTimespanWithNoPeriods() {
-		TimeManager manager = new TimeManager().addTimespan(new Timespan(testTask));
+    @Test()
+    public void addTimespanWithNoPeriods() {
+        TimeManager manager = new TimeManager().addTimespan(new Timespan(testTask));
 
-		assertFalse(manager.getWorkPeriods().isEmpty());
-	}
+        assertFalse(manager.getWorkPeriods().isEmpty());
+    }
 
-	@Test
-	public void getHasUnfinishedPeriods() {
-		TimeManager manager = new TimeManager();
+    @Test
+    public void getHasUnfinishedPeriods() {
+        TimeManager manager = new TimeManager();
 
-		assertTrue(manager.getUnfinishedPeriods().isEmpty());
-		assertFalse(manager.hasUnfinishedPeriods());
+        assertTrue(manager.getUnfinishedPeriods().isEmpty());
+        assertFalse(manager.hasUnfinishedPeriods());
 
-		WorkPeriod finishedPeriod = new WorkPeriod().addTimespans(new Timespan(testTask, now, nowPlusFive));
-		manager.addWorkPeriod(finishedPeriod);
+        WorkPeriod finishedPeriod =
+                new WorkPeriod().addTimespans(new Timespan(testTask, now, nowPlusFive));
+        manager.addWorkPeriod(finishedPeriod);
 
-		assertTrue(manager.getUnfinishedPeriods().isEmpty());
-		assertFalse(manager.hasUnfinishedPeriods());
+        assertTrue(manager.getUnfinishedPeriods().isEmpty());
+        assertFalse(manager.hasUnfinishedPeriods());
 
-		WorkPeriod unfinishedPeriod = new WorkPeriod();
+        WorkPeriod unfinishedPeriod = new WorkPeriod();
 
-		manager.addWorkPeriod(unfinishedPeriod);
+        manager.addWorkPeriod(unfinishedPeriod);
 
-		assertFalse(manager.getUnfinishedPeriods().isEmpty());
-		assertTrue(manager.getUnfinishedPeriods().contains(unfinishedPeriod));
-		assertTrue(manager.hasUnfinishedPeriods());
+        assertFalse(manager.getUnfinishedPeriods().isEmpty());
+        assertTrue(manager.getUnfinishedPeriods().contains(unfinishedPeriod));
+        assertTrue(manager.hasUnfinishedPeriods());
 
+        unfinishedPeriod.addTimespan(new Timespan(testTask, nowPlusFive, nowPlusTen));
 
-		unfinishedPeriod.addTimespan(new Timespan(testTask, nowPlusFive, nowPlusTen));
+        assertTrue(manager.getUnfinishedPeriods().isEmpty());
+        assertFalse(manager.hasUnfinishedPeriods());
+    }
 
-		assertTrue(manager.getUnfinishedPeriods().isEmpty());
-		assertFalse(manager.hasUnfinishedPeriods());
-	}
+    @Test
+    public void getWorkPeriodsWith() {
+        TimeManager manager = new TimeManager();
 
-	@Test
-	public void getWorkPeriodsWith() {
-		TimeManager manager = new TimeManager();
+        assertTrue(manager.getWorkPeriodsWith(testTask).isEmpty());
 
-		assertTrue(manager.getWorkPeriodsWith(testTask).isEmpty());
+        WorkPeriod period = new WorkPeriod();
+        Timespan spanOne = new Timespan(testTask);
+        Timespan spanTwo = new Timespan(testTaskTwo);
 
-		WorkPeriod period = new WorkPeriod();
-		Timespan spanOne = new Timespan(testTask);
-		Timespan spanTwo = new Timespan(testTaskTwo);
+        manager.addWorkPeriod(period).addTimespan(spanOne);
 
-		manager.addWorkPeriod(period).addTimespan(spanOne);
+        assertFalse(manager.getWorkPeriodsWith(testTask).isEmpty());
+        assertTrue(manager.getWorkPeriodsWith(testTask).contains(period));
 
-		assertFalse(manager.getWorkPeriodsWith(testTask).isEmpty());
-		assertTrue(manager.getWorkPeriodsWith(testTask).contains(period));
+        manager.addTimespan(spanTwo);
 
-		manager.addTimespan(spanTwo);
+        assertFalse(manager.getWorkPeriodsWith(testTask).isEmpty());
+        assertTrue(manager.getWorkPeriodsWith(testTask).contains(period));
+        assertEquals(1, manager.getWorkPeriodsWith(testTask).size());
+    }
 
-		assertFalse(manager.getWorkPeriodsWith(testTask).isEmpty());
-		assertTrue(manager.getWorkPeriodsWith(testTask).contains(period));
-		assertEquals(1, manager.getWorkPeriodsWith(testTask).size());
-	}
+    @Test
+    public void getTimespansWith() {
+        TimeManager manager = new TimeManager();
 
-	@Test
-	public void getTimespansWith() {
-		TimeManager manager = new TimeManager();
+        assertTrue(manager.getTimespansWith(testTask).isEmpty());
 
-		assertTrue(manager.getTimespansWith(testTask).isEmpty());
+        WorkPeriod period = new WorkPeriod();
+        Timespan spanOne = new Timespan(testTask);
+        Timespan spanTwo = new Timespan(testTaskTwo);
 
-		WorkPeriod period = new WorkPeriod();
-		Timespan spanOne = new Timespan(testTask);
-		Timespan spanTwo = new Timespan(testTaskTwo);
+        manager.addWorkPeriod(period).addTimespan(spanOne);
 
-		manager.addWorkPeriod(period).addTimespan(spanOne);
+        assertFalse(manager.getTimespansWith(testTask).isEmpty());
+        assertTrue(manager.getTimespansWith(testTask).contains(spanOne));
 
-		assertFalse(manager.getTimespansWith(testTask).isEmpty());
-		assertTrue(manager.getTimespansWith(testTask).contains(spanOne));
+        manager.addTimespan(spanTwo);
 
-		manager.addTimespan(spanTwo);
+        assertFalse(manager.getTimespansWith(testTask).isEmpty());
+        assertTrue(manager.getTimespansWith(testTask).contains(spanOne));
+        assertEquals(1, manager.getTimespansWith(testTask).size());
+    }
 
-		assertFalse(manager.getTimespansWith(testTask).isEmpty());
-		assertTrue(manager.getTimespansWith(testTask).contains(spanOne));
-		assertEquals(1, manager.getTimespansWith(testTask).size());
+    @Test
+    public void serialization() throws IOException {
+        ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
 
-	}
+        TimeManager manager = new TimeManager();
 
-	@Test
-	public void serialization() throws IOException {
-		ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
+        manager.addWorkPeriod(new WorkPeriod());
+        manager.addTimespan(new Timespan(testTask));
+        manager.addTask(testTaskTwo);
 
-		TimeManager manager = new TimeManager();
+        String serialized = mapper.writeValueAsString(manager);
 
-		manager.addWorkPeriod(new WorkPeriod());
-		manager.addTimespan(new Timespan(testTask));
-		manager.addTask(testTaskTwo);
+        TimeManager deserialized = mapper.readValue(serialized, TimeManager.class);
 
-		String serialized = mapper.writeValueAsString(manager);
+        assertTrue(manager.equals(deserialized));
+    }
 
-		TimeManager deserialized = mapper.readValue(serialized, TimeManager.class);
+    @Test
+    public void testClone() {
+        TimeManager manager = new TimeManager();
 
-		assertTrue(manager.equals(deserialized));
-	}
+        assertTrue(manager.getUnfinishedPeriods().isEmpty());
+        assertFalse(manager.hasUnfinishedPeriods());
 
-	@Test
-	public void testClone() {
-		TimeManager manager = new TimeManager();
+        WorkPeriod finishedPeriod =
+                new WorkPeriod().addTimespans(new Timespan(testTask, now, nowPlusFive));
+        manager.addWorkPeriod(finishedPeriod);
 
-		assertTrue(manager.getUnfinishedPeriods().isEmpty());
-		assertFalse(manager.hasUnfinishedPeriods());
+        assertEquals(manager, manager.clone());
+    }
 
-		WorkPeriod finishedPeriod = new WorkPeriod().addTimespans(new Timespan(testTask, now, nowPlusFive));
-		manager.addWorkPeriod(finishedPeriod);
+    @Test
+    public void getTasksByName() {
+        TimeManager manager = new TimeManager();
+        Task testTask = new Task("Test Task Very Important");
 
-		assertEquals(manager, manager.clone());
-	}
+        manager.addTask(testTask);
 
-	@Test
-	public void getTasksByName(){
-		TimeManager manager = new TimeManager();
-		Task testTask = new Task("Test Task Very Important");
+        assertEquals(testTask, manager.getTaskByName(testTask.getName()));
 
-		manager.addTask(testTask);
-
-
-		assertEquals(testTask, manager.getTaskByName(testTask.getName()));
-
-		List<Task> returned = manager.getTasksByNamePattern("Test Task(.*)");
-		assertTrue(returned.contains(testTask));
-
-	}
-
+        List<Task> returned = manager.getTasksByNamePattern("Test Task(.*)");
+        assertTrue(returned.contains(testTask));
+    }
 }

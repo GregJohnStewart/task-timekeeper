@@ -1,5 +1,3 @@
 package com.gjs.taskTimekeeper.desktopApp;
 
-public class MainTest {
-
-}
+public class MainTest {}

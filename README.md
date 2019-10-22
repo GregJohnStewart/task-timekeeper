@@ -16,9 +16,9 @@ The Manager works off of several objects:
    - Example: Project name, with charge code as an attribute
  - Timespan - A span of time spent on a task
    - Made up of the task being worked, and a start/end datetime
- - Work period - A period of time in which work takes place. 
+ - Work period - A period of time in which work takes place.
    - Made up of timespans, and can have any number of custom attributes associated with it.
-   - timespans are added to a period to describe how long certain tasks were worked for that period 
+   - timespans are added to a period to describe how long certain tasks were worked for that period
    - Example: a workday where I worked on a project from 1:00 to 2:00
 
 ## Known Issues
@@ -33,7 +33,15 @@ This is a list of known issues, if any.
 
 The desktop app is located [here](DesktopApp). You can run it either as a cli or gui, and lets you jump into using the tool.
 
-## Misc notes
+## Build/ Development notes
+
+### Commit-hooks
+
+This project uses Pre-commit hooks to make sure things are nice when committing.
+
+[Installation/ overview](https://pre-commit.com)
+
+[Github](https://github.com/pre-commit/pre-commit-hooks)
 
 ### Versioning
 
@@ -45,7 +53,7 @@ The versioning in this project follows the following loose guidelines:
 
 This version describes a large set of changes; this is bumped when backwards incompatible changes are made and when enough changes warrants it
 
-#### Minor 
+#### Minor
 
 This version describes minor but significant changes, such as in small behaviors and improvement tweaks
 

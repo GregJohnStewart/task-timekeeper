@@ -9,31 +9,33 @@ import java.io.OutputStream;
 
 public abstract class ManagerIO {
 
-	public abstract TimeManager load();
-	public abstract void save(TimeManager manager);
+    public abstract TimeManager load();
 
-	protected static TimeManager fromInputStream(InputStream is) throws IOException {
-		return ObjectMapperUtilities.getDefaultMapper().readValue(is, TimeManager.class);
-	}
+    public abstract void save(TimeManager manager);
 
-	protected static void toOutputStream(OutputStream os, TimeManager manager) throws IOException {
-		ObjectMapperUtilities.getDefaultMapper().writeValue(os, manager);
-	}
+    protected static TimeManager fromInputStream(InputStream is) throws IOException {
+        return ObjectMapperUtilities.getDefaultMapper().readValue(is, TimeManager.class);
+    }
 
-	public static ManagerIO getProperIO(){
-		//TODO:: get proper IO based on config
-		return new LocalFile();
-	}
+    protected static void toOutputStream(OutputStream os, TimeManager manager) throws IOException {
+        ObjectMapperUtilities.getDefaultMapper().writeValue(os, manager);
+    }
 
-	/**
-	 * Loads the time manager data from the configured location.
-	 * @return
-	 */
-	public static TimeManager loadTimeManager(){
-		return getProperIO().load();
-	}
+    public static ManagerIO getProperIO() {
+        // TODO:: get proper IO based on config
+        return new LocalFile();
+    }
 
-	public static void saveTimeManager(TimeManager manager){
-		getProperIO().save(manager);
-	}
+    /**
+     * Loads the time manager data from the configured location.
+     *
+     * @return
+     */
+    public static TimeManager loadTimeManager() {
+        return getProperIO().load();
+    }
+
+    public static void saveTimeManager(TimeManager manager) {
+        getProperIO().save(manager);
+    }
 }

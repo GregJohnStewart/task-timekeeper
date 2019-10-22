@@ -21,319 +21,318 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class WorkPeriodTest {
-	private static final Task testTask = new Task("Test task");
-	private static final Task testTaskTwo = new Task("Test task Two");
+    private static final Task testTask = new Task("Test task");
+    private static final Task testTaskTwo = new Task("Test task Two");
 
-	private static final LocalDateTime now = LocalDateTime.now();
-	private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
-	private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
+    private static final LocalDateTime now = LocalDateTime.now();
+    private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
+    private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
-	@Test
-	public void testEquals(){
-		WorkPeriod periodOne = new WorkPeriod();
-		WorkPeriod periodTwo = new WorkPeriod();
+    @Test
+    public void testEquals() {
+        WorkPeriod periodOne = new WorkPeriod();
+        WorkPeriod periodTwo = new WorkPeriod();
 
-		assertEquals(periodOne, periodTwo);
+        assertEquals(periodOne, periodTwo);
 
-		String attOneKey = "one";
-		String attOneVal = "one";
+        String attOneKey = "one";
+        String attOneVal = "one";
 
-		periodOne.getAttributes().put(attOneKey, attOneVal);
-		periodTwo.getAttributes().put(attOneKey, attOneVal);
+        periodOne.getAttributes().put(attOneKey, attOneVal);
+        periodTwo.getAttributes().put(attOneKey, attOneVal);
 
-		assertEquals(periodOne, periodTwo);
+        assertEquals(periodOne, periodTwo);
 
-		periodTwo.getAttributes().put(attOneKey, "something else");
+        periodTwo.getAttributes().put(attOneKey, "something else");
 
-		assertNotEquals(periodOne, periodTwo);
+        assertNotEquals(periodOne, periodTwo);
+    }
 
-	}
+    @Test
+    public void testBasics() {
+        WorkPeriod period = new WorkPeriod();
+        WorkPeriod periodTwo = new WorkPeriod();
 
+        assertEquals(period, periodTwo);
+        assertNotNull(period.getTimespans());
+        assertNotNull(period.getAttributes());
 
-	@Test
-	public void testBasics() {
-		WorkPeriod period = new WorkPeriod();
-		WorkPeriod periodTwo = new WorkPeriod();
+        period = new WorkPeriod(new TreeSet<>(), new HashMap<>());
+        TreeSet<Timespan> timespans = new TreeSet<>();
 
-		assertEquals(period, periodTwo);
-		assertNotNull(period.getTimespans());
-		assertNotNull(period.getAttributes());
+        assertEquals(timespans, period.getTimespans());
 
-		period = new WorkPeriod(new TreeSet<>(), new HashMap<>());
-		TreeSet<Timespan> timespans = new TreeSet<>();
+        Map<String, String> atts = new HashMap<>();
 
-		assertEquals(timespans, period.getTimespans());
+        period = new WorkPeriod(timespans, atts);
 
-		Map<String, String> atts = new HashMap<>();
+        assertEquals(atts, period.getAttributes());
 
-		period = new WorkPeriod(timespans, atts);
+        period.addTimespan(new Timespan(testTask));
+        period.addTimespan(new Timespan(testTask, now));
 
-		assertEquals(atts, period.getAttributes());
+        assertEquals(2, period.getTimespans().size());
 
-		period.addTimespan(new Timespan(testTask));
-		period.addTimespan(new Timespan(testTask, now));
+        period.hashCode();
+    }
 
-		assertEquals(2, period.getTimespans().size());
+    @Test
+    public void testCompare() {
+        WorkPeriod main = new WorkPeriod();
+        WorkPeriod o = new WorkPeriod();
 
-		period.hashCode();
-	}
+        Timespan spanOne = new Timespan(testTask, now, nowPlusFive);
+        Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
-	@Test
-	public void testCompare() {
-		WorkPeriod main = new WorkPeriod();
-		WorkPeriod o = new WorkPeriod();
+        // -1 if this starts before o
+        main.addTimespan(spanOne);
+        o.addTimespan(spanTwo);
 
-		Timespan spanOne = new Timespan(testTask, now, nowPlusFive);
-		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
+        assertEquals(-1, main.compareTo(o));
 
-		// -1 if this starts before o
-		main.addTimespan(spanOne);
-		o.addTimespan(spanTwo);
+        // -1 if o has no start
+        main = new WorkPeriod();
+        o = new WorkPeriod();
+        main.addTimespan(spanOne);
 
-		assertEquals(-1, main.compareTo(o));
+        assertEquals(-1, main.compareTo(o));
 
-		// -1 if o has no start
-		main = new WorkPeriod();
-		o = new WorkPeriod();
-		main.addTimespan(spanOne);
+        //  0 if this starts at the same time as o
+        main = new WorkPeriod();
+        o = new WorkPeriod();
+        main.addTimespan(spanOne);
+        o.addTimespan(spanOne);
 
-		assertEquals(-1, main.compareTo(o));
+        assertEquals(0, main.compareTo(o));
 
-		//  0 if this starts at the same time as o
-		main = new WorkPeriod();
-		o = new WorkPeriod();
-		main.addTimespan(spanOne);
-		o.addTimespan(spanOne);
+        //  0 if both this and o have no start time
+        main = new WorkPeriod();
+        o = new WorkPeriod();
+        assertEquals(0, main.compareTo(o));
 
-		assertEquals(0, main.compareTo(o));
+        //  1 if this starts after o
+        main = new WorkPeriod();
+        o = new WorkPeriod();
+        main.addTimespan(spanTwo);
+        o.addTimespan(spanOne);
+        assertEquals(1, main.compareTo(o));
 
-		//  0 if both this and o have no start time
-		main = new WorkPeriod();
-		o = new WorkPeriod();
-		assertEquals(0, main.compareTo(o));
+        //  1 if this has no start
+        main = new WorkPeriod();
+        o = new WorkPeriod();
+        o.addTimespan(spanOne);
+        assertEquals(1, main.compareTo(o));
+    }
 
-		//  1 if this starts after o
-		main = new WorkPeriod();
-		o = new WorkPeriod();
-		main.addTimespan(spanTwo);
-		o.addTimespan(spanOne);
-		assertEquals(1, main.compareTo(o));
+    @Test(expected = NullPointerException.class)
+    public void testComparetoNull() {
+        //noinspection ResultOfMethodCallIgnored
+        new WorkPeriod().compareTo((WorkPeriod) null);
+    }
 
-		//  1 if this has no start
-		main = new WorkPeriod();
-		o = new WorkPeriod();
-		o.addTimespan(spanOne);
-		assertEquals(1, main.compareTo(o));
-	}
+    @Test
+    public void testDuration() {
+        WorkPeriod period = new WorkPeriod();
 
-	@Test(expected = NullPointerException.class)
-	public void testComparetoNull() {
-		//noinspection ResultOfMethodCallIgnored
-		new WorkPeriod().compareTo((WorkPeriod) null);
-	}
+        assertEquals(0, Duration.ZERO.compareTo(period.getTotalTime()));
 
-	@Test
-	public void testDuration() {
-		WorkPeriod period = new WorkPeriod();
+        period.addTimespan(new Timespan(testTask, now, nowPlusFive));
 
-		assertEquals(0, Duration.ZERO.compareTo(period.getTotalTime()));
+        assertEquals(Duration.ofMinutes(5), period.getTotalTime());
 
-		period.addTimespan(new Timespan(testTask, now, nowPlusFive));
+        Timespan secondTimespan = new Timespan(testTaskTwo, now);
 
-		assertEquals(Duration.ofMinutes(5), period.getTotalTime());
+        period.addTimespan(secondTimespan);
 
-		Timespan secondTimespan = new Timespan(testTaskTwo, now);
+        assertEquals(Duration.ofMinutes(5), period.getTotalTime());
 
-		period.addTimespan(secondTimespan);
+        secondTimespan.setEndTime(nowPlusFive);
 
-		assertEquals(Duration.ofMinutes(5), period.getTotalTime());
+        assertEquals(Duration.ofMinutes(10), period.getTotalTime());
+    }
 
-		secondTimespan.setEndTime(nowPlusFive);
+    @Test
+    public void testSetTimespans() {
+        Timespan spanOne = new Timespan(testTask, now, nowPlusFive);
+        Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
-		assertEquals(Duration.ofMinutes(10), period.getTotalTime());
-	}
+        WorkPeriod period = new WorkPeriod(Arrays.asList(spanOne, spanTwo));
 
-	@Test
-	public void testSetTimespans() {
-		Timespan spanOne = new Timespan(testTask, now, nowPlusFive);
-		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
+        assertFalse(period.getTimespans().isEmpty());
+        assertEquals(2, period.getTimespans().size());
 
-		WorkPeriod period = new WorkPeriod(Arrays.asList(spanOne, spanTwo));
+        period = new WorkPeriod();
 
-		assertFalse(period.getTimespans().isEmpty());
-		assertEquals(2, period.getTimespans().size());
+        SortedSet<Timespan> set = new TreeSet<>();
+        set.add(spanOne);
+        set.add(spanTwo);
 
-		period = new WorkPeriod();
+        period.setTimespans(set);
 
-		SortedSet<Timespan> set = new TreeSet<>();
-		set.add(spanOne);
-		set.add(spanTwo);
+        assertFalse(period.getTimespans().isEmpty());
+        assertEquals(2, period.getNumTimespans());
+    }
 
-		period.setTimespans(set);
+    @Test
+    public void addTimespans() {
+        WorkPeriod period = new WorkPeriod();
 
-		assertFalse(period.getTimespans().isEmpty());
-		assertEquals(2, period.getNumTimespans());
-	}
+        Timespan spanOne = new Timespan(testTask);
 
-	@Test
-	public void addTimespans() {
-		WorkPeriod period = new WorkPeriod();
+        assertTrue(period.addTimespan(spanOne));
+        assertEquals(1, period.getNumTimespans());
+        assertTrue(period.contains(spanOne));
 
-		Timespan spanOne = new Timespan(testTask);
+        period.addTimespans(new Timespan(testTask, now), new Timespan(testTask, nowPlusFive));
 
-		assertTrue(period.addTimespan(spanOne));
-		assertEquals(1, period.getNumTimespans());
-		assertTrue(period.contains(spanOne));
+        assertEquals(3, period.getNumTimespans());
+    }
 
-		period.addTimespans(new Timespan(testTask, now), new Timespan(testTask, nowPlusFive));
+    @Test(expected = NullPointerException.class)
+    public void setNullTimespans() {
+        new WorkPeriod().setTimespans(null);
+    }
 
-		assertEquals(3, period.getNumTimespans());
-	}
+    @Test(expected = NullPointerException.class)
+    public void setNullAtts() {
+        new WorkPeriod().setAttributes(null);
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void setNullTimespans() {
-		new WorkPeriod().setTimespans(null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void addNullTimespan() {
+        new WorkPeriod().addTimespan(null);
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void setNullAtts() {
-		new WorkPeriod().setAttributes(null);
-	}
+    @Test
+    public void hasTimespansWithTask() {
+        WorkPeriod period = new WorkPeriod();
 
-	@Test(expected = NullPointerException.class)
-	public void addNullTimespan() {
-		new WorkPeriod().addTimespan(null);
-	}
+        Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
+        Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
-	@Test
-	public void hasTimespansWithTask() {
-		WorkPeriod period = new WorkPeriod();
+        assertFalse(period.hasTimespansWith(testTask));
 
-		Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
-		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
+        period.addTimespan(spanOne);
+        assertFalse(period.hasTimespansWith(testTask));
 
-		assertFalse(period.hasTimespansWith(testTask));
+        period.addTimespan(spanTwo);
+        assertTrue(period.hasTimespansWith(testTask));
+    }
 
-		period.addTimespan(spanOne);
-		assertFalse(period.hasTimespansWith(testTask));
+    @Test
+    public void getTimespansWithTask() {
+        WorkPeriod period = new WorkPeriod();
 
-		period.addTimespan(spanTwo);
-		assertTrue(period.hasTimespansWith(testTask));
-	}
+        Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
+        Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
 
-	@Test
-	public void getTimespansWithTask() {
-		WorkPeriod period = new WorkPeriod();
+        assertTrue(period.getTimespansWith(testTask).isEmpty());
 
-		Timespan spanOne = new Timespan(new Task("task"), now, nowPlusFive);
-		Timespan spanTwo = new Timespan(testTask, nowPlusFive, nowPlusTen);
+        period.addTimespan(spanOne);
+        assertTrue(period.getTimespansWith(testTask).isEmpty());
 
-		assertTrue(period.getTimespansWith(testTask).isEmpty());
+        period.addTimespan(spanTwo);
+        assertFalse(period.getTimespansWith(testTask).isEmpty());
+        assertEquals(1, period.getTimespansWith(testTask).size());
+    }
 
-		period.addTimespan(spanOne);
-		assertTrue(period.getTimespansWith(testTask).isEmpty());
+    @Test
+    public void getStartNoTimespans() {
+        assertNull(new WorkPeriod().getStart());
+    }
 
-		period.addTimespan(spanTwo);
-		assertFalse(period.getTimespansWith(testTask).isEmpty());
-		assertEquals(1, period.getTimespansWith(testTask).size());
-	}
+    @Test
+    public void getStartNoStartTimes() {
+        WorkPeriod period = new WorkPeriod();
+        period.addTimespans(new Timespan(testTask));
 
-	@Test
-	public void getStartNoTimespans() {
-		assertNull(new WorkPeriod().getStart());
-	}
+        assertNull(period.getStart());
+    }
 
-	@Test
-	public void getStartNoStartTimes() {
-		WorkPeriod period = new WorkPeriod();
-		period.addTimespans(new Timespan(testTask));
+    @Test
+    public void getStart() {
+        WorkPeriod period = new WorkPeriod();
+        period.addTimespan(new Timespan(testTask, now));
 
-		assertNull(period.getStart());
-	}
+        assertEquals(now, period.getStart());
+    }
 
-	@Test
-	public void getStart() {
-		WorkPeriod period = new WorkPeriod();
-		period.addTimespan(new Timespan(testTask, now));
+    @Test
+    public void getEndNoTimespans() {
+        assertNull(new WorkPeriod().getEnd());
+    }
 
-		assertEquals(now, period.getStart());
-	}
+    @Test
+    public void getEndNoEndTimes() {
+        WorkPeriod period = new WorkPeriod();
+        period.addTimespans(new Timespan(testTask));
 
-	@Test
-	public void getEndNoTimespans() {
-		assertNull(new WorkPeriod().getEnd());
-	}
+        assertNull(period.getEnd());
+    }
 
-	@Test
-	public void getEndNoEndTimes() {
-		WorkPeriod period = new WorkPeriod();
-		period.addTimespans(new Timespan(testTask));
+    @Test
+    public void getEnd() {
+        WorkPeriod period = new WorkPeriod();
+        period.addTimespan(new Timespan(testTask, now, nowPlusFive));
 
-		assertNull(period.getEnd());
-	}
+        assertEquals(nowPlusFive, period.getEnd());
+    }
 
-	@Test
-	public void getEnd() {
-		WorkPeriod period = new WorkPeriod();
-		period.addTimespan(new Timespan(testTask, now, nowPlusFive));
+    @Test
+    public void getHasUnfinishedTimespans() {
+        WorkPeriod period = new WorkPeriod();
 
-		assertEquals(nowPlusFive, period.getEnd());
-	}
+        assertTrue(period.isUnCompleted());
+        assertTrue(period.getUnfinishedTimespans().isEmpty());
+        assertFalse(period.hasUnfinishedTimespans());
 
-	@Test
-	public void getHasUnfinishedTimespans() {
-		WorkPeriod period = new WorkPeriod();
+        Timespan spanOne = new Timespan(testTask);
 
-		assertTrue(period.isUnCompleted());
-		assertTrue(period.getUnfinishedTimespans().isEmpty());
-		assertFalse(period.hasUnfinishedTimespans());
+        period.addTimespan(spanOne);
 
-		Timespan spanOne = new Timespan(testTask);
+        assertFalse(period.getUnfinishedTimespans().isEmpty());
+        assertEquals(1, period.getUnfinishedTimespans().size());
+        assertTrue(period.hasUnfinishedTimespans());
 
-		period.addTimespan(spanOne);
+        spanOne.setStartTime(now);
+        spanOne.setEndTime(nowPlusFive);
 
-		assertFalse(period.getUnfinishedTimespans().isEmpty());
-		assertEquals(1, period.getUnfinishedTimespans().size());
-		assertTrue(period.hasUnfinishedTimespans());
+        assertTrue(period.getUnfinishedTimespans().isEmpty());
+        assertFalse(period.hasUnfinishedTimespans());
+        assertFalse(period.isUnCompleted());
+    }
 
-		spanOne.setStartTime(now);
-		spanOne.setEndTime(nowPlusFive);
+    @Test
+    public void getTasks() {
+        WorkPeriod period = new WorkPeriod();
 
-		assertTrue(period.getUnfinishedTimespans().isEmpty());
-		assertFalse(period.hasUnfinishedTimespans());
-		assertFalse(period.isUnCompleted());
-	}
+        assertTrue(period.getTaskNames().isEmpty());
 
-	@Test
-	public void getTasks() {
-		WorkPeriod period = new WorkPeriod();
+        period.addTimespan(new Timespan(testTask));
 
-		assertTrue(period.getTaskNames().isEmpty());
+        assertFalse(period.getTaskNames().isEmpty());
+        assertTrue(period.getTaskNames().contains(testTask.getName()));
 
-		period.addTimespan(new Timespan(testTask));
+        period.addTimespan(new Timespan(testTaskTwo));
 
-		assertFalse(period.getTaskNames().isEmpty());
-		assertTrue(period.getTaskNames().contains(testTask.getName()));
+        assertTrue(
+                period.getTaskNames()
+                        .containsAll(Arrays.asList(testTask.getName(), testTaskTwo.getName())));
+    }
 
-		period.addTimespan(new Timespan(testTaskTwo));
+    @Test
+    public void serialization() throws IOException {
+        ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
 
-		assertTrue(period.getTaskNames().containsAll(Arrays.asList(testTask.getName(), testTaskTwo.getName())));
-	}
+        WorkPeriod period = new WorkPeriod();
 
-	@Test
-	public void serialization() throws IOException {
-		ObjectMapper mapper = ObjectMapperUtilities.getDefaultMapper();
+        period.getAttributes().put("test", "value");
+        period.addTimespan(new Timespan(new Task("test task")));
 
-		WorkPeriod period = new WorkPeriod();
+        String serialized = mapper.writeValueAsString(period);
 
-		period.getAttributes().put("test", "value");
-		period.addTimespan(new Timespan(new Task("test task")));
+        WorkPeriod deserialized = mapper.readValue(serialized, WorkPeriod.class);
 
-		String serialized = mapper.writeValueAsString(period);
-
-		WorkPeriod deserialized = mapper.readValue(serialized, WorkPeriod.class);
-
-		assertTrue(period.equals(deserialized));
-	}
-
+        assertTrue(period.equals(deserialized));
+    }
 }

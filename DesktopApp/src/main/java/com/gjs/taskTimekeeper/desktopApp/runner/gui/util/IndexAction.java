@@ -3,16 +3,14 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui.util;
 import javax.swing.AbstractAction;
 
 public abstract class IndexAction extends AbstractAction {
-	private int index;
+    private int index;
 
-	public IndexAction(String name, int index){
-		super(name);
-		this.index = index;
-	}
+    public IndexAction(String name, int index) {
+        super(name);
+        this.index = index;
+    }
 
-	public int getIndex() {
-		return index;
-	}
-
-
+    public int getIndex() {
+        return index;
+    }
 }

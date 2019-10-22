@@ -9,20 +9,20 @@ import org.kohsuke.args4j.CmdLineException;
 
 public class GuiRunnerTest {
 
-	@Before
-	public void setup() {
-		try {
-			Configuration.finalizeConfig();
-			LocalFile.ensureFilesExistWritable();
-		} catch (CmdLineException e) {
-			//nothing to do
-		}
-	}
+    @Before
+    public void setup() {
+        try {
+            Configuration.finalizeConfig();
+            LocalFile.ensureFilesExistWritable();
+        } catch (CmdLineException e) {
+            // nothing to do
+        }
+    }
 
-	@Ignore("Will create the window but not destroy it")
-	@Test
-	public void runGui() {
-		//figure out how to close automatically for testing
-		new GuiRunner().run();
-	}
+    @Ignore("Will create the window but not destroy it")
+    @Test
+    public void runGui() {
+        // figure out how to close automatically for testing
+        new GuiRunner().run();
+    }
 }

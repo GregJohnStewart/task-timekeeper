@@ -1,8 +1,7 @@
 package org.acme.rest.json;
 
-import java.util.Objects;
-
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.Objects;
 
 @RegisterForReflection
 public class Legume {
@@ -11,8 +10,7 @@ public class Legume {
 
     private String description;
 
-    public Legume() {
-    }
+    public Legume() {}
 
     public Legume(String name, String description) {
         this.name = name;

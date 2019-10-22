@@ -24,7 +24,7 @@ This is meant to express how you will need to enter in strings with spaces in ma
 
 In managed mode, however, the parser is not quite as sophisticated. It splits your input on spaces, ignoring escaped spaces (`\ `). It does not know to look for quoted strings as one value. Therefore, in managed mode, spaces in string inputs require spaces to be escaped.
 
-This guide has all example strings with escaped spaces because doing this would work for both managed and single mode, whereas quoted strings would only be valid for single mode. 
+This guide has all example strings with escaped spaces because doing this would work for both managed and single mode, whereas quoted strings would only be valid for single mode.
 
 ### Breakdown of a command
 
@@ -81,7 +81,7 @@ This changes the "Task Name" task to have the new name "New Task Name". `-n Task
 
 `-a edit -o task -n Task\ Name -att charge\ code -atv 1234567`
 
-This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it. 
+This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it.
 
 ###### Removing an attribute
 
@@ -135,7 +135,7 @@ All modifications on a period affect the selected period. In single mode, this i
 
 `-a edit -o period -att charge\ code -atv 1234567`
 
-This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it. 
+This either adds or updates the attribute "charge code", giving it the value "1234567". `-at charge\ code` specifies the "charge code" attribute, while `-atv 12334567` supplies the value to give it.
 
 ###### Removing an attribute
 
@@ -159,7 +159,7 @@ Note: in the following examples, replace <datetime> with a valid datetime format
 
 `-a remove -o period -bf <datetime>`
 
-The `-bf <datetime>` parameter specifies to remove periods before the given datetime. 
+The `-bf <datetime>` parameter specifies to remove periods before the given datetime.
 
 ###### Removing periods before a datetime
 
@@ -171,7 +171,7 @@ The `-af <datetime>` parameter specifies to remove periods after the given datet
 
 `-a remove -o period -bf <datetime> -af <datetime>`
 
-The `-bf <datetime>` parameter specifies to remove periods before the given datetime. 
+The `-bf <datetime>` parameter specifies to remove periods before the given datetime.
 
 ### Working with Spans
 
@@ -207,7 +207,7 @@ This sets the span at index `1`'s task to the task named `Task Name`
 
 `-a edit -o span -i 1 -st <datetime> -en <datetime>`
 
-This edits the span at index `1`'s starting and ending datetimes using the `-st` and `-en` arguments, respectively. You can also use the arguments independently from eachother, if you only want to update one at a time.  
+This edits the span at index `1`'s starting and ending datetimes using the `-st` and `-en` arguments, respectively. You can also use the arguments independently from eachother, if you only want to update one at a time.
 
 #### Removing spans
 
@@ -228,7 +228,7 @@ You can enter any ISO formatted datetime, minus the timezone.
 Here is a list of some more friendly formats for entering datetimes:
 
 - `d/M h:m a y` day/month hour:minute (am/pm) year
-- `d/M H:m y` day/month 24-hour:minute year 
+- `d/M H:m y` day/month 24-hour:minute year
 - `d/M y` day/month year (sets time to midnight)
 - `h:m a` hour:minute (am/pm) (sets date to current)
 - `H:m` 24-hour:minute (sets date to current)
@@ -250,7 +250,7 @@ Note that the command is not case sensitive.
 
 `-s completeSpans`
 
-Completes remaining timespans in selected period, giving them an end datetime of now (when the command is run). If uncompleted timespan started in the future, gives that span and and datetime of one second after start. 
+Completes remaining timespans in selected period, giving them an end datetime of now (when the command is run). If uncompleted timespan started in the future, gives that span and and datetime of one second after start.
 
 #### `newSpan`
 

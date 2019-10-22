@@ -12,90 +12,90 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CmdLineArgumentRunner extends ModeRunner {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
-	public static String[] splitCommandLineArgumentString(String inputString){
-		String[] inputs = inputString.split("(?<!\\\\)\\s+");
+    public static String[] splitCommandLineArgumentString(String inputString) {
+        String[] inputs = inputString.split("(?<!\\\\)\\s+");
 
-		for(int i = 0; i < inputs.length; i++){
-			inputs[i] = inputs[i].replace("\\ ", " ");
-		}
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i] = inputs[i].replace("\\ ", " ");
+        }
 
-		return inputs;
-	}
+        return inputs;
+    }
 
-	private final CmdLineArgumentParser parser;
+    private final CmdLineArgumentParser parser;
 
-	//TODO:: add saveFile member to make testing easier
+    // TODO:: add saveFile member to make testing easier
 
-	public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
-		this.parser = parser;
-	}
+    public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
+        this.parser = parser;
+    }
 
-	public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
-		this(new CmdLineArgumentParser(allowExtra, args));
-	}
+    public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
+        this(new CmdLineArgumentParser(allowExtra, args));
+    }
 
-	public CmdLineArgumentRunner(boolean allowExtra, String inputString) throws CmdLineException {
-		this(allowExtra, splitCommandLineArgumentString(inputString));
-	}
+    public CmdLineArgumentRunner(boolean allowExtra, String inputString) throws CmdLineException {
+        this(allowExtra, splitCommandLineArgumentString(inputString));
+    }
 
-	public CmdLineArgumentParser getParser(){
-		return this.parser;
-	}
+    public CmdLineArgumentParser getParser() {
+        return this.parser;
+    }
 
+    @Override
+    public void run() {
+        this.run(false);
+    }
 
-	@Override
-	public void run(){
-		this.run(false);
-	}
+    public void run(boolean selectLatest) {
+        ActionConfig actionConfig = this.parser.getConfig();
+        LOGGER.trace("Running argument based on parsed argument: {}", actionConfig);
 
-	public void run(boolean selectLatest) {
-		ActionConfig actionConfig = this.parser.getConfig();
-		LOGGER.trace("Running argument based on parsed argument: {}", actionConfig);
+        if (actionConfig.getQuit()) {
+            LOGGER.debug("User chose to exit.");
+            throw new DoExit();
+        }
 
-		if(actionConfig.getQuit()){
-			LOGGER.debug("User chose to exit.");
-			throw new DoExit();
-		}
+        if (actionConfig.getShowHelp()) {
+            LOGGER.debug("Showing help output.");
+            showArgHelp();
+            return;
+        }
 
-		if(actionConfig.getShowHelp()) {
-			LOGGER.debug("Showing help output.");
-			showArgHelp();
-			return;
-		}
+        TimeManager manager = ManagerIO.loadTimeManager();
+        if (manager == null) {
+            // something bad happened reading data, nothing to do. already handled.
+            return;
+        }
 
-		TimeManager manager = ManagerIO.loadTimeManager();
-		if(manager == null){
-			//something bad happened reading data, nothing to do. already handled.
-			return;
-		}
+        if (selectLatest) {
+            LOGGER.trace("Selecting the latest period.");
+            manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
+        }
 
-		if(selectLatest){
-			LOGGER.trace("Selecting the latest period.");
-			manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
-		}
+        // Do action. If returns true, data was changed.
+        if (manager.doCrudAction(actionConfig)) {
+            ManagerIO.saveTimeManager(manager);
+        }
 
-		//Do action. If returns true, data was changed.
-		if (manager.doCrudAction(actionConfig)) {
-			ManagerIO.saveTimeManager(manager);
-		}
+        LOGGER.trace("FINISHED processing argument.");
+    }
 
-		LOGGER.trace("FINISHED processing argument.");
-	}
+    /** Displays the help output to the terminal. */
+    public void showArgHelp() {
+        LOGGER.info("Showing argument help output to terminal.");
 
-	/**
-	 * Displays the help output to the terminal.
-	 */
-	public void showArgHelp(){
-		LOGGER.info("Showing argument help output to terminal.");
+        System.out.println("Help output:");
+        System.out.println(
+                "\tFor more detailed information, visit: "
+                        + Configuration.getProperty(
+                                ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
+        System.out.println();
 
-		System.out.println("Help output:");
-		System.out.println("\tFor more detailed information, visit: " + Configuration.getProperty(ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
-		System.out.println();
+        this.parser.printUsage();
 
-		this.parser.printUsage();
-
-		TimeParser.outputHelp();
-	}
+        TimeParser.outputHelp();
+    }
 }

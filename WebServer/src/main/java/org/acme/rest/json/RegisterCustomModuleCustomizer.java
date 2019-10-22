@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 @Singleton
 public class RegisterCustomModuleCustomizer implements ObjectMapperCustomizer {
 
-	public void customize(ObjectMapper mapper) {
-		//TODO
-	}
+    public void customize(ObjectMapper mapper) {
+        // TODO
+    }
 }

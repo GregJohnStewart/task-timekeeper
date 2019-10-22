@@ -19,127 +19,128 @@ import java.util.List;
 import java.util.Map;
 
 public class AttributeEditor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeEditor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttributeEditor.class);
 
-	private static final int DEFAULT_TEXTAREA_COL = 10;
+    private static final int DEFAULT_TEXTAREA_COL = 10;
 
-	private List<JTextField> attributes = new ArrayList<>();
-	private List<JTextField> values = new ArrayList<>();
-	private JPanel attValContainer = new JPanel();
+    private List<JTextField> attributes = new ArrayList<>();
+    private List<JTextField> values = new ArrayList<>();
+    private JPanel attValContainer = new JPanel();
 
-	public String getAttributes(){
-		StringBuilder builder = new StringBuilder();
+    public String getAttributes() {
+        StringBuilder builder = new StringBuilder();
 
-		for(int i = 0; i < attributes.size(); i++){
-			if(attributes.get(i).getText().isBlank()){
-				continue;
-			}
-			builder.append(attributes.get(i).getText());
-			builder.append(',');
-			builder.append(values.get(i).getText());
-			builder.append(';');
-		}
+        for (int i = 0; i < attributes.size(); i++) {
+            if (attributes.get(i).getText().isBlank()) {
+                continue;
+            }
+            builder.append(attributes.get(i).getText());
+            builder.append(',');
+            builder.append(values.get(i).getText());
+            builder.append(';');
+        }
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
+    public JPanel getForm() {
+        JPanel output = new JPanel();
+        output.setLayout(new BoxLayout(output, BoxLayout.Y_AXIS));
+        attValContainer.setLayout(new BoxLayout(attValContainer, BoxLayout.Y_AXIS));
 
+        output.add(new JLabel("Attributes:                                         "));
+        JPanel temp = new JPanel();
 
+        temp.add(new JLabel("Name               "));
+        temp.add(new JLabel("Value              "));
+        attValContainer.add(temp);
 
-	public JPanel getForm(){
-		JPanel output = new JPanel();
-		output.setLayout(new BoxLayout(output, BoxLayout.Y_AXIS));
-		attValContainer.setLayout(new BoxLayout(attValContainer, BoxLayout.Y_AXIS));
+        //		output.add(attValContainer);
 
-		output.add(new JLabel("Attributes:                                         "));
-		JPanel temp = new JPanel();
+        temp = new JPanel();
+        //		temp.setAlignmentX( Component.LEFT_ALIGNMENT );
+        JButton addAtt = new JButton("a");
+        addAtt.setAction(
+                new AbstractAction("Add Attribute") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        LOGGER.debug("Adding new empty att/val input pair");
+                        JTextField newAttName = new JTextField(DEFAULT_TEXTAREA_COL);
+                        JTextField newAttVal = new JTextField(DEFAULT_TEXTAREA_COL);
 
-		temp.add(new JLabel("Name               "));
-		temp.add(new JLabel("Value              "));
-		attValContainer.add(temp);
+                        JPanel newPanel = new JPanel();
+                        JButton remButton = new JButton("R");
+                        remButton.setAction(
+                                new AbstractAction("Rem") {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        int index = attributes.indexOf(newAttName);
+                                        attributes.remove(index);
+                                        values.remove(index);
+                                        attValContainer.remove(newPanel);
+                                        attValContainer.updateUI();
+                                    }
+                                });
+                        remButton.setMargin(new Insets(-2, 0, -2, 0));
 
-//		output.add(attValContainer);
+                        newPanel.add(newAttName);
+                        newPanel.add(newAttVal);
+                        newPanel.add(remButton);
+                        attValContainer.add(newPanel);
+                        attValContainer.updateUI();
 
-		temp = new JPanel();
-//		temp.setAlignmentX( Component.LEFT_ALIGNMENT );
-		JButton addAtt = new JButton("a");
-		addAtt.setAction(new AbstractAction("Add Attribute") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				LOGGER.debug("Adding new empty att/val input pair");
-				JTextField newAttName = new JTextField(DEFAULT_TEXTAREA_COL);
-				JTextField newAttVal = new JTextField(DEFAULT_TEXTAREA_COL);
+                        attributes.add(newAttName);
+                        values.add(newAttVal);
+                    }
+                });
 
-				JPanel newPanel = new JPanel();
-				JButton remButton = new JButton("R");
-				remButton.setAction(new AbstractAction("Rem") {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int index = attributes.indexOf(newAttName);
-						attributes.remove(index);
-						values.remove(index);
-						attValContainer.remove(newPanel);
-						attValContainer.updateUI();
-					}
-				});
-				remButton.setMargin( new Insets(-2, 0, -2, 0));
+        temp.add(addAtt);
 
-				newPanel.add(newAttName);
-				newPanel.add(newAttVal);
-				newPanel.add(remButton);
-				attValContainer.add(newPanel);
-				attValContainer.updateUI();
+        JScrollPane scrollPane = new JScrollPane();
+        Dimension size = new Dimension(350, 150);
+        scrollPane.setMaximumSize(size);
+        scrollPane.setMinimumSize(size);
+        scrollPane.setPreferredSize(size);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setViewportView(attValContainer);
 
-				attributes.add(newAttName);
-				values.add(newAttVal);
-			}
-		});
+        output.add(scrollPane);
+        output.add(temp);
 
-		temp.add(addAtt);
+        return output;
+    }
 
-		JScrollPane scrollPane = new JScrollPane();
-		Dimension size = new Dimension(350, 150);
-		scrollPane.setMaximumSize(size);
-		scrollPane.setMinimumSize(size);
-		scrollPane.setPreferredSize(size);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setViewportView(attValContainer);
+    public JPanel getForm(Map<String, String> attMap) {
+        JPanel output = this.getForm();
 
-		output.add(scrollPane);
-		output.add(temp);
+        for (Map.Entry<String, String> entry : attMap.entrySet()) {
+            JTextField newAttName = new JTextField(entry.getKey(), DEFAULT_TEXTAREA_COL);
+            JTextField newAttVal = new JTextField(entry.getValue(), DEFAULT_TEXTAREA_COL);
 
-		return output;
-	}
-	public JPanel getForm(Map<String, String> attMap){
-		JPanel output = this.getForm();
+            JPanel newPanel = new JPanel();
+            JButton remButton = new JButton("R");
+            remButton.setAction(
+                    new AbstractAction("Remove") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            attributes.remove(newAttName);
+                            values.remove(newAttVal);
+                            attValContainer.remove(newPanel);
+                            attValContainer.updateUI();
+                        }
+                    });
+            remButton.setMargin(new Insets(-2, 0, -2, 0));
 
-		for(Map.Entry<String, String> entry : attMap.entrySet()){
-			JTextField newAttName = new JTextField(entry.getKey(), DEFAULT_TEXTAREA_COL);
-			JTextField newAttVal = new JTextField(entry.getValue(), DEFAULT_TEXTAREA_COL);
+            newPanel.add(newAttName);
+            newPanel.add(newAttVal);
+            newPanel.add(remButton);
+            attValContainer.add(newPanel);
+            attValContainer.updateUI();
 
-			JPanel newPanel = new JPanel();
-			JButton remButton = new JButton("R");
-			remButton.setAction(new AbstractAction("Remove") {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					attributes.remove(newAttName);
-					values.remove(newAttVal);
-					attValContainer.remove(newPanel);
-					attValContainer.updateUI();
-				}
-			});
-			remButton.setMargin( new Insets(-2, 0, -2, 0));
+            attributes.add(newAttName);
+            values.add(newAttVal);
+        }
 
-			newPanel.add(newAttName);
-			newPanel.add(newAttVal);
-			newPanel.add(remButton);
-			attValContainer.add(newPanel);
-			attValContainer.updateUI();
-
-			attributes.add(newAttName);
-			values.add(newAttVal);
-		}
-
-		return output;
-	}
+        return output;
+    }
 }

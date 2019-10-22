@@ -11,7 +11,7 @@ In general, this is how one works with Task Timekeeper:
  - Add spans to the work period
    - You can add spans without specifying end time, you can complete the span later, when you finish working
  - repeat as you do work
- - review the time you spent on what tasks for either a certain period or over a few periods 
+ - review the time you spent on what tasks for either a certain period or over a few periods
 
 
 ## Configuration
