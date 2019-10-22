@@ -1,5 +1,10 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
+
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.Task;
 import com.gjs.taskTimekeeper.baseCode.TimeManager;
@@ -25,25 +30,6 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClick
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -62,14 +48,28 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** https://www.jetbrains.com/help/idea/designing-gui-major-steps.html */
 public class MainGui {
@@ -90,7 +90,7 @@ public class MainGui {
     private static final double DURATION_COL_WIDTH = 65;
 
     private static final List<String> PERIOD_LIST_TABLE_HEADERS =
-            List.of("#", "Start", "End", "Duration", "Complete", "Actions");
+            Arrays.asList("#", "Start", "End", "Duration", "Complete", "Actions");
     private static final Map<Integer, Double> PERIOD_LIST_COL_WIDTHS =
             Map.of(
                     0, INDEX_COL_WIDTH,
