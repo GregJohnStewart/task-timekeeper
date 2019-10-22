@@ -326,7 +326,7 @@ public class MainGui {
                 if (!taskChangeConfig.getName().equals(helper.getName())) {
                     taskChangeConfig.setNewName(helper.getName());
                 }
-                if (helper.getAttributes().trim().isBlank()) {
+                if (helper.getAttributes().trim().isEmpty()) {
                     taskChangeConfig.setAttributes("EMPTY");
                 } else {
                     taskChangeConfig.setAttributes(helper.getAttributes());

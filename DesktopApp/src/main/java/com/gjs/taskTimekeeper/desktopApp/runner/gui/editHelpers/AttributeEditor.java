@@ -1,8 +1,11 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -11,12 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AttributeEditor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AttributeEditor.class);
@@ -31,7 +30,7 @@ public class AttributeEditor {
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < attributes.size(); i++) {
-            if (attributes.get(i).getText().isBlank()) {
+            if (attributes.get(i).getText().trim().isEmpty()) {
                 continue;
             }
             builder.append(attributes.get(i).getText());
