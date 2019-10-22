@@ -4,7 +4,7 @@ plugins {
 }
 //apply plugin: 'io.quarkus'
 
-version = '0.0.0.53'
+version = '0.0.0.59'
 
 sourceCompatibility = 1.8
 
@@ -17,7 +17,8 @@ dependencies {
 
     implementation enforcedPlatform('io.quarkus:quarkus-bom:0.25.0')
     implementation 'io.quarkus:quarkus-resteasy'
-    implementation 'io.quarkus:quarkus-jackson'
+    implementation 'io.quarkus:quarkus-resteasy-jackson'
+    //implementation 'io.quarkus:quarkus-jackson'
     //implementation 'io.quarkus:quarkus-elytron-security'
 
     testImplementation 'io.quarkus:quarkus-junit5'
