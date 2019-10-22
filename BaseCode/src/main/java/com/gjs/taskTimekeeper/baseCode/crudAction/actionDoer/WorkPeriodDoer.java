@@ -7,7 +7,6 @@ import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -440,13 +439,9 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
             while (taskIt.hasNext()) {
                 Name curTask = taskIt.next();
 
-                Duration duration = period.getTotalTimeWith(curTask);
-
                 sb.append(curTask);
                 sb.append(" (");
-                sb.append(duration.toHoursPart());
-                sb.append(':');
-                sb.append(duration.toMinutesPart());
+                sb.append(TimeParser.toDurationString(period.getTotalTimeWith(curTask)));
                 sb.append(")");
 
                 if (taskIt.hasNext()) {
