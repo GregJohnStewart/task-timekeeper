@@ -24,7 +24,7 @@ public class ManagerSerializationTest {
         Task task =
                 new Task(
                         "Test Task",
-                        new HashMap<>() {
+                        new HashMap<String, String>() {
                             {
                                 put("att", "val");
                             }
@@ -43,7 +43,7 @@ public class ManagerSerializationTest {
                                                 LocalDateTime.now().plusMinutes(10),
                                                 LocalDateTime.now().plusMinutes(15)))
                                 .collect(Collectors.toList()),
-                        new HashMap<>() {
+                        new HashMap<String, String>() {
                             {
                                 put("att2", "value");
                             }
@@ -60,7 +60,7 @@ public class ManagerSerializationTest {
                                                 LocalDateTime.now().plusMinutes(30),
                                                 LocalDateTime.now().plusMinutes(35)))
                                 .collect(Collectors.toList()),
-                        new HashMap<>() {
+                        new HashMap<String, String>() {
                             {
                                 put("att3", "value2");
                             }
