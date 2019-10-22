@@ -6,8 +6,6 @@ import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.Before;
@@ -23,21 +21,33 @@ public class ManagerSerializationTest {
     @Before
     public void setup() {
         manager = new TimeManager();
-        Task task = new Task("Test Task", Map.of("att", "val"));
+        Task task =
+                new Task(
+                        "Test Task",
+                        new HashMap<>() {
+                            {
+                                put("att", "val");
+                            }
+                        });
         manager.addTask(task);
 
         manager.addWorkPeriod(
                 new WorkPeriod(
-                        List.of(
-                                new Timespan(
-                                        task,
-                                        LocalDateTime.now(),
-                                        LocalDateTime.now().plusMinutes(5)),
-                                new Timespan(
-                                        task,
-                                        LocalDateTime.now().plusMinutes(10),
-                                        LocalDateTime.now().plusMinutes(15))),
-                        Map.of("att2", "value")));
+                        Stream.of(
+                                        new Timespan(
+                                                task,
+                                                LocalDateTime.now(),
+                                                LocalDateTime.now().plusMinutes(5)),
+                                        new Timespan(
+                                                task,
+                                                LocalDateTime.now().plusMinutes(10),
+                                                LocalDateTime.now().plusMinutes(15)))
+                                .collect(Collectors.toList()),
+                        new HashMap<>() {
+                            {
+                                put("att2", "value");
+                            }
+                        }));
         manager.addWorkPeriod(
                 new WorkPeriod(
                         Stream.of(
