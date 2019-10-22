@@ -7,6 +7,7 @@ The desktop app uses [SetupBuilder](https://github.com/i-net-software/SetupBuild
 In general:
 
  * The generated packaged installers will be placed in: `task-timekeeper/DesktopApp/build/distributions/`
+ * Command to run to get most of the files: (minus windows and Mac): `./gradlew clean test :DesktopApp:build :DesktopApp:deb :DesktopApp:rpm`
 
 ## Preparation
 
