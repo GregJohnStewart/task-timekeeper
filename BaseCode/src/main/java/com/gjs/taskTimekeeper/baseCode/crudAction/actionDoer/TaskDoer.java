@@ -6,15 +6,14 @@ import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The action doer to handle managing Tasks. */
 public class TaskDoer extends CrudDoer<Task> {
@@ -58,6 +57,7 @@ public class TaskDoer extends CrudDoer<Task> {
 
         if (config.getAttributeName() != null) {
             if (config.getAttributeVal() != null) {
+                LOGGER.debug("Setting attribute name and value.");
                 newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
             }
         }
