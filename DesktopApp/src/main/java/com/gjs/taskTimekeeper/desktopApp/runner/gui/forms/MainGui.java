@@ -101,7 +101,8 @@ public class MainGui {
                     put(4, (double) 85);
                 }
             };
-    private static final List<String> TASK_LIST_TABLE_HEADERS = List.of("#", "Name", "Actions");
+    private static final List<String> TASK_LIST_TABLE_HEADERS =
+            Arrays.asList("#", "Name", "Actions");
     private static final Map<Integer, Double> TASK_LIST_COL_WIDTHS =
             new HashMap<Integer, Double>() {
                 {
@@ -253,8 +254,8 @@ public class MainGui {
                     resetStreams();
                     ActionConfig config = new ActionConfig(KeeperObjectType.TASK, ADD);
                     config.setName(helper.getName());
-                    String atts = helper.getAttributes();
-                    if (!atts.isBlank()) {
+                    String atts = helper.getAttributes().trim();
+                    if (!atts.isEmpty()) {
                         config.setAttributes(atts);
                     }
 
@@ -325,7 +326,7 @@ public class MainGui {
                 if (!taskChangeConfig.getName().equals(helper.getName())) {
                     taskChangeConfig.setNewName(helper.getName());
                 }
-                if (helper.getAttributes().isBlank()) {
+                if (helper.getAttributes().trim().isBlank()) {
                     taskChangeConfig.setAttributes("EMPTY");
                 } else {
                     taskChangeConfig.setAttributes(helper.getAttributes());
@@ -564,7 +565,7 @@ public class MainGui {
                         ActionConfig attributeChangeConfig =
                                 new ActionConfig(KeeperObjectType.PERIOD, EDIT);
 
-                        if (helper.getAttributes().isBlank()) {
+                        if (helper.getAttributes().trim().isEmpty()) {
                             attributeChangeConfig.setAttributes("EMPTY");
                         } else {
                             attributeChangeConfig.setAttributes(helper.getAttributes());
@@ -886,7 +887,9 @@ public class MainGui {
                     }
 
                     new TableLayoutHelper(
-                            this.selectedPeriodAttsPane, periodAtts, List.of("Attribute", "Value"));
+                            this.selectedPeriodAttsPane,
+                            periodAtts,
+                            Arrays.asList("Attribute", "Value"));
                 }
 
                 // task details
@@ -908,8 +911,12 @@ public class MainGui {
                     new TableLayoutHelper(
                             this.selectedPeriodTaskStatsPane,
                             taskStats,
-                            List.of("Task Name", "Duration"),
-                            Map.of(1, DURATION_COL_WIDTH));
+                            Arrays.asList("Task Name", "Duration"),
+                            new HashMap<Integer, Double>() {
+                                {
+                                    put(1, DURATION_COL_WIDTH);
+                                }
+                            });
                 }
 
                 // span details
@@ -932,7 +939,7 @@ public class MainGui {
                         spanRow.add(TimeParser.toOutputString(span.getEndTime()));
                         spanRow.add(TimeParser.toDurationString(span.getDuration()));
                         spanRow.add(span.getTaskName().getName());
-                        spanRow.add(List.of(edit, delete));
+                        spanRow.add(Arrays.asList(edit, delete));
 
                         spanDetails.add(spanRow);
                         count++;
@@ -976,7 +983,7 @@ public class MainGui {
                 row.add(TimeParser.toOutputString(period.getEnd()));
                 row.add(TimeParser.toDurationString(period.getTotalTime()));
                 row.add((period.isUnCompleted() ? "No" : "Yes"));
-                row.add(List.of(select, delete));
+                row.add(Arrays.asList(select, delete));
 
                 periodData.add(row);
                 curInd++;
@@ -1010,7 +1017,7 @@ public class MainGui {
 
                 row.add(curInd);
                 row.add(task.getName().getName());
-                row.add(List.of(viewButton, editButton, deleteButton));
+                row.add(Arrays.asList(viewButton, editButton, deleteButton));
 
                 periodData.add(row);
                 curInd++;
