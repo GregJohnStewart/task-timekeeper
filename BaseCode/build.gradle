@@ -31,11 +31,3 @@ compileJava {
     println "BaseCode version at compile time: " + version
     dependsOn 'incrementBuildVersion';
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        csv.enabled true
-        html.enabled true
-    }
-}
