@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '7.0.1.16'
+version = '7.0.1.19'
 sourceCompatibility = 1.8
 
 repositories {
@@ -30,4 +30,12 @@ dependencies {
 compileJava {
     println "BaseCode version at compile time: " + version
     dependsOn 'incrementBuildVersion';
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled true
+        html.enabled true
+    }
 }
