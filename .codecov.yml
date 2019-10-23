@@ -1,13 +1,13 @@
 codecov:
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
 
 coverage:
-  precision: 2
-  round: down
+  precision: 3
+  round: up
   range: "70...100"
 
   status:
-    project: yes
+    project: true
     patch: yes
     changes: no
 
@@ -16,10 +16,10 @@ parsers:
     branch_detection:
       conditional: yes
       loop: yes
-      method: no
+      method: yes
       macro: no
 
 comment:
   layout: "reach,diff,flags,tree"
   behavior: default
-  require_changes: no
+  require_changes: false
