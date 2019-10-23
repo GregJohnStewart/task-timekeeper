@@ -9,9 +9,12 @@ plugins {
     // https://github.com/jeremylong/dependency-check-gradle
     id "org.owasp.dependencycheck" version "5.2.2"
 }
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+}
 subprojects {
     apply plugin: 'org.owasp.dependencycheck'
-    apply plugin: 'jacoco'
 
     // task to increment the build version of sub projects
     task incrementBuildVersion {
@@ -41,7 +44,7 @@ task codeCoverageReport(type: JacocoReport) {
 
     reports {
         xml.enabled true
-        xml.destination "${buildDir}/reports/jacoco/report.xml"
+//        xml.destination "${buildDir}/reports/jacoco/report.xml"
         html.enabled false
         csv.enabled false
     }
