@@ -9,7 +9,7 @@ jdk:
   - openjdk11
   - oraclejdk11
   - openjdk8
-  - oraclejdk8
+#  - oraclejdk8
 script:
   - ./gradlew check
   - ./gradlew codeCoverageReport
