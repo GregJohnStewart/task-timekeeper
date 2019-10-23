@@ -11,6 +11,8 @@ plugins {
 }
 subprojects {
     apply plugin: 'org.owasp.dependencycheck'
+    apply plugin: 'jacoco'
+
     // task to increment the build version of sub projects
     task incrementBuildVersion {
         group "build"
