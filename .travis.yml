@@ -3,14 +3,16 @@ jobs:
   include:
     - os: linux
       dist: bionic
-      jdk:
-        - openjdk11
-        - oraclejdk11
-        - openjdk8
+      jdk: openjdk11
+    - os: linux
+      dist: bionic
+      jdk: oraclejdk11
+    - os: linux
+      dist: bionic
+      jdk: openjdk8
     - os: linux
       dist: xenial
-      jdk:
-        - openjdk8
+      jdk: openjdk8
 #        - oraclejdk8
 #jdk:
 #  - openjdk11
