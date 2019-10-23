@@ -12,6 +12,11 @@ plugins {
 allprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
 }
 subprojects {
     apply plugin: 'org.owasp.dependencycheck'
