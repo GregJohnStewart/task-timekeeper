@@ -1,11 +1,21 @@
 language: java
-os: linux
-dist: xenial
-jdk:
-  - openjdk11
-  - oraclejdk11
-  - openjdk8
-  - oraclejdk8
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+      jdk:
+        - openjdk11
+        - oraclejdk11
+    - os: linux
+      dist: xenial
+      jdk:
+        - openjdk8
+        - oraclejdk8
+#jdk:
+#  - openjdk11
+#  - oraclejdk11
+#  - openjdk8
+#  - oraclejdk8
 script:
   - ./gradlew check
   - ./gradlew codeCoverageReport
