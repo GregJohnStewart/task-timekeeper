@@ -1,13 +1,12 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Abstract class for classes that perform actions. */
 public abstract class ActionDoer {

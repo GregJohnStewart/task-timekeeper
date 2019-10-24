@@ -1,15 +1,15 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
+
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 
 public class CrudOperator {
     private static final Logger LOGGER = LoggerFactory.getLogger(CrudOperator.class);

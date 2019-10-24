@@ -41,6 +41,9 @@ subprojects {
     }
 }
 task codeCoverageReport(type: JacocoReport) {
+    group "verification"
+    description "Builds the coverage report from all sub projects' coverage reports."
+
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     subprojects.each {

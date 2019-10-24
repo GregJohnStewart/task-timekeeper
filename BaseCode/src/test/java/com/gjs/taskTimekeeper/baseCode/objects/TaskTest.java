@@ -1,17 +1,16 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
+import java.io.IOException;
+import java.util.HashMap;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 // TODO:: rewrite these better
 public class TaskTest {

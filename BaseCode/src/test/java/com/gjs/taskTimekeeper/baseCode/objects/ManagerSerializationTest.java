@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.objects;
 
 import static org.junit.Assert.assertEquals;
 

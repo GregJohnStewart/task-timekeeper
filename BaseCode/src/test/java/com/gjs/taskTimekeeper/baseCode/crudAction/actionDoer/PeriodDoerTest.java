@@ -1,16 +1,5 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
-import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
-import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import org.junit.Test;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-
 import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +7,16 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import org.junit.Test;
 
 public class PeriodDoerTest extends ActionDoerTest {
 

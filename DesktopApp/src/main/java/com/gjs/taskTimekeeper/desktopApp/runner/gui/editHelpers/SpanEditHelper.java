@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;

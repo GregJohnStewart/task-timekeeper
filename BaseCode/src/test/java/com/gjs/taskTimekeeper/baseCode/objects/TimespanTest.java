@@ -1,18 +1,17 @@
-package com.gjs.taskTimekeeper.baseCode;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
+package com.gjs.taskTimekeeper.baseCode.objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import org.junit.Test;
 
 public class TimespanTest {
 

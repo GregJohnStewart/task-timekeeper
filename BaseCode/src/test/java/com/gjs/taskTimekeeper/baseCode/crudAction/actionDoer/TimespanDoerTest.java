@@ -1,23 +1,22 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
-import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
+import java.time.LocalDateTime;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimespanDoerTest extends ActionDoerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoerTest.class);

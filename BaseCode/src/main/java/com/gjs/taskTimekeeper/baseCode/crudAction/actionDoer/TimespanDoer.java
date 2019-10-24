@@ -1,20 +1,19 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
-import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The ActionDoer to handle Timespans. */
 public class TimespanDoer extends CrudDoer<Timespan> {

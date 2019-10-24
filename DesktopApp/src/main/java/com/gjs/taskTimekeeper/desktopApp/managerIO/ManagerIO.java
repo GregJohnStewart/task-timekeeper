@@ -1,8 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.managerIO;
 
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

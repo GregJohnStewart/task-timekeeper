@@ -1,20 +1,19 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
-import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
+import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
+
 import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
 
 /** Handles doing the special tasks */
 public class SpecialDoer extends ActionDoer {

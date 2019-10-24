@@ -1,10 +1,9 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer.CrudOperator;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;

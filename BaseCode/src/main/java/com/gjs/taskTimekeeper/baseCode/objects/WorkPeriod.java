@@ -1,9 +1,8 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;

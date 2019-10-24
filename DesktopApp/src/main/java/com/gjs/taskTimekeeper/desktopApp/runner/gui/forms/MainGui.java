@@ -6,12 +6,12 @@ import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
 import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
-import com.gjs.taskTimekeeper.baseCode.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;

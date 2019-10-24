@@ -1,22 +1,21 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
-import com.gjs.taskTimekeeper.baseCode.Task;
-import com.gjs.taskTimekeeper.baseCode.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.Timespan;
-import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
-import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
-import com.gjs.taskTimekeeper.baseCode.utils.Name;
-import org.junit.Test;
-
-import java.util.Collection;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.utils.Name;
+import java.util.Collection;
+import java.util.List;
+import org.junit.Test;
 
 public class TaskDoerTest extends ActionDoerTest {
 
