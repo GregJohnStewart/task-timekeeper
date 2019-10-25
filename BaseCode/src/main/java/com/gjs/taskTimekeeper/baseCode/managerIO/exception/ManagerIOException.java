@@ -1,7 +1,9 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.exception;
 
+import com.gjs.taskTimekeeper.baseCode.TimeKeeperException;
+
 /** Exception to associate with errors in TimeManager IO Operations */
-public class ManagerIOException extends RuntimeException {
+public class ManagerIOException extends TimeKeeperException {
     public ManagerIOException() {}
 
     public ManagerIOException(String message) {
