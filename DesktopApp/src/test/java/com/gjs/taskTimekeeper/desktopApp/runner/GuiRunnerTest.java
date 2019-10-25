@@ -18,7 +18,7 @@ public class GuiRunnerTest {
         }
     }
 
-    // @Ignore("Will create the window but not destroy it")
+    // TODO:: make this use a predefined dataset
     @Test
     public void runGui() {
         // figure out how to close automatically for testing
