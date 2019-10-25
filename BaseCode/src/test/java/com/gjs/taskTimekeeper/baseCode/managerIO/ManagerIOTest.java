@@ -10,6 +10,7 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadExceptio
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +44,11 @@ public class ManagerIOTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void testOtherConstructor() {
+        new ManagerIO(new ByteArrayDataSource(), new Outputter());
     }
 
     // <editor-fold desc="Saving Tests">
