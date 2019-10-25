@@ -1,4 +1,6 @@
 language: java
+services:
+  - xvfb
 jobs:
   include:
     - os: linux
