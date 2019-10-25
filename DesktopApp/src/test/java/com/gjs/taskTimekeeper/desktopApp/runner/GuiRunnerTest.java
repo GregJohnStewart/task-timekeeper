@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSourceTest;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.LocalFile;
@@ -12,7 +11,7 @@ import org.kohsuke.args4j.CmdLineException;
 public class GuiRunnerTest {
     private final File testFile =
             new File(
-                    FileDataSourceTest.class
+                    GuiRunnerTest.class
                             .getClassLoader()
                             .getResource("testTimeManagerData/fully_populated.json")
                             .getFile());
