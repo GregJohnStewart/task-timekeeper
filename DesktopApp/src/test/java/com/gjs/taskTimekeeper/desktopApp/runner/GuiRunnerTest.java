@@ -18,13 +18,13 @@ public class GuiRunnerTest {
 
     @Before
     public void setup() {
-        Configuration.setFile(ConfigKeys.SAVE_FILE, testFile);
         try {
             Configuration.finalizeConfig();
             LocalFile.ensureFilesExistWritable();
         } catch (CmdLineException e) {
             // nothing to do
         }
+        Configuration.setFile(ConfigKeys.SAVE_FILE, testFile);
     }
 
     @Test
