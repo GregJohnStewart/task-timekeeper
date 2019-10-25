@@ -10,6 +10,7 @@ import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Utilities for compressing and decompressing data. */
 public final class DataCompressor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataCompressor.class);
 
@@ -51,6 +52,13 @@ public final class DataCompressor {
         }
     }
 
+    /**
+     * Compresses the data given.
+     *
+     * @param bytes The data to compress
+     * @return The compressed data.
+     * @throws ManagerCompressionException If something goes wrong in compression.
+     */
     public static byte[] compress(byte[] bytes) throws ManagerCompressionException {
         byte[] compressed;
         try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream(bytes.length);

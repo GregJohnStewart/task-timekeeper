@@ -22,7 +22,16 @@ public class ManagerIO {
     private Outputter outputter = new Outputter(); // TODO:: use
     private DataSource dataSource;
 
-    public TimeManager getManager(boolean createIfEmpty) throws ManagerIOException {
+    public ManagerIO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public ManagerIO(DataSource dataSource, Outputter outputter) {
+        this(dataSource);
+        this.outputter = outputter;
+    }
+
+    public TimeManager loadManager(boolean createIfEmpty) throws ManagerIOException {
         LOGGER.info("Reading in a TimeManager.");
         this.dataSource.ensureReadWriteCapable();
         TimeManager manager = null;
@@ -34,7 +43,7 @@ public class ManagerIO {
                 LOGGER.warn("Data read in was empty.");
                 if (createIfEmpty) {
                     this.saveManager(new TimeManager(), true);
-                    return this.getManager(false);
+                    return this.loadManager(false);
                 } else {
                     LOGGER.error("Could not read data from source, was empty.");
                     throw new ManagerIOReadException("Could not read data from source, was empty.");
@@ -76,7 +85,5 @@ public class ManagerIO {
             LOGGER.error("There was a json mapping error in serializing in the manager: ", e);
             throw new ManagerIOReadException(e);
         }
-
-        // TODO
     }
 }

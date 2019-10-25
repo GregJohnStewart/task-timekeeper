@@ -1,8 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineConfig.PropertiesOption;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,11 +10,14 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineConfig.PropertiesOption;
+import org.kohsuke.args4j.CmdLineException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles the configuration for the running program.
+ *
+ * <p>TODO:: make this non-static
  *
  * <p>How to use: - base properties file and defaults handled automatically - run {@link
  * #finalizeConfig(String[])} to finalize. - access properties using static methods from anywhere

@@ -32,6 +32,6 @@ public class ByteArrayDataSource extends DataSource {
 
     @Override
     public void writeDataOut(byte[] bytes) {
-        this.buffer = bytes;
+        this.buffer = Arrays.copyOf(bytes, bytes.length);
     }
 }

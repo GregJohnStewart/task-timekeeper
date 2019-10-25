@@ -1,7 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerCompressionException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,15 @@ public class DataCompressorTest {
     public void decompressUncompressedTest() {
         byte[] returned = DataCompressor.decompress("Hello World".getBytes());
         assertArrayEquals("Hello World".getBytes(), returned);
+    }
+
+    @Test(expected = ManagerCompressionException.class)
+    public void decompressBadCompressDataTest() {
+        byte[] returned = DataCompressor.compress("Hello World".getBytes());
+        returned[returned.length - 2] = 5;
+        returned[returned.length - 3] = 4;
+        returned[returned.length - 4] = 3;
+        DataCompressor.decompress(returned);
     }
 
     @Test
