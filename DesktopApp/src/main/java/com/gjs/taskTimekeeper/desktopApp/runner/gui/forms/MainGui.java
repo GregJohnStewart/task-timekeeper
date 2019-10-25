@@ -693,6 +693,10 @@ public class MainGui {
     public boolean stillOpen() {
         return this.mainFrame.isVisible();
     }
+
+    public void close() {
+        this.mainFrame.dispose();
+    }
     // </editor-fold>
 
     // <editor-fold desc="Utility methods">

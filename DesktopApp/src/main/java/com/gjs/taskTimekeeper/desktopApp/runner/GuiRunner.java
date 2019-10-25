@@ -4,12 +4,11 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GuiRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
@@ -17,6 +16,7 @@ public class GuiRunner extends ModeRunner {
     private static final Image ICON;
     private static final String APP_TITLE;
     private static final long WAIT_TIME = 100;
+    private static final long AUTOCLOSE_WAIT_LOOPS = 25;
 
     static {
         try (InputStream is =
@@ -41,8 +41,17 @@ public class GuiRunner extends ModeRunner {
         LOGGER.debug("Setup gui static resources.");
     }
 
+    private final boolean autoClose;
     private MainGui mainGui;
     private MainSystemTray systemTray;
+
+    public GuiRunner() {
+        this.autoClose = false;
+    }
+
+    public GuiRunner(boolean autoClose) {
+        this.autoClose = autoClose;
+    }
 
     @Override
     public void run() {
@@ -51,12 +60,17 @@ public class GuiRunner extends ModeRunner {
         runSystemTrayIcon();
         LOGGER.debug("Running UI components");
 
+        long count = 0;
         while (this.stillRunning()) {
             try {
                 Thread.sleep(WAIT_TIME);
             } catch (InterruptedException e) {
                 LOGGER.warn("Wait interrupted.", e);
             }
+            if (this.autoClose && count > AUTOCLOSE_WAIT_LOOPS) {
+                this.closeGuiElements();
+            }
+            count++;
         }
         LOGGER.info("All UI components closed. Exiting.");
     }
@@ -71,5 +85,9 @@ public class GuiRunner extends ModeRunner {
 
     public boolean stillRunning() {
         return this.mainGui.stillOpen() || this.systemTray.stillRunning();
+    }
+
+    public void closeGuiElements() {
+        this.mainGui.close();
     }
 }

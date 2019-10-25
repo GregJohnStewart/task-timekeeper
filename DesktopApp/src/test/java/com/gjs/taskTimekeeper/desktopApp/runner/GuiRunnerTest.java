@@ -3,7 +3,6 @@ package com.gjs.taskTimekeeper.desktopApp.runner;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.LocalFile;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
@@ -19,10 +18,10 @@ public class GuiRunnerTest {
         }
     }
 
-    @Ignore("Will create the window but not destroy it")
+    // @Ignore("Will create the window but not destroy it")
     @Test
     public void runGui() {
         // figure out how to close automatically for testing
-        new GuiRunner().run();
+        new GuiRunner(true).run();
     }
 }
