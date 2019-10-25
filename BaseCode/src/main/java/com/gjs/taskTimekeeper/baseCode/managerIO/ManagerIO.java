@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
@@ -33,7 +34,11 @@ public class ManagerIO {
 
     public TimeManager loadManager(boolean createIfEmpty) throws ManagerIOException {
         LOGGER.info("Reading in a TimeManager.");
-        this.dataSource.ensureReadWriteCapable();
+        try {
+            this.dataSource.ensureReadWriteCapable();
+        } catch (ManagerIOReadOnlyException e) {
+            LOGGER.warn("Manager source is read only: ", e);
+        }
         TimeManager manager = null;
 
         try {
@@ -68,6 +73,14 @@ public class ManagerIO {
         return manager;
     }
 
+    /**
+     * Saves a time manager to the data source held.
+     *
+     * @param manager The manager to save
+     * @param useCompression If this is to use compression.
+     * @throws ManagerIOException If the source is readonly, or anything else goes wrong with
+     *     saving.
+     */
     public void saveManager(TimeManager manager, boolean useCompression) throws ManagerIOException {
         LOGGER.info("Writing out a TimeManager.");
         this.dataSource.ensureReadWriteCapable();

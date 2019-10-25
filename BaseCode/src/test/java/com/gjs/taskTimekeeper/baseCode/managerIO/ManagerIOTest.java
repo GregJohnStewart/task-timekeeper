@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.ByteArrayDataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import java.io.File;
@@ -65,11 +66,27 @@ public class ManagerIOTest {
 
         assertEquals(this.populatedManager, result);
     }
+
+    @Test(expected = ManagerIOReadOnlyException.class)
+    public void saveTimeManagerReadOnly() throws IOException {
+        this.source.setReadOnly(true);
+        io.saveManager(this.populatedManager, true);
+    }
     // </editor-fold>
     // <editor-fold desc="Loading Tests">
     @Test
     public void loadPopulatedTimeManager() throws IOException {
         this.source.writeDataOut(this.populatedManagerData);
+
+        TimeManager retrievedManager = io.loadManager(false);
+
+        assertEquals(this.populatedManager, retrievedManager);
+    }
+
+    @Test
+    public void loadPopulatedTimeManagerReadonly() throws IOException {
+        this.source.writeDataOut(this.populatedManagerData);
+        this.source.setReadOnly(true);
 
         TimeManager retrievedManager = io.loadManager(false);
 

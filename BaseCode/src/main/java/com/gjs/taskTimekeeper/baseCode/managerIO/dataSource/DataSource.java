@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 
 public abstract class DataSource {
     /**
@@ -20,5 +21,16 @@ public abstract class DataSource {
      *
      * @return The output stream for saving a TimeManager
      */
-    public abstract void writeDataOut(byte[] bytes) throws ManagerIOException;
+    public void writeDataOut(byte[] bytes) throws ManagerIOException {
+        if (this.isReadOnly()) {
+            throw new ManagerIOReadOnlyException();
+        }
+    }
+
+    /**
+     * Determines if the data source is read only or not.
+     *
+     * @return If the data source is read only or not
+     */
+    public abstract boolean isReadOnly();
 }
