@@ -1,11 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Arrays;
 
 public class ByteArrayDataSource extends DataSource {
 
@@ -30,20 +26,12 @@ public class ByteArrayDataSource extends DataSource {
     }
 
     @Override
-    public InputStream getInputStream() {
-        return new ByteArrayInputStream(buffer);
+    public byte[] readDataIn() {
+        return Arrays.copyOf(this.buffer, this.buffer.length);
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        return new WritingByteArrayOutputStream();
-    }
-
-    private class WritingByteArrayOutputStream extends ByteArrayOutputStream {
-        @Override
-        public void close() throws IOException {
-            super.close();
-            buffer = this.toByteArray();
-        }
+    public void writeDataOut(byte[] bytes) {
+        this.buffer = bytes;
     }
 }
