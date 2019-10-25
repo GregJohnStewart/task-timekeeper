@@ -1,13 +1,16 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOWriteException;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,6 +45,12 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         if (!this.testFile.createNewFile()) {
             throw new RuntimeException("Test file could NOT be created.");
         }
+    }
+
+    @Test
+    public void altConstructorTest() throws MalformedURLException {
+        this.testSource = new FileDataSource(new URL("file://" + this.testFile.getPath()));
+        this.testSource = new FileDataSource(this.testFile.getPath());
     }
 
     // <editor-fold desc="Ensure read/write tests">
@@ -89,6 +98,16 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
     // </editor-fold>
 
     @Test
+    public void readOnlyTest() throws IOException {
+        this.createFile();
+
+        assertFalse(this.testSource.isReadOnly());
+
+        this.testFile.setWritable(false);
+        assertTrue(this.testSource.isReadOnly());
+    }
+
+    @Test
     public void readWriteTest() throws IOException {
         this.testSource.ensureReadWriteCapable(true);
 
@@ -96,7 +115,18 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         assertArrayEquals(this.testData, this.testSource.readDataIn());
     }
 
-    @Test(expected = ManagerIOReadOnlyException.class)
+    @Test(expected = ManagerIOReadException.class)
+    public void readNoFileTest() throws IOException {
+        this.testSource.readDataIn();
+    }
+
+    @Test
+    public void writeNoFileTest() throws IOException {
+        this.testSource.writeDataOut(this.testData);
+        assertArrayEquals(this.testData, this.testSource.readDataIn());
+    }
+
+    @Test(expected = ManagerIOWriteException.class)
     public void writeReadOnlyTest() throws IOException {
         this.createFile();
         this.testFile.setWritable(false);

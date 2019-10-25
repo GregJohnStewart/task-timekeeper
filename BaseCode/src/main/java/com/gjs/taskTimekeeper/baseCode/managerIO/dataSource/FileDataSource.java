@@ -22,7 +22,7 @@ public class FileDataSource extends DataSource {
     }
 
     public FileDataSource(URL url) {
-        this(new File(url.getFile()));
+        this(new File(url.getPath()));
     }
 
     public FileDataSource(String location) {
@@ -65,19 +65,17 @@ public class FileDataSource extends DataSource {
             return output;
         } catch (IOException e) {
             LOGGER.error("Error reading in file: ", e);
-            throw new ManagerIOReadException();
+            throw new ManagerIOReadException(e);
         }
     }
 
     @Override
     public void writeDataOut(byte[] bytes) throws ManagerIOException {
-        super.writeDataOut(bytes);
-
         try (FileOutputStream outputStream = new FileOutputStream(this.file); ) {
             outputStream.write(bytes);
         } catch (IOException e) {
             LOGGER.error("Error writing out file: ", e);
-            throw new ManagerIOWriteException();
+            throw new ManagerIOWriteException(e);
         }
         LOGGER.info("File written successfully.");
     }
