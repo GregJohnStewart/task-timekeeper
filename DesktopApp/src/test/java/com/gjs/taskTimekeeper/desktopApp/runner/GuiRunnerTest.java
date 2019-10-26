@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
+/** TODO:: figure out how to properly test Swing apps */
 public class GuiRunnerTest {
     private final File testFile =
             new File(

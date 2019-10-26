@@ -15,6 +15,10 @@ public abstract class ActionDoer {
     protected final TimeManager manager;
     protected Outputter outputter = new Outputter();
 
+    public TimeManager getTimeManager() {
+        return this.manager;
+    }
+
     public void setOutputter(Outputter outputter) {
         this.outputter = outputter;
     }

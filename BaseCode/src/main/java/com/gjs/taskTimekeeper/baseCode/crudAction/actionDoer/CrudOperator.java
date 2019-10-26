@@ -115,11 +115,11 @@ public class CrudOperator {
     public ActionDoer getActionDoer(KeeperObjectType keeperObject) {
         switch (keeperObject) {
             case TASK:
-                return taskDoer;
+                return this.getTaskDoer();
             case PERIOD:
-                return workPeriodDoer;
+                return this.getWorkPeriodDoer();
             case SPAN:
-                return timespanDoer;
+                return this.getTimespanDoer();
             default:
                 throw new IllegalArgumentException("Bad keeper object given.");
         }
