@@ -43,6 +43,10 @@ public class CrudOperator {
         this.outputter.setOutputLevelThreshold(outputLevel);
     }
 
+    public Outputter getOutputter() {
+        return this.outputter;
+    }
+
     public void setOutputter(Outputter outputter) {
         if (outputter == null) {
             throw new IllegalArgumentException(

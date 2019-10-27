@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import org.junit.Test;
 
-public class PeriodDoerTest extends ActionDoerTest {
+public class PeriodDoerTest extends ActionDoerExtendingTest {
 
     public PeriodDoerTest() {
         super(KeeperObjectType.PERIOD);

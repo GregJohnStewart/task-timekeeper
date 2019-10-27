@@ -1,7 +1,6 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +24,6 @@ public abstract class ActionDoer {
 
     public Outputter getOutputter() {
         return outputter;
-    }
-
-    public void setOutputLevelThreshold(OutputLevel outputLevel) {
-        this.outputter.setOutputLevelThreshold(outputLevel);
     }
 
     public ActionDoer(TimeManager manager) {

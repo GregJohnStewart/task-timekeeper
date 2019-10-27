@@ -11,7 +11,7 @@ import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import org.junit.Test;
 
-public class SpecialCommandTest extends ActionDoerTest {
+public class SpecialCommandTest extends ActionDoerExtendingTest {
     public SpecialCommandTest() {
         super(null);
     }

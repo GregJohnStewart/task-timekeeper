@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import org.junit.Test;
 
-public class TaskDoerTest extends ActionDoerTest {
+public class TaskDoerTest extends ActionDoerExtendingTest {
 
     public TaskDoerTest() {
         super(KeeperObjectType.TASK);

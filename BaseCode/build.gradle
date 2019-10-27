@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '8.0.1.19'
+version = '8.0.1.28'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -21,7 +21,6 @@ dependencies {
     // for serialization/deserialization
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.+'
-
 
     compile 'args4j:args4j:2.33'
 

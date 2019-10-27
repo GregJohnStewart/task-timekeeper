@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimespanDoerTest extends ActionDoerTest {
+public class TimespanDoerTest extends ActionDoerExtendingTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoerTest.class);
 
     public TimespanDoerTest() {
