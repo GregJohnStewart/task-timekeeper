@@ -11,8 +11,9 @@ public class Name implements Comparable<Name> {
      *
      * @param name The name to validate and sanitize.
      * @return The validated and sanitized name.
+     * @throws IllegalArgumentException If the name given was invalid
      */
-    public static String validateName(String name) {
+    public static String validateName(String name) throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null.");
         }

@@ -40,6 +40,17 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
     }
 
     @Test
+    public void addWithInvalidName() {
+        ActionConfig config = this.getActionConfig(Action.ADD);
+        String newTaskName = " ";
+
+        config.setName(newTaskName);
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
+    }
+
+    @Test
     public void addWithNameAndAtt() {
         ActionConfig config = this.getActionConfig(Action.ADD);
         String newTaskName = "New Test Task";
@@ -76,6 +87,32 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
         assertNotNull(newTask);
         assertEquals("valOne", newTask.getAttributes().get("attOne"));
         assertEquals("valTwo", newTask.getAttributes().get("attTwo"));
+    }
+
+    @Test
+    public void addWithNameAndAttsAndAtt() {
+        ActionConfig config = this.getActionConfig(Action.ADD);
+        String newTaskName = "New Test Task";
+
+        config.setName(newTaskName);
+        config.setAttributes("attOne,valOne;attTwo,valTwo;");
+        config.setAttributeName("key");
+        config.setAttributeVal("val");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
+    }
+
+    @Test
+    public void addWithNameAndInvalidAtts() {
+        ActionConfig config = this.getActionConfig(Action.ADD);
+        String newTaskName = "New Test Task";
+
+        config.setName(newTaskName);
+        config.setAttributes("");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
     }
 
     @Test
