@@ -18,10 +18,22 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import org.junit.Test;
 
-public class PeriodDoerTest extends ActionDoerExtendingTest {
+public class WorkPeriodDoerTest extends ActionDoerExtendingTest {
 
-    public PeriodDoerTest() {
+    public WorkPeriodDoerTest() {
         super(KeeperObjectType.PERIOD);
+    }
+
+    @Test
+    public void isSelectedTest() {
+        int selectedInd = 2;
+        this.selectPeriodAt(selectedInd);
+
+        WorkPeriod selected = this.manager.getCrudOperator().getSelectedWorkPeriod();
+        WorkPeriod notSelected = this.manager.getCrudOperator().getWorkPeriodDoer().search().get(0);
+
+        assertTrue(this.manager.getCrudOperator().getWorkPeriodDoer().isSelected(selected));
+        assertFalse(this.manager.getCrudOperator().getWorkPeriodDoer().isSelected(notSelected));
     }
 
     // <editor-fold desc="Adding Tests">
@@ -51,7 +63,7 @@ public class PeriodDoerTest extends ActionDoerExtendingTest {
 
     @Test
     public void addWithAttributeSimple() {
-        TimeManager manager = new TimeManager();
+        this.manager = new TimeManager();
 
         assertTrue(
                 manager.doCrudAction(
@@ -87,6 +99,30 @@ public class PeriodDoerTest extends ActionDoerExtendingTest {
     }
 
     @Test
+    public void addWithAttAndAttributes() {
+        TimeManager manager = new TimeManager();
+
+        assertFalse(
+                manager.doCrudAction(
+                        this.getActionConfig(Action.ADD)
+                                .setAttributeName("att")
+                                .setAttributeVal("val")
+                                .setAttributes("attOne,valOne;attTwo,valTwo;")
+                                .setSelect(true)));
+        assertEquals(this.orig, this.manager);
+    }
+
+    @Test
+    public void addWithBadAttributes() {
+        TimeManager manager = new TimeManager();
+
+        assertFalse(
+                manager.doCrudAction(
+                        this.getActionConfig(Action.ADD).setAttributes(" ").setSelect(true)));
+        assertEquals(this.orig, this.manager);
+    }
+
+    @Test
     public void addWithExisting() {
         int origSize = manager.getWorkPeriods().size();
 
@@ -105,6 +141,16 @@ public class PeriodDoerTest extends ActionDoerExtendingTest {
         assertTrue(period.getAttributes().containsKey("testAtt"));
         assertEquals("theVal", period.getAttributes().get("testAtt"));
     }
+
+    @Test
+    public void addWithEmpty() {
+        this.addSimple();
+        this.updateOrig();
+
+        assertFalse(this.manager.getCrudOperator().doObjAction(this.getActionConfig(Action.ADD)));
+        assertEquals(this.orig, this.manager);
+    }
+
     // </editor-fold>
 
     // <editor-fold desc="Editing Tests">

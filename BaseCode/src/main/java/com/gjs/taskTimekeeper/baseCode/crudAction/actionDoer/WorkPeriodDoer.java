@@ -52,7 +52,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
      * @param period The period to check if selected.
      * @return
      */
-    protected boolean isSelected(WorkPeriod period) {
+    public boolean isSelected(WorkPeriod period) {
         return this.selected != null && this.selected.equals(period);
     }
 
