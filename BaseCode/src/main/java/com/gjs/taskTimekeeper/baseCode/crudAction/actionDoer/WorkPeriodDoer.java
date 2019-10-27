@@ -326,7 +326,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
             WorkPeriod result = this.getAtIndex(config);
             if (result == null) {
                 LOGGER.warn("No result found at index.");
-                System.err.println("No result found at index.");
+                outputter.errorPrintln("No result found at index.");
                 return;
             }
 

@@ -183,6 +183,29 @@ public class WorkPeriodDoerTest extends ActionDoerExtendingTest {
     }
 
     @Test
+    public void editBadAtts() {
+        int selectedInd = 2;
+        this.selectPeriodAt(selectedInd);
+
+        assertFalse(manager.doCrudAction(this.getActionConfig(Action.EDIT).setAttributes(" ")));
+        assertEquals(orig, manager);
+    }
+
+    @Test
+    public void editAttAndAtts() {
+        int selectedInd = 2;
+        this.selectPeriodAt(selectedInd);
+
+        assertFalse(
+                manager.doCrudAction(
+                        this.getActionConfig(Action.EDIT)
+                                .setAttributes("attOne,valOne;attTwo,valTwo;")
+                                .setAttributeName("att")
+                                .setAttributeVal("val")));
+        assertEquals(orig, manager);
+    }
+
+    @Test
     public void editAddAtt() {
         int selectedInd = 2;
         this.selectPeriodAt(selectedInd);
@@ -273,6 +296,23 @@ public class WorkPeriodDoerTest extends ActionDoerExtendingTest {
 
         assertNotEquals(orig, manager);
         assertFalse(manager.getWorkPeriods().contains(period));
+    }
+
+    @Test
+    public void removeSelected() {
+        int selectedInd = 1;
+        this.selectPeriodAt(selectedInd);
+
+        WorkPeriod period =
+                manager.getCrudOperator()
+                        .getWorkPeriodDoer()
+                        .search(getActionConfig(Action.VIEW))
+                        .get(selectedInd - 1);
+
+        assertTrue(manager.doCrudAction(this.getActionConfig(Action.REMOVE).setIndex(selectedInd)));
+        assertNotEquals(orig, manager);
+        assertFalse(manager.getWorkPeriods().contains(period));
+        assertNull(manager.getCrudOperator().getSelectedWorkPeriod());
     }
 
     @Test
