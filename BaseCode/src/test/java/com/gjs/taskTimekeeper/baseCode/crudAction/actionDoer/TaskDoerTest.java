@@ -135,7 +135,6 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
     // </editor-fold>
 
     // <editor-fold desc="Editing Tests">
-
     private static void setupEditRequest(ActionConfig config) {
         config.setAttributeName("attOne");
         config.setAttributeVal("valTwo");
@@ -191,7 +190,18 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
 
     @Test
     public void editWithIndex() {
-        // TODO
+        ActionConfig config = getActionConfig(Action.EDIT);
+
+        Task task = this.manager.getCrudOperator().getTaskDoer().search().get(0);
+
+        config.setIndex(1);
+        config.setAttributes("attOne,valOne;attTwo,valTwo");
+
+        assertTrue(manager.doCrudAction(config));
+        assertNotEquals(orig, manager);
+
+        assertEquals("valOne", task.getAttributes().get("attOne"));
+        assertEquals("valTwo", task.getAttributes().get("attTwo"));
     }
 
     @Test
@@ -278,6 +288,52 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
         assertEquals(orig, manager);
 
         assertFalse(task.getAttributes().containsKey("attOne"));
+    }
+
+    @Test
+    public void editAttAndAtts() {
+        ActionConfig config = getActionConfig(Action.EDIT);
+
+        config.setName(TASK_ONE_NAME);
+        config.setAttributeName("attOne");
+        config.setAttributeVal("new attribute value");
+        config.setAttributes("attOne,valOne;attTwo,valTwo");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
+    }
+
+    @Test
+    public void editSameAtts() {
+        ActionConfig config = getActionConfig(Action.EDIT);
+
+        config.setName(TASK_ONE_NAME);
+        config.setAttributes("attOne,valOne");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
+    }
+
+    @Test
+    public void editBadAtts() {
+        ActionConfig config = getActionConfig(Action.EDIT);
+
+        config.setName(TASK_ONE_NAME);
+        config.setAttributes(" ");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
+    }
+
+    @Test
+    public void editBadName() {
+        ActionConfig config = getActionConfig(Action.EDIT);
+
+        config.setName(TASK_ONE_NAME);
+        config.setNewName(" ");
+
+        assertFalse(manager.doCrudAction(config));
+        assertEquals(orig, manager);
     }
     // </editor-fold>
 
@@ -395,6 +451,12 @@ public class TaskDoerTest extends ActionDoerExtendingTest {
         assertEquals(manager.getTasks().size(), results.size());
 
         // TODO:: this but more
+    }
+
+    @Test
+    public void viewOne() {
+        manager.getCrudOperator().getTaskDoer().displayOne(new Task("test"));
+        // TODO:: verify?
     }
     // </editor-fold>
 }

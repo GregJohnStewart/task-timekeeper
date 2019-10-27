@@ -30,8 +30,8 @@ public abstract class ActionDoerExtendingTest {
     protected static final LocalDateTime nowPlusTwoHourTen = now.plusMinutes(130);
     protected static final LocalDateTime nowPlusTwoHourFifteen = now.plusMinutes(135);
 
-    protected static final String TASK_ONE_NAME = "Test Task";
-    protected static final String TASK_TWO_NAME = "Test Task Two";
+    protected static final String TASK_ONE_NAME = "aa Test Task";
+    protected static final String TASK_TWO_NAME = "bb Test Task Two";
 
     static {
         testManager = new TimeManager();
