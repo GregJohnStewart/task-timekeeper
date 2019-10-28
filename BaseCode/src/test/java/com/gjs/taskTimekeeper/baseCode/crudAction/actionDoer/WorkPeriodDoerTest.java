@@ -421,6 +421,10 @@ public class WorkPeriodDoerTest extends ActionDoerExtendingTest {
         assertFalse(manager.doCrudAction(this.getActionConfig(Action.VIEW)));
         assertFalse(manager.doCrudAction(this.getActionConfig(Action.VIEW).setIndex(1)));
 
+        this.resetPrintStreams();
+        assertFalse(manager.doCrudAction(this.getActionConfig(Action.VIEW).setIndex(0)));
+        this.assertErrOutputContains("No result found at index.");
+
         assertEquals(orig, manager);
     }
 
@@ -430,6 +434,7 @@ public class WorkPeriodDoerTest extends ActionDoerExtendingTest {
 
         Collection<WorkPeriod> results =
                 manager.getCrudOperator().getWorkPeriodDoer().search(config);
+
         // TODO:: this, but better
     }
     // </editor-fold>

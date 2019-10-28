@@ -1,5 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction.actionDoer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.gjs.taskTimekeeper.baseCode.crudAction.Action;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
@@ -8,6 +11,8 @@ import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.utils.OutputLevel;
+import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,8 +88,15 @@ public abstract class ActionDoerExtendingTest {
         return config;
     }
 
+    protected ByteArrayOutputStream printStream = new ByteArrayOutputStream();
+    protected ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+    protected Outputter outputter = new Outputter(printStream, errorStream);
     protected TimeManager manager = getTestManager();
     protected TimeManager orig = manager.clone();
+
+    {
+        this.manager.getCrudOperator().setOutputter(outputter);
+    }
 
     protected void updateOrig(TimeManager manager) {
         this.orig = manager.clone();
@@ -106,6 +118,30 @@ public abstract class ActionDoerExtendingTest {
                 new ActionConfig(KeeperObjectType.PERIOD, Action.VIEW)
                         .setSelect(true)
                         .setIndex(index));
+    }
+
+    private static void assertOutputContains(ByteArrayOutputStream os, String... parts) {
+        if (parts.length == 0) {
+            assertEquals(0, os.size());
+        }
+        String output = os.toString();
+
+        for (String part : parts) {
+            assertTrue(output.contains(part));
+        }
+    }
+
+    protected void assertOutputContains(String... parts) {
+        assertOutputContains(this.printStream, parts);
+    }
+
+    protected void assertErrOutputContains(String... parts) {
+        assertOutputContains(this.errorStream, parts);
+    }
+
+    protected void resetPrintStreams() {
+        this.printStream.reset();
+        this.errorStream.reset();
     }
 
     @Before
