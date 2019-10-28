@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class WorkPeriodTest {
@@ -25,6 +26,9 @@ public class WorkPeriodTest {
 
     private static final LocalDateTime now = LocalDateTime.now();
     private static final LocalDateTime nowPlusFive = now.plusMinutes(5);
+    private static final LocalDateTime nowPlusSix = now.plusMinutes(6);
+    private static final LocalDateTime nowPlusSeven = now.plusMinutes(7);
+    private static final LocalDateTime nowPlusEight = now.plusMinutes(8);
     private static final LocalDateTime nowPlusTen = now.plusMinutes(10);
 
     @Test
@@ -170,6 +174,11 @@ public class WorkPeriodTest {
 
         assertFalse(period.getTimespans().isEmpty());
         assertEquals(2, period.getNumTimespans());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetNullTimespans() {
+        new WorkPeriod(Arrays.asList((Timespan) null));
     }
 
     @Test
@@ -333,5 +342,95 @@ public class WorkPeriodTest {
         WorkPeriod deserialized = mapper.readValue(serialized, WorkPeriod.class);
 
         assertTrue(period.equals(deserialized));
+    }
+
+    @Test
+    public void compareToWorkPeriod() {
+        WorkPeriod one = new WorkPeriod();
+        WorkPeriod two = new WorkPeriod();
+        assertEquals(0, one.compareTo(two));
+
+        try {
+            one.compareTo((WorkPeriod) null);
+            Assert.fail();
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(0, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(0, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        assertEquals(1, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(-1, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(-1, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        assertEquals(0, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusFive)));
+        assertEquals(-1, one.compareTo(two));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusFive)));
+        two = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        assertEquals(1, one.compareTo(two));
+    }
+
+    @Test
+    public void compareToTimePeriod() {
+        WorkPeriod one = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(0, one.compareTo((LocalDateTime) null));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask)));
+        assertEquals(0, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        assertEquals(0, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now, nowPlusTen)));
+        assertEquals(0, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now, nowPlusTen)));
+        assertEquals(0, one.compareTo(nowPlusFive));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now, nowPlusFive)));
+        assertEquals(-1, one.compareTo(nowPlusSix));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusFive, nowPlusEight)));
+        assertEquals(-1, one.compareTo(nowPlusTen));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusFive, nowPlusEight)));
+        assertEquals(1, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, null, now)));
+        assertEquals(0, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, null, nowPlusEight)));
+        assertEquals(1, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, null, nowPlusEight)));
+        assertEquals(-1, one.compareTo(nowPlusTen));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, now)));
+        assertEquals(0, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusEight)));
+        assertEquals(1, one.compareTo(now));
+
+        one = new WorkPeriod(Arrays.asList(new Timespan(testTask, nowPlusEight)));
+        assertEquals(-1, one.compareTo(nowPlusTen));
     }
 }

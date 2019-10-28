@@ -402,18 +402,8 @@ public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
         if (o == null) {
             throw new NullPointerException("Cannot compare to null.");
         }
-        LocalDateTime thisStart = null;
-        LocalDateTime oStart = null;
-        try {
-            thisStart = this.getStart();
-        } catch (IllegalStateException e) {
-            // nothing to do
-        }
-        try {
-            oStart = o.getStart();
-        } catch (IllegalStateException e) {
-            // nothing to do
-        }
+        LocalDateTime thisStart = this.getStart();
+        LocalDateTime oStart = o.getStart();
 
         if (thisStart == null && oStart == null) {
             return 0;
