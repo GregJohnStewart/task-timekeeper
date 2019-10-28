@@ -1,12 +1,9 @@
 package com.gjs.taskTimekeeper.baseCode.crudAction;
 
 import org.kohsuke.args4j.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Configuration to describe what action to take and what arguments to pass to do that action. */
 public class ActionConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionConfig.class);
 
     public ActionConfig() {}
 
