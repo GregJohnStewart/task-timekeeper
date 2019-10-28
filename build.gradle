@@ -60,6 +60,16 @@ task codeCoverageReport(type: JacocoReport) {
 codeCoverageReport.dependsOn {
     subprojects*.test
 }
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            excludes = [
+                    'com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig'
+            ]
+        }
+    }
+}
+
 
 /**
  * Task to update the gradle wrapper to the version set.
