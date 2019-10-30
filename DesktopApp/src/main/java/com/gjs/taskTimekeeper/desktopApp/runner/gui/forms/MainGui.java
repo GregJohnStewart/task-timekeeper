@@ -119,7 +119,7 @@ public class MainGui {
                     put(1, DATETIME_COL_WIDTH);
                     put(2, DATETIME_COL_WIDTH);
                     put(3, DURATION_COL_WIDTH);
-                    put(5, (double) 85);
+                    put(5, (double) 87);
                 }
             };
 

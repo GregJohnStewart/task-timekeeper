@@ -1,13 +1,14 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.ByteArrayDataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
@@ -44,47 +45,180 @@ public class ManagerIOTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        this.io.setManager(populatedManager.clone(), true);
+    }
+
+    // <editor-fold desc="Constructor Tests">
+    @Test
+    public void testManagerIoDataSource() {
+        ManagerIO io = new ManagerIO(this.source);
+
+        assertSame(this.source, io.getDataSource());
+        assertEquals(this.populatedManager, io.getManager());
+
+        assertFalse(io.isDifferentFromSource());
+        assertFalse(io.isUnSaved(false));
     }
 
     @Test
-    public void testOtherConstructor() {
-        new ManagerIO(new ByteArrayDataSource(), new Outputter());
-    }
+    public void testManagerIoDataSourceOutputter() {
+        Outputter outputter = new Outputter();
+        ManagerIO io = new ManagerIO(this.source, outputter);
 
-    // <editor-fold desc="Saving Tests">
-    @Test
-    public void saveTimeManagerWithoutCompression() throws IOException {
-        io.saveManager(this.populatedManager, false);
-        LOGGER.info(
-                "Length of uncompressed time manager data: {} bytes.", source.getBuffer().length);
-        TimeManager result = TIME_MANAGER_MAPPER.readValue(source.getBuffer(), TimeManager.class);
+        assertSame(this.source, io.getDataSource());
+        assertEquals(this.populatedManager, io.getManager());
 
-        assertEquals(this.populatedManager, result);
+        assertSame(outputter, io.getManager().getCrudOperator().getOutputter());
     }
 
     @Test
-    public void saveTimeManagerWithCompression() throws IOException {
-        io.saveManager(this.populatedManager, true);
-        LOGGER.info("Length of compressed time manager data: {} bytes.", source.getBuffer().length);
-        TimeManager result =
-                TIME_MANAGER_MAPPER.readValue(
-                        DataCompressor.decompress(source.getBuffer()), TimeManager.class);
+    public void testManagerIoDataSourceTimeManagerSave() {
+        ManagerIO io = new ManagerIO(this.source, this.populatedManager.clone(), true);
 
-        assertEquals(this.populatedManager, result);
+        assertSame(this.source, io.getDataSource());
+        assertEquals(this.populatedManager, io.getManager());
+        assertEquals(this.populatedManager, io.loadManagerFromSource(false));
     }
 
-    @Test(expected = ManagerIOReadOnlyException.class)
-    public void saveTimeManagerReadOnly() throws IOException {
-        this.source.setReadOnly(true);
-        io.saveManager(this.populatedManager, true);
+    @Test
+    public void testManagerIoDataSourceTimeManagerNoSave() {
+        ManagerIO io = new ManagerIO(this.source, new TimeManager(), false);
+
+        assertSame(this.source, io.getDataSource());
+        assertEquals(new TimeManager(), io.getManager());
+        assertEquals(this.populatedManager, io.loadManagerFromSource(false));
+    }
+
+    @Test
+    public void testManagerIoDataSourceTimeManagerOutputter() {
+        Outputter outputter = new Outputter();
+        ManagerIO io = new ManagerIO(this.source, new TimeManager(), false, outputter);
+
+        assertSame(this.source, io.getDataSource());
+        assertEquals(new TimeManager(), io.getManager());
+        assertEquals(this.populatedManager, io.loadManagerFromSource(false));
+        assertSame(outputter, io.getManager().getCrudOperator().getOutputter());
     }
     // </editor-fold>
-    // <editor-fold desc="Loading Tests">
+    // <editor-fold desc="Setter/ getter tests">
     @Test
-    public void loadPopulatedTimeManager() throws IOException {
+    public void setOutputterTest() {
+        Outputter outputter = new Outputter();
+
+        this.io.setOutputter(outputter);
+
+        assertSame(outputter, this.io.getManager().getCrudOperator().getOutputter());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNullOutputterTest() {
+        this.io.setOutputter(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNullDataSource() {
+        this.io.setDataSource(null, false);
+    }
+
+    @Test
+    public void setDataSourceCheck() {
+        ByteArrayDataSource ds = new ByteArrayDataSource(this.populatedManagerData);
+        this.io.setManager(new TimeManager(), false);
+
+        this.io.setDataSource(ds, true);
+
+        assertTrue(this.io.isUnSaved(false));
+        assertSame(ds, this.io.getDataSource());
+    }
+
+    @Test
+    public void setDataSourceNoCheck() {
+        ByteArrayDataSource ds = new ByteArrayDataSource(this.populatedManagerData);
+        this.io.setManager(new TimeManager(), false);
+
+        this.io.setDataSource(ds, false);
+
+        assertFalse(this.io.isUnSaved(false));
+        assertSame(ds, this.io.getDataSource());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setNullTimeManager() {
+        this.io.setManager(null, true);
+    }
+
+    @Test
+    public void setTimeManagerSave() {
+        TimeManager manager = new TimeManager();
+
+        this.io.setManager(manager, true);
+
+        assertSame(manager, this.io.getManager());
+        assertEquals(manager, this.io.loadManagerFromSource(false));
+    }
+
+    @Test
+    public void setTimeManagerNoSave() {
+        TimeManager manager = new TimeManager();
+
+        this.io.setManager(manager, false);
+
+        assertSame(manager, this.io.getManager());
+        assertNotEquals(manager, this.io.loadManagerFromSource(false));
+    }
+
+    @Test
+    public void setUsesCompression() {
+        this.io.setUseCompression(true);
+        assertTrue(this.io.usesCompression());
+        this.io.saveManager();
+        assertTrue(DataCompressor.isDataCompressed(this.source.getBuffer()));
+
+        this.io.setUseCompression(false);
+        assertFalse(this.io.usesCompression());
+        this.io.saveManager();
+        assertFalse(DataCompressor.isDataCompressed(this.source.getBuffer()));
+    }
+    // </editor-fold>
+    // <editor-fold desc="Loading/ state test">
+    @Test(expected = ManagerIOReadException.class)
+    public void isDifferentFromSourceBadSource() {
+        this.source.writeDataOut(new byte[0]);
+        this.io.isDifferentFromSource();
+    }
+
+    @Test
+    public void isDifferentFromSource() {
+        assertFalse(this.io.isDifferentFromSource());
+        this.io.setManager(new TimeManager(), false);
+        assertTrue(this.io.isDifferentFromSource());
+    }
+
+    @Test(expected = ManagerIOReadException.class)
+    public void isUnsavedBadSource() {
+        this.source.writeDataOut(new byte[0]);
+        this.io.isUnSaved(true);
+    }
+
+    @Test
+    public void isUnsavedSourceCheckSource() {
+        assertFalse(this.io.isUnSaved(true));
+        this.io.setManager(new TimeManager(), false);
+        assertTrue(this.io.isUnSaved(true));
+    }
+
+    @Test
+    public void isUnsavedSourceNoCheckSource() {
+        assertFalse(this.io.isUnSaved(false));
+        this.io.setManager(new TimeManager(), false);
+        assertFalse(this.io.isUnSaved(false));
+    }
+
+    @Test
+    public void loadPopulatedTimeManager() {
         this.source.writeDataOut(this.populatedManagerData);
 
-        TimeManager retrievedManager = io.loadManager(false);
+        TimeManager retrievedManager = io.loadManagerFromSource(false);
 
         assertEquals(this.populatedManager, retrievedManager);
     }
@@ -94,19 +228,21 @@ public class ManagerIOTest {
         this.source.writeDataOut(this.populatedManagerData);
         this.source.setReadOnly(true);
 
-        TimeManager retrievedManager = io.loadManager(false);
+        TimeManager retrievedManager = io.loadManagerFromSource(false);
 
         assertEquals(this.populatedManager, retrievedManager);
     }
 
     @Test(expected = ManagerIOReadException.class)
     public void loadEmptyTimeManagerNoCreate() throws IOException {
-        io.loadManager(false);
+        this.source.writeDataOut(new byte[0]);
+        io.loadManagerFromSource(false);
     }
 
     @Test
     public void loadEmptyTimeManager() throws IOException {
-        TimeManager retrievedManager = io.loadManager(true);
+        this.source.writeDataOut(new byte[0]);
+        TimeManager retrievedManager = io.loadManagerFromSource(true);
 
         assertNotEquals(this.populatedManager, retrievedManager);
         assertTrue(retrievedManager.getTasks().isEmpty());
@@ -127,5 +263,7 @@ public class ManagerIOTest {
         sourceBuff[sourceBuff.length - 3] = 4;
         io.loadManager(true);
     }
+    // </editor-fold>
+    // <editor-fold desc="Saving Tests">
     // </editor-fold>
 }

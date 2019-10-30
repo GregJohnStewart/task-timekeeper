@@ -1,6 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerCompressionException;
 import org.junit.Test;
@@ -49,5 +51,17 @@ public class DataCompressorTest {
         LOGGER.info("data array uncompressed (length: {}): {}", testData.length, testData);
         LOGGER.info("  compressed data array (length: {}): {}", returned.length, returned);
         assertCompressedData("hello world".getBytes(), returned);
+    }
+
+    @Test
+    public void isCompressedTest() {
+        assertFalse(DataCompressor.isDataCompressed("".getBytes()));
+        assertFalse(DataCompressor.isDataCompressed("1".getBytes()));
+        assertFalse(DataCompressor.isDataCompressed("12".getBytes()));
+        assertFalse(DataCompressor.isDataCompressed("hello world".getBytes()));
+
+        assertTrue(DataCompressor.isDataCompressed(DataCompressor.compress("".getBytes())));
+        assertTrue(
+                DataCompressor.isDataCompressed(DataCompressor.compress("hello world".getBytes())));
     }
 }

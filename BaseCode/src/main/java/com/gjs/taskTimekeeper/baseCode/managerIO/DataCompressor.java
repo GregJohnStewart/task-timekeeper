@@ -14,6 +14,14 @@ import org.slf4j.LoggerFactory;
 public final class DataCompressor {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataCompressor.class);
 
+    public static boolean isDataCompressed(byte[] bytes) {
+        // TODO: use the following to use GZIP_MAGIC:
+        // https://stackoverflow.com/questions/2383265/convert-4-bytes-to-int
+        // GZIPInputStream.GZIP_MAGIC != Ints.fromBytes((byte) 0, (byte) 0, signature[1],
+        // signature[0])
+        return !(bytes.length < 2 || bytes[0] != (byte) 0x1f || bytes[1] != (byte) 0x8b);
+    }
+
     /**
      * Attempts to decompress the data compressed by {@link #compress(byte[])}. Does not decompress
      * uncompressed data.
@@ -23,14 +31,8 @@ public final class DataCompressor {
      * @throws ManagerCompressionException If something went wrong in the decompression.
      */
     public static byte[] decompress(byte[] bytes) throws ManagerCompressionException {
-        // TODO: use the following to use GZIP_MAGIC:
-        // https://stackoverflow.com/questions/2383265/convert-4-bytes-to-int
-        // GZIPInputStream.GZIP_MAGIC != Ints.fromBytes((byte) 0, (byte) 0, signature[1],
-        // signature[0])
         // don't decompress uncompressed data
-        if (bytes.length == 0
-                || bytes[0] != (byte) 0x1f
-                || bytes[1] != (byte) 0x8b) { // check if matches standard gzip magic number
+        if (!isDataCompressed(bytes)) { // check if matches standard gzip magic number
             return bytes;
         }
 
