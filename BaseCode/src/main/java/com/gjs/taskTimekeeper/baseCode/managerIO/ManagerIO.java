@@ -31,6 +31,7 @@ public class ManagerIO {
     private DataSource dataSource;
     private TimeManager manager;
     private boolean unSaved = false;
+    private boolean autoSave = false; // TODO:: implement setter/getter
     private boolean useCompression = true;
 
     // <editor-fold desc="Constructors">
@@ -253,6 +254,17 @@ public class ManagerIO {
             this.saveManager();
         }
         return this.unSaved;
+    }
+
+    /**
+     * Performs a crud action on the held time manager.
+     *
+     * @param config
+     * @return
+     * @throws ManagerIOException
+     */
+    public boolean doCrudAction(ActionConfig config) throws ManagerIOException {
+        return this.doCrudAction(config, this.autoSave);
     }
     // </editor-fold>
 }

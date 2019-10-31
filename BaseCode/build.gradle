@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '9.0.0.2'
+version = '9.0.0.5'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
