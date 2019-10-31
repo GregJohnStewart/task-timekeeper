@@ -71,7 +71,11 @@ import javax.swing.KeyStroke;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** https://www.jetbrains.com/help/idea/designing-gui-major-steps.html */
+/**
+ * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
+ *
+ * <p>TODO:: test using: https://joel-costigliola.github.io/assertj/assertj-swing.html
+ */
 public class MainGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainGui.class);
 
