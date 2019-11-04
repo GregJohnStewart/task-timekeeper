@@ -3,7 +3,6 @@ package com.gjs.taskTimekeeper.desktopApp;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
-import com.gjs.taskTimekeeper.desktopApp.managerIO.LocalFile;
 import com.gjs.taskTimekeeper.desktopApp.runner.CliManagerRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.CliSingleRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunner;
@@ -49,8 +48,6 @@ public class Main {
             System.err.println("Bad run mode given. Exiting.");
             return;
         }
-
-        LocalFile.ensureFilesExistWritable();
 
         switch (mode) {
             case SINGLE:
