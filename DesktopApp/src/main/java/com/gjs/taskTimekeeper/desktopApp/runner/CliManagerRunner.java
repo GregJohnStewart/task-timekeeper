@@ -2,27 +2,26 @@ package com.gjs.taskTimekeeper.desktopApp.runner;
 
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
+import java.io.InputStream;
+import java.util.Scanner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.Scanner;
-
-public class ManagerRunner extends ModeRunner {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerRunner.class);
+public class CliManagerRunner extends ModeRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CliManagerRunner.class);
 
     private Scanner scanner = new Scanner(System.in);
 
-    public ManagerRunner() {
+    public CliManagerRunner() {
         // no need to do anything
     }
 
-    public ManagerRunner(Scanner scanner) {
+    public CliManagerRunner(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    public ManagerRunner(InputStream is) {
+    public CliManagerRunner(InputStream is) {
         this.scanner = new Scanner(is);
     }
 

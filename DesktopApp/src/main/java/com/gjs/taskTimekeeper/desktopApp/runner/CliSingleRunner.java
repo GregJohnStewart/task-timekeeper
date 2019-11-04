@@ -5,12 +5,12 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SingleRunner extends ModeRunner {
+public class CliSingleRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
     private final String args[];
 
-    public SingleRunner(String[] args) {
+    public CliSingleRunner(String[] args) {
         this.args = args;
     }
 

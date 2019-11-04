@@ -4,9 +4,9 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
 import com.gjs.taskTimekeeper.desktopApp.managerIO.LocalFile;
+import com.gjs.taskTimekeeper.desktopApp.runner.CliManagerRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.CliSingleRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.ManagerRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.SingleRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +54,10 @@ public class Main {
 
         switch (mode) {
             case SINGLE:
-                new SingleRunner(args).run();
+                new CliSingleRunner(args).run();
                 break;
             case MANAGE:
-                new ManagerRunner().run();
+                new CliManagerRunner().run();
                 break;
             case GUI:
                 new GuiRunner().run();
