@@ -615,6 +615,7 @@ public class MainGui {
         this.reloadAction.putValue(
                 Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+        // TODO:: make this more generic with the rewrite of configuration
         this.managerIO =
                 new ManagerIO(
                         new FileDataSource(

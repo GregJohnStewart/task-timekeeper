@@ -1,12 +1,13 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
-import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
+import java.io.File;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,15 @@ public class CmdLineArgumentRunner extends ModeRunner {
     }
 
     private final CmdLineArgumentParser parser;
-
-    // TODO:: add saveFile member to make testing easier
+    private ManagerIO managerIO;
 
     public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
         this.parser = parser;
+        // TODO:: make this more generic with the rewrite of configuration
+        this.managerIO =
+                new com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO(
+                        new FileDataSource(
+                                Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)));
     }
 
     public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
@@ -42,6 +47,15 @@ public class CmdLineArgumentRunner extends ModeRunner {
 
     public CmdLineArgumentParser getParser() {
         return this.parser;
+    }
+
+    public ManagerIO getManagerIO() {
+        return managerIO;
+    }
+
+    public CmdLineArgumentRunner setManagerIO(ManagerIO managerIO) {
+        this.managerIO = managerIO;
+        return this;
     }
 
     @Override
@@ -64,20 +78,9 @@ public class CmdLineArgumentRunner extends ModeRunner {
             return;
         }
 
-        TimeManager manager = ManagerIO.loadTimeManager();
-        if (manager == null) {
-            // something bad happened reading data, nothing to do. already handled.
-            return;
-        }
-
         if (selectLatest) {
             LOGGER.trace("Selecting the latest period.");
-            manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
-        }
-
-        // Do action. If returns true, data was changed.
-        if (manager.doCrudAction(actionConfig)) {
-            ManagerIO.saveTimeManager(manager);
+            this.managerIO.getManager().getCrudOperator().setNewestPeriodAsSelectedQuiet();
         }
 
         LOGGER.trace("FINISHED processing argument.");

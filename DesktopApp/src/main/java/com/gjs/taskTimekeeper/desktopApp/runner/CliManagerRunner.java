@@ -1,20 +1,31 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
+import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
+import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Handles the management of TimeManager data in an interactive manner TODO:: test */
 public class CliManagerRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(CliManagerRunner.class);
 
     private Scanner scanner = new Scanner(System.in);
+    private ManagerIO managerIO;
 
     public CliManagerRunner() {
-        // no need to do anything
+        // TODO:: make this more generic with the rewrite of configuration
+        this.managerIO =
+                new ManagerIO(
+                        new FileDataSource(
+                                Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)));
     }
 
     public CliManagerRunner(Scanner scanner) {
@@ -49,7 +60,7 @@ public class CliManagerRunner extends ModeRunner {
             LOGGER.debug("Got the following input: {}", input);
 
             try {
-                new CmdLineArgumentRunner(false, input).run();
+                new CmdLineArgumentRunner(false, input).setManagerIO(this.managerIO).run();
             } catch (DoExit e) {
                 break;
             } catch (CmdLineException e) {

@@ -5,6 +5,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Runner for a single cli input. TODO:: test */
 public class CliSingleRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
@@ -20,6 +21,7 @@ public class CliSingleRunner extends ModeRunner {
 
         try {
             CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, this.args);
+            runner.getManagerIO().setAutoSave(true);
             runner.run(true);
         } catch (CmdLineException e) {
             LOGGER.error("Exception when running command: ", e);

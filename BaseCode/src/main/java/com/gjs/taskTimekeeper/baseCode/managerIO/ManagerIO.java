@@ -31,7 +31,7 @@ public class ManagerIO {
     private DataSource dataSource;
     private TimeManager manager;
     private boolean unSaved = false;
-    private boolean autoSave = false; // TODO:: implement setter/getter
+    private boolean autoSave = false; // TODO:: implement setter/getter; test
     private boolean useCompression = true;
 
     // <editor-fold desc="Constructors">
@@ -114,6 +114,16 @@ public class ManagerIO {
     public boolean sourceIsReadOnly() {
         return this.dataSource.isReadOnly();
     }
+
+    public boolean isAutoSave() {
+        return autoSave;
+    }
+
+    public ManagerIO setAutoSave(boolean autoSave) {
+        this.autoSave = autoSave;
+        return this;
+    }
+
     // </editor-fold>
     // <editor-fold desc="loading/ change status">
     /**
