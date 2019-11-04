@@ -20,11 +20,11 @@ public class GuiRunnerTest {
     @Before
     public void setup() {
         try {
-            Configuration.finalizeConfig();
+            Configuration.GLOBAL_CONFIG.finalizeConfig();
         } catch (CmdLineException e) {
             // nothing to do
         }
-        Configuration.setFile(ConfigKeys.SAVE_FILE, testFile);
+        Configuration.GLOBAL_CONFIG.setFile(ConfigKeys.SAVE_FILE, testFile);
     }
 
     @Ignore(value = "FIX")

@@ -31,18 +31,20 @@ public class Configuration {
     /** The location of the properties file in the resources folder. */
     public static final String PROPERTY_FILE_LOC = "project.properties";
 
+    public static final Configuration GLOBAL_CONFIG = new Configuration(); // TODO:: setup properly
+
     /** The properties read from the properties file. */
-    private static Properties PROPERTIES = new Properties();
+    private Properties PROPERTIES = new Properties();
 
     /** If command line args have been read in already. */
-    private static boolean finalized = false;
+    private boolean finalized = false;
 
     /**
      * Finalizes the configuration. Only run once.
      *
      * @param args
      */
-    public static void finalizeConfig(String... args) throws CmdLineException {
+    public void finalizeConfig(String... args) throws CmdLineException {
         if (finalized) {
             throw new IllegalStateException("Cannot finalize properties twice.");
         }
@@ -67,7 +69,7 @@ public class Configuration {
     }
 
     /** Reads the properties file for configuration */
-    private static void readPropertiesFile() {
+    private void readPropertiesFile() {
         LOGGER.trace("Reading properties file for properties.");
         try (InputStream is =
                 Configuration.class.getClassLoader().getResourceAsStream(PROPERTY_FILE_LOC)) {
@@ -86,7 +88,7 @@ public class Configuration {
     }
 
     /** Processes default values. */
-    private static void processDefaults() {
+    private void processDefaults() {
         LOGGER.trace("Processing default configuration values.");
         for (ConfigKeys key : ConfigKeys.getKeysWithDefaultFor()) {
             PROPERTIES.put(key.defaultFor.key, PROPERTIES.get(key.key));
@@ -94,7 +96,7 @@ public class Configuration {
     }
 
     /** Gets configuration from environment config. */
-    private static void addEnvironmentConfig() {
+    private void addEnvironmentConfig() {
         LOGGER.trace("Processing configuration from Environment.");
         Map<String, String> envVars = System.getenv();
 
@@ -110,7 +112,7 @@ public class Configuration {
      * throw exception if config file not found, but will throw exception of there is an error
      * reading an existing configuration file.
      */
-    private static void readFromConfigFile() {
+    private void readFromConfigFile() {
         LOGGER.trace("Reading user config file for properties.");
         try (InputStream is =
                 Configuration.class
@@ -138,7 +140,7 @@ public class Configuration {
      *
      * @param ops
      */
-    private static void processCmdLineOps(CommandLineConfig ops) {
+    private void processCmdLineOps(CommandLineConfig ops) {
         Class<? extends CommandLineConfig> clazz = ops.getClass();
 
         for (Field field : clazz.getDeclaredFields()) {
@@ -168,12 +170,12 @@ public class Configuration {
      *
      * @return
      */
-    public static Set<Map.Entry<Object, Object>> getAllProperties() {
+    public Set<Map.Entry<Object, Object>> getAllProperties() {
         return PROPERTIES.entrySet();
     }
 
     /** Logs out the properties held. */
-    public static void logOutProperties() {
+    public void logOutProperties() {
         LOGGER.info("Configuration properties:");
 
         // TODO:: sort these somehow? Issue with Properties holding <Object, Object>
@@ -189,11 +191,11 @@ public class Configuration {
      * @param key The key to get from properties.
      * @return The property.
      */
-    public static <T> T getProperty(ConfigKeys key, Class<T> clazz) {
+    public <T> T getProperty(ConfigKeys key, Class<T> clazz) {
         return clazz.cast(PROPERTIES.get(key.key));
     }
 
-    public static void setFile(ConfigKeys key, File file) {
+    public void setFile(ConfigKeys key, File file) {
         if (!key.isFile) {
             throw new IllegalArgumentException(
                     "Cannot set value as file if not a file config key.");

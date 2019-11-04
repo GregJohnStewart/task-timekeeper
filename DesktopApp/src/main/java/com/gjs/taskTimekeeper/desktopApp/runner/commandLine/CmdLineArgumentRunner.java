@@ -34,7 +34,8 @@ public class CmdLineArgumentRunner extends ModeRunner {
         this.managerIO =
                 new com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO(
                         new FileDataSource(
-                                Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)));
+                                Configuration.GLOBAL_CONFIG.getProperty(
+                                        ConfigKeys.SAVE_FILE, File.class)));
     }
 
     public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
@@ -93,7 +94,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
         System.out.println("Help output:");
         System.out.println(
                 "\tFor more detailed information, visit: "
-                        + Configuration.getProperty(
+                        + Configuration.GLOBAL_CONFIG.getProperty(
                                 ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
         System.out.println();
 

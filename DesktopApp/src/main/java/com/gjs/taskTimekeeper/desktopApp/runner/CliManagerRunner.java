@@ -25,7 +25,8 @@ public class CliManagerRunner extends ModeRunner {
         this.managerIO =
                 new ManagerIO(
                         new FileDataSource(
-                                Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)));
+                                Configuration.GLOBAL_CONFIG.getProperty(
+                                        ConfigKeys.SAVE_FILE, File.class)));
     }
 
     public CliManagerRunner(Scanner scanner) {

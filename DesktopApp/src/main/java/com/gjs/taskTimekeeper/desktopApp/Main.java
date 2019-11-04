@@ -16,17 +16,18 @@ public class Main {
     public static void main(String[] args) throws CmdLineException {
         LOGGER.info("Starting run of TaskTimekeeper.");
         LOGGER.debug("Input arguments: {}", (Object[]) args);
-        Configuration.finalizeConfig(args);
+        Configuration.GLOBAL_CONFIG.finalizeConfig(args);
         LOGGER.info(
                 "App version: {} Lib version: {}",
-                Configuration.getProperty(ConfigKeys.APP_VERSION, String.class),
-                Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
+                Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.APP_VERSION, String.class),
+                Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.LIB_VERSION, String.class));
 
         RunMode mode = null;
         try {
             mode =
                     RunMode.valueOf(
-                            Configuration.getProperty(ConfigKeys.RUN_MODE, String.class)
+                            Configuration.GLOBAL_CONFIG
+                                    .getProperty(ConfigKeys.RUN_MODE, String.class)
                                     .toUpperCase());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Bad run mode given. Error: ", e);
@@ -36,12 +37,15 @@ public class Main {
         if (mode != RunMode.SINGLE) {
             System.out.println(
                     "TaskTimekeeper v"
-                            + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class)
+                            + Configuration.GLOBAL_CONFIG.getProperty(
+                                    ConfigKeys.APP_VERSION, String.class)
                             + " Using lib v"
-                            + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
+                            + Configuration.GLOBAL_CONFIG.getProperty(
+                                    ConfigKeys.LIB_VERSION, String.class));
             System.out.println(
                     "\tGithub: "
-                            + Configuration.getProperty(ConfigKeys.GITHUB_REPO_URL, String.class));
+                            + Configuration.GLOBAL_CONFIG.getProperty(
+                                    ConfigKeys.GITHUB_REPO_URL, String.class));
             System.out.println();
         }
         if (mode == null) {
@@ -56,7 +60,7 @@ public class Main {
             case MANAGE:
                 new CliManagerRunner().run();
                 break;
-            case GUI:
+            case GUI_SWING:
                 new GuiRunner().run();
                 break;
             default:

@@ -23,7 +23,7 @@ public class GuiRunner extends ModeRunner {
                 GuiRunner.class
                         .getClassLoader()
                         .getResourceAsStream(
-                                Configuration.getProperty(
+                                Configuration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.STATIC_GUI_ICON, String.class))) {
             if (is == null) {
                 throw new IllegalStateException("Desktop icon image not found.");
@@ -36,7 +36,8 @@ public class GuiRunner extends ModeRunner {
 
         APP_TITLE =
                 "Task Timekeeper v"
-                        + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
+                        + Configuration.GLOBAL_CONFIG.getProperty(
+                                ConfigKeys.APP_VERSION, String.class);
 
         LOGGER.debug("Setup gui static resources.");
     }

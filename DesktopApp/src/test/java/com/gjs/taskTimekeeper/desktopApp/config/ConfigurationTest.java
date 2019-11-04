@@ -35,14 +35,14 @@ public class ConfigurationTest {
 
     @Test(expected = IllegalStateException.class)
     public void testTryFinalizeTwice() throws CmdLineException {
-        Configuration.finalizeConfig(new String[0]);
-        Configuration.finalizeConfig(new String[0]);
+        Configuration.GLOBAL_CONFIG.finalizeConfig(new String[0]);
+        Configuration.GLOBAL_CONFIG.finalizeConfig(new String[0]);
     }
 
     @Ignore("Ignoring for travis for some reason.")
     @Test
     public void test() throws CmdLineException {
-        Configuration.finalizeConfig(new String[0]);
+        Configuration.GLOBAL_CONFIG.finalizeConfig(new String[0]);
         // TODO: actually test this class well
     }
 }

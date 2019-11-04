@@ -82,9 +82,9 @@ public class MainGui {
     // <editor-fold desc="Static members">
     private static final String ABOUT_MESSAGE =
             "Task Timekeeper\n\nVersion: "
-                    + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class)
+                    + Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.APP_VERSION, String.class)
                     + "\nUsing Lib version: "
-                    + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class)
+                    + Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.LIB_VERSION, String.class)
                     + "\n\nThis program is made for you to easily keep track of time spent on tasks."
                     + "\nFor help, please visit the Github for this project."
                     + "\nPlease consider donating if you find this program was helpful to you!";
@@ -619,7 +619,8 @@ public class MainGui {
         this.managerIO =
                 new ManagerIO(
                         new FileDataSource(
-                                Configuration.getProperty(ConfigKeys.SAVE_FILE, File.class)),
+                                Configuration.GLOBAL_CONFIG.getProperty(
+                                        ConfigKeys.SAVE_FILE, File.class)),
                         new Outputter(this.printStream, this.errorPrintStream));
     }
 
@@ -679,14 +680,15 @@ public class MainGui {
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
                         URI.create(
-                                Configuration.getProperty(
+                                Configuration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.GITHUB_REPO_URL, String.class))));
         menu.add(menuItem);
         menuItem = new JMenuItem("Donate");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
                         URI.create(
-                                Configuration.getProperty(ConfigKeys.DONATE_URL, String.class))));
+                                Configuration.GLOBAL_CONFIG.getProperty(
+                                        ConfigKeys.DONATE_URL, String.class))));
         menu.add(menuItem);
         this.mainMenuBar.add(menu);
 
@@ -758,7 +760,8 @@ public class MainGui {
         LOGGER.info("Reading in saved options.");
         try (InputStream is =
                 new FileInputStream(
-                        Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                        Configuration.GLOBAL_CONFIG.getProperty(
+                                ConfigKeys.UI_OPTIONS_FILE, File.class))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
         } catch (MismatchedInputException e) {
             LOGGER.debug("Empty gui options file. Starting with new set of options.");
@@ -789,7 +792,8 @@ public class MainGui {
         LOGGER.trace("Writing out ui options data.");
         try (OutputStream os =
                 new FileOutputStream(
-                        Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                        Configuration.GLOBAL_CONFIG.getProperty(
+                                ConfigKeys.UI_OPTIONS_FILE, File.class))) {
             ObjectMapperUtilities.getDefaultMapper().writeValue(os, this.options);
         } catch (IOException e) {
             LOGGER.error("FAILED to write changes to gui options file. Error: ", e);
