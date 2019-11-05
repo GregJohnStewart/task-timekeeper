@@ -27,28 +27,43 @@ public class DesktopAppConfiguration {
     private static DateTimeFormatter DATETIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH-mm_dd-MM-YYYY");
 
+    /** Default global configuration. Needs to have the command line ops handed to it. */
     public static final DesktopAppConfiguration GLOBAL_CONFIG =
             new DesktopAppConfiguration(); // TODO:: setup properly
 
     /** The properties read from the properties file. */
     private Properties properties = new Properties();
 
+    /** Reads in all configuration besides command line args. */
     public DesktopAppConfiguration() {
         this.readPackagedPropertiesFile();
         this.placePackagedDefaults();
-        addEnvironmentConfig();
+        // TODO:: only read in user config file location instead of all env config
+        addEnvironmentConfig(); // read env config in before to have user config file set if passed
+        // in.
         readFromUserConfigFile();
-        addEnvironmentConfig();
+        addEnvironmentConfig(); // read in after as these values override user config file
         replacePlaceholders();
     }
 
+    /**
+     * Calls the {@link #DesktopAppConfiguration() base constructor} and adds config form the
+     * arguments given.
+     *
+     * @param args The command line args to parse and use.
+     * @throws CmdLineException If something went wrong with parsing the arguments
+     */
     public DesktopAppConfiguration(String... args) throws CmdLineException {
         this();
         this.processCmdLineArgs(args);
     }
 
-    /** Finalizes the configuration. Only run once. */
-    public void processCmdLineArgs(CommandLineConfig ops) throws CmdLineException {
+    /**
+     * Processes command line arguments, adding them to the properties held.
+     *
+     * @param ops The parsed command line options
+     */
+    public void processCmdLineArgs(CommandLineConfig ops) {
         // set config location if overridden
         if (ops.getConfigLoc() != null
                 && !ops.getConfigLoc().equals(properties.getProperty(ConfigKeys.CONFIG_FILE.key))) {
@@ -63,6 +78,12 @@ public class DesktopAppConfiguration {
         logOutProperties();
     }
 
+    /**
+     * Processes command line arguments, adding them to the properties held.
+     *
+     * @param args The arguments passed in
+     * @throws CmdLineException
+     */
     public void processCmdLineArgs(String... args) throws CmdLineException {
         processCmdLineArgs(new CommandLineConfig(args));
     }
@@ -76,6 +97,11 @@ public class DesktopAppConfiguration {
         }
     }
 
+    /**
+     * Replaces placeholders at the key given.
+     *
+     * @param key The key to replace placholders in.
+     */
     private void replacePlaceholder(ConfigKeys key) {
         String curProperty = this.getProperty(key);
 
@@ -88,6 +114,13 @@ public class DesktopAppConfiguration {
         this.properties.setProperty(key.key, curProperty);
     }
 
+    /**
+     * Asserts that the key given is not set as read only. Used to check that a property can be
+     * overridden.
+     *
+     * @param key The key to check
+     * @throws SetReadOnlyPropertyException If the key is readonly
+     */
     private void assertKeyIsNotReadOnly(ConfigKeys key) throws SetReadOnlyPropertyException {
         if (key.readOnly) {
             throw new SetReadOnlyPropertyException(
@@ -96,7 +129,7 @@ public class DesktopAppConfiguration {
     }
 
     // <editor-fold desc="Properties reading">
-    /** Reads the properties file for configuration */
+    /** Reads the packaged properties file for configuration. */
     private void readPackagedPropertiesFile() {
         LOGGER.trace("Reading properties file for properties.");
         try (InputStream is =
@@ -174,7 +207,7 @@ public class DesktopAppConfiguration {
     /**
      * Adds the command line ops to the PROPERTIES object.
      *
-     * @param ops
+     * @param ops The parsed command line ops to add to the properties.
      */
     private void processCmdLineOps(CommandLineConfig ops) {
         Class<? extends CommandLineConfig> clazz = ops.getClass();
@@ -205,7 +238,7 @@ public class DesktopAppConfiguration {
     /**
      * Gets all the properties held.
      *
-     * @return
+     * @return The entries held in the properties held.
      */
     public Set<Map.Entry<Object, Object>> getAllProperties() {
         return properties.entrySet();
