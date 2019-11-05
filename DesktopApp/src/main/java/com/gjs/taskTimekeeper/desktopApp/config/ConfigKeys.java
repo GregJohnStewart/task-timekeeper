@@ -13,9 +13,9 @@ public enum ConfigKeys {
     APP_BUILDTIME(true, "app.buildtime"),
     LIB_VERSION(true, "lib.version"),
     // Other config
-    CONFIG_FILE(false, "configFile", "TKPR_CONFIG_FILE", true, false),
-    UI_OPTIONS_FILE(false, "uiOptionsFile", "TKPR_UI_CONFIG_FILE", true, false),
-    SAVE_FILE(false, "saveFile", "TKPR_SAVE_FILE", true, true),
+    CONFIG_FILE(false, "configFile", "TKPR_CONFIG_FILE"),
+    UI_OPTIONS_FILE(false, "uiOptionsFile", "TKPR_UI_CONFIG_FILE"),
+    SAVE_FILE(false, "saveFile", "TKPR_SAVE_FILE"),
     RUN_MODE(false, "run.mode", "TKPR_MODE"),
     // Running config, for single mode
     SINGLE_MODE_HELP(false, "consoleHelp"),
@@ -35,16 +35,12 @@ public enum ConfigKeys {
     public final String key;
     public final String envVar;
     public final ConfigKeys defaultFor;
-    public final boolean isFile;
-    public final boolean needsFile;
 
     ConfigKeys(boolean readOnly, String key) {
         this.readOnly = readOnly;
         this.key = key;
         this.envVar = null;
         this.defaultFor = null;
-        this.isFile = false;
-        this.needsFile = false;
     }
 
     ConfigKeys(boolean readOnly, String key, String envVar) {
@@ -52,17 +48,6 @@ public enum ConfigKeys {
         this.key = key;
         this.envVar = envVar;
         this.defaultFor = null;
-        this.isFile = false;
-        this.needsFile = false;
-    }
-
-    ConfigKeys(boolean readOnly, String key, String envVar, boolean isFile, boolean needsFile) {
-        this.readOnly = readOnly;
-        this.key = key;
-        this.envVar = envVar;
-        this.defaultFor = null;
-        this.isFile = isFile;
-        this.needsFile = needsFile;
     }
 
     ConfigKeys(boolean readOnly, String key, ConfigKeys defaultFor) {
@@ -70,8 +55,6 @@ public enum ConfigKeys {
         this.key = key;
         this.envVar = null;
         this.defaultFor = defaultFor;
-        this.isFile = false;
-        this.needsFile = false;
     }
 
     public static ConfigKeys getKeyOf(String key) {
@@ -97,16 +80,6 @@ public enum ConfigKeys {
         List<ConfigKeys> keys = new ArrayList<>();
         for (ConfigKeys key : ConfigKeys.values()) {
             if (key.defaultFor != null) {
-                keys.add(key);
-            }
-        }
-        return keys;
-    }
-
-    public static Collection<ConfigKeys> getKeysThatAreFiles() {
-        List<ConfigKeys> keys = new ArrayList<>();
-        for (ConfigKeys key : ConfigKeys.values()) {
-            if (key.isFile) {
                 keys.add(key);
             }
         }
