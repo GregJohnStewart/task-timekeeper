@@ -6,7 +6,6 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
-import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
 import org.kohsuke.args4j.CmdLineException;
@@ -20,20 +19,20 @@ public class CliManagerRunner extends ModeRunner {
     private Scanner scanner = new Scanner(System.in);
     private ManagerIO managerIO;
 
-    public CliManagerRunner() {
+    public CliManagerRunner(DesktopAppConfiguration config) {
         // TODO:: make this more generic with the rewrite of configuration
+        super(config);
         this.managerIO =
-                new ManagerIO(
-                        new FileDataSource(
-                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                        ConfigKeys.SAVE_FILE, File.class)));
+                new ManagerIO(new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)));
     }
 
-    public CliManagerRunner(Scanner scanner) {
+    public CliManagerRunner(DesktopAppConfiguration config, Scanner scanner) {
+        this(config);
         this.scanner = scanner;
     }
 
-    public CliManagerRunner(InputStream is) {
+    public CliManagerRunner(DesktopAppConfiguration config, InputStream is) {
+        this(config);
         this.scanner = new Scanner(is);
     }
 
@@ -61,7 +60,9 @@ public class CliManagerRunner extends ModeRunner {
             LOGGER.debug("Got the following input: {}", input);
 
             try {
-                new CmdLineArgumentRunner(false, input).setManagerIO(this.managerIO).run();
+                new CmdLineArgumentRunner(this.config, false, input)
+                        .setManagerIO(this.managerIO)
+                        .run();
             } catch (DoExit e) {
                 break;
             } catch (CmdLineException e) {

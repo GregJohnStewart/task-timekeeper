@@ -2,7 +2,6 @@ package com.gjs.taskTimekeeper.desktopApp;
 
 import static org.junit.Assert.assertEquals;
 
-import com.gjs.taskTimekeeper.baseCode.TimeKeeperException;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigKeyDoesNotExistException;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigurationException;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.SetReadOnlyPropertyException;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * stats.
  */
 @RunWith(Parameterized.class)
-public class ExceptionTests {
+public class ExceptionTests<T extends DesktopAppException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionTests.class);
 
     /** The different exceptions to test. */
@@ -38,27 +37,25 @@ public class ExceptionTests {
     private static final Throwable TEST_THROWABLE = new Throwable("Test throwable message");
     private static final String TEST_MESSAGE = "TEST MESSAGE FOR EXCEPTION TESTING";
 
-    private final Class<? extends TimeKeeperException> curExceptionClass;
+    private final Class<? extends T> curExceptionClass;
 
-    public ExceptionTests(Class<? extends TimeKeeperException> curExceptionClass) {
+    public ExceptionTests(Class<? extends T> curExceptionClass) {
         this.curExceptionClass = curExceptionClass;
     }
 
     @Test
     public void testExceptions() throws Throwable {
         LOGGER.debug("Testing: {}", curExceptionClass.getName());
-        Constructor<? extends TimeKeeperException> constBase = curExceptionClass.getConstructor();
-        Constructor<? extends TimeKeeperException> constStr =
-                curExceptionClass.getConstructor(String.class);
-        Constructor<? extends TimeKeeperException> constThro =
-                curExceptionClass.getConstructor(Throwable.class);
-        Constructor<? extends TimeKeeperException> constStrThro =
+        Constructor<? extends T> constBase = curExceptionClass.getConstructor();
+        Constructor<? extends T> constStr = curExceptionClass.getConstructor(String.class);
+        Constructor<? extends T> constThro = curExceptionClass.getConstructor(Throwable.class);
+        Constructor<? extends T> constStrThro =
                 curExceptionClass.getConstructor(String.class, Throwable.class);
-        Constructor<? extends TimeKeeperException> constStrThroSupWritable =
+        Constructor<? extends T> constStrThroSupWritable =
                 curExceptionClass.getConstructor(
                         String.class, Throwable.class, boolean.class, boolean.class);
 
-        TimeKeeperException curException = constBase.newInstance();
+        T curException = constBase.newInstance();
 
         curException = constStr.newInstance(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, curException.getMessage());

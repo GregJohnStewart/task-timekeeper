@@ -7,7 +7,6 @@ import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
-import java.io.File;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,22 +27,24 @@ public class CmdLineArgumentRunner extends ModeRunner {
     private final CmdLineArgumentParser parser;
     private ManagerIO managerIO;
 
-    public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
+    public CmdLineArgumentRunner(DesktopAppConfiguration config, CmdLineArgumentParser parser) {
+        super(config);
         this.parser = parser;
         // TODO:: make this more generic with the rewrite of configuration
         this.managerIO =
                 new com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO(
-                        new FileDataSource(
-                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                        ConfigKeys.SAVE_FILE, File.class)));
+                        new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)));
     }
 
-    public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
-        this(new CmdLineArgumentParser(allowExtra, args));
+    public CmdLineArgumentRunner(DesktopAppConfiguration config, boolean allowExtra, String... args)
+            throws CmdLineException {
+        this(config, new CmdLineArgumentParser(allowExtra, args));
     }
 
-    public CmdLineArgumentRunner(boolean allowExtra, String inputString) throws CmdLineException {
-        this(allowExtra, splitCommandLineArgumentString(inputString));
+    public CmdLineArgumentRunner(
+            DesktopAppConfiguration config, boolean allowExtra, String inputString)
+            throws CmdLineException {
+        this(config, allowExtra, splitCommandLineArgumentString(inputString));
     }
 
     public CmdLineArgumentParser getParser() {
@@ -94,8 +95,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
         System.out.println("Help output:");
         System.out.println(
                 "\tFor more detailed information, visit: "
-                        + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
+                        + this.config.getProperty(ConfigKeys.GITHUB_DESKTOP_APP_README));
         System.out.println();
 
         this.parser.printUsage();

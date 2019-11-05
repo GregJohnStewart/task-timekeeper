@@ -40,7 +40,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -80,13 +79,9 @@ public class MainGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainGui.class);
 
     // <editor-fold desc="Static members">
-    private static final String ABOUT_MESSAGE =
-            "Task Timekeeper\n\nVersion: "
-                    + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                            ConfigKeys.APP_VERSION, String.class)
-                    + "\nUsing Lib version: "
-                    + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                            ConfigKeys.LIB_VERSION, String.class)
+    private static final String ABOUT_MESSAGE_FORMAT =
+            "Task Timekeeper\n\nVersion: %s"
+                    + "\nUsing Lib version: %s"
                     + "\n\nThis program is made for you to easily keep track of time spent on tasks."
                     + "\nFor help, please visit the Github for this project."
                     + "\nPlease consider donating if you find this program was helpful to you!";
@@ -142,11 +137,13 @@ public class MainGui {
     // </editor-fold>
     // <editor-fold desc="member variables">
     // admin stuff
+    private DesktopAppConfiguration config;
     private ManagerIO managerIO;
     private GuiOptions options = null;
     private ByteArrayOutputStream printStream = new ByteArrayOutputStream();
     private ByteArrayOutputStream errorPrintStream = new ByteArrayOutputStream();
     private final String origTitle;
+    private final String ABOUT_MESSAGE;
 
     // swing components
     private JFrame mainFrame;
@@ -617,16 +614,20 @@ public class MainGui {
         this.reloadAction.putValue(
                 Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+    }
+
+    public MainGui(DesktopAppConfiguration config, Image icon, String appTitle) {
+        this.config = config;
         // TODO:: make this more generic with the rewrite of configuration
         this.managerIO =
                 new ManagerIO(
-                        new FileDataSource(
-                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                        ConfigKeys.SAVE_FILE, File.class)),
+                        new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)),
                         new Outputter(this.printStream, this.errorPrintStream));
-    }
-
-    public MainGui(Image icon, String appTitle) {
+        this.ABOUT_MESSAGE =
+                String.format(
+                        ABOUT_MESSAGE_FORMAT,
+                        this.config.getProperty(ConfigKeys.APP_VERSION),
+                        this.config.getProperty(ConfigKeys.LIB_VERSION));
         LOGGER.info("Starting GUI.");
         this.origTitle = appTitle;
 
@@ -681,16 +682,12 @@ public class MainGui {
         menuItem = new JMenuItem("Github");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
-                        URI.create(
-                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                        ConfigKeys.GITHUB_REPO_URL, String.class))));
+                        URI.create(this.config.getProperty(ConfigKeys.GITHUB_REPO_URL))));
         menu.add(menuItem);
         menuItem = new JMenuItem("Donate");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
-                        URI.create(
-                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                        ConfigKeys.DONATE_URL, String.class))));
+                        URI.create(this.config.getProperty(ConfigKeys.DONATE_URL))));
         menu.add(menuItem);
         this.mainMenuBar.add(menu);
 
@@ -761,9 +758,7 @@ public class MainGui {
     private void loadUiOptions() {
         LOGGER.info("Reading in saved options.");
         try (InputStream is =
-                new FileInputStream(
-                        DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                new FileInputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
         } catch (MismatchedInputException e) {
             LOGGER.debug("Empty gui options file. Starting with new set of options.");
@@ -793,9 +788,7 @@ public class MainGui {
 
         LOGGER.trace("Writing out ui options data.");
         try (OutputStream os =
-                new FileOutputStream(
-                        DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                new FileOutputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             ObjectMapperUtilities.getDefaultMapper().writeValue(os, this.options);
         } catch (IOException e) {
             LOGGER.error("FAILED to write changes to gui options file. Error: ", e);

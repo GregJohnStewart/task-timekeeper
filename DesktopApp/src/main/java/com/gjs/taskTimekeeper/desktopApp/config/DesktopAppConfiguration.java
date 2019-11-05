@@ -27,10 +27,6 @@ public class DesktopAppConfiguration {
     private static DateTimeFormatter DATETIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH-mm_dd-MM-YYYY");
 
-    /** Default global configuration. Needs to have the command line ops handed to it. */
-    public static final DesktopAppConfiguration GLOBAL_CONFIG =
-            new DesktopAppConfiguration(); // TODO:: setup properly
-
     /** The properties read from the properties file. */
     private Properties properties = new Properties();
 

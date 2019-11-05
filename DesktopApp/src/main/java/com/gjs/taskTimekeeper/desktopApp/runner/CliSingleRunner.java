@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
@@ -9,9 +10,10 @@ import org.slf4j.LoggerFactory;
 public class CliSingleRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
-    private final String args[];
+    private final String[] args;
 
-    public CliSingleRunner(String[] args) {
+    public CliSingleRunner(DesktopAppConfiguration config, String[] args) {
+        super(config);
         this.args = args;
     }
 
@@ -20,7 +22,7 @@ public class CliSingleRunner extends ModeRunner {
         // System.out.println("Running single command.");
 
         try {
-            CmdLineArgumentRunner runner = new CmdLineArgumentRunner(true, this.args);
+            CmdLineArgumentRunner runner = new CmdLineArgumentRunner(this.config, true, this.args);
             runner.getManagerIO().setAutoSave(true);
             runner.run(true);
         } catch (CmdLineException e) {

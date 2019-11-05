@@ -16,21 +16,15 @@ public class Main {
     public static void main(String[] args) throws CmdLineException {
         LOGGER.info("Starting run of TaskTimekeeper.");
         LOGGER.debug("Input arguments: {}", (Object[]) args);
-        DesktopAppConfiguration.GLOBAL_CONFIG.finalizeConfig(args);
+        DesktopAppConfiguration properties = new DesktopAppConfiguration(args);
         LOGGER.info(
                 "App version: {} Lib version: {}",
-                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                        ConfigKeys.APP_VERSION, String.class),
-                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                        ConfigKeys.LIB_VERSION, String.class));
+                properties.getProperty(ConfigKeys.APP_VERSION),
+                properties.getProperty(ConfigKeys.LIB_VERSION));
 
         RunMode mode = null;
         try {
-            mode =
-                    RunMode.valueOf(
-                            DesktopAppConfiguration.GLOBAL_CONFIG
-                                    .getProperty(ConfigKeys.RUN_MODE, String.class)
-                                    .toUpperCase());
+            mode = RunMode.valueOf(properties.getProperty(ConfigKeys.RUN_MODE).toUpperCase());
         } catch (IllegalArgumentException e) {
             LOGGER.error("Bad run mode given. Error: ", e);
             // deal with later
@@ -39,15 +33,10 @@ public class Main {
         if (mode != RunMode.SINGLE) {
             System.out.println(
                     "TaskTimekeeper v"
-                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                    ConfigKeys.APP_VERSION, String.class)
+                            + properties.getProperty(ConfigKeys.APP_VERSION)
                             + " Using lib v"
-                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                    ConfigKeys.LIB_VERSION, String.class));
-            System.out.println(
-                    "\tGithub: "
-                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
-                                    ConfigKeys.GITHUB_REPO_URL, String.class));
+                            + properties.getProperty(ConfigKeys.LIB_VERSION));
+            System.out.println("\tGithub: " + properties.getProperty(ConfigKeys.GITHUB_REPO_URL));
             System.out.println();
         }
         if (mode == null) {
@@ -57,13 +46,13 @@ public class Main {
 
         switch (mode) {
             case SINGLE:
-                new CliSingleRunner(args).run();
+                new CliSingleRunner(properties, args).run();
                 break;
             case MANAGE:
-                new CliManagerRunner().run();
+                new CliManagerRunner(properties).run();
                 break;
             case GUI_SWING:
-                new GuiRunner().run();
+                new GuiRunner(properties).run();
                 break;
             default:
                 LOGGER.error("Invalid run mode given.");
