@@ -5,7 +5,7 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import java.io.File;
 import org.kohsuke.args4j.CmdLineException;
@@ -34,7 +34,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
         this.managerIO =
                 new com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO(
                         new FileDataSource(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.SAVE_FILE, File.class)));
     }
 
@@ -94,7 +94,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
         System.out.println("Help output:");
         System.out.println(
                 "\tFor more detailed information, visit: "
-                        + Configuration.GLOBAL_CONFIG.getProperty(
+                        + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                 ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
         System.out.println();
 

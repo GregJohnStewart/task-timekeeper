@@ -18,7 +18,7 @@ import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.SpanEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
@@ -82,9 +82,11 @@ public class MainGui {
     // <editor-fold desc="Static members">
     private static final String ABOUT_MESSAGE =
             "Task Timekeeper\n\nVersion: "
-                    + Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.APP_VERSION, String.class)
+                    + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
+                            ConfigKeys.APP_VERSION, String.class)
                     + "\nUsing Lib version: "
-                    + Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.LIB_VERSION, String.class)
+                    + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
+                            ConfigKeys.LIB_VERSION, String.class)
                     + "\n\nThis program is made for you to easily keep track of time spent on tasks."
                     + "\nFor help, please visit the Github for this project."
                     + "\nPlease consider donating if you find this program was helpful to you!";
@@ -619,7 +621,7 @@ public class MainGui {
         this.managerIO =
                 new ManagerIO(
                         new FileDataSource(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.SAVE_FILE, File.class)),
                         new Outputter(this.printStream, this.errorPrintStream));
     }
@@ -680,14 +682,14 @@ public class MainGui {
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
                         URI.create(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.GITHUB_REPO_URL, String.class))));
         menu.add(menuItem);
         menuItem = new JMenuItem("Donate");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
                         URI.create(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.DONATE_URL, String.class))));
         menu.add(menuItem);
         this.mainMenuBar.add(menu);
@@ -760,7 +762,7 @@ public class MainGui {
         LOGGER.info("Reading in saved options.");
         try (InputStream is =
                 new FileInputStream(
-                        Configuration.GLOBAL_CONFIG.getProperty(
+                        DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                 ConfigKeys.UI_OPTIONS_FILE, File.class))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
         } catch (MismatchedInputException e) {
@@ -792,7 +794,7 @@ public class MainGui {
         LOGGER.trace("Writing out ui options data.");
         try (OutputStream os =
                 new FileOutputStream(
-                        Configuration.GLOBAL_CONFIG.getProperty(
+                        DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                 ConfigKeys.UI_OPTIONS_FILE, File.class))) {
             ObjectMapperUtilities.getDefaultMapper().writeValue(os, this.options);
         } catch (IOException e) {

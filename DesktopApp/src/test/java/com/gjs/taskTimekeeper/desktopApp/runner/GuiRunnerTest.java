@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import java.io.File;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,11 +20,11 @@ public class GuiRunnerTest {
     @Before
     public void setup() {
         try {
-            Configuration.GLOBAL_CONFIG.finalizeConfig();
+            DesktopAppConfiguration.GLOBAL_CONFIG.finalizeConfig();
         } catch (CmdLineException e) {
             // nothing to do
         }
-        Configuration.GLOBAL_CONFIG.setFile(ConfigKeys.SAVE_FILE, testFile);
+        DesktopAppConfiguration.GLOBAL_CONFIG.setFile(ConfigKeys.SAVE_FILE, testFile);
     }
 
     @Ignore(value = "FIX")

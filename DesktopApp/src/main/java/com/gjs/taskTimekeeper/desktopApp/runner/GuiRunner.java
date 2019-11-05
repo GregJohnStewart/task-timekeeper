@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
 import java.awt.Image;
@@ -23,7 +23,7 @@ public class GuiRunner extends ModeRunner {
                 GuiRunner.class
                         .getClassLoader()
                         .getResourceAsStream(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.STATIC_GUI_ICON, String.class))) {
             if (is == null) {
                 throw new IllegalStateException("Desktop icon image not found.");
@@ -36,7 +36,7 @@ public class GuiRunner extends ModeRunner {
 
         APP_TITLE =
                 "Task Timekeeper v"
-                        + Configuration.GLOBAL_CONFIG.getProperty(
+                        + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                 ConfigKeys.APP_VERSION, String.class);
 
         LOGGER.debug("Setup gui static resources.");

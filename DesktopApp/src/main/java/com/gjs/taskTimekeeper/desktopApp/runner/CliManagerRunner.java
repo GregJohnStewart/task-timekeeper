@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.desktopApp.runner;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
 import java.io.File;
@@ -25,7 +25,7 @@ public class CliManagerRunner extends ModeRunner {
         this.managerIO =
                 new ManagerIO(
                         new FileDataSource(
-                                Configuration.GLOBAL_CONFIG.getProperty(
+                                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                         ConfigKeys.SAVE_FILE, File.class)));
     }
 

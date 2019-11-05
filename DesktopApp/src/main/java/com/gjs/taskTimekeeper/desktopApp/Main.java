@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
 import com.gjs.taskTimekeeper.desktopApp.runner.CliManagerRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.CliSingleRunner;
@@ -16,17 +16,19 @@ public class Main {
     public static void main(String[] args) throws CmdLineException {
         LOGGER.info("Starting run of TaskTimekeeper.");
         LOGGER.debug("Input arguments: {}", (Object[]) args);
-        Configuration.GLOBAL_CONFIG.finalizeConfig(args);
+        DesktopAppConfiguration.GLOBAL_CONFIG.finalizeConfig(args);
         LOGGER.info(
                 "App version: {} Lib version: {}",
-                Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.APP_VERSION, String.class),
-                Configuration.GLOBAL_CONFIG.getProperty(ConfigKeys.LIB_VERSION, String.class));
+                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
+                        ConfigKeys.APP_VERSION, String.class),
+                DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
+                        ConfigKeys.LIB_VERSION, String.class));
 
         RunMode mode = null;
         try {
             mode =
                     RunMode.valueOf(
-                            Configuration.GLOBAL_CONFIG
+                            DesktopAppConfiguration.GLOBAL_CONFIG
                                     .getProperty(ConfigKeys.RUN_MODE, String.class)
                                     .toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -37,14 +39,14 @@ public class Main {
         if (mode != RunMode.SINGLE) {
             System.out.println(
                     "TaskTimekeeper v"
-                            + Configuration.GLOBAL_CONFIG.getProperty(
+                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                     ConfigKeys.APP_VERSION, String.class)
                             + " Using lib v"
-                            + Configuration.GLOBAL_CONFIG.getProperty(
+                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                     ConfigKeys.LIB_VERSION, String.class));
             System.out.println(
                     "\tGithub: "
-                            + Configuration.GLOBAL_CONFIG.getProperty(
+                            + DesktopAppConfiguration.GLOBAL_CONFIG.getProperty(
                                     ConfigKeys.GITHUB_REPO_URL, String.class));
             System.out.println();
         }
