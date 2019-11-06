@@ -3,12 +3,12 @@ package com.gjs.taskTimekeeper.desktopApp.config;
 import static com.gjs.taskTimekeeper.desktopApp.config.CommandLineConfig.PropertiesOption;
 
 import com.gjs.taskTimekeeper.desktopApp.config.exception.SetReadOnlyPropertyException;
+import com.gjs.taskTimekeeper.desktopApp.config.utils.StringPlaceholder;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -22,34 +22,24 @@ public class DesktopAppConfiguration {
     /** The location of the properties file in the resources folder. */
     private static final String PROPERTY_FILE_LOC = "project.properties";
 
-    private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-YYYY");
-    private static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH-mm");
-    private static DateTimeFormatter DATETIME_FORMATTER =
-            DateTimeFormatter.ofPattern("HH-mm_dd-MM-YYYY");
-
     /** The properties read from the properties file. */
     private Properties properties = new Properties();
 
-    /** Reads in all configuration besides command line args. */
-    private DesktopAppConfiguration(Map<String, String> envVars, String userConfigFileLoc) {
+    public DesktopAppConfiguration(Map<String, String> envVars, CommandLineConfig cmdLine)
+            throws CmdLineException {
         this.readPackagedPropertiesFile();
         this.placePackagedDefaults();
         // update user config file location if needed
         if (envVars.get(ConfigKeys.CONFIG_FILE.envVar) != null) {
             this.putProperty(ConfigKeys.CONFIG_FILE, envVars.get(ConfigKeys.CONFIG_FILE.envVar));
         }
-        if (userConfigFileLoc != null) {
-            this.putProperty(ConfigKeys.CONFIG_FILE, userConfigFileLoc);
+        if (cmdLine.getConfigLoc() != null) {
+            this.putProperty(ConfigKeys.CONFIG_FILE, cmdLine.getConfigLoc());
         }
 
         readFromUserConfigFile();
         addEnvironmentConfig(envVars);
         replacePlaceholders();
-    }
-
-    public DesktopAppConfiguration(Map<String, String> envVars, CommandLineConfig cmdLine)
-            throws CmdLineException {
-        this(envVars, cmdLine.getConfigLoc());
         this.processCmdLineArgs(cmdLine);
     }
 
@@ -99,15 +89,8 @@ public class DesktopAppConfiguration {
      * @param key The key to replace placholders in.
      */
     private void replacePlaceholder(ConfigKeys key) {
-        String curProperty = this.getProperty(key);
-
-        curProperty = curProperty.replaceAll("\\{HOME}", System.getProperty("user.home"));
-        curProperty = curProperty.replaceAll("\\{DATE}", LocalDate.now().format(DATE_FORMATTER));
-        curProperty = curProperty.replaceAll("\\{TIME}", LocalDate.now().format(TIME_FORMATTER));
-        curProperty =
-                curProperty.replaceAll("\\{DATETIME}", LocalDate.now().format(DATETIME_FORMATTER));
-
-        this.properties.setProperty(key.key, curProperty);
+        this.properties.setProperty(
+                key.key, StringPlaceholder.processPlaceholders(this.getProperty(key)));
     }
 
     /**
@@ -134,14 +117,17 @@ public class DesktopAppConfiguration {
                         .getResourceAsStream(PROPERTY_FILE_LOC)) {
             if (is == null) {
                 throw new FileNotFoundException(
-                        "Input stream was null, assuming file is not present.");
+                        "Input stream was null, assuming built in properties file is not present.");
             }
             properties.load(is);
         } catch (FileNotFoundException e) {
-            LOGGER.error("Properties file not found. Cannot read properties in. Error: ", e);
+            LOGGER.error(
+                    "Properties file not found. Cannot read build in properties in. Error: ", e);
             throw new RuntimeException(e);
         } catch (IOException e) {
-            LOGGER.error("Error reading properties file. Cannot read properties in. Error: ", e);
+            LOGGER.error(
+                    "Error reading properties file. Cannot read built in properties in. Error: ",
+                    e);
             throw new RuntimeException(e);
         }
     }
@@ -150,7 +136,7 @@ public class DesktopAppConfiguration {
     private void placePackagedDefaults() {
         LOGGER.trace("Processing default configuration values.");
         for (ConfigKeys key : ConfigKeys.getKeysWithDefaultFor()) {
-            properties.put(key.defaultFor.key, properties.get(key.key));
+            this.putProperty(key.defaultFor, this.getProperty(key));
         }
     }
 
@@ -171,12 +157,10 @@ public class DesktopAppConfiguration {
      * reading an existing configuration file.
      */
     private void readFromUserConfigFile() {
-        LOGGER.trace("Reading user config file for properties.");
+        LOGGER.info("Reading user config file for properties.");
+        LOGGER.debug("User config file located at: {}", getProperty(ConfigKeys.CONFIG_FILE));
         Properties userFileProps = new Properties();
-        try (InputStream is =
-                DesktopAppConfiguration.class
-                        .getClassLoader()
-                        .getResourceAsStream(getProperty(ConfigKeys.CONFIG_FILE))) {
+        try (InputStream is = new FileInputStream(getProperty(ConfigKeys.CONFIG_FILE))) {
             if (is == null) {
                 throw new FileNotFoundException(
                         "Input stream was null, assuming user's configuration file is not present.");
