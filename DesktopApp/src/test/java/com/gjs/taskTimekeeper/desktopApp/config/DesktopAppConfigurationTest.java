@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
-public class ConfigurationTest {
+public class DesktopAppConfigurationTest {
 
     private DesktopAppConfiguration config;
 }

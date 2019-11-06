@@ -7,6 +7,6 @@ import org.junit.Test;
 public class RunModeTest {
     @Test
     public void test() {
-        RunMode.values();
+        assertNotNull(RunMode.values());
     }
 }

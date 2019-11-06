@@ -31,27 +31,35 @@ public class DesktopAppConfiguration {
     private Properties properties = new Properties();
 
     /** Reads in all configuration besides command line args. */
-    public DesktopAppConfiguration() {
+    private DesktopAppConfiguration(Map<String, String> envVars, String userConfigFileLoc) {
         this.readPackagedPropertiesFile();
         this.placePackagedDefaults();
-        // TODO:: only read in user config file location instead of all env config
-        addEnvironmentConfig(); // read env config in before to have user config file set if passed
-        // in.
+        // update user config file location if needed
+        if (envVars.get(ConfigKeys.CONFIG_FILE.envVar) != null) {
+            this.putProperty(ConfigKeys.CONFIG_FILE, envVars.get(ConfigKeys.CONFIG_FILE.envVar));
+        }
+        if (userConfigFileLoc != null) {
+            this.putProperty(ConfigKeys.CONFIG_FILE, userConfigFileLoc);
+        }
+
         readFromUserConfigFile();
-        addEnvironmentConfig(); // read in after as these values override user config file
+        addEnvironmentConfig(envVars);
         replacePlaceholders();
     }
 
-    /**
-     * Calls the {@link #DesktopAppConfiguration() base constructor} and adds config form the
-     * arguments given.
-     *
-     * @param args The command line args to parse and use.
-     * @throws CmdLineException If something went wrong with parsing the arguments
-     */
+    public DesktopAppConfiguration(Map<String, String> envVars, CommandLineConfig cmdLine)
+            throws CmdLineException {
+        this(envVars, cmdLine.getConfigLoc());
+        this.processCmdLineArgs(cmdLine);
+    }
+
+    public DesktopAppConfiguration(Map<String, String> envVars, String... args)
+            throws CmdLineException {
+        this(envVars, new CommandLineConfig(args));
+    }
+
     public DesktopAppConfiguration(String... args) throws CmdLineException {
-        this();
-        this.processCmdLineArgs(args);
+        this(System.getenv(), new CommandLineConfig(args));
     }
 
     /**
@@ -60,14 +68,6 @@ public class DesktopAppConfiguration {
      * @param ops The parsed command line options
      */
     public void processCmdLineArgs(CommandLineConfig ops) {
-        // set config location if overridden
-        if (ops.getConfigLoc() != null
-                && !ops.getConfigLoc().equals(properties.getProperty(ConfigKeys.CONFIG_FILE.key))) {
-            properties.put(ConfigKeys.CONFIG_FILE, ops.getConfigLoc());
-            readFromUserConfigFile();
-            addEnvironmentConfig(); // reread to preserve their overriding of config file
-        }
-
         processCmdLineOps(ops);
         replacePlaceholders();
 
@@ -155,9 +155,8 @@ public class DesktopAppConfiguration {
     }
 
     /** Gets configuration from environment config. */
-    private void addEnvironmentConfig() {
+    private void addEnvironmentConfig(Map<String, String> envVars) {
         LOGGER.trace("Processing configuration from Environment.");
-        Map<String, String> envVars = System.getenv();
 
         for (ConfigKeys key : ConfigKeys.getKeysWithEnv()) {
             if (envVars.containsKey(key.envVar)) {
