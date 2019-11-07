@@ -60,9 +60,7 @@ public class CliManagerRunner extends ModeRunner {
             LOGGER.debug("Got the following input: {}", input);
 
             try {
-                new CmdLineArgumentRunner(this.config, false, input)
-                        .setManagerIO(this.managerIO)
-                        .run();
+                new CmdLineArgumentRunner(this.managerIO, this.config, false, input).run();
             } catch (DoExit e) {
                 break;
             } catch (CmdLineException e) {

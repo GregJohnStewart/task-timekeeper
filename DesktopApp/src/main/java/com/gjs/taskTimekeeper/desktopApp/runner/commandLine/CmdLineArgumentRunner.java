@@ -19,6 +19,29 @@ public class CmdLineArgumentRunner extends ModeRunner {
     private final CmdLineArgumentParser parser;
     private ManagerIO managerIO;
 
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO, DesktopAppConfiguration config, CmdLineArgumentParser parser)
+            throws DataSourceParsingException {
+        super(config);
+        this.parser = parser;
+        this.managerIO = managerIO;
+    }
+
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO, DesktopAppConfiguration config, boolean allowExtra, String... args)
+            throws CmdLineException {
+        this(managerIO, config, new CmdLineArgumentParser(allowExtra, args));
+    }
+
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO,
+            DesktopAppConfiguration config,
+            boolean allowExtra,
+            String inputString)
+            throws CmdLineException {
+        this(managerIO, config, allowExtra, CommandLineArgumentSplitter.split(inputString));
+    }
+
     public CmdLineArgumentRunner(DesktopAppConfiguration config, CmdLineArgumentParser parser)
             throws DataSourceParsingException {
         super(config);
