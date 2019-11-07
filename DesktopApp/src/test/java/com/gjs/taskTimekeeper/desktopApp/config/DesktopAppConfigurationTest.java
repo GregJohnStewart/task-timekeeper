@@ -5,7 +5,7 @@ import static com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys.RUN_MODE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunnerTest;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunnerTest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

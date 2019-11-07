@@ -1,10 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import static org.junit.Assert.*;
-
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
-import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunnerTest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -15,7 +12,7 @@ import org.kohsuke.args4j.CmdLineException;
 public class CliManagerRunnerTest {
     private static final File testFile =
             new File(
-                    GuiRunnerTest.class
+                    CliManagerRunnerTest.class
                             .getClassLoader()
                             .getResource("testTimeManagerData/fully_populated.json")
                             .getFile());
