@@ -1,11 +1,10 @@
-package com.gjs.taskTimekeeper.desktopApp.runner;
+package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
-import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
+import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import java.io.InputStream;
 import java.util.Scanner;
 import org.kohsuke.args4j.CmdLineException;

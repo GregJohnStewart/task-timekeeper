@@ -1,8 +1,8 @@
-package com.gjs.taskTimekeeper.desktopApp.runner;
+package com.gjs.taskTimekeeper.desktopApp.runner.gui;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
+import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
 import java.awt.Image;
 import java.io.InputStream;

@@ -1,14 +1,14 @@
-package com.gjs.taskTimekeeper.desktopApp.runner;
+package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
-import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CmdLineArgumentRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Runner for a single cli input. TODO:: test */
 public class CliSingleRunner extends ModeRunner {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CliSingleRunner.class);
 
     private final String[] args;
 
