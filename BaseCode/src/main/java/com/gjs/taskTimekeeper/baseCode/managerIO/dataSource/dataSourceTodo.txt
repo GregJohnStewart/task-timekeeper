@@ -1,7 +1,4 @@
 
-Implement central way for parsing out data source from string (url/ file location, etc.)
-
-
 Data sources to implement:
     FTP/SFTP/FTPS:
         https://stackoverflow.com/questions/295178/what-java-ftp-client-library-should-i-use

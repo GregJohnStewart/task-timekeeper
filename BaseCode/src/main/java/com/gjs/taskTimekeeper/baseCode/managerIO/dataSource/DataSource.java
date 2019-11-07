@@ -11,7 +11,14 @@ import org.slf4j.LoggerFactory;
 public abstract class DataSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSource.class);
 
-    public static DataSource fromString(String source) {
+    /**
+     * Parsed a data source from the string given.
+     *
+     * @param source The source url given
+     * @return The data source made given the url.
+     * @throws DataSourceParsingException If something went wrong parsing the exception
+     */
+    public static DataSource fromString(String source) throws DataSourceParsingException {
         LOGGER.info("Parsing data source.");
         LOGGER.debug("String to parse data source from: {}", source);
 

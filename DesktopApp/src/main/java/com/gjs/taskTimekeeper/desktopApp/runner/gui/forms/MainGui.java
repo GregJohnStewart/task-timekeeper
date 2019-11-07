@@ -9,7 +9,8 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
@@ -616,12 +617,12 @@ public class MainGui {
                 KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
     }
 
-    public MainGui(DesktopAppConfiguration config, Image icon, String appTitle) {
+    public MainGui(DesktopAppConfiguration config, Image icon, String appTitle)
+            throws DataSourceParsingException {
         this.config = config;
-        // TODO:: make this more generic with the rewrite of configuration
         this.managerIO =
                 new ManagerIO(
-                        new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)),
+                        DataSource.fromString(this.config.getProperty(ConfigKeys.SAVE_FILE)),
                         new Outputter(this.printStream, this.errorPrintStream));
         this.ABOUT_MESSAGE =
                 String.format(

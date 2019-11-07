@@ -2,7 +2,8 @@ package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
@@ -27,13 +28,12 @@ public class CmdLineArgumentRunner extends ModeRunner {
     private final CmdLineArgumentParser parser;
     private ManagerIO managerIO;
 
-    public CmdLineArgumentRunner(DesktopAppConfiguration config, CmdLineArgumentParser parser) {
+    public CmdLineArgumentRunner(DesktopAppConfiguration config, CmdLineArgumentParser parser)
+            throws DataSourceParsingException {
         super(config);
         this.parser = parser;
-        // TODO:: make this more generic with the rewrite of configuration
         this.managerIO =
-                new com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO(
-                        new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)));
+                new ManagerIO(DataSource.fromString(this.config.getProperty(ConfigKeys.SAVE_FILE)));
     }
 
     public CmdLineArgumentRunner(DesktopAppConfiguration config, boolean allowExtra, String... args)
