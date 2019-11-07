@@ -1,8 +1,5 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import static org.junit.Assert.*;
-
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSourceTest;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunnerTest;
@@ -10,7 +7,7 @@ import java.io.File;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 
-public class CliSingleRunnerTest extends DataSourceTest {
+public class CliSingleRunnerTest {
     private static final File testFile =
             new File(
                     GuiRunnerTest.class
