@@ -12,7 +12,7 @@ public class CliSingleRunner extends ModeRunner {
 
     private final String[] args;
 
-    public CliSingleRunner(DesktopAppConfiguration config, String[] args) {
+    public CliSingleRunner(DesktopAppConfiguration config, String... args) {
         super(config);
         this.args = args;
     }
