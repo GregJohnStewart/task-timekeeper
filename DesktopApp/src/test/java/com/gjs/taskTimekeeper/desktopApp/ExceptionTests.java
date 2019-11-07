@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigKeyDoesNotExistException;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigurationException;
 import com.gjs.taskTimekeeper.desktopApp.config.exception.SetReadOnlyPropertyException;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ public class ExceptionTests<T extends DesktopAppException> {
         return Arrays.asList(
                 new Object[][] {
                     {DesktopAppException.class},
+                    {DoExit.class},
                     {ConfigurationException.class},
                     {ConfigKeyDoesNotExistException.class},
                     {SetReadOnlyPropertyException.class},

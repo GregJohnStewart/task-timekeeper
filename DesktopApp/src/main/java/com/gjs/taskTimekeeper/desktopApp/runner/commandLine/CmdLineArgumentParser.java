@@ -39,10 +39,6 @@ public class CmdLineArgumentParser {
         }
     }
 
-    public CmdLineArgumentParser(String... args) throws CmdLineException {
-        this(false, args);
-    }
-
     public ActionConfig getConfig() {
         return this.config;
     }
