@@ -71,10 +71,18 @@ public class CmdLineArgumentRunner extends ModeRunner {
             return;
         }
 
+        if (actionConfig.isSave()) {
+            LOGGER.debug("Saving the time manager.");
+            this.managerIO.saveManager();
+            return;
+        }
+
         if (selectLatest) {
-            LOGGER.trace("Selecting the latest period.");
+            LOGGER.debug("Selecting the latest period.");
             this.managerIO.getManager().getCrudOperator().setNewestPeriodAsSelectedQuiet();
         }
+
+        this.managerIO.doCrudAction(actionConfig);
 
         LOGGER.trace("FINISHED processing argument.");
     }

@@ -12,7 +12,7 @@ public abstract class DataSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSource.class);
 
     /**
-     * Parsed a data source from the string given.
+     * Parsed a data source from the string given. https://www.baeldung.com/java-url-vs-uri
      *
      * @param source The source url given
      * @return The data source made given the url.

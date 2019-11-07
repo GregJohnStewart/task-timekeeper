@@ -23,6 +23,7 @@ public class CliManagerRunner extends ModeRunner {
         super(config);
         this.managerIO =
                 new ManagerIO(new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)));
+        this.managerIO.setAutoSave(false);
     }
 
     public CliManagerRunner(DesktopAppConfiguration config, Scanner scanner) {
@@ -46,7 +47,7 @@ public class CliManagerRunner extends ModeRunner {
         while (true) {
             LOGGER.trace("Start of interactive loop.");
             System.out.println();
-            System.out.print("> ");
+            System.out.print((managerIO.isUnSaved(false) ? "*" : "") + "> ");
             try {
                 input = scanner.nextLine();
             } catch (Exception e) {
