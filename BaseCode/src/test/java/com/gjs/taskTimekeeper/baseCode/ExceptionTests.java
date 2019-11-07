@@ -2,6 +2,8 @@ package com.gjs.taskTimekeeper.baseCode;
 
 import static org.junit.Assert.assertEquals;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerCompressionException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
@@ -35,6 +37,8 @@ public class ExceptionTests {
                     {ManagerIOReadException.class},
                     {ManagerIOReadOnlyException.class},
                     {ManagerIOWriteException.class},
+                    {DataSourceException.class},
+                    {DataSourceParsingException.class},
                 });
     }
 

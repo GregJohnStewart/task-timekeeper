@@ -1,9 +1,39 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DataSource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSource.class);
+
+    public static DataSource fromString(String source) {
+        LOGGER.info("Parsing data source.");
+        LOGGER.debug("String to parse data source from: {}", source);
+
+        URL sourceUrl;
+        try {
+            sourceUrl = new URL(source);
+        } catch (MalformedURLException e) {
+            throw new DataSourceParsingException("Bad source string given.", e);
+        }
+
+        DataSource output;
+        switch (sourceUrl.getProtocol()) {
+            case "file":
+                output = new FileDataSource(sourceUrl);
+                break;
+            default:
+                throw new DataSourceParsingException("Unsupported source type given.");
+        }
+
+        return output;
+    }
+
     /**
      * Ensures that the data source can properly read/write the manager data.
      *
