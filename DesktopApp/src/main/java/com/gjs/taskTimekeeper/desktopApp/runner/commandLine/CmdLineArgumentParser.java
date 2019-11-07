@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Parser of command line arguments. Handles parsing overall configuration and just what is needed
- * to run TODO:: test
+ * to run
  */
 public class CmdLineArgumentParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentParser.class);

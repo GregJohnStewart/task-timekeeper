@@ -79,6 +79,16 @@ public class DesktopAppConfigurationTest {
                             }
                         }
                     },
+                    {
+                        "",
+                        null,
+                        new String[] {"--mode", RunMode.GUI_SWING.name()},
+                        new HashMap<ConfigKeys, String>() {
+                            {
+                                put(RUN_MODE, RunMode.GUI_SWING.name());
+                            }
+                        }
+                    },
                 });
     }
 

@@ -9,7 +9,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '2.0.1.71'
+version = '2.0.1.82'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -186,7 +186,7 @@ setupBuilder {
         displayName = "Task Timekeeper GUI"
         description = progDesc + "\nThis opens the program in GUI mode."
         //TODO:: use -Xdock:name="Foo Bar" to set real name
-        startArguments = "--mode GUI"
+        startArguments = "--mode GUI_SWING"
 
         // Categories of the application (only for deb and rpm) TODO:: what categories are there?
         //categories = "software;game"

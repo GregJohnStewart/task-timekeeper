@@ -26,7 +26,11 @@ public class Main {
         try {
             mode = RunMode.valueOf(properties.getProperty(ConfigKeys.RUN_MODE).toUpperCase());
         } catch (IllegalArgumentException e) {
-            LOGGER.error("Bad run mode given. Error: ", e);
+            LOGGER.error(
+                    "Bad run mode given ("
+                            + properties.getProperty(ConfigKeys.RUN_MODE).toUpperCase()
+                            + "). Error: ",
+                    e);
             // deal with later
         }
 
@@ -40,7 +44,7 @@ public class Main {
             System.out.println();
         }
         if (mode == null) {
-            System.err.println("Bad run mode given. Exiting.");
+            System.err.println("Bad run mode given (" + mode + "). Exiting.");
             return;
         }
 

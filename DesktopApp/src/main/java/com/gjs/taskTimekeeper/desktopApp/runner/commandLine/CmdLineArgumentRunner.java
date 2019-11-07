@@ -8,22 +8,13 @@ import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.utils.CommandLineArgumentSplitter;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CmdLineArgumentRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
-
-    public static String[] splitCommandLineArgumentString(String inputString) {
-        String[] inputs = inputString.split("(?<!\\\\)\\s+");
-
-        for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = inputs[i].replace("\\ ", " ");
-        }
-
-        return inputs;
-    }
 
     private final CmdLineArgumentParser parser;
     private ManagerIO managerIO;
@@ -44,7 +35,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
     public CmdLineArgumentRunner(
             DesktopAppConfiguration config, boolean allowExtra, String inputString)
             throws CmdLineException {
-        this(config, allowExtra, splitCommandLineArgumentString(inputString));
+        this(config, allowExtra, CommandLineArgumentSplitter.split(inputString));
     }
 
     public CmdLineArgumentParser getParser() {
