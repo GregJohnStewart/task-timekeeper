@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.FileDataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
@@ -11,29 +11,29 @@ import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Handles the management of TimeManager data in an interactive manner TODO:: test */
+/**
+ * Handles the management of TimeManager data in an interactive manner TODO:: use Outputter to be
+ * more flexible
+ */
 public class CliManagerRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(CliManagerRunner.class);
 
     private Scanner scanner = new Scanner(System.in);
     private ManagerIO managerIO;
 
-    public CliManagerRunner(DesktopAppConfiguration config) {
-        // TODO:: make this more generic with the rewrite of configuration
+    public CliManagerRunner(DesktopAppConfiguration config, Scanner scanner) {
         super(config);
         this.managerIO =
-                new ManagerIO(new FileDataSource(this.config.getProperty(ConfigKeys.SAVE_FILE)));
-        this.managerIO.setAutoSave(false);
-    }
-
-    public CliManagerRunner(DesktopAppConfiguration config, Scanner scanner) {
-        this(config);
+                new ManagerIO(DataSource.fromString(this.config.getProperty(ConfigKeys.SAVE_FILE)));
         this.scanner = scanner;
     }
 
     public CliManagerRunner(DesktopAppConfiguration config, InputStream is) {
-        this(config);
-        this.scanner = new Scanner(is);
+        this(config, new Scanner(is));
+    }
+
+    public CliManagerRunner(DesktopAppConfiguration config) {
+        this(config, System.in);
     }
 
     @Override
