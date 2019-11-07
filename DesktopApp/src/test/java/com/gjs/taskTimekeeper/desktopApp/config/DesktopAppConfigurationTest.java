@@ -70,7 +70,7 @@ public class DesktopAppConfigurationTest {
                     },
                     {
                         RUN_MODE.key + " = " + RunMode.GUI_SWING.name(),
-                        new HashMap<String, String>(),
+                        null,
                         new String[] {"--configFile", TEST_USER_CONFIG_FILE.getPath()},
                         new HashMap<ConfigKeys, String>() {
                             {
@@ -112,8 +112,12 @@ public class DesktopAppConfigurationTest {
 
     @Test
     public void test() throws CmdLineException {
-        DesktopAppConfiguration config =
-                new DesktopAppConfiguration(this.envVars, this.cmdLineArgs);
+        DesktopAppConfiguration config;
+        if (this.envVars == null) {
+            config = new DesktopAppConfiguration(this.cmdLineArgs);
+        } else {
+            config = new DesktopAppConfiguration(this.envVars, this.cmdLineArgs);
+        }
 
         for (Map.Entry<Object, Object> expecting : config.getAllProperties()) {
             assertNotNull(expecting.getValue());

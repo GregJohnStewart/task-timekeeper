@@ -52,6 +52,10 @@ public class DesktopAppConfiguration {
         this(System.getenv(), new CommandLineConfig(args));
     }
 
+    public DesktopAppConfiguration() throws CmdLineException {
+        this(System.getenv(), new CommandLineConfig());
+    }
+
     /**
      * Processes command line arguments, adding them to the properties held.
      *
@@ -64,20 +68,10 @@ public class DesktopAppConfiguration {
         logOutProperties();
     }
 
-    /**
-     * Processes command line arguments, adding them to the properties held.
-     *
-     * @param args The arguments passed in
-     * @throws CmdLineException
-     */
-    public void processCmdLineArgs(String... args) throws CmdLineException {
-        processCmdLineArgs(new CommandLineConfig(args));
-    }
-
     /** Replaces the placeholders held in entries that are not readonly */
     private void replacePlaceholders() {
         for (ConfigKeys key : ConfigKeys.values()) {
-            if (!key.readOnly && this.properties.contains(key.key)) {
+            if (!key.readOnly && this.properties.containsKey(key.key)) {
                 this.replacePlaceholder(key);
             }
         }
