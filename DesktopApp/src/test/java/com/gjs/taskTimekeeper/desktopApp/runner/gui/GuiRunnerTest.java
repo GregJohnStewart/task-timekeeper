@@ -32,13 +32,15 @@ public class GuiRunnerTest {
 
     @Test
     public void runGuiPopulated() throws CmdLineException {
-        // figure out how to close automatically for testing
-        new GuiRunner(getTestConfig(fullTestFile), true).run();
+        try {
+            new GuiRunner(getTestConfig(fullTestFile), true).run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void runGuiEmpty() throws CmdLineException {
-        // figure out how to close automatically for testing
         new GuiRunner(getTestConfig(emptyTestFile), true).run();
     }
 }

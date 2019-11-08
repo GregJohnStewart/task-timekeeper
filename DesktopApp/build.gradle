@@ -145,6 +145,12 @@ compileJava {
 clean {
     dependsOn 'deleteGenertatedResources';
 }
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}
 
 jar {
     dependsOn ':BaseCode:build'
