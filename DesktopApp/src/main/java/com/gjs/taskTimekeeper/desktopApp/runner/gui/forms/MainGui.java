@@ -766,11 +766,12 @@ public class MainGui {
         } catch (IOException e) {
             LOGGER.error("FAILED to read in gui options data: ", e);
 
-            JOptionPane.showInternalMessageDialog(
-                    mainFrame,
-                    "FAILED to read gui options in. Error: \n" + e.getMessage(),
-                    "Error",
-                    JOptionPane.WARNING_MESSAGE);
+            // TODO:: breaks due to being too early? fix/ test
+            //            JOptionPane.showInternalMessageDialog(
+            //                    mainFrame,
+            //                    "FAILED to read gui options in. Error: \n" + e.getMessage(),
+            //                    "Error",
+            //                    JOptionPane.WARNING_MESSAGE);
         }
 
         if (this.options == null) {
