@@ -1,12 +1,14 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
-import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.utils.CommandLineArgumentSplitter;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,34 +16,62 @@ import org.slf4j.LoggerFactory;
 public class CmdLineArgumentRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(CmdLineArgumentRunner.class);
 
-    public static String[] splitCommandLineArgumentString(String inputString) {
-        String[] inputs = inputString.split("(?<!\\\\)\\s+");
-
-        for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = inputs[i].replace("\\ ", " ");
-        }
-
-        return inputs;
-    }
-
     private final CmdLineArgumentParser parser;
+    private ManagerIO managerIO;
 
-    // TODO:: add saveFile member to make testing easier
-
-    public CmdLineArgumentRunner(CmdLineArgumentParser parser) {
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO, DesktopAppConfiguration config, CmdLineArgumentParser parser)
+            throws DataSourceParsingException {
+        super(config);
         this.parser = parser;
+        this.managerIO = managerIO;
     }
 
-    public CmdLineArgumentRunner(boolean allowExtra, String... args) throws CmdLineException {
-        this(new CmdLineArgumentParser(allowExtra, args));
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO, DesktopAppConfiguration config, boolean allowExtra, String... args)
+            throws CmdLineException {
+        this(managerIO, config, new CmdLineArgumentParser(allowExtra, args));
     }
 
-    public CmdLineArgumentRunner(boolean allowExtra, String inputString) throws CmdLineException {
-        this(allowExtra, splitCommandLineArgumentString(inputString));
+    public CmdLineArgumentRunner(
+            ManagerIO managerIO,
+            DesktopAppConfiguration config,
+            boolean allowExtra,
+            String inputString)
+            throws CmdLineException {
+        this(managerIO, config, allowExtra, CommandLineArgumentSplitter.split(inputString));
+    }
+
+    public CmdLineArgumentRunner(DesktopAppConfiguration config, CmdLineArgumentParser parser)
+            throws DataSourceParsingException {
+        super(config);
+        this.parser = parser;
+        this.managerIO =
+                new ManagerIO(DataSource.fromString(this.config.getProperty(ConfigKeys.SAVE_FILE)));
+    }
+
+    public CmdLineArgumentRunner(DesktopAppConfiguration config, boolean allowExtra, String... args)
+            throws CmdLineException {
+        this(config, new CmdLineArgumentParser(allowExtra, args));
+    }
+
+    public CmdLineArgumentRunner(
+            DesktopAppConfiguration config, boolean allowExtra, String inputString)
+            throws CmdLineException {
+        this(config, allowExtra, CommandLineArgumentSplitter.split(inputString));
     }
 
     public CmdLineArgumentParser getParser() {
         return this.parser;
+    }
+
+    public ManagerIO getManagerIO() {
+        return managerIO;
+    }
+
+    public CmdLineArgumentRunner setManagerIO(ManagerIO managerIO) {
+        this.managerIO = managerIO;
+        return this;
     }
 
     @Override
@@ -64,21 +94,18 @@ public class CmdLineArgumentRunner extends ModeRunner {
             return;
         }
 
-        TimeManager manager = ManagerIO.loadTimeManager();
-        if (manager == null) {
-            // something bad happened reading data, nothing to do. already handled.
+        if (actionConfig.isSave()) {
+            LOGGER.debug("Saving the time manager.");
+            this.managerIO.saveManager();
             return;
         }
 
         if (selectLatest) {
-            LOGGER.trace("Selecting the latest period.");
-            manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
+            LOGGER.debug("Selecting the latest period.");
+            this.managerIO.getManager().getCrudOperator().setNewestPeriodAsSelectedQuiet();
         }
 
-        // Do action. If returns true, data was changed.
-        if (manager.doCrudAction(actionConfig)) {
-            ManagerIO.saveTimeManager(manager);
-        }
+        this.managerIO.doCrudAction(actionConfig);
 
         LOGGER.trace("FINISHED processing argument.");
     }
@@ -90,8 +117,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
         System.out.println("Help output:");
         System.out.println(
                 "\tFor more detailed information, visit: "
-                        + Configuration.getProperty(
-                                ConfigKeys.GITHUB_DESKTOP_APP_README, String.class));
+                        + this.config.getProperty(ConfigKeys.GITHUB_DESKTOP_APP_README));
         System.out.println();
 
         this.parser.printUsage();

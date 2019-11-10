@@ -8,8 +8,10 @@ import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.objects.Task;
-import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
@@ -17,8 +19,7 @@ import com.gjs.taskTimekeeper.baseCode.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
-import com.gjs.taskTimekeeper.desktopApp.managerIO.ManagerIO;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.SpanEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
@@ -40,7 +41,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,16 +71,18 @@ import javax.swing.KeyStroke;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** https://www.jetbrains.com/help/idea/designing-gui-major-steps.html */
+/**
+ * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
+ *
+ * <p>TODO:: test using: https://joel-costigliola.github.io/assertj/assertj-swing.html
+ */
 public class MainGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainGui.class);
 
     // <editor-fold desc="Static members">
-    private static final String ABOUT_MESSAGE =
-            "Task Timekeeper\n\nVersion: "
-                    + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class)
-                    + "\nUsing Lib version: "
-                    + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class)
+    private static final String ABOUT_MESSAGE_FORMAT =
+            "Task Timekeeper\n\nVersion: %s"
+                    + "\nUsing Lib version: %s"
                     + "\n\nThis program is made for you to easily keep track of time spent on tasks."
                     + "\nFor help, please visit the Github for this project."
                     + "\nPlease consider donating if you find this program was helpful to you!";
@@ -136,12 +138,13 @@ public class MainGui {
     // </editor-fold>
     // <editor-fold desc="member variables">
     // admin stuff
-    private TimeManager manager;
+    private DesktopAppConfiguration config;
+    private ManagerIO managerIO;
     private GuiOptions options = null;
-    private boolean changed = false;
     private ByteArrayOutputStream printStream = new ByteArrayOutputStream();
     private ByteArrayOutputStream errorPrintStream = new ByteArrayOutputStream();
     private final String origTitle;
+    private final String ABOUT_MESSAGE;
 
     // swing components
     private JFrame mainFrame;
@@ -180,7 +183,7 @@ public class MainGui {
                 public void windowClosing(WindowEvent e) {
                     super.windowClosing(e);
                     LOGGER.info("Window closing event.");
-                    if (changed) {
+                    if (managerIO.isUnSaved(true)) {
                         int chosen;
                         if (!options.isSaveOnExit()) {
                             LOGGER.info("Window closing with unsaved changes.");
@@ -259,7 +262,7 @@ public class MainGui {
                         config.setAttributes(atts);
                     }
 
-                    boolean addResult = manager.doCrudAction(config);
+                    boolean addResult = managerIO.doCrudAction(config, false);
                     LOGGER.debug("Result of trying to add task: {}", addResult);
                     handleResult(addResult);
                 }
@@ -275,8 +278,8 @@ public class MainGui {
             LOGGER.info("Viewing task at index {}", this.getIndex());
             resetStreams();
 
-            manager.doCrudAction(
-                    new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()));
+            managerIO.doCrudAction(
+                    new ActionConfig(KeeperObjectType.TASK, VIEW).setIndex(this.getIndex()), false);
 
             if (errorPrintStream.size() != 0) {
                 LOGGER.warn(
@@ -305,7 +308,9 @@ public class MainGui {
 
             Task task =
                     (Task)
-                            manager.getCrudOperator()
+                            managerIO
+                                    .getManager()
+                                    .getCrudOperator()
                                     .getTaskDoer()
                                     .search()
                                     .get(this.getIndex() - 1);
@@ -332,7 +337,7 @@ public class MainGui {
                     taskChangeConfig.setAttributes(helper.getAttributes());
                 }
 
-                boolean result = manager.doCrudAction(taskChangeConfig);
+                boolean result = managerIO.doCrudAction(taskChangeConfig);
 
                 LOGGER.debug("Result of trying to edit task: {}", result);
                 handleResult(result);
@@ -360,7 +365,7 @@ public class MainGui {
             resetStreams();
 
             boolean result =
-                    manager.doCrudAction(
+                    managerIO.doCrudAction(
                             new ActionConfig(KeeperObjectType.TASK, REMOVE)
                                     .setIndex(this.getIndex()));
             LOGGER.debug("Result of trying to remove task: {}", result);
@@ -381,7 +386,7 @@ public class MainGui {
                         config.setSelect(true);
                     }
 
-                    boolean result = manager.doCrudAction(config);
+                    boolean result = managerIO.doCrudAction(config);
                     LOGGER.debug("Result of trying to add period: {}", result);
                     handleResult(result);
                 }
@@ -397,7 +402,7 @@ public class MainGui {
             LOGGER.info("Selecting period at index {}", this.getIndex());
             resetStreams();
 
-            manager.doCrudAction(
+            managerIO.doCrudAction(
                     new ActionConfig(KeeperObjectType.PERIOD, VIEW)
                             .setSelect(true)
                             .setIndex(this.getIndex()));
@@ -430,7 +435,7 @@ public class MainGui {
             resetStreams();
 
             boolean result =
-                    manager.doCrudAction(
+                    managerIO.doCrudAction(
                             new ActionConfig(KeeperObjectType.PERIOD, REMOVE)
                                     .setIndex(this.getIndex()));
             LOGGER.debug("Result of trying to remove period: {}", result);
@@ -451,7 +456,7 @@ public class MainGui {
                     int response =
                             JOptionPane.showInternalConfirmDialog(
                                     mainPanel,
-                                    helper.getForm(manager.getTasks()),
+                                    helper.getForm(managerIO.getManager().getTasks()),
                                     "Timespan Add",
                                     JOptionPane.OK_CANCEL_OPTION,
                                     JOptionPane.QUESTION_MESSAGE);
@@ -463,7 +468,7 @@ public class MainGui {
                         taskChangeConfig.setStart(helper.getStartField());
                         taskChangeConfig.setEnd(helper.getEndField());
 
-                        boolean result = manager.doCrudAction(taskChangeConfig);
+                        boolean result = managerIO.doCrudAction(taskChangeConfig);
 
                         LOGGER.debug("Result of trying to add span: {}", result);
                         handleResult(result);
@@ -485,7 +490,9 @@ public class MainGui {
 
             Timespan span =
                     (Timespan)
-                            manager.getCrudOperator()
+                            managerIO
+                                    .getManager()
+                                    .getCrudOperator()
                                     .getTimespanDoer()
                                     .search()
                                     .get(this.getIndex() - 1);
@@ -495,7 +502,7 @@ public class MainGui {
             int response =
                     JOptionPane.showInternalConfirmDialog(
                             mainPanel,
-                            helper.getForm(manager.getTasks(), span),
+                            helper.getForm(managerIO.getManager().getTasks(), span),
                             "Timespan Edit",
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE);
@@ -507,7 +514,7 @@ public class MainGui {
                 taskChangeConfig.setStart(helper.getStartField());
                 taskChangeConfig.setEnd(helper.getEndField());
 
-                boolean result = manager.doCrudAction(taskChangeConfig);
+                boolean result = managerIO.doCrudAction(taskChangeConfig);
 
                 LOGGER.debug("Result of trying to edit span: {}", result);
                 handleResult(result);
@@ -534,7 +541,7 @@ public class MainGui {
 
             resetStreams();
             boolean result =
-                    manager.doCrudAction(
+                    managerIO.doCrudAction(
                             new ActionConfig(KeeperObjectType.SPAN, REMOVE)
                                     .setIndex(this.getIndex()));
             LOGGER.debug("Result of trying to remove span: {}", result);
@@ -555,7 +562,9 @@ public class MainGui {
                             JOptionPane.showInternalConfirmDialog(
                                     mainPanel,
                                     helper.getForm(
-                                            manager.getCrudOperator()
+                                            managerIO
+                                                    .getManager()
+                                                    .getCrudOperator()
                                                     .getSelectedWorkPeriod()
                                                     .getAttributes()),
                                     "Selected Period attribute Edit",
@@ -575,7 +584,7 @@ public class MainGui {
                                 "New attributes of selected period: {}",
                                 attributeChangeConfig.getAttributes());
 
-                        boolean result = manager.doCrudAction(attributeChangeConfig);
+                        boolean result = managerIO.doCrudAction(attributeChangeConfig);
 
                         LOGGER.debug(
                                 "Result of trying to edit selected period attributes: {}", result);
@@ -608,7 +617,18 @@ public class MainGui {
                 KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
     }
 
-    public MainGui(Image icon, String appTitle) {
+    public MainGui(DesktopAppConfiguration config, Image icon, String appTitle)
+            throws DataSourceParsingException {
+        this.config = config;
+        this.managerIO =
+                new ManagerIO(
+                        DataSource.fromString(this.config.getProperty(ConfigKeys.SAVE_FILE)),
+                        new Outputter(this.printStream, this.errorPrintStream));
+        this.ABOUT_MESSAGE =
+                String.format(
+                        ABOUT_MESSAGE_FORMAT,
+                        this.config.getProperty(ConfigKeys.APP_VERSION),
+                        this.config.getProperty(ConfigKeys.LIB_VERSION));
         LOGGER.info("Starting GUI.");
         this.origTitle = appTitle;
 
@@ -663,15 +683,12 @@ public class MainGui {
         menuItem = new JMenuItem("Github");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
-                        URI.create(
-                                Configuration.getProperty(
-                                        ConfigKeys.GITHUB_REPO_URL, String.class))));
+                        URI.create(this.config.getProperty(ConfigKeys.GITHUB_REPO_URL))));
         menu.add(menuItem);
         menuItem = new JMenuItem("Donate");
         menuItem.addMouseListener(
                 new OpenUrlOnClickListener(
-                        URI.create(
-                                Configuration.getProperty(ConfigKeys.DONATE_URL, String.class))));
+                        URI.create(this.config.getProperty(ConfigKeys.DONATE_URL))));
         menu.add(menuItem);
         this.mainMenuBar.add(menu);
 
@@ -701,7 +718,7 @@ public class MainGui {
 
     // <editor-fold desc="Utility methods">
     private void resetStreams() {
-        LOGGER.info("Resetting printstreams.");
+        LOGGER.info("Resetting print streams.");
         try {
             this.printStream.flush();
             this.printStream.reset();
@@ -736,46 +753,47 @@ public class MainGui {
     }
 
     private void handleResult(boolean result) {
-        wasUpdated(result);
         sendErrorIfNeeded(!result);
+        updateUiData();
     }
 
     private void loadUiOptions() {
         LOGGER.info("Reading in saved options.");
         try (InputStream is =
-                new FileInputStream(
-                        Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                new FileInputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
         } catch (MismatchedInputException e) {
             LOGGER.debug("Empty gui options file. Starting with new set of options.");
         } catch (IOException e) {
             LOGGER.error("FAILED to read in gui options data: ", e);
 
-            JOptionPane.showInternalMessageDialog(
-                    mainFrame,
-                    "FAILED to read gui options in. Error: \n" + e.getMessage(),
-                    "Error",
-                    JOptionPane.WARNING_MESSAGE);
+            // TODO:: breaks due to being too early? fix/ test
+            //            JOptionPane.showInternalMessageDialog(
+            //                    mainFrame,
+            //                    "FAILED to read gui options in. Error: \n" + e.getMessage(),
+            //                    "Error",
+            //                    JOptionPane.WARNING_MESSAGE);
         }
 
         if (this.options == null) {
             this.options = new GuiOptions();
         }
 
-        autoSaveMenuItem.setSelected(this.options.isAutoSave());
+        this.managerIO.setAutoSave(this.options.isAutoSave());
+        autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
         saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
         selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
     }
 
     private void updateUiOptions() {
         this.options.setAutoSave(autoSaveMenuItem.isSelected());
+        this.managerIO.setAutoSave(this.options.isAutoSave());
         this.options.setSaveOnExit(saveOnExitMenuItem.isSelected());
         this.options.setSelectNewPeriods(selectNewPeriodMenuItem.isSelected());
 
         LOGGER.trace("Writing out ui options data.");
         try (OutputStream os =
-                new FileOutputStream(
-                        Configuration.getProperty(ConfigKeys.UI_OPTIONS_FILE, File.class))) {
+                new FileOutputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             ObjectMapperUtilities.getDefaultMapper().writeValue(os, this.options);
         } catch (IOException e) {
             LOGGER.error("FAILED to write changes to gui options file. Error: ", e);
@@ -794,7 +812,7 @@ public class MainGui {
     private void reloadData() {
         LOGGER.info("Reloading data from source.");
 
-        if (changed) {
+        if (this.managerIO.isUnSaved(true)) {
             LOGGER.info("Reloading data with unsaved changes.");
             int chosen =
                     JOptionPane.showInternalConfirmDialog(
@@ -815,40 +833,29 @@ public class MainGui {
 
         // read in new manager
         // TODO:: handle errors
-        this.manager = ManagerIO.loadTimeManager();
-        this.changed = false;
+        // TODO:: setup the manager properly
+        this.managerIO.loadManager(true);
 
-        this.manager
+        this.managerIO
+                .getManager()
                 .getCrudOperator()
                 .setOutputter(new Outputter(this.printStream, this.errorPrintStream));
-        this.manager.getCrudOperator().setNewestPeriodAsSelectedQuiet();
+        this.managerIO.getManager().getCrudOperator().setNewestPeriodAsSelectedQuiet();
         LOGGER.info("Done reloading data, updating UI.");
         this.updateUiData();
-    }
-
-    private void wasUpdated(boolean wasUpdated) {
-        this.changed = this.changed || wasUpdated;
-        LOGGER.debug("Was data changed? {}", this.changed);
-        if (this.options.isAutoSave()) {
-            LOGGER.debug("Saving data after change automatically.");
-            this.saveData();
-        } else {
-            this.updateUiData();
-        }
     }
 
     private void saveData() {
         LOGGER.info("Saving data from UI.");
         // TODO:: handle errors
-        ManagerIO.saveTimeManager(this.manager);
+        this.managerIO.saveManager();
         LOGGER.info("Data saved. Reloading data.");
-        this.changed = false;
         this.reloadData();
     }
 
     private void updateUiData() {
         LOGGER.info("Updating UI with current time manager data.");
-        if (this.changed) {
+        if (this.managerIO.isUnSaved(true)) {
             LOGGER.debug("Timemanager was changed, updating title.");
             this.mainFrame.setTitle(this.origTitle + " *");
         } else {
@@ -858,7 +865,8 @@ public class MainGui {
         // <editor-fold desc="Selected Period Tab">
         LOGGER.info("Populating selected period tab.");
         {
-            WorkPeriod selectedPeriod = this.manager.getCrudOperator().getSelectedWorkPeriod();
+            WorkPeriod selectedPeriod =
+                    this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod();
 
             if (selectedPeriod == null) {
                 if (this.mainTabPane.getSelectedIndex() == 0) {
@@ -929,7 +937,8 @@ public class MainGui {
                             new ArrayList<>(selectedPeriod.getNumTimespans());
 
                     int count = 1;
-                    for (Timespan span : manager.getCrudOperator().getTimespanDoer().search()) {
+                    for (Timespan span :
+                            managerIO.getManager().getCrudOperator().getTimespanDoer().search()) {
                         List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
 
                         JButton edit = new JButton("E");
@@ -963,7 +972,8 @@ public class MainGui {
         // <editor-fold desc="Periods tab">
         LOGGER.info("Populating periods tab.");
         {
-            List<WorkPeriod> periods = this.manager.getCrudOperator().getWorkPeriodDoer().search();
+            List<WorkPeriod> periods =
+                    this.managerIO.getManager().getCrudOperator().getWorkPeriodDoer().search();
             List<List<Object>> periodData = new ArrayList<>(periods.size());
             Map<Integer, Color> rowColors = new HashMap<>();
 
@@ -976,8 +986,12 @@ public class MainGui {
                 JButton delete = new JButton("D");
                 delete.setAction(new DeletePeriodAction(curInd));
 
-                if (this.manager.getCrudOperator().getSelectedWorkPeriod() != null
-                        && this.manager.getCrudOperator().getSelectedWorkPeriod().equals(period)) {
+                if (this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod() != null
+                        && this.managerIO
+                                .getManager()
+                                .getCrudOperator()
+                                .getSelectedWorkPeriod()
+                                .equals(period)) {
                     rowColors.put(curInd, Color.CYAN);
                     select.setEnabled(false);
                 }
@@ -1005,7 +1019,7 @@ public class MainGui {
         // <editor-fold desc="Tasks tab">
         LOGGER.info("Populating tasks tab.");
         {
-            List<Task> tasks = manager.getCrudOperator().getTaskDoer().search();
+            List<Task> tasks = managerIO.getManager().getCrudOperator().getTaskDoer().search();
             List<List<Object>> periodData = new ArrayList<>(tasks.size());
 
             int curInd = 1;

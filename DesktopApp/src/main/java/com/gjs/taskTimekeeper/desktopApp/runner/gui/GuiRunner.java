@@ -1,8 +1,8 @@
-package com.gjs.taskTimekeeper.desktopApp.runner;
+package com.gjs.taskTimekeeper.desktopApp.runner.gui;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
-import com.gjs.taskTimekeeper.desktopApp.runner.gui.MainSystemTray;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
+import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
 import java.awt.Image;
 import java.io.InputStream;
@@ -13,18 +13,21 @@ import org.slf4j.LoggerFactory;
 public class GuiRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
 
-    private static final Image ICON;
-    private static final String APP_TITLE;
-    private static final long WAIT_TIME = 100;
-    private static final long AUTOCLOSE_WAIT_LOOPS = 25;
+    private final Image ICON;
+    private final String APP_TITLE;
+    private final long WAIT_TIME = 100;
+    private final long AUTOCLOSE_WAIT_LOOPS = 25;
+    private boolean autoClose = false;
+    private MainGui mainGui;
+    private MainSystemTray systemTray;
 
-    static {
+    public GuiRunner(DesktopAppConfiguration config) {
+        super(config);
+
         try (InputStream is =
                 GuiRunner.class
                         .getClassLoader()
-                        .getResourceAsStream(
-                                Configuration.getProperty(
-                                        ConfigKeys.STATIC_GUI_ICON, String.class))) {
+                        .getResourceAsStream(this.config.getProperty(ConfigKeys.STATIC_GUI_ICON))) {
             if (is == null) {
                 throw new IllegalStateException("Desktop icon image not found.");
             }
@@ -34,22 +37,13 @@ public class GuiRunner extends ModeRunner {
             throw new RuntimeException(e);
         }
 
-        APP_TITLE =
-                "Task Timekeeper v"
-                        + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class);
+        APP_TITLE = "Task Timekeeper v" + this.config.getProperty(ConfigKeys.APP_VERSION);
 
         LOGGER.debug("Setup gui static resources.");
     }
 
-    private final boolean autoClose;
-    private MainGui mainGui;
-    private MainSystemTray systemTray;
-
-    public GuiRunner() {
-        this.autoClose = false;
-    }
-
-    public GuiRunner(boolean autoClose) {
+    public GuiRunner(DesktopAppConfiguration config, boolean autoClose) {
+        this(config);
         this.autoClose = autoClose;
     }
 
@@ -76,7 +70,7 @@ public class GuiRunner extends ModeRunner {
     }
 
     private void runMainGui() {
-        this.mainGui = new MainGui(ICON, APP_TITLE);
+        this.mainGui = new MainGui(this.config, ICON, APP_TITLE);
     }
 
     private void runSystemTrayIcon() {

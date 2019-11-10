@@ -26,6 +26,12 @@ public class ActionConfig {
     private boolean quit = false;
 
     @Option(
+            name = "-sa",
+            aliases = {"sa", "--save", "save"},
+            usage = "Saves the changed time manager in management mode.")
+    private boolean save = false;
+
+    @Option(
             name = "-a",
             aliases = {"a", "--action", "action"},
             usage = "The action to take.")
@@ -134,6 +140,15 @@ public class ActionConfig {
 
     public ActionConfig setQuit(boolean quit) {
         this.quit = quit;
+        return this;
+    }
+
+    public boolean isSave() {
+        return save;
+    }
+
+    public ActionConfig setSave(boolean save) {
+        this.save = save;
         return this;
     }
 

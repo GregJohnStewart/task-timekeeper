@@ -1,14 +1,11 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.desktopApp;
 
 import static org.junit.Assert.assertEquals;
 
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerCompressionException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOWriteException;
+import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigKeyDoesNotExistException;
+import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigurationException;
+import com.gjs.taskTimekeeper.desktopApp.config.exception.SetReadOnlyPropertyException;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.DoExit;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * stats.
  */
 @RunWith(Parameterized.class)
-public class ExceptionTests {
+public class ExceptionTests<T extends DesktopAppException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionTests.class);
 
     /** The different exceptions to test. */
@@ -31,41 +28,36 @@ public class ExceptionTests {
     public static Collection exceptionsToTest() {
         return Arrays.asList(
                 new Object[][] {
-                    {TimeKeeperException.class},
-                    {ManagerCompressionException.class},
-                    {ManagerIOException.class},
-                    {ManagerIOReadException.class},
-                    {ManagerIOReadOnlyException.class},
-                    {ManagerIOWriteException.class},
-                    {DataSourceException.class},
-                    {DataSourceParsingException.class},
+                    {DesktopAppException.class},
+                    {DoExit.class},
+                    {ConfigurationException.class},
+                    {ConfigKeyDoesNotExistException.class},
+                    {SetReadOnlyPropertyException.class},
                 });
     }
 
     private static final Throwable TEST_THROWABLE = new Throwable("Test throwable message");
     private static final String TEST_MESSAGE = "TEST MESSAGE FOR EXCEPTION TESTING";
 
-    private final Class<? extends TimeKeeperException> curExceptionClass;
+    private final Class<? extends T> curExceptionClass;
 
-    public ExceptionTests(Class<? extends TimeKeeperException> curExceptionClass) {
+    public ExceptionTests(Class<? extends T> curExceptionClass) {
         this.curExceptionClass = curExceptionClass;
     }
 
     @Test
     public void testExceptions() throws Throwable {
         LOGGER.debug("Testing: {}", curExceptionClass.getName());
-        Constructor<? extends TimeKeeperException> constBase = curExceptionClass.getConstructor();
-        Constructor<? extends TimeKeeperException> constStr =
-                curExceptionClass.getConstructor(String.class);
-        Constructor<? extends TimeKeeperException> constThro =
-                curExceptionClass.getConstructor(Throwable.class);
-        Constructor<? extends TimeKeeperException> constStrThro =
+        Constructor<? extends T> constBase = curExceptionClass.getConstructor();
+        Constructor<? extends T> constStr = curExceptionClass.getConstructor(String.class);
+        Constructor<? extends T> constThro = curExceptionClass.getConstructor(Throwable.class);
+        Constructor<? extends T> constStrThro =
                 curExceptionClass.getConstructor(String.class, Throwable.class);
-        Constructor<? extends TimeKeeperException> constStrThroSupWritable =
+        Constructor<? extends T> constStrThroSupWritable =
                 curExceptionClass.getConstructor(
                         String.class, Throwable.class, boolean.class, boolean.class);
 
-        TimeKeeperException curException = constBase.newInstance();
+        T curException = constBase.newInstance();
 
         curException = constStr.newInstance(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, curException.getMessage());

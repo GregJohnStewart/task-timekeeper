@@ -1,23 +1,23 @@
-package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
+package com.gjs.taskTimekeeper.desktopApp.config.exception;
 
 import com.gjs.taskTimekeeper.desktopApp.DesktopAppException;
 
-public class DoExit extends DesktopAppException {
-    public DoExit() {}
+public class ConfigurationException extends DesktopAppException {
+    public ConfigurationException() {}
 
-    public DoExit(String message) {
+    public ConfigurationException(String message) {
         super(message);
     }
 
-    public DoExit(String message, Throwable cause) {
+    public ConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DoExit(Throwable cause) {
+    public ConfigurationException(Throwable cause) {
         super(cause);
     }
 
-    public DoExit(
+    public ConfigurationException(
             String message,
             Throwable cause,
             boolean enableSuppression,

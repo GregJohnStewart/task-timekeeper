@@ -1,12 +1,11 @@
 package com.gjs.taskTimekeeper.desktopApp;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
-import com.gjs.taskTimekeeper.desktopApp.config.Configuration;
+import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.config.RunMode;
-import com.gjs.taskTimekeeper.desktopApp.managerIO.LocalFile;
-import com.gjs.taskTimekeeper.desktopApp.runner.GuiRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.ManagerRunner;
-import com.gjs.taskTimekeeper.desktopApp.runner.SingleRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliManagerRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliSingleRunner;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,50 +16,47 @@ public class Main {
     public static void main(String[] args) throws CmdLineException {
         LOGGER.info("Starting run of TaskTimekeeper.");
         LOGGER.debug("Input arguments: {}", (Object[]) args);
-        Configuration.finalizeConfig(args);
+        DesktopAppConfiguration properties = new DesktopAppConfiguration(args);
         LOGGER.info(
                 "App version: {} Lib version: {}",
-                Configuration.getProperty(ConfigKeys.APP_VERSION, String.class),
-                Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
+                properties.getProperty(ConfigKeys.APP_VERSION),
+                properties.getProperty(ConfigKeys.LIB_VERSION));
 
         RunMode mode = null;
         try {
-            mode =
-                    RunMode.valueOf(
-                            Configuration.getProperty(ConfigKeys.RUN_MODE, String.class)
-                                    .toUpperCase());
+            mode = RunMode.valueOf(properties.getProperty(ConfigKeys.RUN_MODE).toUpperCase());
         } catch (IllegalArgumentException e) {
-            LOGGER.error("Bad run mode given. Error: ", e);
+            LOGGER.error(
+                    "Bad run mode given ("
+                            + properties.getProperty(ConfigKeys.RUN_MODE).toUpperCase()
+                            + "). Error: ",
+                    e);
             // deal with later
         }
 
         if (mode != RunMode.SINGLE) {
             System.out.println(
                     "TaskTimekeeper v"
-                            + Configuration.getProperty(ConfigKeys.APP_VERSION, String.class)
+                            + properties.getProperty(ConfigKeys.APP_VERSION)
                             + " Using lib v"
-                            + Configuration.getProperty(ConfigKeys.LIB_VERSION, String.class));
-            System.out.println(
-                    "\tGithub: "
-                            + Configuration.getProperty(ConfigKeys.GITHUB_REPO_URL, String.class));
+                            + properties.getProperty(ConfigKeys.LIB_VERSION));
+            System.out.println("\tGithub: " + properties.getProperty(ConfigKeys.GITHUB_REPO_URL));
             System.out.println();
         }
         if (mode == null) {
-            System.err.println("Bad run mode given. Exiting.");
+            System.err.println("Bad run mode given (" + mode + "). Exiting.");
             return;
         }
 
-        LocalFile.ensureFilesExistWritable();
-
         switch (mode) {
             case SINGLE:
-                new SingleRunner(args).run();
+                new CliSingleRunner(properties, args).run();
                 break;
             case MANAGE:
-                new ManagerRunner().run();
+                new CliManagerRunner(properties).run();
                 break;
-            case GUI:
-                new GuiRunner().run();
+            case GUI_SWING:
+                new GuiRunner(properties).run();
                 break;
             default:
                 LOGGER.error("Invalid run mode given.");
