@@ -1,5 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -58,6 +60,11 @@ public class ManagerIO {
     // </editor-fold>
 
     // <editor-fold desc="Setters/ getters">
+
+    public Outputter getOutputter() {
+        return outputter;
+    }
+
     public ManagerIO setOutputter(Outputter outputter) {
         if (outputter == null) {
             throw new IllegalArgumentException("Outputter cannot be null.");
@@ -234,13 +241,15 @@ public class ManagerIO {
      */
     public void saveManager() throws ManagerIOException {
         LOGGER.info("Writing out a TimeManager.");
+        this.outputter.normPrintln(DEFAULT, "Saving Time Manager...");
         this.dataSource.ensureReadWriteCapable();
-
+        LOGGER.debug("Data source is writable");
         try {
             byte[] bytes = TIME_MANAGER_MAPPER.writeValueAsBytes(manager);
             if (this.usesCompression()) {
                 bytes = DataCompressor.compress(bytes);
             }
+            LOGGER.debug("Size of data to write out: {} bytes", bytes.length);
             this.dataSource.writeDataOut(bytes);
         } catch (ManagerIOException e) {
             LOGGER.error("There was a problem writing out the time manager.", e);
@@ -249,6 +258,9 @@ public class ManagerIO {
             LOGGER.error("There was a json mapping error in serializing in the manager: ", e);
             throw new ManagerIOReadException(e);
         }
+        LOGGER.info("Data written out.");
+        this.outputter.normPrintln(DEFAULT, "Saved.");
+        this.unSaved = false;
     }
 
     /**

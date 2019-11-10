@@ -1,5 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
+import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
+
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
@@ -40,21 +42,25 @@ public class CliManagerRunner extends ModeRunner {
     public void run() {
         LOGGER.info("Running the interactive command line manager mode.");
 
-        System.out.println("Manager Mode");
-        // TODO:: more detail (file locs, etc), move to Outputter for outputting
+        this.managerIO.getOutputter().normPrintln(DEFAULT, "Manager Mode");
+        // TODO:: more detail (file locs, etc)
 
         String input;
         while (true) {
             LOGGER.trace("Start of interactive loop.");
-            System.out.println();
-            System.out.print((managerIO.isUnSaved(false) ? "*" : "") + "> ");
+            this.managerIO.getOutputter().normPrintln(DEFAULT, "");
+            this.managerIO
+                    .getOutputter()
+                    .normPrint(DEFAULT, (managerIO.isUnSaved(false) ? "*" : " ") + "> ");
             try {
                 input = scanner.nextLine();
             } catch (Exception e) {
                 LOGGER.error("Error thrown while getting input: ", e);
                 LOGGER.error("Exiting.");
-                System.err.println("Error thrown when getting input: " + e.getMessage());
-                System.err.println("Exiting due to error.");
+                this.managerIO
+                        .getOutputter()
+                        .errorPrintln("Error thrown when getting input: " + e.getMessage());
+                this.managerIO.getOutputter().errorPrintln("Exiting due to error.");
                 break;
             }
             LOGGER.debug("Got the following input: {}", input);
@@ -71,6 +77,6 @@ public class CliManagerRunner extends ModeRunner {
         }
 
         LOGGER.info("Exiting management mode.");
-        System.out.println("Exiting.");
+        this.managerIO.getOutputter().normPrintln(DEFAULT, "Exiting.");
     }
 }
