@@ -718,7 +718,7 @@ public class MainGui {
 
     // <editor-fold desc="Utility methods">
     private void resetStreams() {
-        LOGGER.info("Resetting printstreams.");
+        LOGGER.info("Resetting print streams.");
         try {
             this.printStream.flush();
             this.printStream.reset();
@@ -754,6 +754,7 @@ public class MainGui {
 
     private void handleResult(boolean result) {
         sendErrorIfNeeded(!result);
+        updateUiData();
     }
 
     private void loadUiOptions() {
@@ -778,13 +779,15 @@ public class MainGui {
             this.options = new GuiOptions();
         }
 
-        autoSaveMenuItem.setSelected(this.options.isAutoSave());
+        this.managerIO.setAutoSave(this.options.isAutoSave());
+        autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
         saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
         selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
     }
 
     private void updateUiOptions() {
         this.options.setAutoSave(autoSaveMenuItem.isSelected());
+        this.managerIO.setAutoSave(this.options.isAutoSave());
         this.options.setSaveOnExit(saveOnExitMenuItem.isSelected());
         this.options.setSelectNewPeriods(selectNewPeriodMenuItem.isSelected());
 

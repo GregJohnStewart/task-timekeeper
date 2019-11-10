@@ -259,7 +259,7 @@ public class ManagerIO {
      */
     public boolean doCrudAction(ActionConfig config, boolean saveIfChanged)
             throws ManagerIOException {
-        this.unSaved = this.unSaved || this.getManager().getCrudOperator().doObjAction(config);
+        this.unSaved = this.unSaved | this.getManager().getCrudOperator().doObjAction(config);
         if (saveIfChanged && this.unSaved) {
             this.saveManager();
         }
