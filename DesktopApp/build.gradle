@@ -9,7 +9,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '3.1.0.13'
+version = '3.1.0.29'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":BaseCode:ManagerIO")
+    compile project(path: ":BaseCode:ManagerIO")
 
     //for processing command line arguments
     compile 'args4j:args4j:2.33'
@@ -92,7 +92,7 @@ app.version = $version
 # the time of build
 app.buildtime = ${ZonedDateTime.now().toString()}
 # Version of the library used
-lib.version = Core:${project(":BaseCode:Core").version} ManagerIO:${project(":BaseCode:Core").version}
+lib.version = Core:${project(":BaseCode:Core").version} ManagerIO:${project(":BaseCode:ManagerIO").version}
 
 # default save file location
 default.configFile = {HOME}/.timeKeeper/config.cfg

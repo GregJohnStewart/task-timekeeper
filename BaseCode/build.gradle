@@ -1,0 +1,1 @@
+build.dependsOn ":BaseCode:Core:build", ":BaseCode:ManagerIO:build"
