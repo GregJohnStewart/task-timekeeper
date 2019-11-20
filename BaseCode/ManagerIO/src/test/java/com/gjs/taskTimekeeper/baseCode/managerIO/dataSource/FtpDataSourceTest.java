@@ -1,7 +1,13 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceCredentialException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceNotFoundException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockftpserver.fake.FakeFtpServer;
@@ -11,12 +17,6 @@ import org.mockftpserver.fake.filesystem.FileEntry;
 import org.mockftpserver.fake.filesystem.FileSystem;
 import org.mockftpserver.fake.filesystem.Permissions;
 import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 
 public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
     private static final String USERNAME = "user";
@@ -31,6 +31,7 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         fakeFtpServer.addUserAccount(new UserAccount(USERNAME, PASSWORD, "/data"));
 
         Permissions readOnly = new Permissions("r--r--r--");
+        Permissions nothing = new Permissions("---------");
 
         FileSystem fileSystem = new UnixFakeFileSystem();
         fileSystem.add(new DirectoryEntry("/data"));
@@ -40,6 +41,14 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         FileEntry readOnlyFile = new FileEntry("/data/readOnly", new String(INITIAL_SAVE_DATA_TWO));
         readOnlyFile.setPermissions(readOnly);
         fileSystem.add(readOnlyFile);
+
+        FileEntry noPermsFile = new FileEntry("/data/noPerms", new String(INITIAL_SAVE_DATA_TWO));
+        noPermsFile.setPermissions(nothing);
+        fileSystem.add(noPermsFile);
+
+        DirectoryEntry readOnlyDir = new DirectoryEntry("/data/readOnlyDir");
+        readOnlyDir.setPermissions(readOnly);
+        fileSystem.add(readOnlyDir);
 
         fakeFtpServer.setFileSystem(fileSystem);
 
@@ -115,11 +124,49 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         }
     }
 
-    public void testNoFileFound() {
-        // TODO
+    @Test
+    public void testFileReadOnlyDirNotExists() throws MalformedURLException {
+        URL url = getUrl("readOnlyDir/nonExistantFile");
+        this.testSource = new FtpDataSource(url);
+
+        try {
+            this.testSource.readDataIn();
+            Assert.fail();
+        } catch (DataSourceReadOnlyException e) {
+            // nothing to do
+        }
+
+        try {
+            this.testSource.isReadOnly();
+            Assert.fail();
+        } catch (DataSourceReadOnlyException e) {
+            // nothing to do
+        }
     }
 
-    public void testNoReadPerms() {
-        // TODO
+    @Test
+    public void testNoFileFound() throws MalformedURLException {
+        URL url = getUrl("nonExistantFile");
+        this.testSource = new FtpDataSource(url);
+
+        try {
+            this.testSource.readDataIn();
+            Assert.fail();
+        } catch (DataSourceNotFoundException e) {
+            // nothing to do
+        }
+    }
+
+    @Test
+    public void testNoReadPerms() throws MalformedURLException {
+        URL url = getUrl("noPerms");
+        this.testSource = new FtpDataSource(url);
+
+        try {
+            this.testSource.readDataIn();
+            Assert.fail();
+        } catch (DataSourceNotFoundException e) {
+            // nothing to do
+        }
     }
 }

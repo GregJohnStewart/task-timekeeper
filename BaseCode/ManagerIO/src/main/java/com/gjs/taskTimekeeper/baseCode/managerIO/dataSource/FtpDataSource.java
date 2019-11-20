@@ -6,7 +6,6 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSource
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceNotFoundException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,14 +27,14 @@ public class FtpDataSource extends DataSource {
         this.ftpUrl = ftpUrl;
     }
 
-    @Override
-    public void ensureReadWriteCapable() throws DataSourceException {}
-
     private ManagerIOException handleException(Exception e) {
         if (e.getClass().getName().equals("sun.net.ftp.FtpLoginException")) {
             return new DataSourceCredentialException(e);
-        } else if (e.getMessage().contains("The current user does not have write permission")) {
+        } else if (e.getMessage().contains("The current user does not have")
+                && e.getMessage().contains("permission")) {
             return new DataSourceReadOnlyException(e);
+        } else if (e.getClass().getName().equals("java.io.FileNotFoundException")) {
+            return new DataSourceNotFoundException(e);
         }
         return new DataSourceException(e);
     }
@@ -67,9 +66,11 @@ public class FtpDataSource extends DataSource {
      * FtpUrlConnection is really limited in functionality.
      *
      * @return
+     * @throws DataSourceReadOnlyException If the location is read only and does not exist.
+     * @throws DataSourceException If anything else goes wrong with talking to the ftp server.
      */
     @Override
-    public boolean isReadOnly() {
+    public boolean isReadOnly() throws DataSourceReadOnlyException, DataSourceException {
         byte[] bytes = new byte[0];
         try {
             bytes = this.readDataIn();
