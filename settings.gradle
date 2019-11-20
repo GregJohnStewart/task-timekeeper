@@ -25,6 +25,7 @@ pluginManagement {
 }
 
 rootProject.name = 'Task-Timekeeper'
-include 'BaseCode'
+include 'BaseCode:Core'
+include 'BaseCode:ManagerIO'
 include 'DesktopApp'
 // include 'WebServer'

@@ -1,0 +1,40 @@
+{
+  "tasks": [
+    {
+      "name": {
+        "name": "Task One"
+      },
+      "attributes": {
+        "someKey": "someVal"
+      }
+    }
+  ],
+  "workPeriods": [
+    {
+      "attributes": {
+        "hello": "world"
+      },
+      "timespans": [
+        {
+          "taskName": {
+            "name": "Task One"
+          },
+          "startTime": [
+            2019,
+            10,
+            20,
+            9,
+            39
+          ],
+          "endTime": [
+            2019,
+            10,
+            20,
+            9,
+            40
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -9,3 +9,5 @@ This is the base code library for Task Timekeeper.
    - Methods for CRUD operations on that data (See ActionDoer)
    - Time string parsing
    - Providing ObjectMapper for de/serialization
+   
+Functionality is largely split up in order to segment out pieces, so people can be selective about what they want to bring in.
