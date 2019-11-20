@@ -37,6 +37,7 @@ public class DataSourceFromStringTest {
                     {"file://hello/world", FileDataSource.class},
                     {"file:/hello/world", FileDataSource.class},
                     {"file:hello/world", FileDataSource.class},
+                    {"ftp:/hello/world", FtpDataSource.class},
                 });
     }
 

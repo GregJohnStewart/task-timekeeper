@@ -2,8 +2,8 @@ package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import static org.junit.Assert.*;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import java.io.IOException;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class ByteArrayDataSourceTest extends DataSourceTest<ByteArrayDataSource>
         new ByteArrayDataSource().ensureReadWriteCapable();
     }
 
-    @Test(expected = ManagerIOReadOnlyException.class)
+    @Test(expected = DataSourceReadOnlyException.class)
     public void testEnsureReadWriteCapableReadOnly() throws ManagerIOException {
         new ByteArrayDataSource().setReadOnly(true).ensureReadWriteCapable();
     }
@@ -34,7 +34,7 @@ public class ByteArrayDataSourceTest extends DataSourceTest<ByteArrayDataSource>
         assertArrayEquals(this.testDataTwo, this.testSource.getBuffer());
     }
 
-    @Test(expected = ManagerIOReadOnlyException.class)
+    @Test(expected = DataSourceReadOnlyException.class)
     public void testWriteDataOutReadOnly() throws IOException {
         this.testSource.setReadOnly(true);
         this.testSource.writeDataOut(this.testDataTwo);

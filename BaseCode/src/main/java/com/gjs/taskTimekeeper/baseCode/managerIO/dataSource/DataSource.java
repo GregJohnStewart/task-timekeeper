@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.slf4j.Logger;
@@ -34,6 +34,9 @@ public abstract class DataSource {
             case "file":
                 output = new FileDataSource(sourceUrl);
                 break;
+            case "ftp":
+                output = new FtpDataSource(sourceUrl);
+                break;
             default:
                 throw new DataSourceParsingException("Unsupported source type given.");
         }
@@ -42,32 +45,44 @@ public abstract class DataSource {
     }
 
     /**
-     * Ensures that the data source can properly read/write the manager data.
-     *
-     * @throws ManagerIOException If the data source cannot be used
-     */
-    public abstract void ensureReadWriteCapable() throws ManagerIOException;
-    /**
      * Gets the input stream for retrieving a TimeManager
      *
      * @return The input stream for reading in a time manager.
+     * @throws DataSourceException If something went wrong in reading the data. Can differ between
+     *     implementations.
      */
-    public abstract byte[] readDataIn() throws ManagerIOException;
+    public abstract byte[] readDataIn() throws DataSourceException;
+
     /**
      * Gets the output stream for saving a TimeManager that must be closed.
      *
-     * @return The output stream for saving a TimeManager
+     * @param bytes The set of bytes to save to the data source
+     * @throws DataSourceException If something went wrong in writing the data out. Can differ
+     *     between implementations.
+     * @throws DataSourceReadOnlyException If the source was readonly when tried to write.
      */
-    public void writeDataOut(byte[] bytes) throws ManagerIOException {
-        if (this.isReadOnly()) {
-            throw new ManagerIOReadOnlyException();
-        }
-    }
+    public abstract void writeDataOut(byte[] bytes)
+            throws DataSourceException, DataSourceReadOnlyException;
 
     /**
      * Determines if the data source is read only or not.
      *
      * @return If the data source is read only or not
+     * @throws DataSourceException If something went wrong in determining writability. Can differ
+     *     between implementations.
      */
-    public abstract boolean isReadOnly();
+    public abstract boolean isReadOnly() throws DataSourceException;
+
+    /**
+     * Ensures that the data source can properly read/write the manager data.
+     *
+     * @throws DataSourceReadOnlyException If the data source is read only.
+     * @throws DataSourceException If the data source can't be read, or something went wrong in
+     *     determining the read/writability. Can differ between implementations.
+     */
+    public void ensureReadWriteCapable() throws DataSourceException, DataSourceReadOnlyException {
+        if (this.isReadOnly()) {
+            throw new DataSourceReadOnlyException();
+        }
+    }
 }

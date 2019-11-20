@@ -1,13 +1,12 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import java.util.Arrays;
 
 public class ByteArrayDataSource extends DataSource {
 
     private byte[] buffer = new byte[0];
-    private boolean readOnly; // TODO: implement, test with
+    private boolean readOnly = false; // TODO: implement, test with
 
     public ByteArrayDataSource() {
         // nothing to do
@@ -33,20 +32,15 @@ public class ByteArrayDataSource extends DataSource {
     }
 
     @Override
-    public void ensureReadWriteCapable() throws ManagerIOException {
-        if (this.isReadOnly()) {
-            throw new ManagerIOReadOnlyException();
-        }
-    }
-
-    @Override
     public byte[] readDataIn() {
         return Arrays.copyOf(this.buffer, this.buffer.length);
     }
 
     @Override
-    public void writeDataOut(byte[] bytes) {
-        super.writeDataOut(bytes);
+    public void writeDataOut(byte[] bytes) throws DataSourceReadOnlyException {
+        if (this.isReadOnly()) {
+            throw new DataSourceReadOnlyException();
+        }
         this.buffer = Arrays.copyOf(bytes, bytes.length);
     }
 }

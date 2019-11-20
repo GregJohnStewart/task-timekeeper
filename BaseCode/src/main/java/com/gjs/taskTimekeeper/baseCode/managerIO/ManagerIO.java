@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
+import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
@@ -173,7 +173,7 @@ public class ManagerIO {
         LOGGER.info("Reading in a TimeManager.");
         try {
             this.dataSource.ensureReadWriteCapable();
-        } catch (ManagerIOReadOnlyException e) {
+        } catch (DataSourceReadOnlyException e) {
             LOGGER.warn("Manager source is read only: ", e);
         }
 
