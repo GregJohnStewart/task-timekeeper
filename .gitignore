@@ -20,3 +20,5 @@ gradle-app.setting
 /.idea/
 /BaseCode/Core/logs/
 /BaseCode/ManagerIO/logs/
+/BaseCode/ManagerIO/out/
+/BaseCode/Core/out/
