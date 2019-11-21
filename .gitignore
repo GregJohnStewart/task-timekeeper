@@ -1,8 +1,8 @@
 .gradle
 */build/
 build/
-*/out/
-*/logs/
+*/out/*
+*/logs/*
 *project.properties
 
 # Ignore Gradle GUI config
