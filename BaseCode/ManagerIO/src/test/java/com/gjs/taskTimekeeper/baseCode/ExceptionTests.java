@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.baseCode;
 
+import com.gjs.taskTimekeeper.baseCode.core.TimeKeeperException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceConnectionException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceCredentialException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceException;

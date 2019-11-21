@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.baseCode;
 
+import com.gjs.taskTimekeeper.baseCode.core.TimeKeeperException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

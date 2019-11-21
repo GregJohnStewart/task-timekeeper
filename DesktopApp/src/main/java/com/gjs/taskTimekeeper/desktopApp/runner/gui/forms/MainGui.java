@@ -1,23 +1,18 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
-
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
-import com.gjs.taskTimekeeper.baseCode.objects.Task;
-import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
-import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
-import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import com.gjs.taskTimekeeper.baseCode.utils.Name;
-import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
-import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
@@ -31,6 +26,25 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClick
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -52,24 +66,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.EDIT;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.REMOVE;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.VIEW;
 
 /**
  * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
