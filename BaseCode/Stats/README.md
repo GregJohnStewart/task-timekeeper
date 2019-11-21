@@ -8,3 +8,4 @@ Handles coming up with certain statistics about the data in a TimeManager, and c
 
  - % of time spent on tasks (overall and per work period)
  - \# of tasks per work period, compared to the rest
+ - 
