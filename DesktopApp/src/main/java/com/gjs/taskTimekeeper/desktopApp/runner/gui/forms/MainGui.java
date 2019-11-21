@@ -121,7 +121,7 @@ public class MainGui {
                     put(1, DATETIME_COL_WIDTH);
                     put(2, DATETIME_COL_WIDTH);
                     put(3, DURATION_COL_WIDTH);
-                    put(5, (double) 87);
+                    put(5, (double) 55);
                 }
             };
 
@@ -169,6 +169,7 @@ public class MainGui {
     private JLabel selectedPeriodDurationLabel;
     private JLabel selectedPeriodCompleteLabel;
     private JButton selectedPeriodEditAttributesButton;
+    private JButton selectedPeriodCompleteAllSpansButton;
 
     private JMenuBar mainMenuBar;
     private JCheckBoxMenuItem autoSaveMenuItem;
@@ -443,7 +444,6 @@ public class MainGui {
         }
     }
 
-    // TODO:: more span buttons (complete existing, new span that completes the rest, etc)
     private Action addSpanAction =
             new AbstractAction("Add Span") {
                 @Override
@@ -478,9 +478,27 @@ public class MainGui {
                 }
             };
 
+    private Action completeSpansAction =
+            new AbstractAction("Complete All") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    LOGGER.info("Add timespan action hit.");
+                    resetStreams();
+
+                    ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, VIEW);
+
+                    taskChangeConfig.setSpecialAction("completeSpans");
+
+                    boolean result = managerIO.doCrudAction(taskChangeConfig);
+
+                    LOGGER.debug("Result of trying to add span: {}", result);
+                    handleResult(result);
+                }
+            };
+
     private class EditSpanAction extends IndexAction {
         public EditSpanAction(int index) {
-            super("Edit", index);
+            super("E", index);
         }
 
         @Override
@@ -524,9 +542,41 @@ public class MainGui {
         }
     }
 
+    private class CompleteSpanAction extends IndexAction {
+        public CompleteSpanAction(int index) {
+            super("C", index);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            LOGGER.info("Completing span from selected period at index {}", this.getIndex());
+            resetStreams();
+
+            Timespan span =
+                    (Timespan)
+                            managerIO
+                                    .getManager()
+                                    .getCrudOperator()
+                                    .getTimespanDoer()
+                                    .search()
+                                    .get(this.getIndex() - 1);
+
+            ActionConfig taskChangeConfig = new ActionConfig(KeeperObjectType.SPAN, EDIT);
+
+            taskChangeConfig.setIndex(this.getIndex());
+            taskChangeConfig.setName(span.getTaskName().getName());
+            taskChangeConfig.setEnd("NOW");
+
+            boolean result = managerIO.doCrudAction(taskChangeConfig);
+
+            LOGGER.debug("Result of trying to complete span: {}", result);
+            handleResult(result);
+        }
+    }
+
     private class DeleteSpanAction extends IndexAction {
         public DeleteSpanAction(int index) {
-            super("Delete", index);
+            super("D", index);
         }
 
         @Override
@@ -943,8 +993,18 @@ public class MainGui {
 
                         JButton edit = new JButton("E");
                         edit.setAction(new EditSpanAction(count));
+                        edit.setToolTipText("Edit");
+
+                        JButton complete = new JButton("C");
+                        complete.setAction(new CompleteSpanAction(count));
+                        complete.setToolTipText("Complete");
+                        if (span.isComplete() || !span.hasStartTime()) {
+                            complete.setEnabled(false);
+                        }
+
                         JButton delete = new JButton("D");
                         delete.setAction(new DeleteSpanAction(count));
+                        delete.setToolTipText("Delete");
 
                         spanRow.add(count);
 
@@ -952,7 +1012,7 @@ public class MainGui {
                         spanRow.add(TimeParser.toOutputString(span.getEndTime()));
                         spanRow.add(TimeParser.toDurationString(span.getDuration()));
                         spanRow.add(span.getTaskName().getName());
-                        spanRow.add(Arrays.asList(edit, delete));
+                        spanRow.add(Arrays.asList(edit, complete, delete));
 
                         spanDetails.add(spanRow);
                         count++;
@@ -964,7 +1024,10 @@ public class MainGui {
                             SPAN_LIST_TABLE_HEADERS,
                             SPAN_LIST_COL_WIDTHS);
                     this.selectedPeriodAddSpanButton.setAction(this.addSpanAction);
+                    this.selectedPeriodCompleteAllSpansButton.setAction(this.completeSpansAction);
                 }
+                this.selectedPeriodCompleteAllSpansButton.setEnabled(
+                        selectedPeriod.isUnCompleted());
             }
         }
         // </editor-fold>
@@ -1413,7 +1476,7 @@ public class MainGui {
                         0,
                         false));
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         selectedPeriodSpansPanel.add(
                 panel3,
                 new GridConstraints(
@@ -1437,6 +1500,24 @@ public class MainGui {
                 new GridConstraints(
                         0,
                         0,
+                        1,
+                        1,
+                        GridConstraints.ANCHOR_CENTER,
+                        GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED,
+                        null,
+                        null,
+                        null,
+                        0,
+                        false));
+        selectedPeriodCompleteAllSpansButton = new JButton();
+        selectedPeriodCompleteAllSpansButton.setText("Complete All");
+        panel3.add(
+                selectedPeriodCompleteAllSpansButton,
+                new GridConstraints(
+                        0,
+                        1,
                         1,
                         1,
                         GridConstraints.ANCHOR_CENTER,
