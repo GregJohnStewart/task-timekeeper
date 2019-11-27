@@ -1,8 +1,10 @@
 .gradle
 */build/
 build/
-*/out/*
-*/logs/*
+*/out/
+out/
+*/logs/
+logs/
 *project.properties
 
 # Ignore Gradle GUI config
@@ -18,7 +20,3 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 /.idea/
-/BaseCode/Core/logs/
-/BaseCode/ManagerIO/logs/
-/BaseCode/ManagerIO/out/
-/BaseCode/Core/out/
