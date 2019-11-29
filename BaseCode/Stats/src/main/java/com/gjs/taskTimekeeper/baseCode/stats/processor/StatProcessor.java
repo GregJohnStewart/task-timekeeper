@@ -12,8 +12,16 @@ import java.util.Optional;
 public abstract class StatProcessor<T extends Results> {
     private T results;
 
-    protected void setResults(T results) {
+    /**
+     * Sets the results gotten. Returns the same results object for use in one line return
+     * statements.
+     *
+     * @param results The results to set to.
+     * @return The same results object that was passed in.
+     */
+    protected T setResults(T results) {
         this.results = results;
+        return this.results;
     }
 
     /**

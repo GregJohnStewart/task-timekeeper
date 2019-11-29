@@ -14,18 +14,31 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class PercentResults<T> extends Results {
     private ConcurrentMap<T, Double> percentages = new ConcurrentHashMap<>();
-    private final ConcurrentMap<T, Double> values = new ConcurrentHashMap<>();
+    private ConcurrentMap<T, Number> values = new ConcurrentHashMap<>();
+
+    /** Base constructor. No values added. */
+    public PercentResults() {}
+
+    /**
+     * Constructor to set the initial values.
+     *
+     * @param values The values to set initially.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public PercentResults(Map<T, Number> values) throws NullPointerException {
+        this.setValues(values);
+    }
 
     /** Recalculates percentages. Use whenever {@link #values} is modified. */
     private synchronized void recalculatePercentages() {
         this.percentages = new ConcurrentHashMap<>();
 
-        Double total = 0.0;
-        for (Map.Entry<T, Double> entry : this.values.entrySet()) {
-            total += entry.getValue();
+        double total = 0.0;
+        for (Map.Entry<T, Number> entry : this.values.entrySet()) {
+            total += entry.getValue().doubleValue();
         }
-        for (Map.Entry<T, Double> entry : this.values.entrySet()) {
-            this.percentages.put(entry.getKey(), (entry.getValue() / total) * 100);
+        for (Map.Entry<T, Number> entry : this.values.entrySet()) {
+            this.percentages.put(entry.getKey(), (entry.getValue().doubleValue() / total) * 100);
         }
     }
 
@@ -37,7 +50,7 @@ public class PercentResults<T> extends Results {
      * @return The previous percentage at the object. Null if no previous percentage held.
      * @throws NullPointerException if the object or value given was null.
      */
-    public synchronized Double setValue(T obj, Double value) throws NullPointerException {
+    public synchronized Number setValue(T obj, Number value) throws NullPointerException {
         if (obj == null) {
             throw new NullPointerException("Cannot set a null object.");
         }
@@ -54,13 +67,44 @@ public class PercentResults<T> extends Results {
     }
 
     /**
+     * Sets the values to the ones given. Clears out existing values and uses the ones given.
+     *
+     * @param values The values to set.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public synchronized void setValues(Map<T, Number> values) throws NullPointerException {
+        if (values == null) {
+            throw new NullPointerException("Values given cannot be null.");
+        }
+        this.values = new ConcurrentHashMap<>(values);
+        this.recalculatePercentages();
+    }
+
+    /**
+     * Adds or overrides the values given to the ones already held.
+     *
+     * @param values The values to add or override with.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public synchronized void addOrOverrideValues(Map<T, Number> values)
+            throws NullPointerException {
+        if (values == null) {
+            throw new NullPointerException("Values given cannot be null.");
+        }
+        for (Map.Entry<T, Number> entry : values.entrySet()) {
+            this.values.put(entry.getKey(), entry.getValue());
+        }
+        this.recalculatePercentages();
+    }
+
+    /**
      * Removes the value from the set.
      *
      * @param obj The object to remove the value from.
      * @return The previously held value. Null if was not set.
      */
-    public synchronized Double remove(T obj) {
-        Double output = this.values.remove(obj);
+    public synchronized Number remove(T obj) {
+        Number output = this.values.remove(obj);
 
         if (output != null) {
             this.recalculatePercentages();
