@@ -1,36 +1,50 @@
+// this block is necessary to make enforcedPlatform work for Quarkus plugin available
+// only locally (snapshot) that is also importing the Quarkus BOM
+buildscript {
+    repositories {
+        mavenLocal()
+    }
+    dependencies {
+        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
+    }
+}
+
 plugins {
     id 'java'
-    id 'io.quarkus' version '0.26.0'
 }
-//apply plugin: 'io.quarkus'
 
-version = '0.0.0.61'
-
-sourceCompatibility = 1.8
+apply plugin: 'io.quarkus'
 
 repositories {
-    mavenCentral()
+     mavenLocal()
+     mavenCentral()
 }
 
 dependencies {
-    compile project(":BaseCode")
-
-    implementation enforcedPlatform('io.quarkus:quarkus-bom:0.26.0')
-    implementation 'io.quarkus:quarkus-resteasy'
+    implementation 'io.quarkus:quarkus-smallrye-metrics'
+    implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
-    //implementation 'io.quarkus:quarkus-jackson'
-    //implementation 'io.quarkus:quarkus-elytron-security'
+    implementation 'io.quarkus:quarkus-scheduler'
+    implementation 'io.quarkus:quarkus-elytron-security'
+    implementation 'io.quarkus:quarkus-mongodb-client'
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-resteasy'
 
     testImplementation 'io.quarkus:quarkus-junit5'
-    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
+    testImplementation 'io.rest-assured:rest-assured'
+
+    nativeTestImplementation 'io.quarkus:quarkus-junit5'
+    nativeTestImplementation 'io.rest-assured:rest-assured'
 }
 
-test {
-    useJUnitPlatform()
-}
+group 'com.gjs.taskTimekeeper'
+version '1.0.0-SNAPSHOT'
 
 compileJava {
-    println "WebServer version at compile time: " + version
-    dependsOn ':BaseCode:test'
-    dependsOn 'incrementBuildVersion';
+    options.compilerArgs << '-parameters'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }

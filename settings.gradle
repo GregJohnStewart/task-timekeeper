@@ -12,21 +12,25 @@
 // for resolving quarkus plugin dependencies
 pluginManagement {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == 'io.quarkus') {
-                useModule("io.quarkus:quarkus-gradle-plugin:${requested.version}")
+                //make sure matches in WebServer/gradle.properties
+                useModule("io.quarkus:quarkus-gradle-plugin:1.0.1.Final")
             }
         }
     }
 }
+
 
 rootProject.name = 'Task-Timekeeper'
 include 'BaseCode:Core'
 include 'BaseCode:ManagerIO'
 include 'BaseCode:Stats'
 include 'DesktopApp'
+include 'WebServer'
 // include 'WebServer'
