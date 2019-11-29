@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class TimeSpentOnTaskProcessor extends StatProcessor<PercentResults<Task>> {
     @Override
-    public PercentResults<Task> process(TimeManager manager) throws StatProcessingException {
+    public PercentResults<Task> process(TimeManager manager) {
         // more efficient to make map and then create results object
         Map<Task, Number> resultMap = new HashMap<>();
 

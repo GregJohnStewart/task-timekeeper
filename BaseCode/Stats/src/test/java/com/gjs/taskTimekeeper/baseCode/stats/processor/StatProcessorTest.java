@@ -3,7 +3,13 @@ package com.gjs.taskTimekeeper.baseCode.stats.processor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,13 +17,32 @@ public abstract class StatProcessorTest<T extends StatProcessor> {
     private static TimeManager TEST_MANAGER = new TimeManager();
 
     static {
-        // TODO:: setup test manager
+        LocalDateTime now = LocalDateTime.now();
+        Task taskOne = new Task("Task One");
+        Task taskTwo = new Task("Task Two");
+        Task taskThree = new Task("Task Three");
+
+        TEST_MANAGER.addWorkPeriod(
+                new WorkPeriod(
+                        Stream.of(
+                                        new Timespan(taskOne, now, now.plusSeconds(10)),
+                                        new Timespan(taskTwo, now, now.plusSeconds(90)))
+                                .collect(Collectors.toList())));
+        TEST_MANAGER.addWorkPeriod(
+                new WorkPeriod(
+                        Stream.of(
+                                        new Timespan(
+                                                taskThree,
+                                                now.plusSeconds(100),
+                                                now.plusSeconds(200)))
+                                .collect(Collectors.toList())));
     }
 
     public TimeManager getTestManager() {
         return TEST_MANAGER.clone();
     }
 
+    protected TimeManager manager = getTestManager();
     protected T processor;
 
     @Before
@@ -27,14 +52,14 @@ public abstract class StatProcessorTest<T extends StatProcessor> {
     public void getResultsTest() {
         assertFalse(this.processor.getResults().isPresent());
 
-        this.processor.process(getTestManager());
+        this.processor.process(this.manager);
 
         assertTrue(this.processor.getResults().isPresent());
     }
 
     @Test
     public void resetResultsTest() {
-        this.processor.process(getTestManager());
+        this.processor.process(this.manager);
 
         this.processor.resetResults();
 
