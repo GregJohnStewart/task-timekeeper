@@ -28,6 +28,6 @@ dependencies {
 }
 
 compileJava {
-    println "BaseCode version at compile time: " + version
+    println "Core version at compile time: " + version
     dependsOn 'incrementBuildVersion';
 }

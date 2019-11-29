@@ -1,23 +1,23 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.EDIT;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.REMOVE;
-import static com.gjs.taskTimekeeper.baseCode.crudAction.Action.VIEW;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.EDIT;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.REMOVE;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.VIEW;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import com.gjs.taskTimekeeper.baseCode.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.KeeperObjectType;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
+import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
-import com.gjs.taskTimekeeper.baseCode.objects.Task;
-import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
-import com.gjs.taskTimekeeper.baseCode.objects.WorkPeriod;
-import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import com.gjs.taskTimekeeper.baseCode.utils.Name;
-import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
-import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;

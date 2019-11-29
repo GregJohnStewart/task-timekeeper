@@ -1,0 +1,142 @@
+package com.gjs.taskTimekeeper.baseCode.stats.results;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+/**
+ * Describes a percentage based result.
+ *
+ * <p>TODO:: make threadsafe? doublecheck
+ *
+ * @param <T> The type of object to use for the percent.
+ */
+public class PercentResults<T> extends Results {
+    private ConcurrentMap<T, Double> percentages = new ConcurrentHashMap<>();
+    private ConcurrentMap<T, Number> values = new ConcurrentHashMap<>();
+
+    /** Base constructor. No values added. */
+    public PercentResults() {}
+
+    /**
+     * Constructor to set the initial values.
+     *
+     * @param values The values to set initially.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public PercentResults(Map<T, Number> values) throws NullPointerException {
+        this.setValues(values);
+    }
+
+    /** Recalculates percentages. Use whenever {@link #values} is modified. */
+    private synchronized void recalculatePercentages() {
+        this.percentages = new ConcurrentHashMap<>();
+
+        double total = 0.0;
+        for (Map.Entry<T, Number> entry : this.values.entrySet()) {
+            total += entry.getValue().doubleValue();
+        }
+        for (Map.Entry<T, Number> entry : this.values.entrySet()) {
+            this.percentages.put(entry.getKey(), (entry.getValue().doubleValue() / total) * 100);
+        }
+    }
+
+    /**
+     * Sets a value to be weighted against the rest of the values.
+     *
+     * @param obj The object to set a value for.
+     * @param value The value to set.
+     * @return The previous percentage at the object. Null if no previous percentage held.
+     * @throws NullPointerException if the object or value given was null.
+     */
+    public synchronized Number setValue(T obj, Number value) throws NullPointerException {
+        if (obj == null) {
+            throw new NullPointerException("Cannot set a null object.");
+        }
+        if (value == null) {
+            throw new NullPointerException("Cannot set a null value.");
+        }
+
+        Double output = this.percentages.get(obj);
+
+        this.values.put(obj, value);
+        this.recalculatePercentages();
+
+        return output;
+    }
+
+    /**
+     * Sets the values to the ones given. Clears out existing values and uses the ones given.
+     *
+     * @param values The values to set.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public synchronized void setValues(Map<T, Number> values) throws NullPointerException {
+        if (values == null) {
+            throw new NullPointerException("Values given cannot be null.");
+        }
+        this.values = new ConcurrentHashMap<>(values);
+        this.recalculatePercentages();
+    }
+
+    /**
+     * Adds or overrides the values given to the ones already held.
+     *
+     * @param values The values to add or override with.
+     * @throws NullPointerException If the map of values given is null.
+     */
+    public synchronized void addOrOverrideValues(Map<T, Number> values)
+            throws NullPointerException {
+        if (values == null) {
+            throw new NullPointerException("Values given cannot be null.");
+        }
+        for (Map.Entry<T, Number> entry : values.entrySet()) {
+            this.values.put(entry.getKey(), entry.getValue());
+        }
+        this.recalculatePercentages();
+    }
+
+    /**
+     * Removes the value from the set.
+     *
+     * @param obj The object to remove the value from.
+     * @return The previously held value. Null if was not set.
+     */
+    public synchronized Number remove(T obj) {
+        Number output = this.values.remove(obj);
+
+        if (output != null) {
+            this.recalculatePercentages();
+        }
+
+        return output;
+    }
+
+    /**
+     * Retrieves the percentages calculated by this object.
+     *
+     * @return The percentages based on the values set.
+     */
+    public synchronized Map<T, Double> getPercentages() {
+        return new ConcurrentHashMap<>(this.percentages);
+    }
+
+    /**
+     * Gets the number of percentages held.
+     *
+     * @return The number of percentages held.
+     */
+    public synchronized int getNumEntries() {
+        return this.percentages.size();
+    }
+
+    /**
+     * Gets the set of objects there are percentages for.
+     *
+     * @return The set of objects there are percentages for.
+     */
+    public synchronized Set<T> getObjects() {
+        return this.percentages.keySet();
+    }
+}
