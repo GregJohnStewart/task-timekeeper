@@ -3,7 +3,6 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -118,6 +117,11 @@ public class Task extends KeeperObject implements Comparable<Task> {
         }
         this.attributes = attributes;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.name.getName();
     }
 
     @Override
