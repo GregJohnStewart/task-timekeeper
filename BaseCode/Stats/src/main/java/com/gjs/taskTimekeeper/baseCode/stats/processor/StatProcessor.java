@@ -10,6 +10,7 @@ import java.util.Optional;
  * @param <T> The type of result this processor produces
  */
 public abstract class StatProcessor<T extends Results> {
+    /** The results of the last successful run of {@link #process(TimeManager)}. */
     private T results;
 
     /**

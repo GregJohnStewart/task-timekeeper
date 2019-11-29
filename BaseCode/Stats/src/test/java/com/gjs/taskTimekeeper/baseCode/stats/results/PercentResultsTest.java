@@ -197,4 +197,11 @@ public class PercentResultsTest {
     public void constructWithNullMap() {
         new PercentResults<>(null);
     }
+
+    @Test
+    public void equalsHashCode() {
+        assertEquals(this.results, new PercentResults<String>());
+
+        this.results.hashCode();
+    }
 }

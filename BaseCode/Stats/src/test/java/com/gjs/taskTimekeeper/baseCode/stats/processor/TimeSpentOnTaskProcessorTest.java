@@ -1,10 +1,13 @@
 package com.gjs.taskTimekeeper.baseCode.stats.processor;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-public class TimeSpentOnTaskProcessorTest {
+public class TimeSpentOnTaskProcessorTest extends StatProcessorTest<TimeSpentOnTaskProcessor> {
+
+    @Override
+    public void setupProcessor() {
+        this.processor = new TimeSpentOnTaskProcessor();
+    }
 
     @Test
     public void process() {

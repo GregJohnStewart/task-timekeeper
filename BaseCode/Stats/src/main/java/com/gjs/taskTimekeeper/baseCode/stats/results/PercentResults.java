@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.stats.results;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -138,5 +139,18 @@ public class PercentResults<T> extends Results {
      */
     public synchronized Set<T> getObjects() {
         return this.percentages.keySet();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PercentResults<?> that = (PercentResults<?>) o;
+        return getPercentages().equals(that.getPercentages()) && values.equals(that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPercentages(), values);
     }
 }
