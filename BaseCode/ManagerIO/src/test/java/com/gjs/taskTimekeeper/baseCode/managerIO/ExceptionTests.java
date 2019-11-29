@@ -1,4 +1,6 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.managerIO;
+
+import static org.junit.Assert.assertEquals;
 
 import com.gjs.taskTimekeeper.baseCode.core.TimeKeeperException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceConnectionException;
@@ -14,17 +16,14 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOWriteException;
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test to run through constructors of the various custom exceptions. Really just for code coverage

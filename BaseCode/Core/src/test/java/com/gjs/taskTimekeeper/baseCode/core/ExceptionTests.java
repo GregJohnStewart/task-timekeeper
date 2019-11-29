@@ -1,17 +1,15 @@
-package com.gjs.taskTimekeeper.baseCode;
+package com.gjs.taskTimekeeper.baseCode.core;
 
-import com.gjs.taskTimekeeper.baseCode.core.TimeKeeperException;
+import static org.junit.Assert.assertEquals;
+
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test to run through constructors of the various custom exceptions. Really just for code coverage
