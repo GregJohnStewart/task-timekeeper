@@ -7,7 +7,8 @@
  */
 plugins {
     // https://github.com/jeremylong/dependency-check-gradle
-    id "org.owasp.dependencycheck" version "5.2.2"
+    //TODO:: re-enable when quarkus plays nice (webserver won't assemble with this)
+//    id "org.owasp.dependencycheck" version "5.2.4"
 }
 allprojects {
     apply plugin: 'java'
@@ -19,7 +20,8 @@ allprojects {
     }
 }
 subprojects {
-    apply plugin: 'org.owasp.dependencycheck'
+    //TODO:: re-enable when quarkus plays nice (webserver won't assemble with this)
+//    apply plugin: 'org.owasp.dependencycheck'
 
     // task to increment the build version of sub projects
     task incrementBuildVersion {
