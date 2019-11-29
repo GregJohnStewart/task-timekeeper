@@ -18,6 +18,9 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
+import com.gjs.taskTimekeeper.baseCode.stats.diagramming.PieCharter;
+import com.gjs.taskTimekeeper.baseCode.stats.processor.TimeSpentOnTaskProcessor;
+import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
@@ -26,6 +29,7 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.TaskEditHelper;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.options.GuiOptions;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.IndexAction;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.TableLayoutHelper;
+import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.WrapLayout;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenDialogBoxOnClickListener;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClickListener;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -55,6 +59,7 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -125,6 +130,16 @@ public class MainGui {
                 }
             };
 
+    private static final TimeSpentOnTaskProcessor TIME_SPENT_ON_TASK_PROCESSOR =
+            new TimeSpentOnTaskProcessor();
+
+    private static final int CHART_SIZE = 312;
+    private static final int CHART_HEIGHT = CHART_SIZE;
+    private static final int CHART_WIDTH = CHART_SIZE;
+
+    private static final PieCharter<Task> TIME_SPENT_ON_TASKS_CHARTER =
+            new PieCharter<>("Time Spent on Tasks", CHART_HEIGHT, CHART_WIDTH);
+
     // </editor-fold>
     // <editor-fold desc="Static methods">
     private static String getFromPrintStreamForMessageOutput(ByteArrayOutputStream stream) {
@@ -170,6 +185,9 @@ public class MainGui {
     private JLabel selectedPeriodCompleteLabel;
     private JButton selectedPeriodEditAttributesButton;
     private JButton selectedPeriodCompleteAllSpansButton;
+    private JPanel statsPanel;
+    private JTabbedPane statsTabPane;
+    private JScrollPane overallStatsPane;
 
     private JMenuBar mainMenuBar;
     private JCheckBoxMenuItem autoSaveMenuItem;
@@ -1111,6 +1129,27 @@ public class MainGui {
                     TASK_LIST_COL_WIDTHS);
         }
         // </editor-fold>
+
+        // <editor-fold desc="Stats Panel">
+        // <editor-fold desc="Overall Stats Panel">
+        {
+            PercentResults<Task> results =
+                    TIME_SPENT_ON_TASK_PROCESSOR.process(this.managerIO.getManager());
+            // TODO:: add row/panel of general stats (how much total time spent, # tasks used, etc
+
+            JPanel overallStatsPanel = new JPanel(new WrapLayout());
+            overallStatsPanel.add(
+                    new JLabel(new ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+            //            overallStatsPanel.add(new JLabel(new
+            // ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+            //            overallStatsPanel.add(new JLabel(new
+            // ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+
+            this.overallStatsPane.setViewportView(overallStatsPanel);
+        }
+        // </editor-fold>
+
+        // </editor-fold>
         LOGGER.info("Finished updating UI.");
     }
     // </editor-fold>
@@ -1647,6 +1686,30 @@ public class MainGui {
                         null,
                         0,
                         false));
+        statsPanel = new JPanel();
+        statsPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainTabPane.addTab("Stats", statsPanel);
+        statsTabPane = new JTabbedPane();
+        statsPanel.add(
+                statsTabPane,
+                new GridConstraints(
+                        0,
+                        0,
+                        1,
+                        1,
+                        GridConstraints.ANCHOR_CENTER,
+                        GridConstraints.FILL_BOTH,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        null,
+                        new Dimension(200, 200),
+                        null,
+                        0,
+                        false));
+        overallStatsPane = new JScrollPane();
+        overallStatsPane.setHorizontalScrollBarPolicy(31);
+        overallStatsPane.setVerticalScrollBarPolicy(22);
+        statsTabPane.addTab("Overall", overallStatsPane);
     }
 
     /** @noinspection ALL */
