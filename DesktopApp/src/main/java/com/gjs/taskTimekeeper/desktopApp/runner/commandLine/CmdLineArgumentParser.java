@@ -1,14 +1,15 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import com.gjs.taskTimekeeper.baseCode.crudAction.ActionConfig;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parser of command line arguments. Handles parsing overall configuration and just what is needed

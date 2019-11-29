@@ -1,11 +1,9 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers;
 
-import com.gjs.taskTimekeeper.baseCode.objects.Task;
-import com.gjs.taskTimekeeper.baseCode.objects.Timespan;
-import com.gjs.taskTimekeeper.baseCode.timeParser.TimeParser;
-import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
-import java.util.Collection;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
+import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
+
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -14,6 +12,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 public class SpanEditHelper {
     private static final int COL_SIZE = 15;

@@ -1,17 +1,18 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import static com.gjs.taskTimekeeper.baseCode.utils.OutputLevel.DEFAULT;
-
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
-import java.io.InputStream;
-import java.util.Scanner;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.util.Scanner;
+
+import static com.gjs.taskTimekeeper.baseCode.core.utils.OutputLevel.DEFAULT;
 
 /**
  * Handles the management of TimeManager data in an interactive manner TODO:: use Outputter to be

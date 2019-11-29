@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '1.0.0.47'
+version = '1.0.0.54'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -31,7 +31,7 @@ dependencies {
 }
 
 compileJava {
-    println "BaseCode version at compile time: " + version
+    println "ManagerIO version at compile time: " + version
     dependsOn ':BaseCode:Core:test'
     dependsOn 'incrementBuildVersion';
 }

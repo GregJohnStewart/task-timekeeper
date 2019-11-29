@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-version = '1.0.0.51'
+version = '1.0.0.61'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -28,6 +28,6 @@ dependencies {
 }
 
 compileJava {
-    println "BaseCode version at compile time: " + version
+    println "Core version at compile time: " + version
     dependsOn 'incrementBuildVersion';
 }

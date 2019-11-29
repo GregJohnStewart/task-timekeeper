@@ -1,11 +1,11 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.ByteArrayDataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import com.gjs.taskTimekeeper.baseCode.objects.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.utils.ObjectMapperUtilities;
-import com.gjs.taskTimekeeper.baseCode.utils.Outputter;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
