@@ -41,7 +41,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper'
-version = '1.0.0.4'
+version = '1.0.0.12'
 
 compileJava {
     options.compilerArgs << '-parameters'
