@@ -31,6 +31,7 @@ jobs:
         - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
       script:
         - source install-jdk.sh --url https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.0/graalvm-ce-java11-linux-amd64-19.3.0.tar.gz
+        - java -version
         - ./gradlew WebServer:check
         - ./gradlew codeCoverageReport
 
