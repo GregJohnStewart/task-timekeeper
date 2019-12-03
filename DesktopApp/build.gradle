@@ -9,7 +9,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '3.3.0.43'
+version = '3.3.0.44'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
