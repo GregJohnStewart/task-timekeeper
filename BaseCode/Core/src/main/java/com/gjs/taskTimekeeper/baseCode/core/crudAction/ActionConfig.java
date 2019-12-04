@@ -1,14 +1,12 @@
 package com.gjs.taskTimekeeper.baseCode.core.crudAction;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.kohsuke.args4j.Option;
 
 /** Configuration to describe what action to take and what arguments to pass to do that action. */
-@Setter
-@Getter
 @NoArgsConstructor
+@Data
 public class ActionConfig {
 
     public ActionConfig(KeeperObjectType type, Action action) {
