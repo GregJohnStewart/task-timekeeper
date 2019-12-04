@@ -1,5 +1,5 @@
-# Task Timekeeper Base Code - Core
+# Task Timekeeper Web Server - Web Library
 
 ## This library...
 
-Is the core code for the Task Timekeeper
+Has the pojos used with talking to the webserver.

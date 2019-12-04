@@ -26,6 +26,7 @@ dependencies {
 
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
     implementation 'io.quarkus:quarkus-elytron-security-properties-file'
     implementation 'io.quarkus:quarkus-elytron-security'
@@ -41,7 +42,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.2'
+version = '1.1.0.7'
 
 compileJava {
     options.compilerArgs << '-parameters'
@@ -55,4 +56,3 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-
