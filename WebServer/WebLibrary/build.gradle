@@ -4,10 +4,11 @@ plugins {
     id "io.freefair.lombok" version "4.1.5"
 }
 
-version = '1.0.0.14'
+version = '1.0.0.31'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+// stop lombok from overwriting its own config
 generateLombokConfig.enabled = false
 
 repositories {
