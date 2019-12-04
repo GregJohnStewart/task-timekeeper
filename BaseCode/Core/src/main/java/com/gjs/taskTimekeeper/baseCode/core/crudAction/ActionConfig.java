@@ -1,11 +1,15 @@
 package com.gjs.taskTimekeeper.baseCode.core.crudAction;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.kohsuke.args4j.Option;
 
 /** Configuration to describe what action to take and what arguments to pass to do that action. */
+@Setter
+@Getter
+@NoArgsConstructor
 public class ActionConfig {
-
-    public ActionConfig() {}
 
     public ActionConfig(KeeperObjectType type, Action action) {
         this();
@@ -132,184 +136,4 @@ public class ActionConfig {
             usage =
                     "Specifies attribute value pairs, typically overwriting existing ones. Format: att,val;att2,val2")
     private String attributes = null;
-
-    public ActionConfig setShowHelp(boolean showHelp) {
-        this.showHelp = showHelp;
-        return this;
-    }
-
-    public ActionConfig setQuit(boolean quit) {
-        this.quit = quit;
-        return this;
-    }
-
-    public boolean isSave() {
-        return save;
-    }
-
-    public ActionConfig setSave(boolean save) {
-        this.save = save;
-        return this;
-    }
-
-    public ActionConfig setAction(Action action) {
-        this.action = action;
-        return this;
-    }
-
-    public ActionConfig setObjectOperatingOn(KeeperObjectType objectOperatingOn) {
-        this.objectOperatingOn = objectOperatingOn;
-        return this;
-    }
-
-    public String getSpecialAction() {
-        return specialAction;
-    }
-
-    public ActionConfig setSpecialAction(String specialAction) {
-        this.specialAction = specialAction;
-        return this;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public ActionConfig setIndex(Integer index) {
-        this.index = index;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ActionConfig setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getNewName() {
-        return newName;
-    }
-
-    public ActionConfig setNewName(String newName) {
-        this.newName = newName;
-        return this;
-    }
-
-    public Boolean getShowHelp() {
-        return showHelp;
-    }
-
-    public Boolean getQuit() {
-        return quit;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public KeeperObjectType getObjectOperatingOn() {
-        return objectOperatingOn;
-    }
-
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public ActionConfig setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
-        return this;
-    }
-
-    public String getNewAttributeName() {
-        return newAttributeName;
-    }
-
-    public ActionConfig setNewAttributeName(String newAttributeName) {
-        this.newAttributeName = newAttributeName;
-        return this;
-    }
-
-    public String getAttributeVal() {
-        return attributeVal;
-    }
-
-    public ActionConfig setAttributeVal(String attributeVal) {
-        this.attributeVal = attributeVal;
-        return this;
-    }
-
-    public String getNewAttributeVal() {
-        return newAttributeVal;
-    }
-
-    public ActionConfig setNewAttributeVal(String newAttributeVal) {
-        this.newAttributeVal = newAttributeVal;
-        return this;
-    }
-
-    public String getBefore() {
-        return before;
-    }
-
-    public ActionConfig setBefore(String before) {
-        this.before = before;
-        return this;
-    }
-
-    public String getAfter() {
-        return after;
-    }
-
-    public ActionConfig setAfter(String after) {
-        this.after = after;
-        return this;
-    }
-
-    public String getStart() {
-        return start;
-    }
-
-    public ActionConfig setStart(String start) {
-        this.start = start;
-        return this;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public ActionConfig setEnd(String end) {
-        this.end = end;
-        return this;
-    }
-
-    public String getAt() {
-        return at;
-    }
-
-    public ActionConfig setAt(String at) {
-        this.at = at;
-        return this;
-    }
-
-    public boolean isSelect() {
-        return select;
-    }
-
-    public ActionConfig setSelect(boolean select) {
-        this.select = select;
-        return this;
-    }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public ActionConfig setAttributes(String attributes) {
-        this.attributes = attributes;
-        return this;
-    }
 }

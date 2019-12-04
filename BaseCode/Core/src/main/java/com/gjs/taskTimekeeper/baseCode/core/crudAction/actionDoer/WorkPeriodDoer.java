@@ -7,9 +7,6 @@ import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.core.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Action doer to edit WorkPeriods. */
 public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
@@ -107,7 +106,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
         }
         outputter.normPrintln(OutputLevel.DEFAULT, "Added new work period.");
 
-        if (config.isSelect()) {
+        if (config.getSelect()) {
             this.setSelected(period);
             outputter.normPrintln(OutputLevel.DEFAULT, "Selected the new work period.");
         }
@@ -331,7 +330,7 @@ public class WorkPeriodDoer extends CrudDoer<WorkPeriod> {
                 return;
             }
 
-            if (config.isSelect()) {
+            if (config.getSelect()) {
                 LOGGER.info("Selecting new Work Period.");
                 outputter.normPrintln(OutputLevel.DEFAULT, "Selecting the following period:");
                 this.setSelected(result);

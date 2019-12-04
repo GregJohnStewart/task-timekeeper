@@ -94,7 +94,7 @@ public class CmdLineArgumentRunner extends ModeRunner {
             return;
         }
 
-        if (actionConfig.isSave()) {
+        if (actionConfig.getSave()) {
             LOGGER.debug("Saving the time manager.");
             this.managerIO.saveManager();
             return;
