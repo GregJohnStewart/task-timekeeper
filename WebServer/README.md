@@ -1,7 +1,13 @@
-# Task-Timekeeper Webserver
+# Task Timekeeper Base Code
 
-This is the webserver implementation of Task-timekeeper. Currently nonfunctional, very much in development
+This is the base code library for Task Timekeeper.
 
-## The Stack
+## This library...
 
-The main server uses the [Quarkus](https://quarkus.io/) framework in order to make the running server as light as possible. For how to build and run this server, see [our guide](build-run_notes.md)
+ - Holds the Pojos that organize the actual timekeeping data.
+ - Holds methods for common functionalities in order to provide a common, tested interface to make implementations as easy as possible.
+   - Methods for CRUD operations on that data (See ActionDoer)
+   - Time string parsing
+   - Providing ObjectMapper for de/serialization
+   
+Functionality is largely split up in order to segment out pieces, so people can be selective about what they want to bring in.
