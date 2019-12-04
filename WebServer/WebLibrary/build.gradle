@@ -1,11 +1,15 @@
 plugins {
     id 'java'
     id "java-library"
+    id "io.freefair.lombok" version "4.1.5"
 }
 
-version = '1.0.0.137'
+version = '1.0.0.31'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false
 
 repositories {
     mavenCentral()
@@ -23,15 +27,11 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.+'
 
-    compile 'args4j:args4j:2.33'
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    // http://mockftpserver.sourceforge.net/fakeftpserver-getting-started.html
-    testCompile 'org.mockftpserver:MockFtpServer:2.7.1'
 }
 
 compileJava {
-    println "ManagerIO version at compile time: " + version
+    println "WebLibrary at compile time: " + version
     dependsOn ':BaseCode:Core:test'
     dependsOn 'incrementBuildVersion';
 }
