@@ -42,14 +42,14 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.35'
+version = '1.0.0.37'
 String projectPropertiesFileName = "application.yml";
-String openApiConfigFileName = "openapi.yml"
+String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
 task writeOpenApiFile() {
     doLast {
-        new File(projectResourcesDir + "META-INF/" + openApiConfigFileName).text = """
+        new File(projectResourcesDir + openApiConfigFileName).text = """
 #################################################################################
 #                                                                               #
 # Open API base information.                                                    #
@@ -96,7 +96,7 @@ lib:
 
 task deleteGenertatedResources(type: Delete) {
     delete fileTree(projectResourcesDir) {
-        include "**/META-INF/$openApiConfigFileName"
+        include "**/$openApiConfigFileName"
         include "**/$projectPropertiesFileName"
     }
 }
