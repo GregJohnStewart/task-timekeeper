@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class PercentResults<T> extends Results {
     private ConcurrentMap<T, Double> percentages = new ConcurrentHashMap<>();
+    private ConcurrentMap<T, String> valueStrings = new ConcurrentHashMap<>();
     private ConcurrentMap<T, Number> values = new ConcurrentHashMap<>();
 
     /** Base constructor. No values added. */
@@ -26,6 +27,11 @@ public class PercentResults<T> extends Results {
      * @param values The values to set initially.
      * @throws NullPointerException If the map of values given is null.
      */
+    public PercentResults(Map<T, Number> values, Map<T, String> strings)
+            throws NullPointerException {
+        this.setValues(values, strings);
+    }
+
     public PercentResults(Map<T, Number> values) throws NullPointerException {
         this.setValues(values);
     }
@@ -41,6 +47,22 @@ public class PercentResults<T> extends Results {
         for (Map.Entry<T, Number> entry : this.values.entrySet()) {
             this.percentages.put(entry.getKey(), (entry.getValue().doubleValue() / total) * 100);
         }
+    }
+
+    /**
+     * Sets a value to be weighted against the rest of the values. Also sets an extra display value.
+     *
+     * @param obj The object to set a value for.
+     * @param value The value to set.
+     * @param display The string used to display the value given (separate from the percentage)
+     * @return The previous percentage at the object. Null if no previous percentage held.
+     * @throws NullPointerException if the object or value given was null.
+     */
+    public synchronized Number setValue(T obj, Number value, String display)
+            throws NullPointerException {
+        Number output = this.setValue(obj, value);
+        this.valueStrings.put(obj, display);
+        return output;
     }
 
     /**
@@ -73,6 +95,13 @@ public class PercentResults<T> extends Results {
      * @param values The values to set.
      * @throws NullPointerException If the map of values given is null.
      */
+    public synchronized void setValues(Map<T, Number> values, Map<T, String> valueStrings)
+            throws NullPointerException {
+        this.setValues(values);
+        this.valueStrings = new ConcurrentHashMap<>(valueStrings);
+        this.recalculatePercentages();
+    }
+
     public synchronized void setValues(Map<T, Number> values) throws NullPointerException {
         if (values == null) {
             throw new NullPointerException("Values given cannot be null.");
@@ -87,6 +116,17 @@ public class PercentResults<T> extends Results {
      * @param values The values to add or override with.
      * @throws NullPointerException If the map of values given is null.
      */
+    public synchronized void addOrOverrideValues(Map<T, Number> values, Map<T, String> valueStrings)
+            throws NullPointerException {
+        if (valueStrings == null) {
+            throw new NullPointerException("Value strings given cannot be null.");
+        }
+        this.addOrOverrideValues(values);
+        for (Map.Entry<T, String> entry : valueStrings.entrySet()) {
+            this.valueStrings.put(entry.getKey(), entry.getValue());
+        }
+    }
+
     public synchronized void addOrOverrideValues(Map<T, Number> values)
             throws NullPointerException {
         if (values == null) {
@@ -108,6 +148,7 @@ public class PercentResults<T> extends Results {
         Number output = this.values.remove(obj);
 
         if (output != null) {
+            this.valueStrings.remove(obj);
             this.recalculatePercentages();
         }
 
@@ -121,6 +162,24 @@ public class PercentResults<T> extends Results {
      */
     public synchronized Map<T, Double> getPercentages() {
         return new ConcurrentHashMap<>(this.percentages);
+    }
+
+    /**
+     * Gets the values set.
+     *
+     * @return The values set in this object.
+     */
+    public synchronized Map<T, Number> getValues() {
+        return new ConcurrentHashMap<>(this.values);
+    }
+
+    /**
+     * Gets the values set.
+     *
+     * @return The values set in this object.
+     */
+    public synchronized Map<T, String> getValueStrings() {
+        return new ConcurrentHashMap<>(this.valueStrings);
     }
 
     /**

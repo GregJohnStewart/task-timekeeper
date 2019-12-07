@@ -3,8 +3,10 @@ package com.gjs.taskTimekeeper.baseCode.stats.processor;
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
+import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,16 +15,18 @@ public class TimeSpentOnTaskProcessor extends StatProcessor<PercentResults<Task>
     public PercentResults<Task> process(TimeManager manager) {
         // more efficient to make map and then create results object
         Map<Task, Number> resultMap = new HashMap<>();
+        Map<Task, String> stringMap = new HashMap<>();
 
         for (Task task : manager.getTasks()) {
-            long duration = 0;
+            Duration duration = Duration.ZERO;
             for (WorkPeriod period : manager.getWorkPeriodsWith(task)) {
-                duration += period.getTotalTimeWith(task.getName()).getSeconds();
+                duration = duration.plus(period.getTotalTimeWith(task.getName()));
             }
-            resultMap.put(task, duration);
+            resultMap.put(task, duration.getSeconds());
+            stringMap.put(task, TimeParser.toDurationString(duration));
         }
 
-        return this.setResults(new PercentResults<Task>(resultMap));
+        return this.setResults(new PercentResults<Task>(resultMap, stringMap));
     }
 
     public PercentResults<Task> process(TimeManager manager, WorkPeriod period)

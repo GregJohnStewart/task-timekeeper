@@ -135,7 +135,7 @@ public class MainGui {
 
     private static final int CHART_SIZE = 312;
     private static final int CHART_HEIGHT = CHART_SIZE;
-    private static final int CHART_WIDTH = CHART_SIZE;
+    private static final int CHART_WIDTH = CHART_SIZE * 2;
 
     private static final PieCharter<Task> TIME_SPENT_ON_TASKS_CHARTER =
             new PieCharter<>("Time Spent on Tasks", CHART_HEIGHT, CHART_WIDTH);

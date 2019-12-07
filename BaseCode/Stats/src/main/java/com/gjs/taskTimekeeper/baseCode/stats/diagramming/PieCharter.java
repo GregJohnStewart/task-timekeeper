@@ -8,8 +8,15 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
+/**
+ * Charter to make pie charts
+ *
+ * <p>TODO:: figure out how to best make the label
+ *
+ * @param <T>
+ */
 public class PieCharter<T> extends Charter<PercentResults<T>, PieDataset> {
-    private static final String LABEL_FORMAT = "%s (%.2f%%)";
+    private static final String LABEL_FORMAT = "%s (%s%.2f%%)";
 
     public PieCharter(String title, int height, int width) {
         super(title, height, width);
@@ -33,9 +40,13 @@ public class PieCharter<T> extends Charter<PercentResults<T>, PieDataset> {
     protected PieDataset getDataset(PercentResults<T> results) {
         DefaultPieDataset dataset = new DefaultPieDataset();
 
+        Map<T, Number> values = results.getValues();
+        Map<T, String> strings = results.getValueStrings();
         for (Map.Entry<T, Double> entry : results.getPercentages().entrySet()) {
+            String label =
+                    (strings.containsKey(entry.getKey()) ? strings.get(entry.getKey()) + "/" : "");
             dataset.setValue(
-                    String.format(LABEL_FORMAT, entry.getKey().toString(), entry.getValue()),
+                    String.format(LABEL_FORMAT, entry.getKey().toString(), label, entry.getValue()),
                     entry.getValue());
         }
 
