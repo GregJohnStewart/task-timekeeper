@@ -19,7 +19,9 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.DataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
 import com.gjs.taskTimekeeper.baseCode.stats.diagramming.PieCharter;
+import com.gjs.taskTimekeeper.baseCode.stats.processor.OverallStatProcessor;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.TimeSpentOnTaskProcessor;
+import com.gjs.taskTimekeeper.baseCode.stats.results.OverallResults;
 import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
@@ -37,6 +39,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -59,6 +62,7 @@ import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -73,6 +77,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,10 +138,14 @@ public class MainGui {
 
     private static final TimeSpentOnTaskProcessor TIME_SPENT_ON_TASK_PROCESSOR =
             new TimeSpentOnTaskProcessor();
+    private static final OverallStatProcessor OVERALL_STAT_PROCESSOR = new OverallStatProcessor();
 
     private static final int CHART_SIZE = 312;
     private static final int CHART_HEIGHT = CHART_SIZE;
     private static final int CHART_WIDTH = CHART_SIZE * 2;
+    private static final Dimension OVERALL_STATS_DIMENSION = new Dimension(CHART_WIDTH, 175);
+    private static final Border OVERALL_STATS_BORDER =
+            new LineBorder(Color.BLACK, 1, true); // new BevelBorder(BevelBorder.RAISED);
 
     private static final PieCharter<Task> TIME_SPENT_ON_TASKS_CHARTER =
             new PieCharter<>("Time Spent on Tasks", CHART_HEIGHT, CHART_WIDTH);
@@ -148,6 +158,83 @@ public class MainGui {
         output = output.replace("\t", "    ");
 
         return output;
+    }
+
+    private static JPanel getOverallStatsPanel(OverallResults results) {
+        JPanel overallStatStatPane = new JPanel();
+        overallStatStatPane.setLayout(new BoxLayout(overallStatStatPane, BoxLayout.Y_AXIS));
+        overallStatStatPane.setBorder(OVERALL_STATS_BORDER);
+
+        overallStatStatPane.setSize(OVERALL_STATS_DIMENSION);
+        overallStatStatPane.setPreferredSize(OVERALL_STATS_DIMENSION);
+        overallStatStatPane.setMinimumSize(OVERALL_STATS_DIMENSION);
+        overallStatStatPane.setMaximumSize(OVERALL_STATS_DIMENSION);
+
+        JLabel label = new JLabel("Overall stats:");
+        Font font = label.getFont();
+        font = font.deriveFont(font.getStyle() | Font.BOLD);
+        label.setFont(font);
+        // TODO:: make bold/ underlined
+        overallStatStatPane.add(label);
+
+        font = font.deriveFont(font.getStyle() & ~Font.BOLD);
+
+        // TODO:: more of these, finish these stats
+        label =
+                new JLabel(
+                        "Total time recorded: "
+                                + TimeParser.toDurationString(results.getTotalTime()));
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        if (results.getNumPeriods() > -1) {
+            label = new JLabel("# Work periods: " + results.getNumPeriods());
+            label.setFont(font);
+            overallStatStatPane.add(label);
+        }
+
+        if (results.getNumTasksTotal() > -1) {
+            label = new JLabel("# Tasks Total: " + results.getNumTasksTotal());
+            label.setFont(font);
+            overallStatStatPane.add(label);
+        }
+
+        label = new JLabel("# Tasks Used: " + results.getNumTasksUsed());
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        label = new JLabel("All complete: " + (results.isAllComplete() ? "Yes" : "No"));
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        label = new JLabel("# Spans Used: " + results.getNumSpans());
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        if (results.getNumTasksTotal() > -1) {
+            label = new JLabel("# Spans per Work Period: " + results.getNumSpansPerPeriodAverage());
+            label.setFont(font);
+            overallStatStatPane.add(label);
+        }
+
+        if (results.getNumTasksTotal() > -1) {
+            label =
+                    new JLabel(
+                            "Average length of span: "
+                                    + TimeParser.toDurationString(results.getAverageSpanLength()));
+            label.setFont(font);
+            overallStatStatPane.add(label);
+        }
+
+        label =
+                new JLabel(
+                        "Average length of work period: "
+                                + TimeParser.toDurationString(
+                                        results.getAverageWorkPeriodLength()));
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        return overallStatStatPane;
     }
 
     // </editor-fold>
@@ -1131,13 +1218,16 @@ public class MainGui {
         // </editor-fold>
 
         // <editor-fold desc="Stats Panel">
+        OverallResults overallResults = OVERALL_STAT_PROCESSOR.process(managerIO.getManager());
         // <editor-fold desc="Overall Stats Panel">
         {
+            JPanel overallStatsPanel = new JPanel(new WrapLayout());
+
+            overallStatsPanel.add(getOverallStatsPanel(overallResults));
+
             PercentResults<Task> results =
                     TIME_SPENT_ON_TASK_PROCESSOR.process(this.managerIO.getManager());
-            // TODO:: add row/panel of general stats (how much total time spent, # tasks used, etc
 
-            JPanel overallStatsPanel = new JPanel(new WrapLayout());
             overallStatsPanel.add(
                     new JLabel(new ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
             //            overallStatsPanel.add(new JLabel(new
