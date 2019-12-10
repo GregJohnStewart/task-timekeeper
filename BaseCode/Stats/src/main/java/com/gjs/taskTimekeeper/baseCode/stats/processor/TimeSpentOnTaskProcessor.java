@@ -26,7 +26,7 @@ public class TimeSpentOnTaskProcessor extends StatProcessor<PercentResults<Task>
             stringMap.put(task, TimeParser.toDurationString(duration));
         }
 
-        return this.setResults(new PercentResults<Task>(resultMap, stringMap));
+        return this.setResults(new PercentResults<>(resultMap, stringMap));
     }
 
     public PercentResults<Task> process(TimeManager manager, WorkPeriod period)
@@ -42,6 +42,6 @@ public class TimeSpentOnTaskProcessor extends StatProcessor<PercentResults<Task>
             resultMap.put(task, period.getTotalTimeWith(task.getName()).getSeconds());
         }
 
-        return this.setResults(new PercentResults<Task>(resultMap));
+        return this.setResults(new PercentResults<>(resultMap));
     }
 }

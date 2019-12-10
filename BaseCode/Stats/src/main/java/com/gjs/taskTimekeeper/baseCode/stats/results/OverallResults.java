@@ -40,7 +40,8 @@ public class OverallResults extends Results {
         this(totalTime, -1, numTasksUsed, -1, numSpans, -1, allComplete, averageSpanLength, null);
     }
 
-    public OverallResultsBuilder builderForWorkPeriod() {
+    // TODO:: test
+    public static OverallResultsBuilder builderForWorkPeriod() {
         OverallResultsBuilder builder = builder();
 
         builder.numPeriods(-1);

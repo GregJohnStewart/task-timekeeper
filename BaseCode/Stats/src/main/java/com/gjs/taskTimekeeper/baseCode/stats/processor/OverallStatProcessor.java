@@ -43,14 +43,50 @@ public class OverallStatProcessor extends StatProcessor<OverallResults> {
         builder.totalTime(total);
         builder.numTasksUsed(tasksUsed.size());
         builder.numSpans(spanCount);
-        // TODO:: what when no work periods?
-        builder.numSpansPerPeriodAverage(
-                (double) spanCount / (double) manager.getWorkPeriods().size());
 
-        builder.averageSpanLength(Duration.of(numSecsInAllTasks / spanCount, ChronoUnit.SECONDS));
-        builder.averageWorkPeriodLength(
-                Duration.of(
-                        numSecsInAllTasks / manager.getWorkPeriods().size(), ChronoUnit.SECONDS));
+        if (!manager.getWorkPeriods().isEmpty()) {
+            builder.numSpansPerPeriodAverage(
+                    (double) spanCount / (double) manager.getWorkPeriods().size());
+            builder.averageWorkPeriodLength(
+                    Duration.of(
+                            numSecsInAllTasks / manager.getWorkPeriods().size(),
+                            ChronoUnit.SECONDS));
+        } else {
+            builder.numSpansPerPeriodAverage(0);
+            builder.averageWorkPeriodLength(Duration.ZERO);
+        }
+
+        if (spanCount != 0) {
+            builder.averageSpanLength(
+                    Duration.of(numSecsInAllTasks / spanCount, ChronoUnit.SECONDS));
+        } else {
+            builder.averageSpanLength(Duration.ZERO);
+        }
+
+        return builder.build();
+    }
+
+    // TODO:: test
+    public OverallResults process(TimeManager manager, WorkPeriod period)
+            throws StatProcessingException {
+        if (!manager.getWorkPeriods().contains(period)) {
+            throw new StatProcessingException("Work period not in manager given.");
+        }
+        OverallResultsBuilder builder = OverallResults.builderForWorkPeriod();
+
+        builder.numTasksUsed(period.getTaskNames().size());
+        builder.allComplete(!period.isUnCompleted());
+        Duration totalTime = period.getTotalTime();
+        builder.totalTime(totalTime);
+        builder.numSpans(period.getNumTimespans());
+
+        if (period.getNumTimespans() != 0) {
+            builder.averageSpanLength(
+                    Duration.of(
+                            totalTime.getSeconds() / period.getNumTimespans(), ChronoUnit.SECONDS));
+        } else {
+            builder.averageSpanLength(Duration.ZERO);
+        }
 
         return builder.build();
     }

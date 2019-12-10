@@ -11,8 +11,6 @@ import org.jfree.data.general.PieDataset;
 /**
  * Charter to make pie charts
  *
- * <p>TODO:: figure out how to best make the label
- *
  * @param <T>
  */
 public class PieCharter<T> extends Charter<PercentResults<T>, PieDataset> {
@@ -40,7 +38,6 @@ public class PieCharter<T> extends Charter<PercentResults<T>, PieDataset> {
     protected PieDataset getDataset(PercentResults<T> results) {
         DefaultPieDataset dataset = new DefaultPieDataset();
 
-        Map<T, Number> values = results.getValues();
         Map<T, String> strings = results.getValueStrings();
         for (Map.Entry<T, Double> entry : results.getPercentages().entrySet()) {
             String label =

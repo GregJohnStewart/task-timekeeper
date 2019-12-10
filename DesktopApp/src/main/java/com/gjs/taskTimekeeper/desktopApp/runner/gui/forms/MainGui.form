@@ -317,6 +317,14 @@
                     <border type="none"/>
                     <children/>
                   </scrollpane>
+                  <scrollpane id="d8a0e" binding="selectedPeriodStatsPane">
+                    <constraints>
+                      <tabbedpane title="Selected Period"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children/>
+                  </scrollpane>
                 </children>
               </tabbedpane>
             </children>

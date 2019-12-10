@@ -143,7 +143,7 @@ public class MainGui {
     private static final int CHART_SIZE = 312;
     private static final int CHART_HEIGHT = CHART_SIZE;
     private static final int CHART_WIDTH = CHART_SIZE * 2;
-    private static final Dimension OVERALL_STATS_DIMENSION = new Dimension(CHART_WIDTH, 175);
+    private static final Dimension OVERALL_STATS_DIMENSION = new Dimension(CHART_WIDTH, 155);
     private static final Border OVERALL_STATS_BORDER =
             new LineBorder(Color.BLACK, 1, true); // new BevelBorder(BevelBorder.RAISED);
 
@@ -174,12 +174,10 @@ public class MainGui {
         Font font = label.getFont();
         font = font.deriveFont(font.getStyle() | Font.BOLD);
         label.setFont(font);
-        // TODO:: make bold/ underlined
         overallStatStatPane.add(label);
 
         font = font.deriveFont(font.getStyle() & ~Font.BOLD);
 
-        // TODO:: more of these, finish these stats
         label =
                 new JLabel(
                         "Total time recorded: "
@@ -217,22 +215,22 @@ public class MainGui {
             overallStatStatPane.add(label);
         }
 
-        if (results.getNumTasksTotal() > -1) {
+        label =
+                new JLabel(
+                        "Average length of span: "
+                                + TimeParser.toDurationString(results.getAverageSpanLength()));
+        label.setFont(font);
+        overallStatStatPane.add(label);
+
+        if (results.getAverageWorkPeriodLength() != null) {
             label =
                     new JLabel(
-                            "Average length of span: "
-                                    + TimeParser.toDurationString(results.getAverageSpanLength()));
+                            "Average length of work period: "
+                                    + TimeParser.toDurationString(
+                                            results.getAverageWorkPeriodLength()));
             label.setFont(font);
             overallStatStatPane.add(label);
         }
-
-        label =
-                new JLabel(
-                        "Average length of work period: "
-                                + TimeParser.toDurationString(
-                                        results.getAverageWorkPeriodLength()));
-        label.setFont(font);
-        overallStatStatPane.add(label);
 
         return overallStatStatPane;
     }
@@ -275,6 +273,7 @@ public class MainGui {
     private JPanel statsPanel;
     private JTabbedPane statsTabPane;
     private JScrollPane overallStatsPane;
+    private JScrollPane selectedPeriodStatsPane;
 
     private JMenuBar mainMenuBar;
     private JCheckBoxMenuItem autoSaveMenuItem;
@@ -1238,6 +1237,34 @@ public class MainGui {
             this.overallStatsPane.setViewportView(overallStatsPanel);
         }
         // </editor-fold>
+        // <editor-fold desc="Selected Period Stats Panel">
+        if (this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod() != null) {
+            this.statsTabPane.setEnabledAt(1, true);
+            OverallResults selectedResults =
+                    OVERALL_STAT_PROCESSOR.process(
+                            this.managerIO.getManager(),
+                            this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod());
+            JPanel selectedPeriodStatsPanel = new JPanel(new WrapLayout());
+
+            selectedPeriodStatsPanel.add(getOverallStatsPanel(selectedResults));
+
+            PercentResults<Task> results =
+                    TIME_SPENT_ON_TASK_PROCESSOR.process(
+                            this.managerIO.getManager(),
+                            this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod());
+
+            selectedPeriodStatsPanel.add(
+                    new JLabel(new ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+            //            overallStatsPanel.add(new JLabel(new
+            // ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+            //            overallStatsPanel.add(new JLabel(new
+            // ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
+
+            this.selectedPeriodStatsPane.setViewportView(selectedPeriodStatsPanel);
+        } else {
+            this.statsTabPane.setEnabledAt(1, false);
+        }
+        // </editor-fold>
 
         // </editor-fold>
         LOGGER.info("Finished updating UI.");
@@ -1800,6 +1827,8 @@ public class MainGui {
         overallStatsPane.setHorizontalScrollBarPolicy(31);
         overallStatsPane.setVerticalScrollBarPolicy(22);
         statsTabPane.addTab("Overall", overallStatsPane);
+        selectedPeriodStatsPane = new JScrollPane();
+        statsTabPane.addTab("Selected Period", selectedPeriodStatsPane);
     }
 
     /** @noinspection ALL */
