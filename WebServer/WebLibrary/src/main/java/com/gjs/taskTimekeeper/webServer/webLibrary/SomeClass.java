@@ -1,7 +1,9 @@
 package com.gjs.taskTimekeeper.webServer.webLibrary;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
-public class SomeClass {
-}
+// @AllArgsConstructor
+public class SomeClass {}

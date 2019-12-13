@@ -28,8 +28,13 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
+    // https://quarkus.io/guides/security-properties
     implementation 'io.quarkus:quarkus-elytron-security-properties-file'
     implementation 'io.quarkus:quarkus-elytron-security'
+    // https://quarkus.io/guides/security-jwt
+    // https://vertx.io/docs/vertx-auth-jwt/java/
+    implementation 'io.quarkus:quarkus-smallrye-jwt'
+    // https://quarkus.io/guides/mongodb
     implementation 'io.quarkus:quarkus-mongodb-client'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy'
@@ -42,7 +47,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.39'
+version = '1.0.0.41'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
