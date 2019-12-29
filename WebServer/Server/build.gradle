@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'java'
+    id "io.freefair.lombok" version "4.1.5"
 }
 
 apply plugin: 'io.quarkus'
@@ -24,19 +25,19 @@ dependencies {
     compile project(":BaseCode:Core")
     compile project(":WebServer:WebLibrary")
 
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
     // https://quarkus.io/guides/security-properties
-    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
-    implementation 'io.quarkus:quarkus-elytron-security'
-    // https://quarkus.io/guides/security-jwt
+//    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
+//    implementation 'io.quarkus:quarkus-elytron-security'
+    // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
-    implementation 'io.quarkus:quarkus-smallrye-jwt'
+//    implementation 'io.quarkus:quarkus-smallrye-jwt'
     // https://quarkus.io/guides/mongodb
     implementation 'io.quarkus:quarkus-mongodb-client'
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-resteasy'
 
     testImplementation 'io.quarkus:quarkus-junit5'
@@ -47,7 +48,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.41'
+version = '1.0.0.83'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
@@ -125,3 +126,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false
