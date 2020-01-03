@@ -44,8 +44,13 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
     }
 
     private void createFile() throws IOException {
-        if (!this.testFile.createNewFile()) {
-            throw new RuntimeException("Test file could NOT be created.");
+        try {
+            if (!this.testFile.createNewFile()) {
+                throw new RuntimeException("Test file could NOT be created. (" + this.testFile.getPath() + ")");
+            }
+        }catch (IOException e){
+            LOGGER.error("Test file could not be created. File: '{}' ", this.testFile.getPath(), e);
+            throw e;
         }
     }
 

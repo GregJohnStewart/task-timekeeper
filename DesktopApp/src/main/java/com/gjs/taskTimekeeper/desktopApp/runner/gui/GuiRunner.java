@@ -4,11 +4,12 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.ModeRunner;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.forms.MainGui;
-import java.awt.Image;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.InputStream;
 
 public class GuiRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
@@ -70,11 +71,15 @@ public class GuiRunner extends ModeRunner {
     }
 
     private void runMainGui() {
+        LOGGER.info("Running main GUI component.");
         this.mainGui = new MainGui(this.config, ICON, APP_TITLE);
+        LOGGER.debug("Main GUI component ran.");
     }
 
     private void runSystemTrayIcon() {
+        LOGGER.info("Running system tray component.");
         this.systemTray = new MainSystemTray(ICON, APP_TITLE);
+        LOGGER.debug("System tray component ran.");
     }
 
     public boolean stillRunning() {
@@ -82,6 +87,8 @@ public class GuiRunner extends ModeRunner {
     }
 
     public void closeGuiElements() {
+        LOGGER.info("Closing all ui elements.");
         this.mainGui.close();
+        LOGGER.debug("Closed all ui elements.");
     }
 }
