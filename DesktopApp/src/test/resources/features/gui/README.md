@@ -1,0 +1,1 @@
+# Feature folder for testing the DesktopApp Gui
