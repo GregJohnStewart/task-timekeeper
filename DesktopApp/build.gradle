@@ -209,13 +209,22 @@ configurations {
     }
 }
 
-task cucumber() {
+task cucumber(group: "verification") {
     dependsOn assemble, compileTestJava
     doLast {
         javaexec {
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--strict', '--plugin', 'pretty', '-p', 'html:build/cucumberReport', '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features']
+            String baseReportDir = "build/cucumberReport/"
+            // https://cucumber.io/docs/cucumber/reporting/
+            args = [
+                    '--strict',
+                    '-p', 'pretty',
+                    '-p', 'html:'+baseReportDir+'cucumber-html',
+                    '-p', 'junit:'+baseReportDir+'cucumber-junit.xml',
+                    '-p', 'json:'+baseReportDir+'cucumber-json.json',
+                    '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features'
+            ]
         }
     }
 }
