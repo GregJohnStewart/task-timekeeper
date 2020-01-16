@@ -836,14 +836,7 @@ public class MainGui {
         LOGGER.debug("Reloading the data (from constructor)");
         this.reloadData();
         LOGGER.debug("Done reloading the data (from constructor)");
-
-        LOGGER.debug("Packing");
-        this.mainFrame.pack();
-        LOGGER.debug("Packed.");
-        LOGGER.debug("Setting Visible to true");
-        this.mainFrame.setVisible(true);
-        LOGGER.debug("Visibility set to true.");
-
+        
         // wire buttons
         LOGGER.debug("Wiring Buttons.");
         this.addTaskButton.setAction(this.addTaskAction);
@@ -854,6 +847,14 @@ public class MainGui {
         LOGGER.debug("Loading UI Options (From Constructor).");
         this.loadUiOptions();
         LOGGER.debug("Done Loading UI Options (From Constructor).");
+
+        LOGGER.debug("Packing");
+        this.mainFrame.pack();
+        LOGGER.debug("Packed.");
+        LOGGER.debug("Setting Visible to true");
+        this.mainFrame.setVisible(true);
+        LOGGER.debug("Visibility set to true.");
+
 
         LOGGER.info("Opened window");
         LOGGER.debug("Constructor finished, Main GUI set up.");
@@ -910,7 +911,7 @@ public class MainGui {
     }
 
     private void loadUiOptions() {
-        LOGGER.info("Reading in saved options.");
+        LOGGER.info("Reading in saved options from file: \"{}\".", this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE));
         try (InputStream is =
                 new FileInputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
@@ -928,13 +929,14 @@ public class MainGui {
         }
 
         if (this.options == null) {
+            LOGGER.info("No options could be read in. Initializing new ones.");
             this.options = new GuiOptions();
         }
 
         this.managerIO.setAutoSave(this.options.isAutoSave());
-        autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
-        saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
-        selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
+        this.autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
+        this.saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
+        this.selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
     }
 
     private void updateUiOptions() {

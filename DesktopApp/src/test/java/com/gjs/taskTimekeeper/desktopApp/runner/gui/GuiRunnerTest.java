@@ -3,9 +3,10 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliManagerRunnerTest;
-import java.io.File;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
+
+import java.io.File;
 
 /** TODO:: figure out how to properly test Swing apps */
 public class GuiRunnerTest {
@@ -43,4 +44,6 @@ public class GuiRunnerTest {
     public void runGuiEmpty() throws CmdLineException {
         new GuiRunner(getTestConfig(emptyTestFile), true).run();
     }
+
+
 }
