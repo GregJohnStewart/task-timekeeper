@@ -51,7 +51,7 @@ public class GuiRunner extends ModeRunner {
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
         LOGGER.info("Running the GUI mode.");
         runMainGui();
         runSystemTrayIcon();
@@ -72,7 +72,7 @@ public class GuiRunner extends ModeRunner {
         LOGGER.info("All UI components closed. Exiting.");
     }
 
-    private synchronized void runMainGui() {
+    private void runMainGui() {
         LOGGER.info("Running main GUI component.");
 
         try {
@@ -93,7 +93,7 @@ public class GuiRunner extends ModeRunner {
         LOGGER.debug("System tray component ran.");
     }
 
-    public synchronized boolean stillRunning() {
+    public boolean stillRunning() {
         return this.mainGui.stillOpen() || this.systemTray.stillRunning();
     }
 

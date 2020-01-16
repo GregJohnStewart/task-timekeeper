@@ -4,7 +4,6 @@ import com.gjs.taskTimekeeper.webServer.server.pojo.User;
 import io.quarkus.test.junit.QuarkusTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -28,8 +27,9 @@ public class UserServiceTest {
 		this.userService.removeAll();
 	}
 
-	@Test
-	public void test() {
+
+//	@Test
+	public void testUserService() {
 		User testUser = new User();
 		testUser.setId(id);
 		testUser.setUsername("testUser");
