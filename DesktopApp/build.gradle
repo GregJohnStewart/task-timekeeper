@@ -203,7 +203,6 @@ setupBuilder {
     }
 }
 
-
 configurations {
     cucumberRuntime {
         extendsFrom testImplementation
@@ -216,7 +215,7 @@ task cucumber() {
         javaexec {
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources/features']
+            args = ['--strict', '--plugin', 'pretty', '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features']
         }
     }
 }
