@@ -215,7 +215,7 @@ task cucumber() {
         javaexec {
             main = "io.cucumber.core.cli.Main"
             classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--strict', '--plugin', 'pretty', '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features']
+            args = ['--strict', '--plugin', 'pretty', '-p', 'html:build/cucumberReport', '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features']
         }
     }
 }
