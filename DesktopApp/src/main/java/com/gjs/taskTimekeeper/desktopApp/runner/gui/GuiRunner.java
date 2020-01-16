@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 
 public class GuiRunner extends ModeRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiRunner.class);
@@ -49,7 +51,7 @@ public class GuiRunner extends ModeRunner {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         LOGGER.info("Running the GUI mode.");
         runMainGui();
         runSystemTrayIcon();
@@ -70,9 +72,18 @@ public class GuiRunner extends ModeRunner {
         LOGGER.info("All UI components closed. Exiting.");
     }
 
-    private void runMainGui() {
+    private synchronized void runMainGui() {
         LOGGER.info("Running main GUI component.");
-        this.mainGui = new MainGui(this.config, ICON, APP_TITLE);
+
+        try {
+            SwingUtilities.invokeAndWait(() -> mainGui = new MainGui(config, ICON, APP_TITLE));
+        } catch (InterruptedException e) {
+            LOGGER.error("Wait for invocation to run gui interrupted. ", e);
+        } catch (InvocationTargetException e) {
+            LOGGER.error("", e);
+        }
+        //TODO:: check if mainGui is null
+
         LOGGER.debug("Main GUI component ran.");
     }
 
@@ -82,7 +93,7 @@ public class GuiRunner extends ModeRunner {
         LOGGER.debug("System tray component ran.");
     }
 
-    public boolean stillRunning() {
+    public synchronized boolean stillRunning() {
         return this.mainGui.stillOpen() || this.systemTray.stillRunning();
     }
 
