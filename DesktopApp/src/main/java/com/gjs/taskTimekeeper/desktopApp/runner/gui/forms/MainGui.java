@@ -1,10 +1,5 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.forms;
 
-import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.ADD;
-import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.EDIT;
-import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.REMOVE;
-import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.VIEW;
-
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.KeeperObjectType;
@@ -37,11 +32,13 @@ import com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener.OpenUrlOnClick
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.Insets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -59,28 +56,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.ADD;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.EDIT;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.REMOVE;
+import static com.gjs.taskTimekeeper.baseCode.core.crudAction.Action.VIEW;
 
 /**
  * https://www.jetbrains.com/help/idea/designing-gui-major-steps.html
@@ -773,6 +753,7 @@ public class MainGui {
 
     public MainGui(DesktopAppConfiguration config, Image icon, String appTitle)
             throws DataSourceParsingException {
+        LOGGER.debug("Starting construction of MainGui.");
         this.config = config;
         this.managerIO =
                 new ManagerIO(
@@ -787,13 +768,16 @@ public class MainGui {
         this.origTitle = appTitle;
 
         // setup main frame
+        LOGGER.debug("Setting up mainFrame.");
         this.mainFrame = new JFrame();
         this.mainFrame.setIconImage(icon);
         this.mainFrame.setContentPane(this.mainPanel);
         this.mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.mainFrame.addWindowListener(this.windowListener);
+        LOGGER.debug("mainFrame set up");
 
         // setup menu bar
+        LOGGER.debug("Setting up the Menu Bar.");
         this.mainMenuBar = new JMenuBar();
         // File
         JMenu menu = new JMenu("File");
@@ -847,18 +831,33 @@ public class MainGui {
         this.mainMenuBar.add(menu);
 
         this.mainFrame.setJMenuBar(this.mainMenuBar);
+        LOGGER.debug("Menu bar set up.");
+
+        LOGGER.debug("Reloading the data (from constructor)");
         this.reloadData();
-
-        this.mainFrame.pack();
-        this.mainFrame.setVisible(true);
-
+        LOGGER.debug("Done reloading the data (from constructor)");
+        
         // wire buttons
+        LOGGER.debug("Wiring Buttons.");
         this.addTaskButton.setAction(this.addTaskAction);
         this.addPeriodButton.setAction(this.addPeriodAction);
         this.selectedPeriodEditAttributesButton.setAction(this.editSelectedPeriodAttributesAction);
+        LOGGER.debug("Done Wiring Buttons.");
 
+        LOGGER.debug("Loading UI Options (From Constructor).");
         this.loadUiOptions();
+        LOGGER.debug("Done Loading UI Options (From Constructor).");
+
+        LOGGER.debug("Packing");
+        this.mainFrame.pack();
+        LOGGER.debug("Packed.");
+        LOGGER.debug("Setting Visible to true");
+        this.mainFrame.setVisible(true);
+        LOGGER.debug("Visibility set to true.");
+
+
         LOGGER.info("Opened window");
+        LOGGER.debug("Constructor finished, Main GUI set up.");
     }
 
     public boolean stillOpen() {
@@ -912,7 +911,7 @@ public class MainGui {
     }
 
     private void loadUiOptions() {
-        LOGGER.info("Reading in saved options.");
+        LOGGER.info("Reading in saved options from file: \"{}\".", this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE));
         try (InputStream is =
                 new FileInputStream(this.config.getProperty(ConfigKeys.UI_OPTIONS_FILE))) {
             this.options = ObjectMapperUtilities.getDefaultMapper().readValue(is, GuiOptions.class);
@@ -930,13 +929,14 @@ public class MainGui {
         }
 
         if (this.options == null) {
+            LOGGER.info("No options could be read in. Initializing new ones.");
             this.options = new GuiOptions();
         }
 
         this.managerIO.setAutoSave(this.options.isAutoSave());
-        autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
-        saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
-        selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
+        this.autoSaveMenuItem.setSelected(this.managerIO.isAutoSave());
+        this.saveOnExitMenuItem.setSelected(this.options.isSaveOnExit());
+        this.selectNewPeriodMenuItem.setSelected(this.options.isSelectNewPeriods());
     }
 
     private void updateUiOptions() {

@@ -59,7 +59,7 @@ public class FileDataSource extends DataSource {
                 this.file.createNewFile();
             } catch (IOException e) {
                 throw new DataSourceWriteException(
-                        "Could not create new empty file, file does not exist.", e);
+                        "File does not exist, and could not create new empty file. Desired location: '" + this.file.getPath() + "'", e);
             }
         } else if (!this.file.exists()) {
             throw new DataSourceNotFoundException("File does not exist.");

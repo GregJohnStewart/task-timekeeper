@@ -20,7 +20,8 @@ public class Main {
         LOGGER.info(
                 "App version: {} Lib version: {}",
                 properties.getProperty(ConfigKeys.APP_VERSION),
-                properties.getProperty(ConfigKeys.LIB_VERSION));
+                properties.getProperty(ConfigKeys.LIB_VERSION)
+        );
 
         RunMode mode = null;
         try {
@@ -38,13 +39,13 @@ public class Main {
             System.out.println(
                     "TaskTimekeeper v"
                             + properties.getProperty(ConfigKeys.APP_VERSION)
-                            + " Using lib v"
+                            + " Using lib versions: "
                             + properties.getProperty(ConfigKeys.LIB_VERSION));
             System.out.println("\tGithub: " + properties.getProperty(ConfigKeys.GITHUB_REPO_URL));
             System.out.println();
         }
         if (mode == null) {
-            System.err.println("Bad run mode given (" + mode + "). Exiting.");
+            System.err.println("No run mode given. Exiting.");
             return;
         }
 
@@ -59,7 +60,7 @@ public class Main {
                 new GuiRunner(properties).run();
                 break;
             default:
-                LOGGER.error("Invalid run mode given.");
+                LOGGER.error("Invalid run mode given  (" + mode + ").");
                 throw new IllegalArgumentException("Invalid run mode given.");
         }
     }

@@ -33,3 +33,9 @@ It should be noted that in single mode, one can only operate on the latest work 
 ## Distributing/ Making Distributions
 
 To learn how to build this for yourself, look [here](BuildingDistrobutions.md)
+
+## Running from Gradle
+
+To run this with Gradle, use as with the following example:
+
+`-PappArgs=[\"--mode\",\"GUI_SWING\"]`
