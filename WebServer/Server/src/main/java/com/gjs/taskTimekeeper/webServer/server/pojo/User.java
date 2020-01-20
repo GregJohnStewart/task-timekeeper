@@ -15,5 +15,6 @@ public class User implements MongoObject {
 	private ObjectId id;
 	private String username;
 	private String hashedPass;
+	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
 }

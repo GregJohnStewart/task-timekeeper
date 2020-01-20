@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 public class Group implements MongoObject {
     private ObjectId id;
     private String name;
+    private String email;
     private ZonedDateTime joinDateTime;
     private ZonedDateTime lastLogin;
 }
