@@ -1,11 +1,11 @@
 package com.gjs.taskTimekeeper.desktopApp.cucumber.gui;
 
 import com.gjs.taskTimekeeper.desktopApp.cucumber.gui.context.GuiContext;
+import io.cucumber.core.logging.Logger;
+import io.cucumber.core.logging.LoggerFactory;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -18,7 +18,7 @@ public class GeneralSteps extends StepImplementation {
 
     @Given("^I use the (.*?) data set.$") //works
     public void i_use_the_s_data_set(String dataset) {
-        LOGGER.info("Using the {} dataset.", dataset);
+        LOGGER.info(() -> "Using the "+dataset+" dataset.");
         this.guiContext.setDataset(dataset);
         //TODO
     }

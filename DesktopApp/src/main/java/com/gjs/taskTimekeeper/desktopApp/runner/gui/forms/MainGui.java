@@ -134,6 +134,7 @@ public class MainGui {
     // <editor-fold desc="Static methods">
     private static String getFromPrintStreamForMessageOutput(ByteArrayOutputStream stream) {
         String output = stream.toString();
+        LOGGER.debug("Length of string to output: {}", output.length());
 
         output = output.replace("\t", "    ");
 
@@ -906,6 +907,7 @@ public class MainGui {
     }
 
     private void handleResult(boolean result) {
+        LOGGER.trace("Handling the result ({})", result);
         sendErrorIfNeeded(!result);
         updateUiData();
     }
