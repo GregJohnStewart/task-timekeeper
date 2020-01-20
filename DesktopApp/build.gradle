@@ -9,7 +9,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '3.3.4.0'
+version = '3.3.5.2'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -44,6 +44,9 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     //for testing swing apps
     testCompile 'org.assertj:assertj-swing-junit:3.9.2'
+    //https://cucumber.io/docs/tools/java/
+    testImplementation 'io.cucumber:cucumber-java:5.0.0-RC4'
+    testImplementation 'io.cucumber:cucumber-picocontainer:5.0.0-RC4'
 }
 
 run {
@@ -158,7 +161,7 @@ jar {
 setupBuilder {
     vendor = 'Greg Stewart'
     appIdentifier = applicationName  // "TaskTimekeeper"
-    this.version = version // '0.1'
+    this.version = version
 
     application = "Task Timekeeper"
     description = progDesc
@@ -198,5 +201,32 @@ setupBuilder {
 
         // The working directory of the service, relative to installation root
         workDir = "."
+    }
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+task cucumber(group: "verification") {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            String baseReportDir = "build/reports/cucumber/"
+            // https://cucumber.io/docs/cucumber/reporting/
+            args = [
+//                    '-javaagent:build/tmp/jacocoagent.jar',
+                    '--strict',
+                    '-p', 'pretty',
+                    '-p', 'html:'+baseReportDir+'cucumber-html',
+                    '-p', 'junit:'+baseReportDir+'cucumber-junit.xml',
+                    '-p', 'json:'+baseReportDir+'cucumber-json.json',
+                    '--glue', 'com.gjs.taskTimekeeper.desktopApp.cucumber', 'src/test/resources/features'
+            ]
+        }
     }
 }

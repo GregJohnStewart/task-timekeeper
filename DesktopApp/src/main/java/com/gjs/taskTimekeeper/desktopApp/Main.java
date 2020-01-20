@@ -64,4 +64,9 @@ public class Main {
                 throw new IllegalArgumentException("Invalid run mode given.");
         }
     }
+
+    @Deprecated
+    public static void forCucumberTestPleaseDontCall(){
+        LOGGER.info("Don't mind me please. Just for testing that cucumber coverage hits this line.");
+    }
 }
