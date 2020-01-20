@@ -6,7 +6,6 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +33,6 @@ public class UserServiceTest {
 		testUser.setId(id);
 		testUser.setUsername("testUser");
 		testUser.setHashedPass("hashed password");
-		testUser.setRoles(new ArrayList<>());
 
 		userService.add(testUser);
 
