@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,9 @@ public class User implements MongoObject {
 	private ObjectId id;
 	private String username;
 	private String hashedPass;
+	private String email;
+	private ZonedDateTime joinDateTime;
+	private ZonedDateTime lastLogin;
 	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
 }
