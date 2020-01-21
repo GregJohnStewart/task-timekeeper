@@ -32,7 +32,7 @@ public class UserServiceTest extends MongoTest {
 	@Test
 	public void testUserService() {
 		User testUser = new User();
-		testUser.setId(id);
+		testUser.set_id(id);
 		testUser.setUsername("testUser");
 		testUser.setHashedPass("hashed password");
 

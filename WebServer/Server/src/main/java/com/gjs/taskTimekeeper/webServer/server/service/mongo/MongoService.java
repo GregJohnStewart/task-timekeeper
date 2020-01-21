@@ -1,21 +1,16 @@
 package com.gjs.taskTimekeeper.webServer.server.service.mongo;
 
 import com.gjs.taskTimekeeper.webServer.server.pojo.MongoObject;
-import com.gjs.taskTimekeeper.webServer.server.pojo.User;
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import org.bson.BsonDocument;
-import org.bson.BsonString;
 import org.bson.types.ObjectId;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.all;
 import static com.mongodb.client.model.Filters.eq;
 
 public abstract class MongoService<T extends MongoObject> {
@@ -53,7 +48,7 @@ public abstract class MongoService<T extends MongoObject> {
 
 	public T get(ObjectId id){
 		MongoCursor<T> cursor = getCollection().find(
-			eq("id", id)
+			eq("_id", id)
 		).iterator();
 
 
@@ -73,7 +68,7 @@ public abstract class MongoService<T extends MongoObject> {
 	}
 
 	public void remove(String id){
-		getCollection().deleteOne(eq("id", new ObjectId(id)));
+		getCollection().deleteOne(eq("_id", new ObjectId(id)));
 	}
 
 	public void removeAll(){
@@ -87,7 +82,7 @@ public abstract class MongoService<T extends MongoObject> {
 	}
 
 	public void remove(T object){
-		this.remove(object.getId());
+		this.remove(object.get_id());
 	}
 
 	private MongoCollection<T> getCollection(){

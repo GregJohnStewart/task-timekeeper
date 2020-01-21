@@ -52,7 +52,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.115'
+version = '1.0.0.124'
 String projectPropertiesFileName = "application.yaml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";

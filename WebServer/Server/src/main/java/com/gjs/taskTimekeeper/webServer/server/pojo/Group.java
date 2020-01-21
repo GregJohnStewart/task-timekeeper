@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group implements MongoObject {
-    private ObjectId id;
+    private ObjectId _id;
     private String name;
     private ZonedDateTime creationTime;
     private ObjectId pointOfContact;

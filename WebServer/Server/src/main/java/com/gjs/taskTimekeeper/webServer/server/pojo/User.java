@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements MongoObject {
-	private ObjectId id;
+	private ObjectId _id;
 	private String username;
 	private String hashedPass;
 	private String email;
