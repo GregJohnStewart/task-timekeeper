@@ -3,7 +3,7 @@ plugins {
     id 'application'
 
     // https://github.com/i-net-software/SetupBuilder
-    id "de.inetsoftware.setupbuilder" version "4.8.6"
+    id "de.inetsoftware.setupbuilder" version "4.8.7"
 }
 
 sourceCompatibility = 1.8
