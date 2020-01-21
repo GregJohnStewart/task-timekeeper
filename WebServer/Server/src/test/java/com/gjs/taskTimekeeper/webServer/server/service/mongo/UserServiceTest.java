@@ -5,6 +5,7 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.MongoTest;
 import io.quarkus.test.junit.QuarkusTest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -28,7 +29,7 @@ public class UserServiceTest extends MongoTest {
 	}
 
 
-//	@Test
+	@Test
 	public void testUserService() {
 		User testUser = new User();
 		testUser.setId(id);

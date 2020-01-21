@@ -13,7 +13,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
 
-import java.time.ZonedDateTime;
+import java.util.ArrayList;
 
 public class UserCodec implements CollectibleCodec<User> {
 	private final Codec<Document> documentCodec;
@@ -51,10 +51,10 @@ public class UserCodec implements CollectibleCodec<User> {
 			document.getString("username"),
 			document.getString("hashedPass"),
 			document.getString("email"),
-			ZonedDateTime.now(),
-			ZonedDateTime.now(),
 			null,
-			null
+			null,
+			null,
+			new ArrayList<>()
 		);
 		return fruit;
 	}
@@ -66,7 +66,7 @@ public class UserCodec implements CollectibleCodec<User> {
 		doc.put("id", value.getId());
 		doc.put("username", value.getUsername());
 		doc.put("hashedPass", value.getHashedPass());
-		doc.put("email", value.getHashedPass());
+		doc.put("email", value.getEmail());
 		documentCodec.encode(writer, doc, encoderContext);
 	}
 
