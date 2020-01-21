@@ -42,13 +42,14 @@ dependencies {
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest-assured:rest-assured'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.85'
+version = '1.0.0.103'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";

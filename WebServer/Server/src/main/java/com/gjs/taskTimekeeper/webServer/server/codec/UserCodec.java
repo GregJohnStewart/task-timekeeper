@@ -4,7 +4,6 @@ import com.gjs.taskTimekeeper.webServer.server.pojo.User;
 import com.mongodb.MongoClient;
 import org.bson.BsonObjectId;
 import org.bson.BsonReader;
-import org.bson.BsonString;
 import org.bson.BsonValue;
 import org.bson.BsonWriter;
 import org.bson.Document;
@@ -13,6 +12,8 @@ import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
+
+import java.time.ZonedDateTime;
 
 public class UserCodec implements CollectibleCodec<User> {
 	private final Codec<Document> documentCodec;
@@ -49,7 +50,11 @@ public class UserCodec implements CollectibleCodec<User> {
 			document.getObjectId("id"),
 			document.getString("username"),
 			document.getString("hashedPass"),
-			document.getList("roles", String.class)
+			document.getString("email"),
+			ZonedDateTime.now(),
+			ZonedDateTime.now(),
+			null,
+			null
 		);
 		return fruit;
 	}
@@ -61,7 +66,7 @@ public class UserCodec implements CollectibleCodec<User> {
 		doc.put("id", value.getId());
 		doc.put("username", value.getUsername());
 		doc.put("hashedPass", value.getHashedPass());
-		doc.put("roles", value.getRoles());
+		doc.put("email", value.getHashedPass());
 		documentCodec.encode(writer, doc, encoderContext);
 	}
 
