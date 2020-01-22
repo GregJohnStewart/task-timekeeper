@@ -19,8 +19,6 @@ public class TestMongo {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestMongo.class);
     private static MongodExecutable MONGO;
 
-
-
     public static void startMongoTestServer() throws IOException {
         Version.Main version = Version.Main.V4_0;
         int port = 27018;

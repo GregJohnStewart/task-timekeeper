@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +10,6 @@ import org.bson.types.ObjectId;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class MongoObject {
-	private ObjectId _id;
+	@JsonIgnore
+	protected ObjectId _id;
 }
