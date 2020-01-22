@@ -1,7 +1,13 @@
 package com.gjs.taskTimekeeper.webServer.server.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
-public interface MongoObject {
-	public ObjectId get_id();
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class MongoObject {
+	private ObjectId _id;
 }
