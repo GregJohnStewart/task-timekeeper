@@ -21,6 +21,7 @@ public class User extends MongoObject {
 	private String username;
 	private String hashedPass;
 	private String email;
+	private UserLevel level;
 	private ZonedDateTime joinDateTime;
 	private ZonedDateTime lastLogin;
 	private NotificationSettings notificationSettings;
