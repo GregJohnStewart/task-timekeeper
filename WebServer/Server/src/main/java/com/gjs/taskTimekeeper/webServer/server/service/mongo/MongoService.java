@@ -34,36 +34,30 @@ public abstract class MongoService<T extends MongoObject> {
 
 	public List<T> list(){
 		List<T> list = new ArrayList<>();
-		MongoCursor<T> cursor = getCollection().find().iterator();
 
-		try {
+		try (
+			MongoCursor<T> cursor = getCollection().find().iterator()
+		) {
 			while (cursor.hasNext()) {
 				list.add(cursor.next());
 			}
-		} finally {
-			cursor.close();
 		}
 		return list;
 	}
 
 	public T get(ObjectId id){
-		MongoCursor<T> cursor = getCollection().find(
-			eq("_id", id)
-		).iterator();
-
-
-		try {
+		try (
+			MongoCursor<T> cursor = getCollection().find(eq("_id", id)).iterator()
+		) {
 			//TODO:: make better exceptions
-			if(!cursor.hasNext()){
+			if (!cursor.hasNext()) {
 				throw new RuntimeException("No object found");
 			}
 			T result = cursor.next();
-			if(cursor.hasNext()){
+			if (cursor.hasNext()) {
 				throw new RuntimeException("Multiple objects found....");
 			}
 			return result;
-		} finally {
-			cursor.close();
 		}
 	}
 

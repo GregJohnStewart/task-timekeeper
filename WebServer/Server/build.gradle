@@ -1,24 +1,8 @@
-// this block is necessary to make enforcedPlatform work for Quarkus plugin available
-// only locally (snapshot) that is also importing the Quarkus BOM
-//buildscript {
-//    repositories {
-//        mavenLocal()
-//        mavenCentral()
-//        gradlePluginPortal()
-//    }
-//    dependencies {
-////        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-//        classpath "gradle.plugin.io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-//    }
-//}
-
 plugins {
     id 'java'
     id "io.freefair.lombok" version "4.1.5"
     id 'io.quarkus'
 }
-
-//apply plugin: 'io.quarkus'
 
 repositories {
      mavenLocal()
@@ -33,11 +17,14 @@ dependencies {
     compile project(":WebServer:WebLibrary")
 
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'io.quarkus:quarkus-config-yaml'
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
+    implementation 'io.quarkus:quarkus-mongodb-client'
+    implementation 'io.quarkus:quarkus-resteasy'
     // https://quarkus.io/guides/security-properties
 //    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
 //    implementation 'io.quarkus:quarkus-elytron-security'
@@ -45,19 +32,17 @@ dependencies {
     // https://vertx.io/docs/vertx-auth-jwt/java/
 //    implementation 'io.quarkus:quarkus-smallrye-jwt'
     // https://quarkus.io/guides/mongodb
-    implementation 'io.quarkus:quarkus-mongodb-client'
-    implementation 'io.quarkus:quarkus-resteasy'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest-assured:rest-assured'
+    nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.185'
+version = '1.0.0.194'
 String projectPropertiesFileName = "application.yaml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";

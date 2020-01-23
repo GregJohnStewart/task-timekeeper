@@ -29,3 +29,7 @@ TODO:: how to get it to save the database file and reuse it later
 ## Configuring the server
 
 ## Runtime Administration
+
+### Health checks
+
+Health checks can be found at `/health` ([http://localhost:8080/health](http://localhost:8080/health))
