@@ -1,7 +1,10 @@
-package com.gjs.taskTimekeeper.webServer.server.pojo;
+package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.GroupMembership;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
+import io.quarkus.mongodb.panache.MongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class User extends MongoObject {
+@MongoEntity(collection="ThePerson")
+public class User extends PanacheMongoEntity {
 	private String username;
 	private String hashedPass;
 	private String email;
@@ -26,15 +30,4 @@ public class User extends MongoObject {
 	private ZonedDateTime lastLogin;
 	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
-
-	public static void configureObjectMapper(ObjectMapper mapper){
-		mapper.registerModule(new JavaTimeModule());
-		NotificationSettings.configureObjectMapper(mapper);
-	}
-
-	public static ObjectMapper getObjectMapper(){
-		ObjectMapper mapper = new ObjectMapper();
-		configureObjectMapper(new ObjectMapper());
-		return mapper;
-	}
 }

@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.pojo;
+package com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

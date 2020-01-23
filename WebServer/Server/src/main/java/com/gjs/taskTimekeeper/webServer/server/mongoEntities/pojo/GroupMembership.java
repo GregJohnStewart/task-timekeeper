@@ -1,18 +1,24 @@
-package com.gjs.taskTimekeeper.webServer.server.pojo;
+package com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class NotificationSettings {
-    private boolean notifyByEmail;
+@AllArgsConstructor
+public class GroupMembership {
+    private ObjectId groupId;
+    private List<MembershipLevel> level;
+    private NotificationSettings notificationSettings;
 
     public static void configureObjectMapper(ObjectMapper mapper){
-        //nothing needs done
+        MembershipLevel.configureObjectMapper(mapper);
+        NotificationSettings.configureObjectMapper(mapper);
     }
 
     public static ObjectMapper getObjectMapper(){

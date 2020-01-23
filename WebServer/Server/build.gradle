@@ -23,7 +23,9 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
-    implementation 'io.quarkus:quarkus-mongodb-client'
+    // https://quarkus.io/guides/mongodb
+    // https://quarkus.io/guides/mongodb-panache
+    implementation 'io.quarkus:quarkus-mongodb-panache'
     implementation 'io.quarkus:quarkus-resteasy'
     // https://quarkus.io/guides/security-properties
 //    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
@@ -31,7 +33,6 @@ dependencies {
     // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
 //    implementation 'io.quarkus:quarkus-smallrye-jwt'
-    // https://quarkus.io/guides/mongodb
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
@@ -42,8 +43,8 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.205'
-String projectPropertiesFileName = "application.yaml";
+version = '1.0.0.213'
+String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
@@ -99,6 +100,7 @@ lib:
 
 quarkus:
   mongodb:
+    database: task-timekeeper
     application-name: task-timekeeper-server
 """
     }
