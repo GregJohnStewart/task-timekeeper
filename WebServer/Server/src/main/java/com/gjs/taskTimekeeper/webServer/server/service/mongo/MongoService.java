@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import javax.inject.Inject;
@@ -14,13 +15,13 @@ import java.util.List;
 import static com.mongodb.client.model.Filters.eq;
 
 public abstract class MongoService<T extends MongoObject> {
-	protected final String database;
+	//TODO:: best place to put this?
+	private static final String DATABASE_NAME = "task-timekeeper";
+
 	protected final String collection;
 	final Class<T> typeParameterClass;
 
-	//TODO:: get database name from configuration
 	public MongoService(String database, String collection, Class<T> typeParameterClass) {
-		this.database = database;
 		this.collection = collection;
 		this.typeParameterClass = typeParameterClass;
 	}
@@ -45,9 +46,22 @@ public abstract class MongoService<T extends MongoObject> {
 		return list;
 	}
 
-	public T get(ObjectId id){
+	public List<T> filter(Bson filter){
+		List<T> list = new ArrayList<>();
+
 		try (
-			MongoCursor<T> cursor = getCollection().find(eq("_id", id)).iterator()
+				MongoCursor<T> cursor = getCollection().find(filter).iterator()
+		) {
+			while (cursor.hasNext()) {
+				list.add(cursor.next());
+			}
+		}
+		return list;
+	}
+
+	public T getOneByFilter(Bson filter){
+		try (
+				MongoCursor<T> cursor = getCollection().find(filter).iterator()
 		) {
 			//TODO:: make better exceptions
 			if (!cursor.hasNext()) {
@@ -59,6 +73,14 @@ public abstract class MongoService<T extends MongoObject> {
 			}
 			return result;
 		}
+	}
+
+	public T getOneByField(String field, Object value){
+		return this.getOneByFilter(eq(field, value));
+	}
+
+	public T getOneById(ObjectId id){
+		return this.getOneByField("_id", id);
 	}
 
 	public void remove(String id){
@@ -80,6 +102,6 @@ public abstract class MongoService<T extends MongoObject> {
 	}
 
 	private MongoCollection<T> getCollection(){
-		return mongoClient.getDatabase(this.database).getCollection(this.collection, typeParameterClass);
+		return mongoClient.getDatabase(DATABASE_NAME).getCollection(this.collection, typeParameterClass);
 	}
 }

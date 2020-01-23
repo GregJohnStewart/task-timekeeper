@@ -52,7 +52,7 @@ public class UserServiceTest extends MongoTest {
 		assertEquals(testUser, userList.get(0));
 
 
-		User userReturned = userService.get(id);
+		User userReturned = userService.getOneById(id);
 		assertNotNull(userReturned);
 		assertEquals(testUser, userReturned);
 
