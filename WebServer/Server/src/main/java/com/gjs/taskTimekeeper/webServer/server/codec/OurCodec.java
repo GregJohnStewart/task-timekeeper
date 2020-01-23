@@ -2,7 +2,6 @@ package com.gjs.taskTimekeeper.webServer.server.codec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.webServer.server.pojo.MongoObject;
-import com.mongodb.MongoClient;
 import org.bson.BsonObjectId;
 import org.bson.BsonReader;
 import org.bson.BsonValue;
@@ -11,6 +10,7 @@ import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
+import org.bson.codecs.DocumentCodec;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
@@ -28,8 +28,7 @@ public class OurCodec <T extends MongoObject> implements CollectibleCodec<T> {
     public OurCodec(Class<T> tClass, ObjectMapper mapper){
         this.tClass = tClass;
         this.mapper = mapper;
-        this.documentCodec = MongoClient.getDefaultCodecRegistry()
-                .get(Document.class);
+        this.documentCodec = new DocumentCodec();
     }
 
     @Override

@@ -1,24 +1,29 @@
 // this block is necessary to make enforcedPlatform work for Quarkus plugin available
 // only locally (snapshot) that is also importing the Quarkus BOM
-buildscript {
-    repositories {
-        mavenLocal()
-    }
-    dependencies {
-        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-    }
-}
+//buildscript {
+//    repositories {
+//        mavenLocal()
+//        mavenCentral()
+//        gradlePluginPortal()
+//    }
+//    dependencies {
+////        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
+//        classpath "gradle.plugin.io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
+//    }
+//}
 
 plugins {
     id 'java'
     id "io.freefair.lombok" version "4.1.5"
+    id 'io.quarkus'
 }
 
-apply plugin: 'io.quarkus'
+//apply plugin: 'io.quarkus'
 
 repositories {
      mavenLocal()
      mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -52,7 +57,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.159'
+version = '1.0.0.185'
 String projectPropertiesFileName = "application.yaml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
