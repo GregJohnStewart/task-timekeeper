@@ -1,31 +1,39 @@
 // this block is necessary to make enforcedPlatform work for Quarkus plugin available
 // only locally (snapshot) that is also importing the Quarkus BOM
-buildscript {
-    repositories {
-        mavenLocal()
-    }
-    dependencies {
-        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-    }
-}
+//buildscript {
+//    repositories {
+//        mavenLocal()
+//        mavenCentral()
+//        gradlePluginPortal()
+//    }
+//    dependencies {
+////        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
+//        classpath "gradle.plugin.io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
+//    }
+//}
 
 plugins {
     id 'java'
     id "io.freefair.lombok" version "4.1.5"
+    id 'io.quarkus'
 }
 
-apply plugin: 'io.quarkus'
+//apply plugin: 'io.quarkus'
 
 repositories {
      mavenLocal()
      mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile project(":BaseCode:Core")
+    compile project(":BaseCode:ManagerIO")
+    compile project(":BaseCode:Stats")
     compile project(":WebServer:WebLibrary")
 
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-config-yaml'
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
@@ -49,8 +57,8 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.103'
-String projectPropertiesFileName = "application.yml";
+version = '1.0.0.185'
+String projectPropertiesFileName = "application.yaml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
@@ -91,12 +99,18 @@ task writePropertiesFile() {
 
 version: $version
 buildtime: ${ZonedDateTime.now().toString()}
-# Version of the library used
+# Versions of the libraries used
 lib:
-  core:
-    version: ${project(":BaseCode:Core").version}
+  base:
+    core:
+      version: ${project(":BaseCode:Core").version}
+    managerIO:
+      version: ${project(":BaseCode:ManagerIO").version}
+    stats:
+      version: ${project(":BaseCode:Stats").version}
   server:
-    version: ${project(":WebServer:WebLibrary").version}
+    webLibrary:
+      version: ${project(":WebServer:WebLibrary").version}
 """
     }
 }
@@ -119,6 +133,8 @@ compileJava {
     dependsOn 'writeOpenApiFile';
 
     dependsOn ':BaseCode:Core:test'
+    dependsOn ':BaseCode:ManagerIO:test'
+    dependsOn ':BaseCode:Stats:test'
     dependsOn ':WebServer:WebLibrary:test'
     dependsOn 'incrementBuildVersion';
 }
