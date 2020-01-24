@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,14 +13,4 @@ public enum MembershipLevel {
 
     @Getter
     private int levelValue;
-
-    public static void configureObjectMapper(ObjectMapper mapper){
-        //nothing to do
-    }
-
-    public static ObjectMapper getObjectMapper(){
-        ObjectMapper mapper = new ObjectMapper();
-        configureObjectMapper(new ObjectMapper());
-        return mapper;
-    }
 }

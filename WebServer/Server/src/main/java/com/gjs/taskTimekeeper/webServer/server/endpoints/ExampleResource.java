@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server;
+package com.gjs.taskTimekeeper.webServer.server.endpoints;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

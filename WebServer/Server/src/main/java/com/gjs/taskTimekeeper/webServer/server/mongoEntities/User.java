@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@MongoEntity(collection="ThePerson")
+@MongoEntity(collection="Users")
 public class User extends PanacheMongoEntity {
 	private String username;
 	private String hashedPass;
