@@ -40,12 +40,12 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
-    nativeTestImplementation 'io.rest-assured:rest-assured'
+    nativeTestImplementation 'io.rest- assured:rest-assured'
     nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.235'
+version = '1.0.0.246'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
@@ -104,6 +104,11 @@ quarkus:
   mongodb:
     database: task-timekeeper
     application-name: task-timekeeper-server
+
+validation:
+  password:
+    # https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/
+    regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\\$%\\^&\\*])(?=.{8,})
 """
     }
 }
