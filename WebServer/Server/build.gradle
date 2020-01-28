@@ -39,13 +39,14 @@ dependencies {
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest- assured:rest-assured'
     nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.246'
+version = '1.0.0.278'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
@@ -107,8 +108,11 @@ quarkus:
 
 validation:
   password:
-    # https://www.thepolyglotdeveloper.com/2015/05/use-regex-to-test-password-strength-in-javascript/
-    regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\\$%\\^&\\*])(?=.{8,})
+    rules:
+      minLength: 8
+      includeCaps: true
+      includeSpecialChars: true
+      includeNumbers: true
 """
     }
 }
