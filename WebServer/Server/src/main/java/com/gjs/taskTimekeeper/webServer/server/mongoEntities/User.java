@@ -25,6 +25,9 @@ public class User extends PanacheMongoEntity {
 	private String username;
 	private String hashedPass;
 	private String email;
+	private boolean emailValidated;
+	private String emailValidationToken;
+	private boolean approvedUser;
 	private UserLevel level;
 	private ZonedDateTime joinDateTime;
 	private ZonedDateTime lastLogin;

@@ -30,8 +30,8 @@ dependencies {
     // https://quarkus.io/guides/mongodb-panache
     implementation 'io.quarkus:quarkus-mongodb-panache'
     // https://quarkus.io/guides/security-properties
-//    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
-//    implementation 'io.quarkus:quarkus-elytron-security'
+    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
+    implementation 'io.quarkus:quarkus-elytron-security'
     // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
 //    implementation 'io.quarkus:quarkus-smallrye-jwt'
@@ -41,7 +41,7 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
-    nativeTestImplementation 'io.rest- assured:rest-assured'
+    nativeTestImplementation 'io.rest-assured:rest-assured'
     nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 }
 
