@@ -6,6 +6,8 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
+import io.quarkus.mailer.MailTemplate;
+import io.quarkus.qute.api.ResourcePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +25,15 @@ public class UserRegistration {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistration.class);
 
     private final PasswordService passwordService;
+    private final MailTemplate welcomeEmailTemplate;
 
     public UserRegistration(
-            PasswordService passwordService
+            PasswordService passwordService,
+            @ResourcePath("templates/email/welcomeVerification.txt")
+            MailTemplate welcomeEmailTemplate
     ){
         this.passwordService = passwordService;
+        this.welcomeEmailTemplate = welcomeEmailTemplate;
     }
 
     @POST

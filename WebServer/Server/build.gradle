@@ -21,9 +21,12 @@ dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'io.quarkus:quarkus-config-yaml'
+    // https://quarkus.io/guides/mailer
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
+    // https://quarkus.io/guides/qute for templates
+    implementation 'io.quarkus:quarkus-resteasy-qute'
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
     // https://quarkus.io/guides/mongodb
