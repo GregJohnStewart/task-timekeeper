@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
+import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.GroupMembership;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
@@ -33,4 +34,35 @@ public class User extends PanacheMongoEntity {
 	private ZonedDateTime lastLogin;
 	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
+
+	/**
+	 * TODO:: test
+	 * @param email The email of the user to find
+	 * @return The user with the email given.
+	 * @throws EntityNotFoundException if no user with the email was found.
+	 */
+	public User getUserWithEmail(String email) throws EntityNotFoundException {
+		List<User> users = User.list("email", email);
+
+		if(users.isEmpty()){
+			throw new EntityNotFoundException("No user with that email found.");
+		}
+		return users.get(0);
+	}
+
+	/**
+	 * TODO:: test
+	 * @param username The username of the user to find.
+	 * @return The user with the given username.
+	 * @throws EntityNotFoundException if no user with the username was found.
+	 */
+	public User getUserWithUsername(String username) throws EntityNotFoundException {
+		List<User> users = User.list("username", username);
+
+		if(users.isEmpty()){
+			throw new EntityNotFoundException("No user with that username found.");
+		}
+		return users.get(0);
+	}
+
 }
