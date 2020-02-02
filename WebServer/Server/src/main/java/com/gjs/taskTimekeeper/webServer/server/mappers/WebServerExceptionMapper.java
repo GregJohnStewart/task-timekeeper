@@ -1,7 +1,6 @@
-package com.gjs.taskTimekeeper.webServer.server.exception.mappers;
+package com.gjs.taskTimekeeper.webServer.server.mappers;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.Error;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +14,7 @@ public class WebServerExceptionMapper implements ExceptionMapper<WebServerExcept
 
     @Override
     public Response toResponse(WebServerException exception) {
-        LOGGER.warn("Caught miscellaneous exception: ", exception);
-        return Response.serverError().entity(new Error(exception.getMessage(), 500)).build();
+        LOGGER.warn("Caught a server exception: ", exception);
+        return exception.toResponse();
     }
 }

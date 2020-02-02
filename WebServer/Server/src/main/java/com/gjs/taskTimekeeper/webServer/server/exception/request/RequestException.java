@@ -1,6 +1,9 @@
 package com.gjs.taskTimekeeper.webServer.server.exception.request;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
+import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.Error;
+
+import javax.ws.rs.core.Response;
 
 public class RequestException extends WebServerException {
     public RequestException() {
@@ -20,5 +23,14 @@ public class RequestException extends WebServerException {
 
     public RequestException(String s, Throwable throwable, boolean b, boolean b1) {
         super(s, throwable, b, b1);
+    }
+
+    public Response toResponse(){
+        return Response.serverError().entity(
+                new Error(
+                        this.getMessage(),
+                        Response.Status.BAD_REQUEST.getStatusCode()
+                )
+        ).build();
     }
 }
