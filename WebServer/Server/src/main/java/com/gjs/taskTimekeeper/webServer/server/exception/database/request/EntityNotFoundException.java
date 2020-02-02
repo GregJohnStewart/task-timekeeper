@@ -1,7 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.exception.database.request;
 
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.Error;
-
 import javax.ws.rs.core.Response;
 
 public class EntityNotFoundException extends DatabaseRequestException {
@@ -25,11 +23,6 @@ public class EntityNotFoundException extends DatabaseRequestException {
     }
 
     public Response toResponse(){
-        return Response.serverError().entity(
-                new Error(
-                        this.getMessage(),
-                        Response.Status.NOT_FOUND.getStatusCode()
-                )
-        ).build();
+        return this.buildResponse(Response.Status.NOT_FOUND.getStatusCode());
     }
 }

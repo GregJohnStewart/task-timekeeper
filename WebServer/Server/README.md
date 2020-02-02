@@ -16,3 +16,12 @@ TODO here (in the readme):
 ## The Stack
 
 This server is fairly standalone, but relies on a Mongodb instance for storing data.
+
+## TODO::
+
+ - Tests
+    - Password service
+    - user registration service
+ - user login (token return)
+    - token creation
+    - token validation

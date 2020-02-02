@@ -1,6 +1,5 @@
-package com.gjs.taskTimekeeper.webServer.server.mondoEntities;
+package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.MongoTest;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.AfterEach;

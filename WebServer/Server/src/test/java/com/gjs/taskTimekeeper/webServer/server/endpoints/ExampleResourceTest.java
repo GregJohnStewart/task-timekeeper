@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server;
+package com.gjs.taskTimekeeper.webServer.server.endpoints;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;

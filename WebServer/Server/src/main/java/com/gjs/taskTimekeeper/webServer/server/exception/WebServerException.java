@@ -1,7 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.exception;
 
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.Error;
-
 import javax.ws.rs.core.Response;
 
 public class WebServerException extends RuntimeException {
@@ -24,12 +22,13 @@ public class WebServerException extends RuntimeException {
         super(s, throwable, b, b1);
     }
 
+    protected Response buildResponse(int code){
+        return Response.status(code).entity(this.getMessage()).build();
+    }
+
     public Response toResponse(){
-        return Response.serverError().entity(
-                new Error(
-                        this.getMessage(),
-                        Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()
-                )
-        ).build();
+        return this.buildResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()
+        );
     }
 }
