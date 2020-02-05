@@ -8,6 +8,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectP
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRegistrationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRequestException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
+import com.gjs.taskTimekeeper.webServer.server.exception.validation.UsernameValidationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.ValidationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,6 +39,7 @@ public class WebserverExceptionTest  {
                 Arguments.of(UserRegistrationException.class, 400),
                 Arguments.of(UserRequestException.class, 400),
                 Arguments.of(PasswordValidationException.class, 400),
+                Arguments.of(UsernameValidationException.class, 400),
                 Arguments.of(ValidationException.class, 400)
         );
     }
