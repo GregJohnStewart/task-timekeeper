@@ -1,32 +1,37 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.wildfly.common.codec.DecodeException;
 import org.wildfly.security.password.PasswordFactory;
 import org.wildfly.security.password.WildFlyElytronPasswordProvider;
 import org.wildfly.security.password.interfaces.BCryptPassword;
 import org.wildfly.security.password.spec.EncryptablePasswordSpec;
 import org.wildfly.security.password.spec.IteratedSaltedPasswordAlgorithmSpec;
+import org.wildfly.security.password.util.ModularCrypt;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+/**
+ * https://www.javatips.net/api/wildfly-security-master/wildfly-elytron-master/src/test/java/org/wildfly/security/password/impl/BCryptPasswordTest.java
+ */
 @ApplicationScoped
 public class PasswordService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordService.class);
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final String ALGORITHM = BCryptPassword.ALGORITHM_BCRYPT;
     private static final int ITERATIONS = 12;
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final Base64.Decoder DECODER = Base64.getDecoder();
@@ -41,14 +46,15 @@ public class PasswordService {
         this.passwordValidator = passwordValidator;
         WildFlyElytronPasswordProvider provider = WildFlyElytronPasswordProvider.getInstance();
 
+//        Security.addProvider(provider);
+
         try {
-            this.passwordFactory = PasswordFactory.getInstance(BCryptPassword.ALGORITHM_BCRYPT, provider);
+            this.passwordFactory = PasswordFactory.getInstance(ALGORITHM, provider);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("Somehow got an exception when setting up password factory. Error: ", e);
             throw new RuntimeException(e);
         }
     }
-
 
     public String createPasswordHash(String password) throws PasswordValidationException {
         this.passwordValidator.validateAndSanitize(password);
@@ -56,36 +62,31 @@ public class PasswordService {
         IteratedSaltedPasswordAlgorithmSpec iteratedAlgorithmSpec = new IteratedSaltedPasswordAlgorithmSpec(ITERATIONS, getSalt());
         EncryptablePasswordSpec encryptableSpec = new EncryptablePasswordSpec(password.toCharArray(), iteratedAlgorithmSpec);
 
-        BCryptPassword original = null;
         try {
-            original = (BCryptPassword) passwordFactory.generatePassword(encryptableSpec);
+            BCryptPassword original = (BCryptPassword) passwordFactory.generatePassword(encryptableSpec);
+            return ModularCrypt.encodeAsString(original);
         } catch (InvalidKeySpecException e) {
             LOGGER.error("Somehow got an invalid key spec. This should not happen. Error: ", e);
-            throw new RuntimeException(e);
-        }
-        try {
-            return ENCODER.encodeToString(
-                    MAPPER.writeValueAsBytes(original)
-            );
-        } catch (JsonProcessingException e) {
-            LOGGER.error("Somehow got a json processing exception. This should not happen. Error: ", e);
-            throw new RuntimeException(e);
+            throw new WebServerException(e);
         }
     }
 
     public boolean passwordMatchesHash(String encodedPass, String pass) throws CorruptedKeyException{
         BCryptPassword original = null;
         try {
-            original = MAPPER.readValue(DECODER.decode(encodedPass), BCryptPassword.class);
-        } catch (IOException e) {
-            LOGGER.error("Something went wrong in decoding the password. Is the key corrupt? Error: ", e);
+            original = (BCryptPassword) passwordFactory.translate(ModularCrypt.decode(encodedPass));
+        } catch (DecodeException e) {
+            LOGGER.error("Was unable to decode the password. Error: ", e);
             throw new CorruptedKeyException(e);
+        } catch (InvalidKeySpecException | InvalidKeyException e) {
+            LOGGER.error("Somehow got an invalid key/spec. This should not happen. Error: ", e);
+            throw new WebServerException(e);
         }
         try {
-            return passwordFactory.verify(original, pass.toCharArray());
+            return passwordFactory.verify(original, pass.toCharArray()); // throws the invalid key exception
         } catch (InvalidKeyException e) {
-            LOGGER.error("Somehow got an invalid key. This could happen if given a corrupted key. Error: ", e);
-            throw new CorruptedKeyException(e);
+            LOGGER.error("Somehow got an invalid key. This probably shouldn't happen? Error: ", e);
+            throw new WebServerException(e);
         }
     }
 

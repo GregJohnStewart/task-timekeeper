@@ -14,7 +14,7 @@ public class WebServerExceptionMapper implements ExceptionMapper<WebServerExcept
 
     @Override
     public Response toResponse(WebServerException exception) {
-        LOGGER.warn("Caught a server exception: ", exception);
+        LOGGER.warn("Handling a server exception: ", exception);
         return exception.toResponse();
     }
 }

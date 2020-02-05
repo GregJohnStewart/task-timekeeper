@@ -20,8 +20,14 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
 ## TODO::
 
  - Tests
-    - Password service
+    - Password service (finish/ fix service)
     - user registration service
+    - User
  - user login (token return)
     - token creation
     - token validation
+ - user endpoints
+    - get user info
+    - update user info
+        - whole user patch, convenience endpoints for common updates
+    - delete user 
