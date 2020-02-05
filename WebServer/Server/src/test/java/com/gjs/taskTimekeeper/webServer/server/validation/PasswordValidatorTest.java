@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.validation;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,6 +20,11 @@ class PasswordValidatorTest {
     }
     private static Stream<Arguments> expectInValid() {
         return Stream.of(
+                //fails null
+                Arguments.of(
+                        new PasswordValidator(),
+                        null
+                ),
                 //fails length
                 Arguments.of(
                         new PasswordValidator(),
@@ -49,6 +55,13 @@ class PasswordValidatorTest {
                         "badpass"
                 )
         );
+    }
+
+    @Test
+    void cantHaveTooShortPasswordTest(){
+        Assertions.assertThrows(IllegalArgumentException.class, ()->{
+            new PasswordValidator(3, true, true, true);
+        });
     }
 
     @ParameterizedTest

@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
@@ -21,7 +20,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
 
 /**
  * https://www.javatips.net/api/wildfly-security-master/wildfly-elytron-master/src/test/java/org/wildfly/security/password/impl/BCryptPasswordTest.java
@@ -33,9 +31,6 @@ public class PasswordService {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final String ALGORITHM = BCryptPassword.ALGORITHM_BCRYPT;
     private static final int ITERATIONS = 12;
-    private static final Base64.Encoder ENCODER = Base64.getEncoder();
-    private static final Base64.Decoder DECODER = Base64.getDecoder();
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final PasswordFactory passwordFactory;
     private final PasswordValidator passwordValidator;
@@ -45,8 +40,6 @@ public class PasswordService {
     ){
         this.passwordValidator = passwordValidator;
         WildFlyElytronPasswordProvider provider = WildFlyElytronPasswordProvider.getInstance();
-
-//        Security.addProvider(provider);
 
         try {
             this.passwordFactory = PasswordFactory.getInstance(ALGORITHM, provider);
