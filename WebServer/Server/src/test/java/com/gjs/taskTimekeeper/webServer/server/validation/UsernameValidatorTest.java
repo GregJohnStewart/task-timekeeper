@@ -32,10 +32,6 @@ class UsernameValidatorTest {
                 Arguments.of(
                         "\t  \r\na0000000000000000001    ",
                         "a0000000000000000001"
-                ),
-                Arguments.of(
-                        "a000      0000000001",
-                        "a000      0000000001"
                 )
         );
     }
@@ -47,6 +43,18 @@ class UsernameValidatorTest {
                 ),
                 Arguments.of(
                         " \t\n\r"
+                ),
+                Arguments.of(
+                        "a000 00000001"
+                ),
+                Arguments.of(
+                        "a000\n00000001"
+                ),
+                Arguments.of(
+                        "a000\r00000001"
+                ),
+                Arguments.of(
+                        "a000\t00000001"
                 )
         );
     }
