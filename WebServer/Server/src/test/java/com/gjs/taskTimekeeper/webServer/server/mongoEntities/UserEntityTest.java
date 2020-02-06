@@ -1,6 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @QuarkusTest
+@QuarkusTestResource(TestMongo.class)
 public class UserEntityTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEntityTest.class);
 

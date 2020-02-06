@@ -8,15 +8,18 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TODO:: make better with configuration
  */
-public class TestMongo {
+public class TestMongo implements QuarkusTestResourceLifecycleManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestMongo.class);
     private static MongodExecutable MONGO = null;
 
@@ -55,5 +58,20 @@ public class TestMongo {
         LOGGER.info("Cleaning Mongo of all entries.");
         LOGGER.info("Deleting {} users.", User.listAll().size());
         User.deleteAll();
+    }
+
+    @Override
+    public Map<String, String> start() {
+        try {
+            startMongoTestServer();
+        } catch (IOException e) {
+            LOGGER.error("Unbable to start Flapdoodle mongo server");
+        }
+        return new HashMap<>();
+    }
+
+    @Override
+    public void stop() {
+        stopMongoTestServer();
     }
 }
