@@ -6,6 +6,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +25,17 @@ public class UserRegistration {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistration.class);
 
     private final PasswordService passwordService;
+    private final UsernameValidator usernameValidator;
     private MailTemplate welcomeEmailTemplate;
 
     public UserRegistration(
-            PasswordService passwordService
+            PasswordService passwordService,
+            UsernameValidator usernameValidator
 //            @ResourcePath("email/welcomeVerification")
 //            MailTemplate welcomeEmailTemplate
     ){
         this.passwordService = passwordService;
+        this.usernameValidator = usernameValidator;
 //        this.welcomeEmailTemplate = welcomeEmailTemplate;
     }
 
@@ -41,7 +45,9 @@ public class UserRegistration {
 
         User newUser = new User();
 
-        newUser.setUsername(request.getUsername());//TODO:: validate
+        newUser.setUsername(
+                this.usernameValidator.validateSanitizeAssertDoesntExist(request.getUsername())
+        );
         newUser.setEmail(request.getEmail());//TODO:: validate
         newUser.setEmailValidated(false);
         newUser.setHashedPass(

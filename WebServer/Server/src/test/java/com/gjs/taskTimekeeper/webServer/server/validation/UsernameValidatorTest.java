@@ -65,7 +65,9 @@ class UsernameValidatorTest {
     @MethodSource("expectValid")
     void passingValidationTest(String password) {
         Assertions.assertDoesNotThrow(() -> {
-            validator.validate(password);
+            this.validator.validate(
+                    password
+            );
         });
     }
 

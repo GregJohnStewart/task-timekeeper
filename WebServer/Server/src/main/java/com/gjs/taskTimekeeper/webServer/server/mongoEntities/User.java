@@ -5,12 +5,13 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.GroupMembershi
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import io.quarkus.mongodb.panache.MongoEntity;
-import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection="Users")
-public class User extends PanacheMongoEntity {
+public class User extends OurMongoEntity {
+	private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+
 	private String username;
 	private String hashedPass;
 	private String email;
@@ -41,7 +44,7 @@ public class User extends PanacheMongoEntity {
 	 * @return The user with the email given.
 	 * @throws EntityNotFoundException if no user with the email was found.
 	 */
-	public User getUserWithEmail(String email) throws EntityNotFoundException {
+	public static User findByEmail(String email) throws EntityNotFoundException {
 		List<User> users = User.list("email", email);
 
 		if(users.isEmpty()){
@@ -56,7 +59,7 @@ public class User extends PanacheMongoEntity {
 	 * @return The user with the given username.
 	 * @throws EntityNotFoundException if no user with the username was found.
 	 */
-	public User getUserWithUsername(String username) throws EntityNotFoundException {
+	public static User findByUsername(String username) throws EntityNotFoundException {
 		List<User> users = User.list("username", username);
 
 		if(users.isEmpty()){
@@ -64,5 +67,4 @@ public class User extends PanacheMongoEntity {
 		}
 		return users.get(0);
 	}
-
 }

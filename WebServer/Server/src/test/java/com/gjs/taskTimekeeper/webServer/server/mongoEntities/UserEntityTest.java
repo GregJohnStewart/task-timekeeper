@@ -1,20 +1,19 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
-import com.gjs.taskTimekeeper.webServer.server.testResources.MongoTest;
+import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@QuarkusTest
-public class UserEntityTest extends MongoTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserEntityTest.class);
+import java.util.List;
 
-    @AfterEach
-    public void cleanup() {
-        User.deleteAll();
-    }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+@QuarkusTest
+public class UserEntityTest extends RunningServerTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserEntityTest.class);
 
     @Test
     public void testUser(){
@@ -23,6 +22,12 @@ public class UserEntityTest extends MongoTest {
         LOGGER.debug("Persisting user.");
         user.persist();
         LOGGER.debug("Persisted user.");
+
+        List<User> users = User.listAll();
+
+        assertFalse(users.isEmpty());
+        assertEquals(1, users.size());
+        assertEquals(user, users.get(0));
     }
 
 }
