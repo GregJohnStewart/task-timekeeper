@@ -37,9 +37,9 @@ public class UsernameValidator extends StringValidator {
         }
     }
 
-    public void assertDoesntExist(String object){
+    public void assertDoesntExist(String validatedSanitized){
         try {
-            User.findByUsername(object);
+            User.findByUsername(validatedSanitized);
             throw new UsernameValidationException("Username already exists.");
         } catch (EntityNotFoundException e){
             // nothing to do

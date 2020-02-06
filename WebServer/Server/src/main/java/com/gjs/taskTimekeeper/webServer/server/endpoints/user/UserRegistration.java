@@ -6,6 +6,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
 import org.slf4j.Logger;
@@ -26,16 +27,19 @@ public class UserRegistration {
 
     private final PasswordService passwordService;
     private final UsernameValidator usernameValidator;
+    private final EmailValidator emailValidator;
     private MailTemplate welcomeEmailTemplate;
 
     public UserRegistration(
             PasswordService passwordService,
-            UsernameValidator usernameValidator
+            UsernameValidator usernameValidator,
+            EmailValidator emailValidator
 //            @ResourcePath("email/welcomeVerification")
 //            MailTemplate welcomeEmailTemplate
     ){
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
+        this.emailValidator = emailValidator;
 //        this.welcomeEmailTemplate = welcomeEmailTemplate;
     }
 
@@ -48,7 +52,9 @@ public class UserRegistration {
         newUser.setUsername(
                 this.usernameValidator.validateSanitizeAssertDoesntExist(request.getUsername())
         );
-        newUser.setEmail(request.getEmail());//TODO:: validate
+        newUser.setEmail(
+                this.emailValidator.validateSanitizeAssertDoesntExist(request.getEmail())
+        );
         newUser.setEmailValidated(false);
         newUser.setHashedPass(
                 passwordService.createPasswordHash(request.getPlainPassword())

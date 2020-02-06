@@ -48,13 +48,12 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         MONGO = null;
     }
 
-    public static void cleanMongo() throws IOException, InterruptedException {
+    public static void cleanMongo() {
         if(MONGO == null){
             LOGGER.warn("Mongo was not started.");
             return;
         }
 
-        Thread.sleep(1000);
         LOGGER.info("Cleaning Mongo of all entries.");
         LOGGER.info("Deleting {} users.", User.listAll().size());
         User.deleteAll();
