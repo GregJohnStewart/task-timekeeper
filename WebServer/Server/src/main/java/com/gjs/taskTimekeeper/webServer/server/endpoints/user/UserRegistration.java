@@ -9,6 +9,9 @@ import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRespo
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +47,8 @@ public class UserRegistration {
     }
 
     @POST
+    @Counted(name = "numRegistrationRequests", description = "How many user registration requests handled.")
+    @Timed(name = "registrationRequestTimer", description = "A measure of how long it takes to validate and add the user.", unit = MetricUnits.MILLISECONDS)
     public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
         LOGGER.info("Got User Registration request.");
 

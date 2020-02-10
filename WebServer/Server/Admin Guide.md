@@ -32,4 +32,12 @@ TODO:: how to get it to save the database file and reuse it later
 
 ### Health checks
 
-Health checks can be found at `/health` ([http://localhost:8080/health](http://localhost:8080/health))
+Health checks can be found at `/health` ([http://localhost:8080/health]())
+
+### Metrics
+
+Metrics can be found at:
+ - `/metrics` ([http://localhost:8080/metrics]())
+ - `/metrics/application` ([http://localhost:8080/metrics/application]())
+ 
+

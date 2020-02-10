@@ -231,6 +231,7 @@ public final class TimeParser {
     }
 
     /**
+     * TODO:: label? add seconds. Optionally?
      * Gets the duration (in hours and minutes ("h:m")) the duration given describes. If longer than
      * a day, adds the number of hours in the day(s) to the hour count.
      *
