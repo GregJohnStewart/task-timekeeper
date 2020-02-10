@@ -17,7 +17,6 @@ public class LifecycleBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleBean.class);
 
     private ZonedDateTime startDateTime;
-    private ZonedDateTime endDateTime;
 
     //TODO:: come back to this when working.
 //    @Inject
@@ -59,9 +58,8 @@ public class LifecycleBean {
     }
 
     void onStop(@Observes ShutdownEvent ev) {
-        LOGGER.info("The server is stopping...");
-        this.endDateTime = ZonedDateTime.now();
-        Duration runtime = Duration.between(this.startDateTime, this.endDateTime);
+        LOGGER.info("The server is stopping.");
+        Duration runtime = Duration.between(this.startDateTime, ZonedDateTime.now());
         LOGGER.info("Server ran for {}", TimeParser.toDurationStringExact(runtime));
     }
 

@@ -3,3 +3,5 @@ quarkus:
     connection-string: mongodb://localhost:27018
     write-concern:
       journal: false
+  mailer:
+    mock: true
