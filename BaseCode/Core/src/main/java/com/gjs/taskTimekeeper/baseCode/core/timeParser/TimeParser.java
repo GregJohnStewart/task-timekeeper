@@ -259,4 +259,35 @@ public final class TimeParser {
 
         return hours + ":" + minutes;
     }
+
+    /**
+     * TODO:: think through, test
+     * @param duration
+     * @return
+     */
+    public static String toDurationStringExact(Duration duration) {
+        // original JDK 11 compliant. Backported to JDK 8 for compatibility reasons
+        // return (duration.toDaysPart() != 0 ? duration.toDaysPart() * 24 : 0) +
+        // duration.toHoursPart() + ":" + duration.toMinutesPart();
+
+        Duration left = duration;
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+
+        if (left.toDays() != 0) {
+            hours += left.toDays() * 24;
+            left = left.minusDays(left.toDays());
+        }
+
+        hours += left.toHours();
+        left = left.minusHours(left.toHours());
+
+        minutes += left.toMinutes();
+        left = left.minusMinutes(left.toMinutes());
+
+        seconds += left.getSeconds();
+
+        return hours + ":" + minutes + ":" + seconds;
+    }
 }

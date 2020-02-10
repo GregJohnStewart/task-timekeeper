@@ -43,7 +43,7 @@ public class LifecycleBean {
         LOGGER.info("The server is stopping...");
         this.endDateTime = ZonedDateTime.now();
         Duration runtime = Duration.between(this.startDateTime, this.endDateTime);
-        LOGGER.info("Server ran for {}", TimeParser.toDurationString(runtime));
+        LOGGER.info("Server ran for {}", TimeParser.toDurationStringExact(runtime));
     }
 
 }
