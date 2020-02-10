@@ -11,6 +11,7 @@ import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class UserRegistration {
     private final EmailValidator emailValidator;
     private MailTemplate welcomeEmailTemplate;
 
+    //stats
+    private long numAdded = 0;
+
     public UserRegistration(
             PasswordService passwordService,
             UsernameValidator usernameValidator,
@@ -47,8 +51,8 @@ public class UserRegistration {
     }
 
     @POST
-    @Counted(name = "numRegistrationRequests", description = "How many user registration requests handled.")
-    @Timed(name = "registrationRequestTimer", description = "A measure of how long it takes to validate and add the user.", unit = MetricUnits.MILLISECONDS)
+    @Counted(name = "numRequests", description = "How many user registration requests handled.")
+    @Timed(name = "requestTimer", description = "A measure of how long it takes to validate and add the user.", unit = MetricUnits.MILLISECONDS)
     public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
         LOGGER.info("Got User Registration request.");
 
@@ -82,11 +86,16 @@ public class UserRegistration {
         //TODO:: send validation email
 
         newUser.persist();
-
+        this.numAdded++;
         return new UserRegistrationResponse(
                 newUser.getUsername(),
                 newUser.getEmail(),
                 newUser.id.toHexString()
         );
+    }
+
+    @Gauge(name = "numAdded", unit = MetricUnits.NONE, description = "The number of users actually added.")
+    public Long highestPrimeNumberSoFar() {
+        return this.numAdded;
     }
 }
