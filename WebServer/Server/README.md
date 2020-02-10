@@ -2,7 +2,7 @@
 
 This is the webserver for managing multiple users' time manager data.
 
-When running, swagger can be found at: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+When running, swagger can be found at: [http://localhost:8080/swagger-ui/index.html]()
 
 TODO here (in the readme):
     - describe the stack (quarkus, eletryon security, mongo)
