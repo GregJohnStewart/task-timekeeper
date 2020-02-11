@@ -13,8 +13,8 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -33,8 +33,8 @@ public class User extends OurMongoEntity {
 	private String emailValidationToken;
 	private boolean approvedUser;
 	private UserLevel level;
-	private ZonedDateTime joinDateTime;
-	private ZonedDateTime lastLogin;
+	private Date joinDateTime;
+	private Date lastLogin;
 	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
 

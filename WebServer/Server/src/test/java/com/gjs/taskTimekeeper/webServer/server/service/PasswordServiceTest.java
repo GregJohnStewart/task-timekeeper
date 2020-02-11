@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PasswordServiceTest {
-    private static final String GOOD_PASS = "aA1!0000000000000000000000000001";
+public class PasswordServiceTest {
+    public static final String GOOD_PASS = "aA1!0000000000000000000000000001";
     private PasswordService passwordService = new PasswordService(new PasswordValidator());
 
     @Test

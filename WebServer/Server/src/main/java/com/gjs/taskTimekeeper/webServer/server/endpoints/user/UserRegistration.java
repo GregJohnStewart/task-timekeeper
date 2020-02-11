@@ -21,7 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.time.ZonedDateTime;
+import java.util.Date;
 
 @Path("/user/registration")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -69,7 +69,10 @@ public class UserRegistration {
                 passwordService.createPasswordHash(request.getPlainPassword())
         );
 
-        newUser.setJoinDateTime(ZonedDateTime.now());
+        newUser.setJoinDateTime(
+                Date.from(java.time.ZonedDateTime.now().toInstant())
+        );
+        LOGGER.debug("Finished validating, valid user registration request.");
 
 
         if(User.listAll().size() < 1) {
