@@ -9,6 +9,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
+import javax.ws.rs.core.Response;
+
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
@@ -32,7 +34,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .body(registrationRequest)
                 .post("/user/registration")
             .then()
-            .statusCode(200);
+            .statusCode(Response.Status.CREATED.getStatusCode());
     }
 
 }

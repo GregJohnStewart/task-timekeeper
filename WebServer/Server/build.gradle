@@ -31,6 +31,7 @@ dependencies {
     // https://quarkus.io/guides/qute for templates
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-resteasy-qute'
+    // https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
     // https://quarkus.io/guides/mongodb
@@ -82,6 +83,7 @@ paths:
 """
     }
 }
+//TODO:: add config for naming your server
 task writePropertiesFile() {
     doLast {
         new File(projectResourcesDir + projectPropertiesFileName).text = """
