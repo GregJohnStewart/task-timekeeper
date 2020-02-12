@@ -47,6 +47,8 @@ public class LifecycleBean {
         LOGGER.debug("ManagerIO lib version: {}", this.managerIOVersion);
         LOGGER.debug("Stats lib version: {}", this.statsVersion);
         LOGGER.debug("Web lib version: {}", this.webLibVersion);
+
+        LOGGER.info("start template: {}", this.startTemplate);
         System.out.println(
                 this.startTemplate
                         .data("serverVersion", this.serverVersion)

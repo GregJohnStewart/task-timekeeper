@@ -32,7 +32,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .when()
                 .contentType(ContentType.JSON)
                 .body(registrationRequest)
-                .post("/user/registration")
+                .post("/api/user/registration")
             .then()
             .statusCode(Response.Status.CREATED.getStatusCode());
     }
