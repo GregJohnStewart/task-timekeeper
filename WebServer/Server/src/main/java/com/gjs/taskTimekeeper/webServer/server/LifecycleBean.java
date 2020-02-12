@@ -1,6 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server;
 
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
+import io.quarkus.qute.Template;
+import io.quarkus.qute.api.ResourcePath;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -20,8 +22,8 @@ public class LifecycleBean {
 
     //TODO:: come back to this when working.
 //    @Inject
-//    @ResourcePath("startTemplate.txt")
-//    Template startTemplate;
+    @ResourcePath("startTemplate")
+    Template startTemplate;
 
     @ConfigProperty(name = "version")
     String serverVersion;
@@ -45,16 +47,16 @@ public class LifecycleBean {
         LOGGER.debug("ManagerIO lib version: {}", this.managerIOVersion);
         LOGGER.debug("Stats lib version: {}", this.statsVersion);
         LOGGER.debug("Web lib version: {}", this.webLibVersion);
-//        System.out.println(
-//                this.startTemplate
-//                        .data("version", this.serverVersion)
-//                        .data("buildTime", this.buildtime)
-//                        .data("coreVersion", this.coreVersion)
-//                        .data("ioVersion", this.managerIOVersion)
-//                        .data("statsVersion", this.statsVersion)
-//                        .data("webVersion", this.webLibVersion)
-//                        .render()
-//        );
+        System.out.println(
+                this.startTemplate
+                        .data("serverVersion", this.serverVersion)
+                        .data("buildTime", this.buildtime)
+                        .data("coreVersion", this.coreVersion)
+                        .data("ioVersion", this.managerIOVersion)
+                        .data("statsVersion", this.statsVersion)
+                        .data("webVersion", this.webLibVersion)
+                        .render()
+        );
     }
 
     void onStop(@Observes ShutdownEvent ev) {

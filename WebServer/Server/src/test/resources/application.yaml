@@ -1,4 +1,6 @@
 quarkus:
+  log:
+    level: DEBUG
   mongodb:
     connection-string: mongodb://localhost:27018
     write-concern:
