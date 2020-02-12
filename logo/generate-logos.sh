@@ -16,3 +16,6 @@ inkscape -z -e ${destinationDir}desktop-app/gui-icon.png -w $guiIconSize -h $gui
 # generate the desktop icon, or the icon of the executable when installed.
 desktopIconSize="500"
 inkscape -z -e ${destinationDir}desktop-app/desktop-icon.icn -w $desktopIconSize -h $desktopIconSize $mainFile
+
+# copy main into server's web directory
+cp $mainFile ../WebServer/Server/src/main/resources/META-INF/resources/res/media/logo.svg

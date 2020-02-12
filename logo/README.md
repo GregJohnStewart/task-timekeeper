@@ -7,7 +7,7 @@ Files in the `generated` folder that are directly referenced by parts of the pro
  * `desktop-icon.icns` - Used in DesktopApp for the icon used when installed on an OS
  * `gui-icon.png` - Used in DesktopApp for the icon used in GUI mode
 
-## Generating needed filed from `logo-main.png`
+## Generating needed filed from `logo-main.svg`
 
 To generate the files actually used as logos, you simply need to run the following file:
 
@@ -15,5 +15,5 @@ To generate the files actually used as logos, you simply need to run the followi
 
 Requisites:
 
- * Have imagemagick installed
+ * Have inkscape installed
  * This script is for running on Linux systems
