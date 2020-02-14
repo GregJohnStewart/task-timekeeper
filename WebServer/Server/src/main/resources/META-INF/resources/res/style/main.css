@@ -1,0 +1,10 @@
+:root {
+    --brand-img-size: 30px;
+}
+.navbar-brand > img {
+    height: var(--brand-img-size);
+    width: var(--brand-img-size);
+}
+#mainTab {
+    margin-top: 5px;
+}
