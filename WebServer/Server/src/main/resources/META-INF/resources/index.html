@@ -29,18 +29,30 @@
 
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
-                <!--                <li class="nav-item active">-->
-                <!--                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" href="#">Features</a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" href="#">Pricing</a>-->
-                <!--                </li>-->
-                <!--                <li class="nav-item">-->
-                <!--                    <a class="nav-link" href="#">About</a>-->
-                <!--                </li>-->
+                <!-- TODO:: implement other pages when have templating sorted out -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Time (Home) <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Help</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <!-- TODO:: implement when we know how this will work -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Login</a>
+                        <a class="dropdown-item" href="#">Form</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Here</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
@@ -61,19 +73,19 @@
     </ul>
     <div class="tab-content" id="mainTabContent">
         <div class="tab-pane fade show active" id="selectedPeriodContent" role="tabpanel" aria-labelledby="selectedPeriodTab">
-            <h2>Selected Period</h2>
+            <h2 class="tabContentTitle">Selected Period</h2>
             <hr />
         </div>
         <div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
-            <h2>Work Periods</h2>
+            <h2 class="tabContentTitle">Work Periods</h2>
             <hr />
         </div>
         <div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
-            <h2>Tasks</h2>
+            <h2 class="tabContentTitle">Tasks</h2>
             <hr />
         </div>
         <div class="tab-pane fade" id="statsContent" role="tabpanel" aria-labelledby="statsTab">
-            <h2>Stats</h2>
+            <h2 class="tabContentTitle">Stats</h2>
             <hr />
         </div>
     </div>
