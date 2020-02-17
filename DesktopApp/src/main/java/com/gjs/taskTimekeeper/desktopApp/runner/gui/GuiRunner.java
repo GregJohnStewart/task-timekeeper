@@ -21,6 +21,7 @@ public class GuiRunner extends ModeRunner {
     private final long WAIT_TIME = 100;
     private final long AUTOCLOSE_WAIT_LOOPS = 25;
     private boolean autoClose = false;
+    private boolean mainGuiFinishedLoading;
     private MainGui mainGui;
     private MainSystemTray systemTray;
 
@@ -74,6 +75,7 @@ public class GuiRunner extends ModeRunner {
 
     private void runMainGui() {
         LOGGER.info("Running main GUI component.");
+        this.mainGuiFinishedLoading = false;
 
         try {
             SwingUtilities.invokeAndWait(() -> mainGui = new MainGui(config, ICON, APP_TITLE));
@@ -83,6 +85,7 @@ public class GuiRunner extends ModeRunner {
             LOGGER.error("", e);
         }
         //TODO:: check if mainGui is null
+        this.mainGuiFinishedLoading = true;
 
         LOGGER.debug("Main GUI component ran.");
     }
@@ -107,7 +110,12 @@ public class GuiRunner extends ModeRunner {
     public void closeGuiElements() {
         LOGGER.info("Closing all ui elements.");
         this.mainGui.close();
+        this.mainGuiFinishedLoading = false;
         LOGGER.debug("Closed all ui elements.");
+    }
+
+    public boolean isMainGuiFinishedLoading(){
+        return this.mainGuiFinishedLoading;
     }
 
     public JFrame getMainFrame(){

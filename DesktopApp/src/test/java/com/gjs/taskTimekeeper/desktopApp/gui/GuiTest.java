@@ -54,8 +54,10 @@ public abstract class GuiTest {
         this.guiThread.start();
 
         LOGGER.info("Ran gui.");
-        Thread.sleep(MIN_STARTUP_TIME);
 
+        while (!this.runner.isMainGuiFinishedLoading()){
+            Thread.sleep(250);
+        }
 
         this.fixture = new FrameFixture(this.runner.getMainFrame());
         this.fixture.cleanUp();
