@@ -8,19 +8,19 @@ jobs:
       dist: bionic
       jdk: openjdk11
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check WebServer:WebLibrary:check
         - ./gradlew codeCoverageReport
     - os: linux
       dist: bionic
       jdk: oraclejdk11
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check WebServer:WebLibrary:check
         - ./gradlew codeCoverageReport
     - os: linux
       dist: xenial
       jdk: openjdk8
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check WebServer:WebLibrary:check
         - ./gradlew codeCoverageReport
     # webserver tests with graal
     # https://sormuras.github.io/blog/2018-06-22-jdk-matrix.html
