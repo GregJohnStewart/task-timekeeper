@@ -44,7 +44,7 @@ public abstract class GuiTest {
     protected GuiRunner runner;
     protected FrameFixture fixture;
 
-    protected void startGui(File dataFile) throws CmdLineException, InterruptedException {
+    protected void startGui(File dataFile) throws Exception {
         DesktopAppConfiguration configuration = getTestConfig(dataFile);
 
         this.runner = new GuiRunner(configuration);
@@ -58,14 +58,15 @@ public abstract class GuiTest {
         while (!this.runner.isMainGuiFinishedLoading()){
             Thread.sleep(250);
         }
+//        Thread.sleep(MIN_STARTUP_TIME);
 
         this.fixture = new FrameFixture(this.runner.getMainFrame());
-        this.fixture.cleanUp();
     }
 
 
     @After
     public void ensureClosed() throws InterruptedException {
+        this.fixture.cleanUp();
         try{
             this.fixture.close();
         }catch (Exception e){

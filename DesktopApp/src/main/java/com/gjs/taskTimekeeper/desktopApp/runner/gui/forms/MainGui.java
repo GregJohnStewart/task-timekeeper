@@ -785,6 +785,7 @@ public class MainGui {
         this.mainMenuBar = new JMenuBar();
         // File
         JMenu menu = new JMenu("File");
+        menu.setName("fileMenu");
         JMenuItem menuItem = new JMenuItem("Save");
         menuItem.setAction(this.saveAction);
         menu.add(menuItem);
@@ -798,6 +799,7 @@ public class MainGui {
         this.mainMenuBar.add(menu);
         // options
         menu = new JMenu("Options");
+        menu.setName("optionsMenu");
         this.autoSaveMenuItem = new JCheckBoxMenuItem();
         this.autoSaveMenuItem.setAction(new OptionChangedAction("Auto save"));
         menu.add(this.autoSaveMenuItem);
@@ -812,14 +814,18 @@ public class MainGui {
         this.mainMenuBar.add(menu);
         // info
         menu = new JMenu("Info");
+        menu.setName("infoMenu");
         menuItem = new JMenuItem("About");
+        menuItem.setName("aboutMenuItem");
         menuItem.addMouseListener(
                 new OpenDialogBoxOnClickListener(
                         this.mainPanel,
                         ABOUT_MESSAGE,
                         "About Task Timekeeper",
                         JOptionPane.INFORMATION_MESSAGE,
-                        icon));
+                        icon
+                )
+        );
         menu.add(menuItem);
         menu.addSeparator();
         menuItem = new JMenuItem("Github");
