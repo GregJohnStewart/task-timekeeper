@@ -1,152 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>tasktimekeeper-webserver - 1.0.0-SNAPSHOT</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" href="/res/media/logo.svg"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
+    <link rel="stylesheet" href="/res/style/main.css">
+
+    <title>Task Timekeeper Home</title>
     <style>
-        h1, h2, h3, h4, h5, h6 {
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-        }
-
-        h2 {
-            font-size: 2rem
-        }
-
-        h3 {
-            font-size: 1.75rem
-        }
-
-        h4 {
-            font-size: 1.5rem
-        }
-
-        h5 {
-            font-size: 1.25rem
-        }
-
-        h6 {
-            font-size: 1rem
-        }
-
-        .lead {
-            font-weight: 300;
-            font-size: 2rem;
-        }
-
-        .banner {
-            font-size: 2.7rem;
-            margin: 0;
-            padding: 2rem 1rem;
-            background-color: #00A1E2;
-            color: white;
-        }
-
-        body {
-            margin: 0;
-            font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
-
-        code {
-            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 87.5%;
-            color: #e83e8c;
-            word-break: break-word;
-        }
-
-        .left-column {
-            padding: .75rem;
-            max-width: 75%;
-            min-width: 55%;
-        }
-
-        .right-column {
-            padding: .75rem;
-            max-width: 25%;
-        }
-
-        .container {
-            display: flex;
-            width: 100%;
-        }
-
-        li {
-            margin: 0.75rem;
-        }
-
-        .right-section {
-            margin-left: 1rem;
-            padding-left: 0.5rem;
-        }
-
-        .right-section h3 {
-            padding-top: 0;
-            font-weight: 200;
-        }
-
-        .right-section ul {
-            border-left: 0.3rem solid #00A1E2;
-            list-style-type: none;
-            padding-left: 0;
-        }
-
     </style>
 </head>
 <body>
-
-<div class="banner lead">
-    Your new Cloud-Native application is ready!
-</div>
-
 <div class="container">
-    <div class="left-column">
-        <p class="lead"> Congratulations, you have created a new Quarkus application.</p>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="/">
+            <img src="/res/media/logo.svg" alt="">
+            Task Timekeeper
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <h2>Why do you see this?</h2>
-
-        <p>This page is served by Quarkus. The source is in
-            <code>src/main/resources/META-INF/resources/index.html</code>.</p>
-
-        <h2>What can I do from here?</h2>
-
-        <p>If not already done, run the application in <em>dev mode</em> using: <code>mvn compile quarkus:dev</code>.
-        </p>
-        <ul>
-            <li>Add REST resources, Servlets, functions and other services in <code>src/main/java</code>.</li>
-            <li>Your static assets are located in <code>src/main/resources/META-INF/resources</code>.</li>
-            <li>Configure your application in <code>src/main/resources/application.properties</code>.
-            </li>
-        </ul>
-
-        <h2>How do I get rid of this page?</h2>
-        <p>Just delete the <code>src/main/resources/META-INF/resources/index.html</code> file.</p>
-    </div>
-    <div class="right-column">
-        <div class="right-section">
-            <h3>Application</h3>
-            <ul>
-                <li>GroupId: com.gjs.taskTimekeeper.webServer</li>
-                <li>ArtifactId: tasktimekeeper-webserver</li>
-                <li>Version: 1.0.0-SNAPSHOT</li>
-                <li>Quarkus Version: 1.0.1.Final</li>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav mr-auto">
+                <!-- TODO:: implement other pages when have templating sorted out -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Time (Home) <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Help</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <!-- TODO:: implement when we know how this will work -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Login</a>
+                        <a class="dropdown-item" href="#">Form</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Here</a>
+                    </div>
+                </li>
             </ul>
         </div>
-        <div class="right-section">
-            <h3>Next steps</h3>
-            <ul>
-                <li><a href="https://quarkus.io/guides/maven-tooling.html" target="_blank">Setup your IDE</a></li>
-                <li><a href="https://quarkus.io/guides/getting-started.html" target="_blank">Getting started</a></li>
-                <li><a href="https://quarkus.io" target="_blank">Quarkus Web Site</a></li>
-            </ul>
+    </nav>
+
+    <ul class="nav nav-tabs" id="mainTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">Selected Period</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">Work Periods</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">Tasks</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">Stats</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="mainTabContent">
+        <div class="tab-pane fade show active" id="selectedPeriodContent" role="tabpanel" aria-labelledby="selectedPeriodTab">
+            <h2 class="tabContentTitle">Selected Period</h2>
+            <hr />
+        </div>
+        <div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
+            <h2 class="tabContentTitle">Work Periods</h2>
+            <hr />
+        </div>
+        <div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
+            <h2 class="tabContentTitle">Tasks</h2>
+            <hr />
+        </div>
+        <div class="tab-pane fade" id="statsContent" role="tabpanel" aria-labelledby="statsTab">
+            <h2 class="tabContentTitle">Stats</h2>
+            <hr />
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-4">
+            <h5>Task Timekeeper Server</h5>
+            <p>
+                &copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br />
+                Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0 License</a><br />
+                <a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br />
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <!-- TODO:: template this info -->
+            <h5>
+                Run by:<br />
+                <a href="-- url --" target="_blank">-- organization --</a>
+            </h5>
+            <h5>
+                Contact information:
+            </h5>
+            <address>
+                <h6>
+                    -- contact name --
+                </h6>
+                <p>
+                    Email: <a href="mailto:-- contact email --">-- contact email --</a> <br />
+                    Phone: <a href="tel:-- contact phone number --">-- contact phone --</a>
+                </p>
+            </address>
         </div>
     </div>
 </div>
 
-
+<script src="/res/lib/jquery/3.4.1/jquery.min.js"></script>
+<script src="/res/lib/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

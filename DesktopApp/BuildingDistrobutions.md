@@ -15,7 +15,9 @@ These steps should be done in preparation of the actual packaging:
 
  * Clean build: `:task-timekeeper$ ./gradlew clean build`
 
-## .deb (Debian (Ubuntu))
+## Linux
+
+### .deb (Debian (Ubuntu))
 
 Simply run the following: `:task-timekeeper$ ./gradlew :DesktopApp:deb`
 
@@ -23,6 +25,16 @@ Requisites:
 
  * Need to have FakeRoot installed: `sudo apt install lintian fakeroot`
  * Need to have dpkg installed: `sudo apt install dpkg`
+ 
+### .rpm (RHEL, Fedora, SUSE)
+
+Simply run the following: `:task-timekeeper$ ./gradlew :DesktopApp:rpm`
+
+Requisites:
+
+ * Need to have FakeRoot installed: `sudo apt install lintian fakeroot`
+ * Need to have rpm installed: `sudo apt install rpm`
+
 
 ## .msi (Windows) UNTESTED
 
@@ -32,15 +44,6 @@ Requisites:
 
  * Run on a windows system
  * Wix Toolset or [WixEdit](https://wixedit.github.io/) must be installed
-
-## .rpm (RHEL, Fedora, SUSE) UNTESTED
-
-Simply run the following: `:task-timekeeper$ ./gradlew :DesktopApp:rpm`
-
-Requisites:
-
- * Need to have FakeRoot installed: `sudo apt install lintian fakeroot`
- * Need to have rpm installed: `sudo apt install rpm`
 
 ## .dmg (MacOS) UNTESTED
 

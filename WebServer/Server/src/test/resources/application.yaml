@@ -1,5 +1,19 @@
 quarkus:
+  log:
+    level: DEBUG
   mongodb:
     connection-string: mongodb://localhost:27018
     write-concern:
       journal: false
+  mailer:
+    mock: true
+
+runningInfo:
+  organization: The Testing Organization
+  # TODO:: either update docs or wait for the update to configProperties
+  server-name: Testing
+  url: https://testing.com
+  contact-info:
+    name: Tester Mc Testerson
+    email: test@foo.bar
+    phone: 222-222-2222

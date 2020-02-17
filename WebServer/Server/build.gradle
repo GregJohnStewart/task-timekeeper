@@ -1,24 +1,8 @@
-// this block is necessary to make enforcedPlatform work for Quarkus plugin available
-// only locally (snapshot) that is also importing the Quarkus BOM
-//buildscript {
-//    repositories {
-//        mavenLocal()
-//        mavenCentral()
-//        gradlePluginPortal()
-//    }
-//    dependencies {
-////        classpath "io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-//        classpath "gradle.plugin.io.quarkus:quarkus-gradle-plugin:${quarkusPluginVersion}"
-//    }
-//}
-
 plugins {
     id 'java'
     id "io.freefair.lombok" version "4.1.5"
     id 'io.quarkus'
 }
-
-//apply plugin: 'io.quarkus'
 
 repositories {
      mavenLocal()
@@ -32,33 +16,49 @@ dependencies {
     compile project(":BaseCode:Stats")
     compile project(":WebServer:WebLibrary")
 
+    //apache
+    compile 'org.apache.commons:commons-text:1.8'
+
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-smallrye-health'
+    // https://quarkus.io/guides/microprofile-metrics
+    implementation 'io.quarkus:quarkus-smallrye-metrics'
     implementation 'io.quarkus:quarkus-config-yaml'
+    // https://quarkus.io/guides/mailer
     implementation 'io.quarkus:quarkus-mailer'
+    implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
+    // https://quarkus.io/guides/qute for templates
+    implementation 'io.quarkus:quarkus-qute'
+    implementation 'io.quarkus:quarkus-resteasy-qute'
+    // https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
     implementation 'io.quarkus:quarkus-smallrye-openapi'
     implementation 'io.quarkus:quarkus-scheduler'
+    // https://quarkus.io/guides/mongodb
+    // https://quarkus.io/guides/mongodb-panache
+    implementation 'io.quarkus:quarkus-mongodb-panache'
     // https://quarkus.io/guides/security-properties
-//    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
-//    implementation 'io.quarkus:quarkus-elytron-security'
+    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
+    implementation 'io.quarkus:quarkus-elytron-security'
     // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
 //    implementation 'io.quarkus:quarkus-smallrye-jwt'
-    // https://quarkus.io/guides/mongodb
-    implementation 'io.quarkus:quarkus-mongodb-client'
-    implementation 'io.quarkus:quarkus-resteasy'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest-assured:rest-assured'
+    nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
+
+    // TODO:: think about using webjars to pull in libs for web pages; https://www.webjars.org/
+//    implementation 'org.webjars:bootstrap:4.4.1-1'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.185'
-String projectPropertiesFileName = "application.yaml";
+version = '1.0.0.278'
+String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
@@ -86,6 +86,7 @@ paths:
 """
     }
 }
+//TODO:: add config for naming your server
 task writePropertiesFile() {
     doLast {
         new File(projectResourcesDir + projectPropertiesFileName).text = """
@@ -111,6 +112,19 @@ lib:
   server:
     webLibrary:
       version: ${project(":WebServer:WebLibrary").version}
+
+quarkus:
+  mongodb:
+    database: task-timekeeper
+    application-name: task-timekeeper-server
+
+validation:
+  password:
+    rules:
+      minLength: 8
+      includeCaps: true
+      includeSpecialChars: true
+      includeNumbers: true
 """
     }
 }

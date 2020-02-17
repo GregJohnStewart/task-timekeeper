@@ -1,0 +1,13 @@
+-8-=-=-=-=-8-
+ | ,dOOOb, |        Task Timekeeper Web Server
+ |d       b|                Version:        {serverVersion}
+ |\::. .::/|                Build day/time: {buildTime}
+ | \:::::/ |
+ |  \:::/  |        Library versions used:
+ |   x:x   |            Core:      {coreVersion}
+ |  / . \  |            ManagerIO: {ioVersion}
+ | /  .  \ |            Stats:     {statsVersion}
+ |/  .:.  \|            Web:       {webVersion}
+ |Y.:::::.Y|
+ | "YOOOY" |
+-8-=-=-=-=-8-
