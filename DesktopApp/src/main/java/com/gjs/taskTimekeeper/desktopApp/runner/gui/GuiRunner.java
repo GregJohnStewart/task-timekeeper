@@ -93,13 +93,26 @@ public class GuiRunner extends ModeRunner {
         LOGGER.debug("System tray component ran.");
     }
 
+    /**
+     * Determines if any gui elements are still running.
+     * @return If any gui elements are still running.
+     */
     public boolean stillRunning() {
         return this.mainGui.stillOpen() || this.systemTray.stillRunning();
     }
 
+    /**
+     * Closes all gui elements.
+     */
     public void closeGuiElements() {
         LOGGER.info("Closing all ui elements.");
         this.mainGui.close();
         LOGGER.debug("Closed all ui elements.");
+    }
+
+    public JFrame getMainFrame(){
+        return this
+                .mainGui
+                .getMainFrame();
     }
 }

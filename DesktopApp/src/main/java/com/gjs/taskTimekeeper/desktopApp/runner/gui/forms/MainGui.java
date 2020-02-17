@@ -261,6 +261,9 @@ public class MainGui {
     private JCheckBoxMenuItem saveOnExitMenuItem;
     private JCheckBoxMenuItem selectNewPeriodMenuItem;
 
+    public JFrame getMainFrame(){
+        return this.mainFrame;
+    }
     // </editor-fold>
     // <editor-fold desc="Actions/Handlers">
     private WindowListener windowListener =
