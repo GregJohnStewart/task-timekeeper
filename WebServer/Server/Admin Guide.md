@@ -38,14 +38,16 @@ You can define specific info about your server, like the server's name and conta
 runningInfo:
   organization: # The organization running the server
   serverName:   # The name of the server
-  url:          # URL to the organizatiuon or running party
+  url:          # URL to the organization or running party
   contactInfo:
     name:       # the name for the main contact
     email:      # the email of the main contact
-    telephone:  # the telephone number of the main contact
+    phone:  # the telephone number of the main contact
 ```
 
-These mainly show up in the webpage, but can also be accessed at `/api/server/info`
+These mainly show up in the webpage, but can also be accessed at `/api/server/info`.
+
+This configuration is optional (in whole or part), and is mostly used in the front end webpages.
 
 ## Runtime Administration
 

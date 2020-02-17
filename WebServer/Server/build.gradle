@@ -95,16 +95,6 @@ task writePropertiesFile() {
 #                                                              #
 ################################################################
 
-runningInfo:
-  organization:
-  serverName:
-  url:
-  contactInfo:
-    name:
-    email:
-    telephone:
-  
-
 version: $version
 buildtime: ${ZonedDateTime.now().toString()}
 # Versions of the libraries used
