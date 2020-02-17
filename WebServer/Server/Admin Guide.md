@@ -28,6 +28,25 @@ TODO:: how to get it to save the database file and reuse it later
 
 ## Configuring the server
 
+### Connecting to a Mongodb instance
+
+### Setting up your information
+
+You can define specific info about your server, like the server's name and contact information:
+
+```yaml
+runningInfo:
+  organization: # The organization running the server
+  serverName:   # The name of the server
+  url:          # URL to the organizatiuon or running party
+  contactInfo:
+    name:       # the name for the main contact
+    email:      # the email of the main contact
+    telephone:  # the telephone number of the main contact
+```
+
+These mainly show up in the webpage, but can also be accessed at `/api/server/info`
+
 ## Runtime Administration
 
 ### Health checks
