@@ -5,24 +5,18 @@ import io.quarkus.arc.config.ConfigProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.URL;
 import java.util.Optional;
 
-// TODO:: add contact info
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ConfigProperties(prefix = "runningInfo")
+@ConfigProperties(prefix = "runningInfo", namingStrategy = ConfigProperties.NamingStrategy.VERBATIM)
 public class ServerInfoBean {
-    @ConfigProperty(name = "organization")
     private Optional<String> organization;
-    @ConfigProperty(name = "serverName")
     private Optional<String> serverName;
-    @ConfigProperty(name = "url")
     private Optional<URL> url;
-    @ConfigProperty(name = "contactInfo")
     private ContactInfo contactInfo;
 
     public ServerInfo toServerInfo() {
