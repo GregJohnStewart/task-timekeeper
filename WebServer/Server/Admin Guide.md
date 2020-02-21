@@ -20,6 +20,14 @@ TODO:: how to get it to save the database file and reuse it later
 
 #### Running with container
 
+##### Prerequisite: GraalVm
+
+As a prerequisite, GraalVM must be used instead of an 'official' JDK.
+
+[Official Reference from Graal](https://www.graalvm.org/docs/getting-started/)
+
+[A good reference for installing on Linux using alternatives (Preferred for Linux users)](https://gist.github.com/ricardozanini/fa65e485251913e1467837b1c5a8ed28)
+
 ##### Building the container
 
 ##### Running the container
@@ -62,3 +70,6 @@ Metrics can be found at:
  - `/metrics/application` ([http://localhost:8080/metrics/application]())
  
 
+
+
+[]: https://www.graalvm.org/docs/getting-started/
