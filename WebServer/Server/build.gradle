@@ -29,6 +29,8 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     // https://quarkus.io/guides/qute for templates
+    // https://www.morling.dev/blog/quarkus-qute-test-ride/
+    // https://quarkus.io/guides/writing-native-applications-tips#including-resources
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-resteasy-qute'
     // https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
