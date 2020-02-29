@@ -1,9 +1,13 @@
 package com.gjs.taskTimekeeper.desktopApp.gui;
 
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.GuiNavigation;
+import org.assertj.swing.core.GenericTypeMatcher;
+import org.assertj.swing.fixture.JInternalFrameFixture;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 
 public class BasicGuiTest extends GuiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicGuiTest.class);
@@ -26,7 +30,13 @@ public class BasicGuiTest extends GuiTest {
         GuiNavigation.clickMenuInfo(this.fixture);
         GuiNavigation.clickMenuItem(this.fixture, "aboutMenuItem");
 
-        //TODO:: finish. can't do internal dialog?
-//        this.fixture.dialog(DialogMatcher.withTitle("About Task Timekeeper").andShowing());
+        JInternalFrameFixture frame = this.fixture.internalFrame(new GenericTypeMatcher<JInternalFrame>(JInternalFrame.class) {
+            @Override
+            protected boolean isMatching(JInternalFrame component) {
+                return true;
+            }
+        });
+
+        frame.requireTitle("About Task Timekeeper");
     }
 }
