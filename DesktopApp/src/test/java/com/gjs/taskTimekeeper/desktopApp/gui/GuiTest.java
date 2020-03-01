@@ -14,7 +14,7 @@ import java.io.File;
 
 public abstract class GuiTest {
 
-    protected static final int MIN_STARTUP_TIME = 1_000;
+//    protected static final int MIN_STARTUP_TIME = 1_000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiTest.class);
 

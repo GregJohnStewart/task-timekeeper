@@ -758,6 +758,10 @@ public class MainGui {
     public MainGui(DesktopAppConfiguration config, Image icon, String appTitle)
             throws DataSourceParsingException {
         LOGGER.debug("Starting construction of MainGui.");
+        //naming wysiwyg components, for testing
+        this.mainTabPane.setName("mainTabPane");
+        this.selectedPeriodBannerPanel.setName("selectedPeriodBannerPanel");
+
         this.config = config;
         this.managerIO =
                 new ManagerIO(
