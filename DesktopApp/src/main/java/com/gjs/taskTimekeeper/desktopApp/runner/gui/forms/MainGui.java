@@ -794,6 +794,7 @@ public class MainGui {
         menuItem.setAction(this.saveAction);
         menu.add(menuItem);
         menuItem = new JMenuItem("Reload data");
+        menuItem.setName("reloadDataMenuItem");
         menuItem.setAction(reloadAction);
         menu.add(menuItem);
         menu.addSeparator();
