@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils.emptyTestFile;
+import static com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils.fullTestFile;
+
 public class BasicGuiTest extends GuiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicGuiTest.class);
 

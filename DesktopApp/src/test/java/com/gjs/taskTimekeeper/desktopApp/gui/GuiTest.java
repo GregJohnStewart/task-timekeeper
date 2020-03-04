@@ -2,7 +2,7 @@ package com.gjs.taskTimekeeper.desktopApp.gui;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
-import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliManagerRunnerTest;
+import com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.After;
@@ -11,30 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class GuiTest {
-
-//    protected static final int MIN_STARTUP_TIME = 1_000;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiTest.class);
-
-    protected static final File fullTestFile =
-            new File(
-                    CliManagerRunnerTest.class
-                            .getClassLoader()
-                            .getResource("testTimeManagerData/fully_populated.json")
-                            .getFile());
-    protected static final File emptyTestFile =
-            new File(
-                    CliManagerRunnerTest.class
-                            .getClassLoader()
-                            .getResource("testTimeManagerData/empty.json")
-                            .getFile());
 
     protected static DesktopAppConfiguration getTestConfig(File file) throws CmdLineException {
         DesktopAppConfiguration config = new DesktopAppConfiguration();
 
         config.putProperty(ConfigKeys.SAVE_FILE, "file:" + file.getPath());
+        config.putProperty(ConfigKeys.CONFIG_FILE, TestFileUtils.testUserConfigFile.getPath());
+        config.putProperty(ConfigKeys.UI_OPTIONS_FILE, TestFileUtils.testUiOptionsFile.getPath());
 
         return config;
     }
@@ -58,7 +45,6 @@ public abstract class GuiTest {
         while (!this.runner.isMainGuiFinishedLoading()){
             Thread.sleep(250);
         }
-//        Thread.sleep(MIN_STARTUP_TIME);
 
         this.fixture = new FrameFixture(this.runner.getMainFrame());
     }
@@ -76,6 +62,12 @@ public abstract class GuiTest {
             runner.closeGuiElements();
             Thread.sleep(100);
         }
+    }
+
+    @After
+    public void cleanupWorkingFile() throws IOException {
+        LOGGER.info("Resetting working file after tests.");
+        TestFileUtils.resetWorkingFile();
     }
 
 

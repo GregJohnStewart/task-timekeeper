@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.desktopApp.gui.basic;
 
 import com.gjs.taskTimekeeper.desktopApp.gui.GuiTest;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.GuiNavigation;
+import com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.matcher.ButtonTextMatcher;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.matcher.InternalFrameMatcher;
 import org.assertj.swing.data.Index;
@@ -12,12 +13,14 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils.fullTestFile;
+
 public class BasicNavigationGuiTest extends GuiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(BasicNavigationGuiTest.class);
 
     @Test
     public void infoMenuBar() throws Exception {
-        this.startGui(emptyTestFile);
+        this.startGui(TestFileUtils.emptyTestFile);
         GuiNavigation.clickMenuInfo(this.fixture);
         GuiNavigation.clickMenuItem(this.fixture, "aboutMenuItem");
 
@@ -40,7 +43,7 @@ public class BasicNavigationGuiTest extends GuiTest {
 
     @Test
     public void mainTabEmpty() throws Exception {
-        this.startGui(emptyTestFile);
+        this.startGui(TestFileUtils.emptyTestFile);
 
         JTabbedPaneFixture mainTabFixture = this.fixture.tabbedPane("mainTabPane");
 
