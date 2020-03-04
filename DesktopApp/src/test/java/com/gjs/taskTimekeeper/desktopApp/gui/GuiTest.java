@@ -67,7 +67,7 @@ public abstract class GuiTest {
     @After
     public void cleanupWorkingFile() throws IOException {
         LOGGER.info("Resetting working file after tests.");
-        TestFileUtils.resetWorkingFile();
+        TestFileUtils.resetWorkingFiles();
     }
 
 

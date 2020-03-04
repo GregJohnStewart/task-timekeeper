@@ -10,6 +10,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class TestFileUtils {
+
+    public static final File testUiOptionsFile =
+            new File(
+                    CliManagerRunnerTest.class
+                            .getClassLoader()
+                            .getResource("testTimeManagerData/testUiConfig.cfg")
+                            .getFile()
+            );
+
+    public static final File testUserConfigFile =
+            new File(
+                    CliManagerRunnerTest.class
+                            .getClassLoader()
+                            .getResource("test/testUserConfig.properties")
+                            .getFile()
+            );
+
     public static final File fullTestFile =
             new File(
                     CliManagerRunnerTest.class
@@ -30,29 +47,18 @@ public class TestFileUtils {
                             .getFile()
             );
 
-    public static final File testUiOptionsFile =
-            new File(
-                    CliManagerRunnerTest.class
-                            .getClassLoader()
-                            .getResource("testTimeManagerData/testUiConfig.cfg")
-                            .getFile()
-            );
+    public static void resetWorkingFiles() throws IOException {
+        resetWorkingFile(workingTestFile, fullTestFile);
+    }
 
-    public static final File testUserConfigFile =
-            new File(
-                    CliManagerRunnerTest.class
-                            .getClassLoader()
-                            .getResource("test/testUserConfig.properties")
-                            .getFile()
-            );
 
-    public static void resetWorkingFile() throws IOException {
-        workingTestFile.delete();
-        workingTestFile.createNewFile();
+    public static void resetWorkingFile(File workingFile, File dataTemplate) throws IOException {
+        workingFile.delete();
+        workingFile.createNewFile();
 
         try(
-                InputStream is = new FileInputStream(fullTestFile);
-                OutputStream os = new FileOutputStream(workingTestFile);
+                InputStream is = new FileInputStream(dataTemplate);
+                OutputStream os = new FileOutputStream(workingFile);
                 ) {
             byte[] buffer = new byte[1024];
             int length;
