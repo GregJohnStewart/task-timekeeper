@@ -8,19 +8,19 @@ jobs:
       dist: bionic
       jdk: openjdk11
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check --stacktrace
         - ./gradlew codeCoverageReport
     - os: linux
       dist: bionic
       jdk: oraclejdk11
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check --stacktrace
         - ./gradlew codeCoverageReport
     - os: linux
       dist: xenial
       jdk: openjdk8
       script:
-        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check
+        - ./gradlew BaseCode:check DesktopApp:check DesktopApp:cucumber WebServer:WebLibrary:check --stacktrace
         - ./gradlew codeCoverageReport
     # webserver tests with graal
     # https://sormuras.github.io/blog/2018-06-22-jdk-matrix.html
@@ -34,7 +34,7 @@ jobs:
         - source install-jdk.sh --url https://github.com/oracle/graal/releases/download/vm-19.2.1/graalvm-ce-linux-amd64-19.2.1.tar.gz # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.0/graalvm-ce-java11-linux-amd64-19.3.0.tar.gz
         - java -version
         # check of this will fail due to native compilation issues
-        - ./gradlew WebServer:Server:test
+        - ./gradlew WebServer:Server:test --stacktrace
         - ./gradlew codeCoverageReport
 
 

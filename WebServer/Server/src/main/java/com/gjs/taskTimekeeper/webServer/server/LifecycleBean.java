@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server;
 
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
+import io.quarkus.qute.Template;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
@@ -19,9 +21,9 @@ public class LifecycleBean {
     private ZonedDateTime startDateTime;
 
     //TODO:: come back to this when working.
-//    @Inject
+    @Inject
 //    @ResourcePath("startTemplate")
-//    Template startTemplate;
+            Template startTemplate;
 
     @ConfigProperty(name = "version")
     String serverVersion;
@@ -46,17 +48,17 @@ public class LifecycleBean {
         LOGGER.debug("Stats lib version: {}", this.statsVersion);
         LOGGER.debug("Web lib version: {}", this.webLibVersion);
 
-//        LOGGER.info("start template: {}", this.startTemplate);
-//        System.out.println(
-//                this.startTemplate
-//                        .data("serverVersion", this.serverVersion)
-//                        .data("buildTime", this.buildtime)
-//                        .data("coreVersion", this.coreVersion)
-//                        .data("ioVersion", this.managerIOVersion)
-//                        .data("statsVersion", this.statsVersion)
-//                        .data("webVersion", this.webLibVersion)
-//                        .render()
-//        );
+        LOGGER.info("start template: {}", this.startTemplate);
+        System.out.println(
+                this.startTemplate
+                        .data("serverVersion", this.serverVersion)
+                        .data("buildTime", this.buildtime)
+                        .data("coreVersion", this.coreVersion)
+                        .data("ioVersion", this.managerIOVersion)
+                        .data("statsVersion", this.statsVersion)
+                        .data("webVersion", this.webLibVersion)
+                        .render()
+        );
     }
 
     void onStop(@Observes ShutdownEvent ev) {
