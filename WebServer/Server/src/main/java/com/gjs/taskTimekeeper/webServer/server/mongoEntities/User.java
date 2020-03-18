@@ -67,4 +67,22 @@ public class User extends OurMongoEntity {
 		}
 		return users.get(0);
 	}
+
+	/**
+	 * Finds a user by either a username or email.
+	 * @param emailUsername The password or email.
+	 * @return the user with the email or username given.
+	 * @throws EntityNotFoundException If a user was not found
+	 */
+	public static User findByEmailOrUsername(String emailUsername) throws EntityNotFoundException {
+		try{
+			return User.findByEmail(emailUsername);
+		}catch (EntityNotFoundException e){
+		}
+		try{
+			return User.findByUsername(emailUsername);
+		}catch (EntityNotFoundException e){
+		}
+		throw new EntityNotFoundException("No user with given username or email found.");
+	}
 }

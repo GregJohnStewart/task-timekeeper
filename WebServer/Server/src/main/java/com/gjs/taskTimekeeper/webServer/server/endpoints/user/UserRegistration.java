@@ -86,7 +86,7 @@ public class UserRegistration {
                 this.emailValidator.validateSanitizeAssertDoesntExist(request.getEmail())
         );
         newUser.setHashedPass(
-                passwordService.createPasswordHash(request.getPlainPassword())
+                this.passwordService.createPasswordHash(request.getPlainPassword())
         );
         LOGGER.debug("Finished validating, valid user registration request.");
 
