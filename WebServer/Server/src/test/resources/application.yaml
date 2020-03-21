@@ -7,6 +7,15 @@ quarkus:
       journal: false
   mailer:
     mock: true
+  smallrye-jwt:
+    enabled: true
+
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: security/testKey.pem
+      issuer: Tester Mc Testerson
 
 runningInfo:
   organization: The Testing Organization

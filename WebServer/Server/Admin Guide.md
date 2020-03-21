@@ -57,6 +57,23 @@ These mainly show up in the webpage, but can also be accessed at `/api/server/in
 
 This configuration is optional (in whole or part), and is mostly used in the front end webpages.
 
+### Security/ Keys
+
+The service requires a `.pem` public key to make JWT tokens for users to login with.
+
+Test keys are in the test resources directory, under 'security'. You will have to make your own and specify the location of the `.pem` with the `mp.jwt.verify.publickey.location` property.
+
+You can also specify the issuer of the key using: `mp.jwt.verify.issuer`
+
+The test keys were created using the following commands:
+
+```
+openssl req -new -newkey rsa:4096 -nodes -keyout snakeoil.key -out snakeoil.csr
+openssl x509 -req -sha256 -days 365 -in snakeoil.csr -signkey snakeoil.key -out snakeoil.pem
+```
+
+If you are a 'real organization' you might want to use keys that were issued by a real cert provider.
+
 ## Runtime Administration
 
 ### Health checks
