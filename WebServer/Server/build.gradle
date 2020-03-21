@@ -44,7 +44,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-elytron-security'
     // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
-//    implementation 'io.quarkus:quarkus-smallrye-jwt'
+    implementation 'io.quarkus:quarkus-smallrye-jwt'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
