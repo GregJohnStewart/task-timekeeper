@@ -59,6 +59,11 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         LOGGER.info("Deleting {} users.", User.listAll().size());
         User.deleteAll();
         Assert.isEmpty(User.findAll());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
