@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserLoginRequest {
     private String user;
     private String plainPass;
+    private boolean extendedTimeout = false;
 }

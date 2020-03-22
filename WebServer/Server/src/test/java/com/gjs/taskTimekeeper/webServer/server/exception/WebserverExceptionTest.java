@@ -3,8 +3,10 @@ package com.gjs.taskTimekeeper.webServer.server.exception;
 import com.gjs.taskTimekeeper.webServer.server.exception.database.DatabaseException;
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.RequestException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.TooManyRequestsException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRegistrationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRequestException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.EmailValidationException;
@@ -35,8 +37,10 @@ public class WebserverExceptionTest  {
                 Arguments.of(DatabaseException.class, 500),
                 Arguments.of(EntityNotFoundException.class, 404),
                 Arguments.of(RequestException.class, 400),
+                Arguments.of(TooManyRequestsException.class, 429),
                 Arguments.of(CorruptedKeyException.class, 400),
                 Arguments.of(IncorrectPasswordException.class, 401),
+                Arguments.of(UserLockedException.class, 403),
                 Arguments.of(UserRegistrationException.class, 400),
                 Arguments.of(UserRequestException.class, 400),
                 Arguments.of(EmailValidationException.class, 400),

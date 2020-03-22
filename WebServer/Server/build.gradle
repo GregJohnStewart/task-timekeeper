@@ -88,7 +88,7 @@ paths:
 """
     }
 }
-//TODO:: add config for naming your server
+
 task writePropertiesFile() {
     doLast {
         new File(projectResourcesDir + projectPropertiesFileName).text = """

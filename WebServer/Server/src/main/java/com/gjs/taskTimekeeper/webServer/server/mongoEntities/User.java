@@ -33,8 +33,14 @@ public class User extends OurMongoEntity {
 	private String emailValidationToken;
 	private boolean approvedUser;
 	private UserLevel level;
+	private boolean locked;
+	private String lockReason;
+
 	private Date joinDateTime;
 	private Date lastLogin;
+	private Long numLogins;
+	private List<Date> lastHourLoginAttempts;
+
 	private NotificationSettings notificationSettings;
 	private List<GroupMembership> memberships = new ArrayList<>();
 

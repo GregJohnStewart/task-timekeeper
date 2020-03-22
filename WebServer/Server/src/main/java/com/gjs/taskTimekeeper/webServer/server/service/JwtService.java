@@ -1,6 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
 
+import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import org.eclipse.microprofile.jwt.Claims;
@@ -21,7 +23,18 @@ public class JwtService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtService.class);
     private static final Base64.Decoder DECODER = Base64.getDecoder();
 
-    public JwtService(){
+    private final ServerInfoBean serverInfo;
+
+    public JwtService(ServerInfoBean serverInfo){
+        this.serverInfo = serverInfo;
+    }
+
+    public String generateTokenString(
+            User user,
+            boolean extendedTimeout
+    ){
+
+        return null;
     }
 
     /**
@@ -39,7 +52,7 @@ public class JwtService {
         return generateTokenString(pk, "/privateKey.pem", jsonResName, timeClaims);
     }
 
-    public String generateTokenString(
+    private String generateTokenString(
             PrivateKey privateKey,
             String kid,
             String jsonResName,
@@ -65,7 +78,7 @@ public class JwtService {
      * @return PrivateKey
      * @throws Exception on decode failure
      */
-    public static PrivateKey readPrivateKey(final String pemResName) throws Exception {
+    private static PrivateKey readPrivateKey(final String pemResName) throws Exception {
         LOGGER.info("Reading in private key.");
         InputStream contentIS = JwtService.class.getResourceAsStream(pemResName);
         byte[] tmp = new byte[4096];
