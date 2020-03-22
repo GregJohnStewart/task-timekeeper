@@ -9,6 +9,7 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+import org.apache.logging.log4j.core.util.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,7 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         LOGGER.info("Cleaning Mongo of all entries.");
         LOGGER.info("Deleting {} users.", User.listAll().size());
         User.deleteAll();
+        Assert.isEmpty(User.findAll());
     }
 
     @Override

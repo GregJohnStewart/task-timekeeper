@@ -36,8 +36,6 @@ jobs:
         # check of this will fail due to native compilation issues
         - ./gradlew WebServer:Server:test --stacktrace
         - ./gradlew codeCoverageReport
-      after_failure:
-        - cat /home/travis/build/GregJohnStewart/task-timekeeper/WebServer/Server/build/reports/tests/test/index.html
 
 
 #script:
