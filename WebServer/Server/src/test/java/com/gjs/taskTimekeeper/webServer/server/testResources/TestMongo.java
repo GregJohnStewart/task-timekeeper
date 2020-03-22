@@ -60,7 +60,7 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         User.deleteAll();
         Assert.isEmpty(User.findAll());
         try {
-            Thread.sleep(100);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
