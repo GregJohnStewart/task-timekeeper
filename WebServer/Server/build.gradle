@@ -160,5 +160,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}
+
 // stop lombok from overwriting its own config
 generateLombokConfig.enabled = false

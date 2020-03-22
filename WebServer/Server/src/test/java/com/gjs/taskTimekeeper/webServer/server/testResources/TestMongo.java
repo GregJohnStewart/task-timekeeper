@@ -66,7 +66,7 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         try {
             startMongoTestServer();
         } catch (IOException e) {
-            LOGGER.error("Unbable to start Flapdoodle mongo server");
+            LOGGER.error("Unable to start Flapdoodle Mongo server");
         }
         return new HashMap<>();
     }
