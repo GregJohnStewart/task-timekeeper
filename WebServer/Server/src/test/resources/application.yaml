@@ -25,9 +25,3 @@ runningInfo:
     name: Tester Mc Testerson
     email: test@foo.bar
     phone: 222-222-2222
-
-junit:
-  jupiter:
-    execution:
-      parallel:
-        enabled: false

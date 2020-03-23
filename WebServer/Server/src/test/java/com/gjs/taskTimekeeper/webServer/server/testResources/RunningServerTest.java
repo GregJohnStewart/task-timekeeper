@@ -12,12 +12,17 @@ public abstract class RunningServerTest {
     MockMailbox mailbox;
 
     @BeforeEach
-    public void clearMailbox() {
-        this.mailbox.clear();
+    public void beforeEach() {
+        this.cleanup();
     }
 
     @AfterEach
-    public void clearMongo() {
+    public void afterEach() {
+        this.cleanup();
+    }
+
+    public void cleanup(){
+        this.mailbox.clear();
         TestMongo.cleanMongo();
     }
 }
