@@ -29,19 +29,19 @@ public class User extends OurMongoEntity {
 	private String username;
 	private String hashedPass;
 	private String email;
-	private boolean emailValidated;
+	private boolean emailValidated = false;
 	private String emailValidationToken;
-	private boolean approvedUser;
-	private UserLevel level;
-	private boolean locked;
+	private boolean approvedUser = false;
+	private UserLevel level = UserLevel.REGULAR;
+	private boolean locked = false;
 	private String lockReason;
 
-	private Date joinDateTime;
+	private Date joinDateTime = new Date();
 	private Date lastLogin;
 	private Long numLogins;
-	private List<Date> lastHourLoginAttempts;
+	private List<Date> lastHourLoginAttempts = new ArrayList<>();
 
-	private NotificationSettings notificationSettings;
+	private NotificationSettings notificationSettings = new NotificationSettings(true);
 	private List<GroupMembership> memberships = new ArrayList<>();
 
 	/**
@@ -75,6 +75,7 @@ public class User extends OurMongoEntity {
 	}
 
 	/**
+	 * TODO:: test
 	 * Finds a user by either a username or email.
 	 * @param emailUsername The password or email.
 	 * @return the user with the email or username given.

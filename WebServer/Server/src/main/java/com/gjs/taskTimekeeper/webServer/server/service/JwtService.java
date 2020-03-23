@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
-
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import org.eclipse.microprofile.jwt.Claims;
@@ -15,7 +15,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
@@ -61,13 +64,47 @@ public class JwtService {
         JwtClaimsBuilder claims = Jwt.claims(jsonResName);
         long currentTimeInSecs = currentTimeInSecs();
         long exp = timeClaims != null && timeClaims.containsKey(Claims.exp.name())
-                ? timeClaims.get(Claims.exp.name()) : currentTimeInSecs + 300;
+                ? timeClaims.get(Claims.exp.name())
+                : currentTimeInSecs + 300;
 
         claims.issuedAt(currentTimeInSecs);
         claims.claim(Claims.auth_time.name(), currentTimeInSecs);
         claims.expiresAt(exp);
 
         return claims.jws().signatureKeyId(kid).sign(privateKey);
+    }
+
+    private Map<String, Object> getUserClaims(User user){
+        Map<String, Object> output = this.getBaseClaims();
+
+        String userIdentification = user.id + ";" + user.getUsername() + ";" + user.getEmail();
+
+        output.put("jti", user.id + "-" + user.getLastLogin().getTime() + "-" + user.getNumLogins());//TODO: move to utility, test
+        output.put("sub", userIdentification);
+        output.put("aud", userIdentification);
+        output.put("upn", user.getEmail());
+        output.put("userId", user.id);
+
+        output.put("roleMappings", new HashMap<String, Object>());
+
+        List<Object> groups = new ArrayList<>();
+
+        groups.add(UserLevel.REGULAR.name());
+        if(user.getLevel() == UserLevel.ADMIN){
+            groups.add(UserLevel.ADMIN.name());
+        }
+
+        output.put("groups", groups);
+
+        return output;
+    }
+
+    private Map<String, Object> getBaseClaims(){
+        Map<String, Object> output = new HashMap<>();
+
+        output.put("iss", serverInfo.getOrganization() + " - Task Timekeeper Server");
+
+        return output;
     }
 
     /**
