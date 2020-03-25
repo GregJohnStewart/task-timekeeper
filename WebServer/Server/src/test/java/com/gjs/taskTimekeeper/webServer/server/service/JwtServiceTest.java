@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.Date;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
@@ -33,6 +34,9 @@ public class JwtServiceTest extends RunningServerTest {
 
     @Test
     public void test(){
+        this.testUser.setLastLogin(new Date());
+        this.testUser.setNumLogins(1L);
+
         String jwt = jwtService.generateTokenString(this.testUser, false);
 
         LOGGER.info("Created test user's jwt: {}", jwt);

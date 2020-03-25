@@ -65,11 +65,10 @@ Test keys are in the test resources directory, under 'security'. You will have t
 
 You can also specify the issuer of the key using: `mp.jwt.verify.issuer`
 
-The test keys were created using the following commands:
+The test keys were created using the following command:
 
 ```
-openssl req -new -newkey rsa:4096 -nodes -keyout snakeoil.key -out snakeoil.csr
-openssl x509 -req -sha256 -days 365 -in snakeoil.csr -signkey snakeoil.key -out snakeoil.pem
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout testKey.pem -out testKeyCert.pem
 ```
 
 If you are a 'real organization' you might want to use keys that were issued by a real cert provider.

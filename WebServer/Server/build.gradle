@@ -46,6 +46,8 @@ dependencies {
     // https://vertx.io/docs/vertx-auth-jwt/java/
     implementation 'io.quarkus:quarkus-smallrye-jwt'
 
+    implementation 'commons-io:commons-io:2.6'
+
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'

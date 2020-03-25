@@ -5,12 +5,14 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -27,9 +29,26 @@ public class JwtService {
     private static final Base64.Decoder DECODER = Base64.getDecoder();
 
     private final ServerInfoBean serverInfo;
+    private final long defaultExpiration;
+    private final long extendedExpiration;
+    private final String sigKeyId;
+    private final PrivateKey privateKey;
 
-    public JwtService(ServerInfoBean serverInfo){
+
+    public JwtService(
+            ServerInfoBean serverInfo,
+            @ConfigProperty(name="mp.jwt.verify.publickey.location")
+                    String privateKeyLocation,
+            @ConfigProperty(name="mp.jwt.expiration.default")
+                    long defaultExpiration,
+            @ConfigProperty(name="mp.jwt.expiration.extended")
+                    long extendedExpiration
+    ) throws Exception {
         this.serverInfo = serverInfo;
+        this.defaultExpiration = defaultExpiration;
+        this.extendedExpiration = extendedExpiration;
+        this.sigKeyId = privateKeyLocation;
+        this.privateKey = readPrivateKey(privateKeyLocation);
     }
 
     public String generateTokenString(
@@ -37,41 +56,17 @@ public class JwtService {
             boolean extendedTimeout
     ){
 
-        return null;
-    }
+        JwtClaimsBuilder claims = Jwt.claims(this.getUserClaims(user));
 
-    /**
-     * Utility method to generate a JWT string from a JSON resource file that is signed by the privateKey.pem
-     * test resource key, possibly with invalid fields.
-     *
-     * @param jsonResName - name of test resources file
-     * @param timeClaims - used to return the exp, iat, auth_time claims
-     * @return the JWT string
-     * @throws Exception on parse failure
-     */
-    public String generateTokenString(String jsonResName, Map<String, Long> timeClaims) throws Exception {
-        // Use the test private key associated with the test public key for a valid signature
-        PrivateKey pk = readPrivateKey("/privateKey.pem");
-        return generateTokenString(pk, "/privateKey.pem", jsonResName, timeClaims);
-    }
-
-    private String generateTokenString(
-            PrivateKey privateKey,
-            String kid,
-            String jsonResName,
-            Map<String, Long> timeClaims
-    ) throws Exception {
-        JwtClaimsBuilder claims = Jwt.claims(jsonResName);
         long currentTimeInSecs = currentTimeInSecs();
-        long exp = timeClaims != null && timeClaims.containsKey(Claims.exp.name())
-                ? timeClaims.get(Claims.exp.name())
-                : currentTimeInSecs + 300;
+        long expirationTime = currentTimeInSecs + (extendedTimeout ? this.extendedExpiration : this.defaultExpiration);
+
 
         claims.issuedAt(currentTimeInSecs);
+        claims.expiresAt(expirationTime);
         claims.claim(Claims.auth_time.name(), currentTimeInSecs);
-        claims.expiresAt(exp);
 
-        return claims.jws().signatureKeyId(kid).sign(privateKey);
+        return claims.jws().signatureKeyId(this.sigKeyId).sign(this.privateKey);
     }
 
     private Map<String, Object> getUserClaims(User user){
@@ -117,10 +112,17 @@ public class JwtService {
      */
     private static PrivateKey readPrivateKey(final String pemResName) throws Exception {
         LOGGER.info("Reading in private key.");
-        InputStream contentIS = JwtService.class.getResourceAsStream(pemResName);
-        byte[] tmp = new byte[4096];
-        int length = contentIS.read(tmp);
-        return decodePrivateKey(new String(tmp, 0, length, StandardCharsets.UTF_8));
+
+        URL url = JwtService.class.getClassLoader().getResource(pemResName);
+        if(url == null){
+            LOGGER.debug("Private key not in classpath.");
+            url = new URL("file:" + pemResName);
+        }else{
+            LOGGER.debug("Private key in classpath.");
+        }
+        LOGGER.debug("Private key location: {}", url);
+        String rawPem = IOUtils.toString(url, StandardCharsets.UTF_8);
+        return decodePrivateKey(rawPem);
     }
 
     /**

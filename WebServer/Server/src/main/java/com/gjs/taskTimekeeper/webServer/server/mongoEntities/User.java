@@ -38,7 +38,7 @@ public class User extends OurMongoEntity {
 
 	private Date joinDateTime = new Date();
 	private Date lastLogin;
-	private Long numLogins;
+	private Long numLogins = 0L;
 	private List<Date> lastHourLoginAttempts = new ArrayList<>();
 
 	private NotificationSettings notificationSettings = new NotificationSettings(true);

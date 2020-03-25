@@ -16,6 +16,9 @@ mp:
       publickey:
         location: security/testKey.pem
       issuer: Tester Mc Testerson
+    expiration:
+      default: 86400 # 1 day
+      extended: 2678400 # 1 month
 
 runningInfo:
   organization: The Testing Organization
