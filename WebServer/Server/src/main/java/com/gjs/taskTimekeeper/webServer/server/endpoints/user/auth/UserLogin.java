@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
+package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
@@ -21,6 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 
 @Path("/api/user/auth/login")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -45,7 +46,7 @@ public class UserLogin {
     )
     @APIResponse(
             responseCode = "202",
-            description = "User was created.",
+            description = "User was logged in.",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = UserLoginResponse.class)
@@ -77,17 +78,16 @@ public class UserLogin {
 
         this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), loginRequest.getPlainPass());
 
-        //TODO::
+        user.setLastLogin(new Date());
+        user.setNumLogins(user.getNumLogins() + 1);
 
+        user.update();
 
-        //TODO:: update last login time
-        //TODO:: increment login count
-
-        //TODO:: make jwt
+        String jwt = this.jwtService.generateTokenString(user, loginRequest.isExtendedTimeout());
 
         this.numLoggedIn++;
         return Response.status(Response.Status.ACCEPTED).entity(new UserLoginResponse(
-                "<token>"
+                jwt
         )).build();
     }
 

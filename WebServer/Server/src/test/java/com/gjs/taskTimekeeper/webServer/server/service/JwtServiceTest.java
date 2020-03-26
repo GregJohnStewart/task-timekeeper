@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
 public class JwtServiceTest extends RunningServerTest {
@@ -41,7 +43,7 @@ public class JwtServiceTest extends RunningServerTest {
 
         LOGGER.info("Created test user's jwt: {}", jwt);
 
-//        assertNotNull(jwt);
+        assertNotNull(jwt);
     }
 
 }

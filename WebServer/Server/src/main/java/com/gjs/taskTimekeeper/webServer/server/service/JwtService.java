@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.service;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
+import com.gjs.taskTimekeeper.webServer.server.utils.StaticUtils;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import org.apache.commons.io.IOUtils;
@@ -55,12 +56,10 @@ public class JwtService {
             User user,
             boolean extendedTimeout
     ){
-
         JwtClaimsBuilder claims = Jwt.claims(this.getUserClaims(user));
 
-        long currentTimeInSecs = currentTimeInSecs();
+        long currentTimeInSecs = StaticUtils.currentTimeInSecs();
         long expirationTime = currentTimeInSecs + (extendedTimeout ? this.extendedExpiration : this.defaultExpiration);
-
 
         claims.issuedAt(currentTimeInSecs);
         claims.expiresAt(expirationTime);
@@ -151,13 +150,5 @@ public class JwtService {
         pem = pem.replaceAll("\r\n", "");
         pem = pem.replaceAll("\n", "");
         return pem.trim();
-    }
-
-    /**
-     * @return the current time in seconds since epoch
-     */
-    public static int currentTimeInSecs() {
-        long currentTimeMS = System.currentTimeMillis();
-        return (int) (currentTimeMS / 1000);
     }
 }
