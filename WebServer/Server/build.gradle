@@ -129,6 +129,9 @@ validation:
       includeCaps: true
       includeSpecialChars: true
       includeNumbers: true
+
+runningInfo:
+  serverName: \${runningInfo.organization}
 """
     }
 }

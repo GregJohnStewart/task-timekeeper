@@ -17,7 +17,7 @@ mp:
         location: security/testPrivateKeyPkcs8.pem
       publickey:
         location: security/testPublicKey.pem
-      issuer: Tester Mc Testerson
+      issuer: ${runningInfo.organization} - ${runningInfo.serverName} Task Timekeeper Server
     expiration:
       default: 86400 # 1 day
       extended: 2678400 # 1 month
