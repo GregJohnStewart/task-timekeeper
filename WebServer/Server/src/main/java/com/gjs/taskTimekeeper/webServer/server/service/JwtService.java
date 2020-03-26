@@ -35,23 +35,29 @@ public class JwtService {
     private final long defaultExpiration;
     private final long extendedExpiration;
     private final String sigKeyId;
+    private final String issuer;
     private final PrivateKey privateKey;
 
 
     public JwtService(
             ServerInfoBean serverInfo,
-            @ConfigProperty(name="mp.jwt.verify.publickey.location")
+            @ConfigProperty(name="mp.jwt.verify.privatekey.location")
                     String privateKeyLocation,
             @ConfigProperty(name="mp.jwt.expiration.default")
                     long defaultExpiration,
             @ConfigProperty(name="mp.jwt.expiration.extended")
-                    long extendedExpiration
+                    long extendedExpiration,
+            @ConfigProperty(name="mp.jwt.verify.issuer")
+                    String issuer
+
     ) throws Exception {
         this.serverInfo = serverInfo;
         this.defaultExpiration = defaultExpiration;
         this.extendedExpiration = extendedExpiration;
         this.sigKeyId = privateKeyLocation;
-        this.privateKey = readPrivateKey(privateKeyLocation);
+        this.issuer = issuer;
+
+        this.privateKey = readPrivateKey(privateKeyLocation); //KeyUtils.readPrivateKey(privateKeyLocation); //     StaticUtils.resourceAsUrl(privateKeyLocation).toString());
     }
 
     public String generateTokenString(
@@ -61,9 +67,8 @@ public class JwtService {
         JwtClaimsBuilder claims = Jwt.claims(this.getUserClaims(user));
 
         long currentTimeInSecs = StaticUtils.currentTimeInSecs();
-        long expirationTime = currentTimeInSecs + (extendedTimeout ? this.extendedExpiration : this.defaultExpiration);
+        long expirationTime = StaticUtils.currentTimeInSecs() + (extendedTimeout ? this.extendedExpiration : this.defaultExpiration);
 
-        claims.issuedAt(currentTimeInSecs);
         claims.expiresAt(expirationTime);
         claims.claim(Claims.auth_time.name(), currentTimeInSecs);
 
@@ -98,14 +103,13 @@ public class JwtService {
     private Map<String, Object> getBaseClaims(){
         Map<String, Object> output = new HashMap<>();
 
-        output.put("iss", serverInfo.getOrganization() + " - Task Timekeeper Server");
+        output.put("iss", this.issuer); // serverInfo.getOrganization() + " - Task Timekeeper Server");
 
         return output;
     }
 
     /**
      * Read a PEM encoded private key from the classpath
-     * TODO:: handle get from not classpath
      *
      * @param pemResName - key file resource name
      * @return PrivateKey
@@ -114,13 +118,7 @@ public class JwtService {
     private static PrivateKey readPrivateKey(final String pemResName) throws Exception {
         LOGGER.info("Reading in private key.");
 
-        URL url = JwtService.class.getClassLoader().getResource(pemResName);
-        if(url == null){
-            LOGGER.debug("Private key not in classpath.");
-            url = new URL("file:" + pemResName);
-        }else{
-            LOGGER.debug("Private key in classpath.");
-        }
+        URL url = StaticUtils.resourceAsUrl(pemResName);
         LOGGER.debug("Private key location: {}", url);
         String rawPem = IOUtils.toString(url, StandardCharsets.UTF_8);
         return decodePrivateKey(rawPem);

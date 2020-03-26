@@ -59,16 +59,19 @@ This configuration is optional (in whole or part), and is mostly used in the fro
 
 ### Security/ Keys
 
-The service requires a `.pem` public key to make JWT tokens for users to login with.
+The service requires a `.pem` public and private key to make JWT tokens for users to login with. The private key must be in `pkcs8` format.
 
-Test keys are in the test resources directory, under 'security'. You will have to make your own and specify the location of the `.pem` with the `mp.jwt.verify.publickey.location` property.
+Test keys are in the test resources directory, under 'security'. You will have to make your own and specify the location of the `.pem`s with the `mp.jwt.verify.publickey.location` and `mp.jwt.verify.privatekey.location` properties.
 
 You can also specify the issuer of the key using: `mp.jwt.verify.issuer`
 
 The test keys were created using the following command:
 
 ```
-openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout testKey.pem -out testKeyCert.pem
+openssl genrsa -out private_key.pem 4096
+openssl rsa -pubout -in private_key.pem -out public_key.pem
+# convert private key to pkcs8 format in order to import it from Java
+openssl pkcs8 -topk8 -in private_key.pem -inform pem -out private_key_pkcs8.pem -outform pem -nocrypt
 ```
 
 If you are a 'real organization' you might want to use keys that were issued by a real cert provider.

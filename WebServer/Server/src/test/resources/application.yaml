@@ -13,8 +13,10 @@ quarkus:
 mp:
   jwt:
     verify:
+      privatekey:
+        location: security/testPrivateKeyPkcs8.pem
       publickey:
-        location: security/testKey.pem
+        location: security/testPublicKey.pem
       issuer: Tester Mc Testerson
     expiration:
       default: 86400 # 1 day
