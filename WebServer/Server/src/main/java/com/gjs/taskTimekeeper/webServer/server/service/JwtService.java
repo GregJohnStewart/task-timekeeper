@@ -16,7 +16,9 @@ import javax.enterprise.context.ApplicationScoped;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -131,12 +133,21 @@ public class JwtService {
      * @return PrivateKey
      * @throws Exception on decode failure
      */
-    public static PrivateKey decodePrivateKey(final String pemEncoded) throws Exception {
+    public static PrivateKey decodePrivateKey(final String pemEncoded) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] encodedBytes = toEncodedBytes(pemEncoded);
+        LOGGER.info("Decoding private key.");
 
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        return kf.generatePrivate(keySpec);
+        try {
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedBytes);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            return kf.generatePrivate(keySpec);
+        }catch (NoSuchAlgorithmException e) {
+            LOGGER.error("Algorithm not accepted. this should not happen.");
+            throw e;
+        } catch (InvalidKeySpecException e) {
+            LOGGER.error("Could not decode private key: ", e);
+            throw e;
+        }
     }
 
     private static byte[] toEncodedBytes(final String pemEncoded) {
