@@ -36,6 +36,12 @@ As a prerequisite, GraalVM must be used instead of an 'official' JDK.
 
 ## Configuring the server
 
+https://quarkus.io/guides/config#overriding-properties-at-runtime
+
+Using a configuration file placed in `$PWD/config/application.properties`; By placing an application.properties file inside a directory named config which resides in the directory where the application runs, any runtime properties defined in that file will override the default configuration. Furthermore any runtime properties added to this file that were not part of the original application.properties file will also be taken into account.
+
+You can probably also use a yaml file.
+
 ### Connecting to a Mongodb instance
 
 ### Setting Up Your Information
