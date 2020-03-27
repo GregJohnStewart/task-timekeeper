@@ -7,6 +7,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
@@ -41,6 +42,7 @@ public class TokenCheck {
             )
     )
     @Tags({@Tag(name="User"),@Tag(name="Auth")})
+    @SecurityRequirement(name="JwtAuth")
     @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public Response helloRolesAllowed(@Context SecurityContext ctx) {
