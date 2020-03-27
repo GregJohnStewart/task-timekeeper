@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server;
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import java.time.ZonedDateTime;
 @ApplicationScoped
 public class LifecycleBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleBean.class);
+    private static final String PACKAGED_PRIVATE = "packagedPrivateKey.pem";
+    private static final String PACKAGED_PUBLIC = "packagedPublicKey.pem";
 
     private ZonedDateTime startDateTime;
 
@@ -35,6 +38,11 @@ public class LifecycleBean {
     String statsVersion;
     @ConfigProperty(name = "lib.server.webLibrary.version")
     String webLibVersion;
+
+    @ConfigProperty(name="mp.jwt.verify.privatekey.location")
+    String privateKeyLocation;
+    @ConfigProperty(name="mp.jwt.verify.publickey.location")
+    String publicKeyLocation;
 
     void onStart(@Observes StartupEvent ev) {
         this.startDateTime = ZonedDateTime.now();
@@ -57,6 +65,10 @@ public class LifecycleBean {
 //                        .data("webVersion", this.webLibVersion)
 //                        .render()
 //        );
+        if(this.usingPackagedKeys()){
+            LOGGER.error("Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.");
+            LOGGER.error("Server will automatically shut down in 10 minutes.");
+        }
     }
 
     void onStop(@Observes ShutdownEvent ev) {
@@ -64,5 +76,24 @@ public class LifecycleBean {
         Duration runtime = Duration.between(this.startDateTime, ZonedDateTime.now());
         LOGGER.info("Server ran for {}", TimeParser.toDurationStringExact(runtime));
     }
+
+    private boolean usingPackagedKeys(){
+        return this.privateKeyLocation.contains(PACKAGED_PRIVATE) ||
+                this.publicKeyLocation.contains(PACKAGED_PUBLIC);
+    }
+
+    @Scheduled(every = "1m", delay = 10)
+    void bootIfPackagedKeys() {
+        if(this.usingPackagedKeys()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    LOGGER.error("Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.");
+                    System.exit(1);
+                }
+            }).start();
+        }
+    }
+
 
 }

@@ -132,6 +132,21 @@ validation:
 
 runningInfo:
   serverName: \${runningInfo.organization}
+
+mp:
+  jwt:
+    verify:
+      privatekey:
+        location: security/packagedPrivateKey.pem
+      publickey:
+        location: security/PackagedPublicKeyPkcs8.pem
+      issuer: \${runningInfo.organization} - \${runningInfo.serverName} Task Timekeeper Server
+    expiration:
+      default: 86400 # 1 day
+      extended: 2678400 # 1 month
+runningInfo:
+  organization: The Testing Organization
+  serverName: Testing
 """
     }
 }
