@@ -17,6 +17,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,7 @@ public class UserRegistration {
             description = "Bad request given. Data given could not pass validation. (duplicate email/ username, bad password, etc.)",
             content = @Content(mediaType = "text/plain")
     )
+    @Tags({@Tag(name="User")})
     public Response registerUser(UserRegistrationRequest request) {
         LOGGER.info("Got User Registration request.");
 

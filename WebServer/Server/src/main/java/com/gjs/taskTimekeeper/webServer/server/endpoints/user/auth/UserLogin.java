@@ -14,6 +14,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -67,6 +69,7 @@ public class UserLogin {
             description = "Happens when too many requests to login were sent in a given time period.",
             content = @Content(mediaType = "text/plain")
     )
+    @Tags({@Tag(name="User"),@Tag(name="Auth")})
     public Response loginUser(UserLoginRequest loginRequest){
         User user = User.findByEmailOrUsername(loginRequest.getUser());
 

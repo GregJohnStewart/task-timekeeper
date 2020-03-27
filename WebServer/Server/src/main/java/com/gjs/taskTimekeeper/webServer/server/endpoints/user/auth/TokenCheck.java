@@ -7,6 +7,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
@@ -38,6 +40,7 @@ public class TokenCheck {
                     schema = @Schema(implementation = TokenCheckResponse.class)
             )
     )
+    @Tags({@Tag(name="User"),@Tag(name="Auth")})
     @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public Response helloRolesAllowed(@Context SecurityContext ctx) {

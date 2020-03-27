@@ -86,6 +86,16 @@ info:
     name: "Greg Stewart"
     url: "https://gjstewart.net"
     email: "contact@gjstewart.net"
+# https://swagger.io/docs/specification/authentication/
+# https://swagger.io/docs/specification/authentication/bearer-authentication/
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
 paths:
 """
     }
