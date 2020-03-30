@@ -35,7 +35,4 @@ public class UserEntityTest extends RunningServerTest {
         assertEquals(user, foundUser);
     }
 
-    @Test
-
-
 }
