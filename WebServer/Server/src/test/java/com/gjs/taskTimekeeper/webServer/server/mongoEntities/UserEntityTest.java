@@ -19,7 +19,7 @@ public class UserEntityTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEntityTest.class);
 
     @Test
-    public void testUser(){
+    public void testPersistUser(){
         LOGGER.debug("Creating test user.");
         User user = new User();
         LOGGER.debug("Persisting user.");
@@ -29,13 +29,13 @@ public class UserEntityTest extends RunningServerTest {
         List<User> users = User.listAll();
 
         assertFalse(users.isEmpty());
-        // TODO:: figure out why broken in travis
-//        assertEquals(1, users.size());
-//        assertEquals(user, users.get(0));
 
         User foundUser = User.findById(user.id);
 
         assertEquals(user, foundUser);
     }
+
+    @Test
+
 
 }

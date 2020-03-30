@@ -37,6 +37,7 @@ public class User extends OurMongoEntity {
 	private String lockReason;
 
 	private Date joinDateTime = new Date();
+	private Date noLoginsBefore = new Date();
 	private Date lastLogin;
 	private Long numLogins = 0L;
 	private List<Date> lastHourLoginAttempts = new ArrayList<>();

@@ -30,6 +30,9 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
     - update user info
         - whole user patch, convenience endpoints for common updates
     - delete user
+ - jwt user
+   - not accept keys before user datetime
+   
  - enable https: https://quarkus.io/guides/http-reference
  - timekeeper endpoints
     - add timekeeper object to mongo
