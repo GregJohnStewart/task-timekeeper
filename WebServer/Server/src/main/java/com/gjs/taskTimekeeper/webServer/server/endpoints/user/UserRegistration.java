@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
+import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
@@ -39,6 +40,7 @@ public class UserRegistration {
     private final PasswordService passwordService;
     private final UsernameValidator usernameValidator;
     private final EmailValidator emailValidator;
+    private final TokenService tokenService;
     private MailTemplate welcomeEmailTemplate;
 
     //stats
@@ -47,14 +49,15 @@ public class UserRegistration {
     public UserRegistration(
             PasswordService passwordService,
             UsernameValidator usernameValidator,
-            EmailValidator emailValidator
+            EmailValidator emailValidator,
 //            @ResourcePath("email/welcomeVerification")
 //            MailTemplate welcomeEmailTemplate
-    ){
+            TokenService tokenService){
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
         this.emailValidator = emailValidator;
 //        this.welcomeEmailTemplate = welcomeEmailTemplate;
+        this.tokenService = tokenService;
     }
 
     @POST
@@ -110,6 +113,11 @@ public class UserRegistration {
             newUser.setApprovedUser(false);
         }
         newUser.setNotificationSettings(new NotificationSettings(true));
+
+        String validationToken = this.tokenService.generateToken();
+        newUser.setEmailValidationToken(
+                this.passwordService.createPasswordHash(validationToken)
+        );
 
         //TODO:: enable when working
 //        CompletionStage<Void> completionStage = this.welcomeEmailTemplate.to(newUser.getEmail())

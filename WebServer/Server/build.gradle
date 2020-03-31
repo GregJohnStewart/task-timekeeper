@@ -140,9 +140,6 @@ validation:
       includeSpecialChars: true
       includeNumbers: true
 
-runningInfo:
-  serverName: \${runningInfo.organization}
-
 mp:
   jwt:
     verify:
@@ -154,9 +151,10 @@ mp:
     expiration:
       default: 86400 # 1 day
       extended: 2678400 # 1 month
+
 runningInfo:
+  serverName: \${runningInfo.organization}
   organization: The Testing Organization
-  serverName: Testing
 """
     }
 }

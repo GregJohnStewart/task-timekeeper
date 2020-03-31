@@ -30,6 +30,7 @@ public class User extends OurMongoEntity {
 	private String hashedPass;
 	private String email;
 	private boolean emailValidated = false;
+	private Date lastEmailValidated;
 	private String emailValidationToken;
 	private boolean approvedUser = false;
 	private UserLevel level = UserLevel.REGULAR;
