@@ -10,7 +10,6 @@ import java.security.SecureRandom;
 
 /**
  * Service to generate tokens, made to be used in conjunction with the password service.
- * TODO:: test
  */
 @ApplicationScoped
 public class TokenService {
@@ -44,7 +43,10 @@ public class TokenService {
         return this.secureRandom.nextInt((max - min) + 1) + min;
     }
 
-
+    /**
+     * Generates a token for use around the service.
+     * @return A token that will validate with the password service.
+     */
     public String generateToken(){
         int maxLen = this.passwordValidator.getMinLength() * 2;
         String bank = LOWER;
