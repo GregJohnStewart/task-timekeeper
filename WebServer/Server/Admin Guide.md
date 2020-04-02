@@ -90,7 +90,17 @@ If you are a 'real organization' you might want to use keys that were issued by 
 
 There is a packaged keys to enable running right off the bat, but you _should not_ use them in production under any circumstances. The service will only run for ten minutes if these keys are used. 
 
+### User
+
+There are a couple of configurations related to the users themselves:
+
+`user.new.autoApprove` - If set to `true`, will automatically approve new users. Otherwise, an admin will have to approve their account before they are allowed to login.
+
 ## Runtime Administration
+
+### User/ User Management
+
+TODO
 
 ### Health checks
 

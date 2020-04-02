@@ -9,6 +9,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectP
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRegistrationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRequestException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserUnauthorizedException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.EmailValidationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.UsernameValidationException;
@@ -43,6 +44,7 @@ public class WebserverExceptionTest  {
                 Arguments.of(UserLockedException.class, 403),
                 Arguments.of(UserRegistrationException.class, 400),
                 Arguments.of(UserRequestException.class, 400),
+                Arguments.of(UserUnauthorizedException.class, 401),
                 Arguments.of(EmailValidationException.class, 400),
                 Arguments.of(PasswordValidationException.class, 400),
                 Arguments.of(UsernameValidationException.class, 400),

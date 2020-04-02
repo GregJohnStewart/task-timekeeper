@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.database.request.Entity
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.GroupMembership;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
+import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserInfo;
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -93,5 +94,19 @@ public class User extends OurMongoEntity {
 		}catch (EntityNotFoundException e){
 		}
 		throw new EntityNotFoundException("No user with given username or email found.");
+	}
+
+	public UserInfo toUserInfo(){
+		return new UserInfo(
+				this.getUsername(),
+				this.getEmail(),
+				this.isEmailValidated(),
+				this.isApprovedUser(),
+				this.getLevel(),
+				this.isLocked(),
+				this.getLockReason(),
+				this.getJoinDateTime(),
+				this.getLastLogin()
+		);
 	}
 }

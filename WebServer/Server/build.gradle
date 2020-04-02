@@ -152,6 +152,10 @@ mp:
       default: 86400 # 1 day
       extended: 2678400 # 1 month
 
+user:
+  new:
+    autoApprove: false
+
 runningInfo:
   serverName: \${runningInfo.organization}
   organization: The Testing Organization

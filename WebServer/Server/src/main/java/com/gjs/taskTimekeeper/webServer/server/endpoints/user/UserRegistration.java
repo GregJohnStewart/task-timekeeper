@@ -10,6 +10,7 @@ import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRespo
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
@@ -29,7 +30,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 
 @Path("/api/user/registration")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -41,6 +41,7 @@ public class UserRegistration {
     private final UsernameValidator usernameValidator;
     private final EmailValidator emailValidator;
     private final TokenService tokenService;
+    private final boolean newUserAutoApprove;
     private MailTemplate welcomeEmailTemplate;
 
     //stats
@@ -50,12 +51,16 @@ public class UserRegistration {
             PasswordService passwordService,
             UsernameValidator usernameValidator,
             EmailValidator emailValidator,
+            @ConfigProperty(name="user.new.autoApprove")
+            boolean newUserAutoApprove,
 //            @ResourcePath("email/welcomeVerification")
 //            MailTemplate welcomeEmailTemplate
-            TokenService tokenService){
+            TokenService tokenService
+    ){
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
         this.emailValidator = emailValidator;
+        this.newUserAutoApprove = newUserAutoApprove;
 //        this.welcomeEmailTemplate = welcomeEmailTemplate;
         this.tokenService = tokenService;
     }
@@ -98,11 +103,6 @@ public class UserRegistration {
 
         newUser.setEmailValidated(false);
 
-        newUser.setJoinDateTime(
-                Date.from(java.time.ZonedDateTime.now().toInstant())
-        );
-
-
         if(User.listAll().size() < 1) {
             LOGGER.info("First user to register. Making them an admin.");
             newUser.setLevel(UserLevel.ADMIN);
@@ -110,7 +110,7 @@ public class UserRegistration {
         } else {
             LOGGER.info("Creating a regular user.");
             newUser.setLevel(UserLevel.REGULAR);
-            newUser.setApprovedUser(false);
+            newUser.setApprovedUser(this.newUserAutoApprove);
         }
         newUser.setNotificationSettings(new NotificationSettings(true));
 
