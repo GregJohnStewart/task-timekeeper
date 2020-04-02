@@ -30,8 +30,9 @@ import java.util.Map;
 public class JwtService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtService.class);
     private static final Base64.Decoder DECODER = Base64.getDecoder();
+    public static final String JWT_USER_ID_CLAIM = "userId";
+    public static final String[] ROLES = {UserLevel.REGULAR.name(), UserLevel.ADMIN.name()};
 
-    private final ServerInfoBean serverInfo;
     private final long defaultExpiration;
     private final long extendedExpiration;
     private final String sigKeyId;
@@ -51,7 +52,6 @@ public class JwtService {
                     String issuer
 
     ) throws Exception {
-        this.serverInfo = serverInfo;
         this.defaultExpiration = defaultExpiration;
         this.extendedExpiration = extendedExpiration;
         this.sigKeyId = privateKeyLocation;
@@ -84,7 +84,7 @@ public class JwtService {
         output.put("sub", userIdentification);
         output.put("aud", userIdentification);
         output.put("upn", user.getEmail());
-        output.put("userId", user.id);
+        output.put(JWT_USER_ID_CLAIM, user.id);
 
         output.put("roleMappings", new HashMap<String, Object>());
 

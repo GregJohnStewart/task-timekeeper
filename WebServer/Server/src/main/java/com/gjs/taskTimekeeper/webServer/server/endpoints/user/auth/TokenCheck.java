@@ -11,7 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -43,8 +43,8 @@ public class TokenCheck {
     )
     @Tags({@Tag(name="User"),@Tag(name="Auth")})
     @SecurityRequirement(name="JwtAuth")
-    @PermitAll
-    @Produces(MediaType.TEXT_PLAIN)
+    @RolesAllowed({"REGULAR", "ADMIN"})
+    @Produces(MediaType.APPLICATION_JSON)
     public Response helloRolesAllowed(@Context SecurityContext ctx) {
         TokenCheckResponse response = new TokenCheckResponse();
         if(jwt.getRawToken() != null){

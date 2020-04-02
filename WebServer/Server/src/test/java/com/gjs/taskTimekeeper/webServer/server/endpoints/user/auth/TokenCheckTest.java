@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
@@ -39,11 +40,7 @@ public class TokenCheckTest extends RunningServerTest {
                 .when()
                 .get("/api/user/auth/tokenCheck")
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
-
-        LOGGER.info("Response with no jwt from tokenCheck: {}", response.extract().response().asString());
-        TokenCheckResponse tokenCheckResponse = response.extract().body().as(TokenCheckResponse.class);
-        assertFailedJwt(tokenCheckResponse);
+                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
     @Test
@@ -53,11 +50,7 @@ public class TokenCheckTest extends RunningServerTest {
                 .header(new Header("Authentication", null))
                 .get("/api/user/auth/tokenCheck")
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
-
-        LOGGER.info("Response with no jwt from tokenCheck: {}", response.extract().response().asString());
-        TokenCheckResponse tokenCheckResponse = response.extract().body().as(TokenCheckResponse.class);
-        assertFailedJwt(tokenCheckResponse);
+                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
     @Test
@@ -67,19 +60,44 @@ public class TokenCheckTest extends RunningServerTest {
                 .header(new Header("Authorization", "Bearer"))
                 .get("/api/user/auth/tokenCheck")
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode());
-
-        LOGGER.info("Response with no jwt from tokenCheck: {}", response.extract().response().asString());
-        TokenCheckResponse tokenCheckResponse = response.extract().body().as(TokenCheckResponse.class);
-        assertFailedJwt(tokenCheckResponse);
+                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
     }
 
     @Test
-    public void checkValidJwt(){
+    public void checkValidUserJwt(){
         User testUser = new User();
         testUser.setUsername("helloWorld");
         testUser.setEmail("test@world.com");
         testUser.setLastLogin(new Date());
+        testUser.setLevel(UserLevel.REGULAR);
+
+        testUser.persist();
+
+        String token = this.jwtService.generateTokenString(testUser, false);
+
+        ValidatableResponse response = given()
+                .when()
+                .header(new Header("Authorization", "Bearer " + token))
+                .get("/api/user/auth/tokenCheck")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode());
+
+        LOGGER.info("Response with jwt from tokenCheck: {}", response.extract().response().asString());
+        TokenCheckResponse tokenCheckResponse = response.extract().body().as(TokenCheckResponse.class);
+
+        assertTrue(tokenCheckResponse.isHadToken());
+        assertFalse(tokenCheckResponse.isExpired());
+//        assertTrue(tokenCheckResponse.isTokenSecure()); //fails due to no https?
+    }
+
+    @Test
+    public void checkValidAdminJwt(){
+        User testUser = new User();
+        testUser.setUsername("helloWorld");
+        testUser.setEmail("test@world.com");
+        testUser.setLastLogin(new Date());
+        testUser.setLevel(UserLevel.ADMIN);
+
         testUser.persist();
 
         String token = this.jwtService.generateTokenString(testUser, false);
