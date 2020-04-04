@@ -48,7 +48,6 @@ public class User extends OurMongoEntity {
 	private List<GroupMembership> memberships = new ArrayList<>();
 
 	/**
-	 * TODO:: test
 	 * @param email The email of the user to find
 	 * @return The user with the email given.
 	 * @throws EntityNotFoundException if no user with the email was found.
@@ -63,7 +62,6 @@ public class User extends OurMongoEntity {
 	}
 
 	/**
-	 * TODO:: test
 	 * @param username The username of the user to find.
 	 * @return The user with the given username.
 	 * @throws EntityNotFoundException if no user with the username was found.
@@ -78,7 +76,6 @@ public class User extends OurMongoEntity {
 	}
 
 	/**
-	 * TODO:: test
 	 * Finds a user by either a username or email.
 	 * @param emailUsername The password or email.
 	 * @return the user with the email or username given.
@@ -96,6 +93,10 @@ public class User extends OurMongoEntity {
 		throw new EntityNotFoundException("No user with given username or email found.");
 	}
 
+	/**
+	 * Gets the user info about the user, a subset of the whole user object.
+	 * @return the user info about the user, a subset of the whole user object.
+	 */
 	public UserInfo toUserInfo(){
 		return new UserInfo(
 				this.getUsername(),
