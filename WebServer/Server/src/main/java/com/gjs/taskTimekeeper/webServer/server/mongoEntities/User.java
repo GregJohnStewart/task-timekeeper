@@ -1,7 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.GroupMembership;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserInfo;
@@ -45,7 +44,6 @@ public class User extends OurMongoEntity {
 	private List<Date> lastHourLoginAttempts = new ArrayList<>();
 
 	private NotificationSettings notificationSettings = new NotificationSettings(true);
-	private List<GroupMembership> memberships = new ArrayList<>();
 
 	/**
 	 * @param email The email of the user to find
