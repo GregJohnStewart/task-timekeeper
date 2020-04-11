@@ -28,13 +28,17 @@ public class JwtServiceTest extends RunningServerTest {
     @Inject
     private JwtService jwtService;
 
-    @Inject PasswordService passwordService;
+    @Inject
+    private PasswordService passwordService;
+
+    @Inject
+    private UserUtils userUtils;
 
     private User testUser;
 
     @BeforeEach
     public void setTestUser(){
-        this.testUser = UserUtils.getTestUser(true, passwordService);
+        this.testUser = this.userUtils.getTestUser(true);
         this.testUser.setLastLogin(new Date());
         this.testUser.setNumLogins(1L);
     }
