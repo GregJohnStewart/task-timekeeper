@@ -18,10 +18,10 @@ public class StaticUtils {
     }
 
     /**
-     * Gets
-     * @param resourceLocation
-     * @return
-     * @throws MalformedURLException
+     * Gets the full URL for a file, either on the classpath or filesystem.
+     * @param resourceLocation The location of the resource to get.
+     * @return The full url of the resource.
+     * @throws MalformedURLException If the resource location was invalid for a URL
      */
     public static URL resourceAsUrl(String resourceLocation) throws MalformedURLException {
         URL url = StaticUtils.class.getClassLoader().getResource(resourceLocation);
