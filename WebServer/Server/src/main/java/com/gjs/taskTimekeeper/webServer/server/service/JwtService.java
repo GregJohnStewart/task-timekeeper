@@ -39,7 +39,6 @@ public class JwtService {
     private final String issuer;
     private final PrivateKey privateKey;
 
-
     public JwtService(
             ServerInfoBean serverInfo,
             @ConfigProperty(name="mp.jwt.verify.privatekey.location")
@@ -50,7 +49,6 @@ public class JwtService {
                     long extendedExpiration,
             @ConfigProperty(name="mp.jwt.verify.issuer")
                     String issuer
-
     ) throws Exception {
         this.defaultExpiration = defaultExpiration;
         this.extendedExpiration = extendedExpiration;
