@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class StaticUtils {
+public final class StaticUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(StaticUtils.class);
 
     /**
