@@ -45,6 +45,8 @@ subprojects {
         }
     }
 }
+
+// TODO:: figure out why we don't get full coverage in jacoco
 task codeCoverageReport(type: JacocoReport) {
     group "verification"
     description "Builds the coverage report from all sub projects' coverage reports."
@@ -72,5 +74,5 @@ codeCoverageReport.dependsOn {
 task updateWrapper(type: Wrapper) {
     group "wrapper"
     description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
-    gradleVersion = '6.1'
+    gradleVersion = '6.3'
 }
