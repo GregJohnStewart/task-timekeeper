@@ -21,9 +21,11 @@ The Manager works off of several objects:
    - timespans are added to a period to describe how long certain tasks were worked for that period
    - Example: a workday where I worked on a project from 1:00 to 2:00
 
-## Known Issues
+## Known Issues/ TODOs
 
 This is a list of known issues, if any.
+
+ - Unify new logo copying, make copy to on image script run rather than pull at Gradle build
 
 ### Webserver
 

@@ -25,7 +25,7 @@ mp:
 runningInfo:
   organization: The Testing Organization
   serverName: Testing
-  url: https://testing.com
+  orgUrl: https://testing.com
   contactInfo:
     name: Tester Mc Testerson
     email: test@foo.bar

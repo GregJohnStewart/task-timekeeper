@@ -159,6 +159,8 @@ user:
 runningInfo:
   serverName: \${runningInfo.organization}
   organization: The Testing Organization
+  hostname: localhost
+  port: \${quarkus.http.port}
 """
     }
 }

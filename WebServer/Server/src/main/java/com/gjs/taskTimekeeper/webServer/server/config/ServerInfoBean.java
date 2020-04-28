@@ -16,16 +16,18 @@ import java.util.Optional;
 public class ServerInfoBean {
     private Optional<String> organization;
     private Optional<String> serverName;
-    private Optional<URL> url;
+    private Optional<URL> orgUrl;
     private ContactInfo contactInfo;
+    private String hostname;
+    private int port;
 
     public ServerInfo toServerInfo() {
         ServerInfo info = new ServerInfo();
 
         info.setOrganization(this.getOrganization().orElse(""));
         info.setServerName(this.getServerName().orElse(""));
-        URL url = this.getUrl().orElse(null);
-        info.setUrl(url == null ? "" : url.toExternalForm());
+        URL url = this.getOrgUrl().orElse(null);
+        info.setOrgUrl(url == null ? "" : url.toExternalForm());
 
         ServerInfo.ContactInfo contactInfo = new ServerInfo.ContactInfo();
 
@@ -34,6 +36,9 @@ public class ServerInfoBean {
         contactInfo.setPhone(this.contactInfo.getPhone().orElse(""));
 
         info.setContactInfo(contactInfo);
+
+        info.setHostname(this.hostname);
+        info.setPort(this.port);
 
         return info;
     }

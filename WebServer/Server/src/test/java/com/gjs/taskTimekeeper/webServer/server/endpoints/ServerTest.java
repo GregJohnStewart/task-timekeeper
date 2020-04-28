@@ -35,9 +35,11 @@ class ServerTest extends RunningServerTest {
 
         assertEquals(infoBean.getOrganization().get(), info.getOrganization());
         assertEquals(infoBean.getServerName().get(), info.getServerName());
-        assertEquals(infoBean.getUrl().get().toString(), info.getUrl());
+        assertEquals(infoBean.getOrgUrl().get().toString(), info.getOrgUrl());
         assertEquals(infoBean.getContactInfo().getName().get(), info.getContactInfo().getName());
         assertEquals(infoBean.getContactInfo().getEmail().get(), info.getContactInfo().getEmail());
         assertEquals(infoBean.getContactInfo().getPhone().get(), info.getContactInfo().getPhone());
+        assertEquals(infoBean.getHostname(), info.getHostname());
+        assertEquals(infoBean.getPort(), info.getPort());
     }
 }
