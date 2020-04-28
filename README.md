@@ -64,3 +64,11 @@ This version describes tiny changes, such as tweaks in output wording, spelling,
 #### Build
 
 This version is automatically incremented at build time, simply a counter for the number of builds.
+
+### Dependency Checking
+
+We have integrated OWASP's dependency check into Gradle, and can generate reports on the dependencies used by the projects. To generate the reports, you can run: 
+
+`./gradlew dependencyCheckAggregate`
+
+The reports are placed in each projects' `build/security-report` repository.

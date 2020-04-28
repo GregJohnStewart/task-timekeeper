@@ -7,6 +7,8 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -39,6 +41,7 @@ public class Server {
                     schema = @Schema(implementation = ServerInfo.class)
             )
     )
+    @Tags({@Tag(name="Misc")})
     public Response getServerInfo(){
         return Response
                 .status(Response.Status.OK)

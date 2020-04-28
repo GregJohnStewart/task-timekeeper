@@ -36,3 +36,10 @@ compileJava {
     dependsOn ':BaseCode:Core:test'
     dependsOn 'incrementBuildVersion';
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}

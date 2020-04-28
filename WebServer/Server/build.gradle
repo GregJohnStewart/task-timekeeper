@@ -29,6 +29,8 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     // https://quarkus.io/guides/qute for templates
+    // https://www.morling.dev/blog/quarkus-qute-test-ride/
+    // https://quarkus.io/guides/writing-native-applications-tips#including-resources
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-resteasy-qute'
     // https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
@@ -42,7 +44,9 @@ dependencies {
     implementation 'io.quarkus:quarkus-elytron-security'
     // https://quarkus.io/guides/security-jwt 
     // https://vertx.io/docs/vertx-auth-jwt/java/
-//    implementation 'io.quarkus:quarkus-smallrye-jwt'
+    implementation 'io.quarkus:quarkus-smallrye-jwt'
+
+    implementation 'commons-io:commons-io:2.6'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
@@ -82,11 +86,21 @@ info:
     name: "Greg Stewart"
     url: "https://gjstewart.net"
     email: "contact@gjstewart.net"
+# https://swagger.io/docs/specification/authentication/
+# https://swagger.io/docs/specification/authentication/bearer-authentication/
+components:
+  securitySchemes:
+    JwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - JwtAuth: []
 paths:
 """
     }
 }
-//TODO:: add config for naming your server
+
 task writePropertiesFile() {
     doLast {
         new File(projectResourcesDir + projectPropertiesFileName).text = """
@@ -125,6 +139,26 @@ validation:
       includeCaps: true
       includeSpecialChars: true
       includeNumbers: true
+
+mp:
+  jwt:
+    verify:
+      privatekey:
+        location: security/packagedPrivateKey.pem
+      publickey:
+        location: security/PackagedPublicKeyPkcs8.pem
+      issuer: \${runningInfo.organization} - \${runningInfo.serverName} Task Timekeeper Server
+    expiration:
+      default: 86400 # 1 day
+      extended: 2678400 # 1 month
+
+user:
+  new:
+    autoApprove: false
+
+runningInfo:
+  serverName: \${runningInfo.organization}
+  organization: The Testing Organization
 """
     }
 }
@@ -156,6 +190,13 @@ compileJava {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
 }
 
 // stop lombok from overwriting its own config

@@ -2,6 +2,8 @@
 
 This is the webserver for managing multiple users' time manager data.
 
+For info on server administration, look at the [Admin Guide](Admin%20Guide.md)
+
 When running, swagger can be found at: [http://localhost:8080/swagger-ui/index.html]()
 
 TODO here (in the readme):
@@ -23,11 +25,17 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
     - Password service (finish/ fix service)
     - user registration service
     - User
- - user login (token return)
-    - token creation
-    - token validation
  - user endpoints
     - get user info
     - update user info
         - whole user patch, convenience endpoints for common updates
-    - delete user 
+    - delete user
+ - jwt user
+   - not accept keys before user datetime
+   
+ - enable https: https://quarkus.io/guides/http-reference
+ - timekeeper endpoints
+    - add timekeeper object to mongo
+    - make endpoints, secured for user
+ - move items in 'tomovetolib' to lib (need to fix jandex indexing....)
+ 
