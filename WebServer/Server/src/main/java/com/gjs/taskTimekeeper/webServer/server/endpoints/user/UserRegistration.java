@@ -10,6 +10,7 @@ import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRespo
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
+import io.quarkus.qute.api.ResourcePath;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -30,6 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.concurrent.CompletionStage;
 
 @Path("/api/user/registration")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -42,7 +44,7 @@ public class UserRegistration {
     private final EmailValidator emailValidator;
     private final TokenService tokenService;
     private final boolean newUserAutoApprove;
-    private MailTemplate welcomeEmailTemplate;
+    private final MailTemplate welcomeEmailTemplate;
 
     //stats
     private long numAdded = 0;
@@ -53,15 +55,15 @@ public class UserRegistration {
             EmailValidator emailValidator,
             @ConfigProperty(name="user.new.autoApprove")
             boolean newUserAutoApprove,
-//            @ResourcePath("email/welcomeVerification")
-//            MailTemplate welcomeEmailTemplate
+            @ResourcePath("email/welcomeVerification")
+            MailTemplate welcomeEmailTemplate,
             TokenService tokenService
     ){
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
         this.emailValidator = emailValidator;
         this.newUserAutoApprove = newUserAutoApprove;
-//        this.welcomeEmailTemplate = welcomeEmailTemplate;
+        this.welcomeEmailTemplate = welcomeEmailTemplate;
         this.tokenService = tokenService;
     }
 
@@ -85,7 +87,7 @@ public class UserRegistration {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
-    public Response registerUser(UserRegistrationRequest request) {
+    public CompletionStage<Response> registerUser(UserRegistrationRequest request) {
         LOGGER.info("Got User Registration request.");
 
         User newUser = new User();
@@ -119,18 +121,22 @@ public class UserRegistration {
                 this.passwordService.createPasswordHash(validationToken)
         );
 
-        //TODO:: enable when working
-//        CompletionStage<Void> completionStage = this.welcomeEmailTemplate.to(newUser.getEmail())
-//                .subject("Welcome to the TaskTimekeeper Server")
-//                .send();
+        CompletionStage<Void> completionStage = this.welcomeEmailTemplate
+                .to(newUser.getEmail())
+                .subject("Welcome to the TaskTimekeeper Server")
+                .data("name", newUser.getUsername())
+                .send();
 
         newUser.persist();
+
         this.numAdded++;
-        return Response.status(Response.Status.CREATED).entity(new UserRegistrationResponse(
+        return completionStage.thenApply(
+                x -> Response.status(Response.Status.CREATED).entity(new UserRegistrationResponse(
                 newUser.getUsername(),
                 newUser.getEmail(),
                 newUser.id.toHexString()
-        )).build();
+        )).build()
+        );
     }
 
     @Gauge(name = "numAdded", unit = MetricUnits.NONE, description = "The number of users actually added.")

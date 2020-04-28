@@ -21,9 +21,9 @@ public class LifecycleBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleBean.class);
     private static final String PACKAGED_PRIVATE = "packagedPrivateKey.pem";
     private static final String PACKAGED_PUBLIC = "packagedPublicKey.pem";
-    public static final String PACKAGED_KEYS_ERR_MESSAGE = "Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.";
-    public static final String PACKAGED_KEYS_ERR_MESSAGE_LINE_2 = "Server will automatically shut down in 10 minutes.";
-    public static final String PACKAGED_KEYS_CLOSE_MESSAGE = "Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.";
+    private static final String PACKAGED_KEYS_ERR_MESSAGE = "Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.";
+    private static final String PACKAGED_KEYS_ERR_MESSAGE_LINE_2 = "Server will automatically shut down in 10 minutes.";
+    private static final String PACKAGED_KEYS_CLOSE_MESSAGE = "Using packaged keys. This is unacceptable, see the Admin Guide on the project's github for more information.";
 
     private ZonedDateTime startDateTime;
 
