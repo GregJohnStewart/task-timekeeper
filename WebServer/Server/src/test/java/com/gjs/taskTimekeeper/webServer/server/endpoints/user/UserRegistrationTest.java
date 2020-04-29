@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
@@ -80,6 +81,12 @@ public class UserRegistrationTest extends RunningServerTest {
         assertEquals(request.getEmail(), newUser.getEmail());
 
         passwordService.assertPasswordMatchesHash(newUser.getHashedPass(), request.getPlainPassword());
+    }
+
+    private void assertErrorMessage(String expected, String message){
+        if(!message.matches(expected)){
+            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
+        }
     }
 
     @Test
@@ -158,11 +165,13 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+
+        this.assertErrorMessage("Username already exists.", response.asString());
     }
 
     @ParameterizedTest
     @MethodSource("badUserNames")
-    public void registerUserBadUsernameTest(String badUsername) {
+    public void registerUserBadUsernameTest(String badUsername, String expectedError) {
         UserRegistrationRequest registrationRequest = this.getTestRequest();
 
         registrationRequest.setUsername(badUsername);
@@ -174,18 +183,22 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+        this.assertErrorMessage(expectedError, response.asString());
     }
 
     public static Stream<Arguments> badUserNames() {
         return Stream.of(
                 Arguments.of(
-                        ""
+                        "",
+                        "Username too short. Must be at least 1 character\\(s\\) long."
                 ),
                 Arguments.of(
-                        (String)null
+                        (String)null,
+                        "Username cannot be null."
                 ),
                 Arguments.of(
-                        " "
+                        " ",
+                        "Username too short. Must be at least 1 character\\(s\\) long."
                 )
         );
     }
@@ -203,6 +216,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+        this.assertErrorMessage("Password is too short. Must be at least 32 characters. Was 0 character\\(s\\).", response.asString());
     }
 
     @Test
@@ -218,6 +232,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+        this.assertErrorMessage("Received an invalid email.", response.asString());
     }
 
     @Test
@@ -237,5 +252,6 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+        this.assertErrorMessage("Email already exists.", response.asString());
     }
 }
