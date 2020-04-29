@@ -31,6 +31,7 @@ public class UserEmailValidation {
     }
 
 
+    //TODO:: make return a html page to return to main ui
     @GET
     @Counted(name = "numRequests", description = "How many user email validation requests handled.")
     @Timed(name = "requestTimer", description = "A measure of how long it takes to validate user's email.", unit = MetricUnits.MILLISECONDS)
@@ -63,6 +64,7 @@ public class UserEmailValidation {
         user.setEmailValidationToken(null);
         user.setLastEmailValidated(new Date());
 
+        user.update();
 
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).build();
     }

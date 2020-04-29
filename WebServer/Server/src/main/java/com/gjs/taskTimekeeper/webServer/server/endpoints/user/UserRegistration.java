@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
+import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
@@ -31,6 +32,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.CompletionStage;
 
 @Path("/api/user/registration")
@@ -45,6 +49,7 @@ public class UserRegistration {
     private final TokenService tokenService;
     private final boolean newUserAutoApprove;
     private final MailTemplate welcomeEmailTemplate;
+    private final ServerInfoBean serverInfoBean;
 
     //stats
     private long numAdded = 0;
@@ -57,7 +62,8 @@ public class UserRegistration {
             boolean newUserAutoApprove,
             @ResourcePath("email/welcomeVerification")
             MailTemplate welcomeEmailTemplate,
-            TokenService tokenService
+            TokenService tokenService,
+            ServerInfoBean serverInfoBean
     ){
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
@@ -65,6 +71,7 @@ public class UserRegistration {
         this.newUserAutoApprove = newUserAutoApprove;
         this.welcomeEmailTemplate = welcomeEmailTemplate;
         this.tokenService = tokenService;
+        this.serverInfoBean = serverInfoBean;
     }
 
     @POST
@@ -87,7 +94,7 @@ public class UserRegistration {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
-    public CompletionStage<Response> registerUser(UserRegistrationRequest request) {
+    public CompletionStage<Response> registerUser(UserRegistrationRequest request) throws UnsupportedEncodingException, MalformedURLException {
         LOGGER.info("Got User Registration request.");
 
         User newUser = new User();
@@ -116,18 +123,33 @@ public class UserRegistration {
         }
         newUser.setNotificationSettings(new NotificationSettings(true));
 
-        String validationToken = this.tokenService.generateToken();
+        String emailValidationToken = this.tokenService.generateToken();
         newUser.setEmailValidationToken(
-                this.passwordService.createPasswordHash(validationToken)
+                this.passwordService.createPasswordHash(emailValidationToken)
+        );
+
+        newUser.persist();
+
+        //TODO:: http/s selection
+        URL validationLink = new URL(
+                "http://" +
+                        this.serverInfoBean.getHostname() +
+                        ":" +
+                        this.serverInfoBean.getPort() +
+                        "/api/user/emailValidation" +
+                        "?" +
+                        "userId=" + newUser.id +
+                        "&" +
+                        "validationToken=" + emailValidationToken
         );
 
         CompletionStage<Void> completionStage = this.welcomeEmailTemplate
                 .to(newUser.getEmail())
                 .subject("Welcome to the TaskTimekeeper Server")
                 .data("name", newUser.getUsername())
+                .data("validationLink", validationLink)
                 .send();
 
-        newUser.persist();
 
         this.numAdded++;
         return completionStage.thenApply(
