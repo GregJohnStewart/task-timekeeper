@@ -11,6 +11,7 @@ import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRespo
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
 import io.quarkus.mailer.MailTemplate;
+import io.quarkus.qute.RawString;
 import io.quarkus.qute.api.ResourcePath;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.MetricUnits;
@@ -34,7 +35,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.CompletionStage;
 
 @Path("/api/user/registration")
@@ -131,8 +131,7 @@ public class UserRegistration {
         newUser.persist();
 
         //TODO:: http/s selection
-        URL validationLink = new URL(
-                "http://" +
+        String validationLink = "http://" +
                         this.serverInfoBean.getHostname() +
                         ":" +
                         this.serverInfoBean.getPort() +
@@ -140,14 +139,13 @@ public class UserRegistration {
                         "?" +
                         "userId=" + newUser.id +
                         "&" +
-                        "validationToken=" + emailValidationToken
-        );
+                        "validationToken=" + emailValidationToken;
 
         CompletionStage<Void> completionStage = this.welcomeEmailTemplate
                 .to(newUser.getEmail())
                 .subject("Welcome to the TaskTimekeeper Server")
                 .data("name", newUser.getUsername())
-                .data("validationLink", validationLink)
+                .data("validationLink", new RawString(validationLink))
                 .send();
 
 

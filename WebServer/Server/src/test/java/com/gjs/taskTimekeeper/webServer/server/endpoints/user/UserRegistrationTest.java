@@ -28,6 +28,9 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -60,7 +63,8 @@ public class UserRegistrationTest extends RunningServerTest {
 
     private void assertEmailNotSent(String email) {
         List<Mail> sent = mailbox.getMessagesSentTo(email);
-        assertTrue(sent.isEmpty());
+        assertNull(sent);
+//        assertTrue(sent.isEmpty());
     }
 
     private void assertEmailSent(String email) {
@@ -79,6 +83,12 @@ public class UserRegistrationTest extends RunningServerTest {
     private void assertUserEqualsRegistration(UserRegistrationRequest request, UserRegistrationResponse response, User newUser) {
         assertEquals(response.getUsername(), newUser.getUsername());
         assertEquals(request.getEmail(), newUser.getEmail());
+
+        assertFalse(newUser.isEmailValidated());
+        assertNull(newUser.getLastEmailValidated());
+        assertNotNull(newUser.getJoinDateTime());
+        assertNotNull(newUser.getNoLoginsBefore());
+        assertEquals(newUser.getJoinDateTime(), newUser.getNoLoginsBefore());
 
         passwordService.assertPasswordMatchesHash(newUser.getHashedPass(), request.getPlainPassword());
     }
@@ -114,6 +124,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 newUser
         );
 
+        assertTrue(newUser.isApprovedUser());
         assertEquals(UserLevel.ADMIN, newUser.getLevel());
     }
 
@@ -145,6 +156,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 newUser
         );
 
+        assertFalse(newUser.isApprovedUser());
         assertEquals(UserLevel.REGULAR, newUser.getLevel());
     }
 
@@ -167,6 +179,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
 
         this.assertErrorMessage("Username already exists.", response.asString());
+        assertEmailNotSent(registrationRequest.getEmail());
     }
 
     @ParameterizedTest
@@ -184,6 +197,7 @@ public class UserRegistrationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
         this.assertErrorMessage(expectedError, response.asString());
+        assertEmailNotSent(registrationRequest.getEmail());
     }
 
     public static Stream<Arguments> badUserNames() {
@@ -217,6 +231,7 @@ public class UserRegistrationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
         this.assertErrorMessage("Password is too short. Must be at least 32 characters. Was 0 character\\(s\\).", response.asString());
+        assertEmailNotSent(registrationRequest.getEmail());
     }
 
     @Test
@@ -233,6 +248,7 @@ public class UserRegistrationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
         this.assertErrorMessage("Received an invalid email.", response.asString());
+        assertEmailNotSent(registrationRequest.getEmail());
     }
 
     @Test
@@ -253,5 +269,6 @@ public class UserRegistrationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
         this.assertErrorMessage("Email already exists.", response.asString());
+        assertEmailNotSent(registrationRequest.getEmail());
     }
 }

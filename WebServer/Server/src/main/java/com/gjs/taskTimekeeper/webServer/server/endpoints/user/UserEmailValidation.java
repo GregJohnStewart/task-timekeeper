@@ -13,10 +13,10 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -51,14 +51,15 @@ public class UserEmailValidation {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
-    public Response validateUserEmail(@PathParam String validationToken, @PathParam ObjectId userId) {
+    public Response validateUserEmail(@QueryParam("validationToken") String validationToken, @QueryParam("userId") ObjectId userId) {
         User user = User.findById(userId);
 
         if(user == null){
             throw new EntityNotFoundException("User was not found.");
         }
 
-        this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), validationToken);
+
+        this.passwordService.assertPasswordMatchesHash(user.getEmailValidationToken(), validationToken);
 
         user.setEmailValidated(true);
         user.setEmailValidationToken(null);
@@ -68,5 +69,7 @@ public class UserEmailValidation {
 
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
+
+    //TODO:: endpoint to resend
 
 }
