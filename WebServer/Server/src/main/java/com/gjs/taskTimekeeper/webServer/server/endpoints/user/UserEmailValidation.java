@@ -2,6 +2,8 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
+import com.gjs.taskTimekeeper.webServer.server.exception.validation.ValidationException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import org.bson.types.ObjectId;
@@ -47,19 +49,33 @@ public class UserEmailValidation {
     )
     @APIResponse(
             responseCode = "400",
-            description = "Bad request given. Data given could not pass validation. (wrong key given for user, etc.)",
+            description = "Bad request given. Data given could not pass validation. (No id/ token given, bad token)",
+            content = @Content(mediaType = "text/plain")
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Bad request given. Could not find user from id given.",
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
     public Response validateUserEmail(@QueryParam("validationToken") String validationToken, @QueryParam("userId") ObjectId userId) {
-        User user = User.findById(userId);
+        if(validationToken == null){
+            throw new ValidationException("No token given.");
+        }
+        if(userId == null){
+            throw new ValidationException("No user id given.");
+        }
 
+        User user = User.findById(userId);
         if(user == null){
             throw new EntityNotFoundException("User was not found.");
         }
 
-
-        this.passwordService.assertPasswordMatchesHash(user.getEmailValidationToken(), validationToken);
+        try {
+            this.passwordService.assertPasswordMatchesHash(user.getEmailValidationToken(), validationToken);
+        }catch (IncorrectPasswordException e){
+            throw new ValidationException("Token given was invalid.");
+        }
 
         user.setEmailValidated(true);
         user.setEmailValidationToken(null);

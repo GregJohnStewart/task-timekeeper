@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordServiceTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
@@ -11,6 +12,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,7 +30,11 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
@@ -47,30 +53,18 @@ public class UserEmailValidationTest extends RunningServerTest {
         mailbox.clear();
     }
 
+    private void assertErrorMessage(String expected, String message){
+        if(!message.matches(expected)){
+            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
+        }
+    }
+
     private UserRegistrationRequest getTestRequest() {
         return new UserRegistrationRequest(
                 "test_user",
                 USER_EMAIL,
                 PasswordServiceTest.GOOD_PASS
         );
-    }
-
-    private void assertEmailNotSent(String email) {
-        List<Mail> sent = mailbox.getMessagesSentTo(email);
-        assertTrue(sent.isEmpty());
-    }
-
-    private void assertEmailSent(String email) {
-        List<Mail> sent = mailbox.getMessagesSentTo(email);
-        assertEquals(1, sent.size());
-        Mail actual = sent.get(0);
-
-        assertEquals(
-                "Welcome to the TaskTimekeeper Server",
-                actual.getSubject()
-        );
-
-        LOGGER.debug("Email from registration: {}", actual.getHtml());
     }
 
     private UserRegistrationResponse doNewUserRequest(){
@@ -121,7 +115,13 @@ public class UserEmailValidationTest extends RunningServerTest {
         return output;
     }
 
+    private void assertNotValidated(String email){
+        User newUser = User.findByEmail(email);
 
+        assertFalse(newUser.isEmailValidated());
+        assertNotNull(newUser.getEmailValidationToken());
+        assertNull(newUser.getLastEmailValidated());
+    }
 
     @Test
     public void validateNewUserTest() throws MalformedURLException {
@@ -129,10 +129,8 @@ public class UserEmailValidationTest extends RunningServerTest {
 
         URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
 
-
         Response response = given()
                 .when()
-                .contentType(ContentType.JSON)
                 .basePath(validationUrl.getPath())
                 .queryParams(this.getParams(validationUrl.getQuery()))
                 .get();
@@ -140,9 +138,114 @@ public class UserEmailValidationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode());
 
-        //TODO:: assert user was validated
+
+        User newUser = User.findByEmail(registrationResponse.getEmail());
+
+        assertTrue(newUser.isEmailValidated());
+        assertNull(newUser.getEmailValidationToken());
+        assertNotNull(newUser.getLastEmailValidated());
     }
 
-    //TODO:: test bad userId
-    //TODO:: test bad token
+    @Test
+    public void validateNewUserBadUserIdTest() throws MalformedURLException {
+        UserRegistrationResponse registrationResponse = this.doNewUserRequest();
+
+        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+
+        Map<String, String> query = this.getParams(validationUrl.getQuery());
+
+        query.put("userId", new ObjectId().toHexString());
+
+        Response response = given()
+                .when()
+                .basePath(validationUrl.getPath())
+                .queryParams(query)
+                .get();
+
+        response.then()
+                .statusCode(javax.ws.rs.core.Response.Status.NOT_FOUND.getStatusCode());
+
+
+        User newUser = User.findByEmail(registrationResponse.getEmail());
+
+        assertFalse(newUser.isEmailValidated());
+        assertNotNull(newUser.getEmailValidationToken());
+        assertNull(newUser.getLastEmailValidated());
+
+        assertErrorMessage("User was not found.", response.asString());
+    }
+
+    @Test
+    public void validateNewUserNoUserIdTest() throws MalformedURLException {
+        UserRegistrationResponse registrationResponse = this.doNewUserRequest();
+
+        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+
+        Map<String, String> query = this.getParams(validationUrl.getQuery());
+
+        query.remove("userId");
+
+        Response response = given()
+                .when()
+                .basePath(validationUrl.getPath())
+                .queryParams(query)
+                .get();
+
+        response.then()
+                .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+
+        assertNotValidated(registrationResponse.getEmail());
+
+        assertErrorMessage("No user id given.", response.asString());
+    }
+
+    @Test
+    public void validateNewUserBadValidationTokenTest() throws MalformedURLException {
+        UserRegistrationResponse registrationResponse = this.doNewUserRequest();
+
+        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+
+        Map<String, String> query = this.getParams(validationUrl.getQuery());
+
+        query.put("validationToken", "helloworld");
+
+        Response response = given()
+                .when()
+                .basePath(validationUrl.getPath())
+                .queryParams(query)
+                .get();
+
+        response.then()
+                .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+
+
+        this.assertNotValidated(registrationResponse.getEmail());
+
+        assertErrorMessage("Token given was invalid.", response.asString());
+    }
+
+    @Test
+    public void validateNewUserNoValidationTokenTest() throws MalformedURLException {
+        UserRegistrationResponse registrationResponse = this.doNewUserRequest();
+
+        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+
+        Map<String, String> query = this.getParams(validationUrl.getQuery());
+
+        query.remove("validationToken");
+
+        Response response = given()
+                .when()
+                .basePath(validationUrl.getPath())
+                .queryParams(query)
+                .get();
+
+        response.then()
+                .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
+
+
+        this.assertNotValidated(registrationResponse.getEmail());
+
+        assertErrorMessage("No token given.", response.asString());
+    }
 }
