@@ -2,24 +2,15 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui.util;
 
 import info.clearthought.layout.TableLayout;
 import info.clearthought.layout.TableLayoutConstraints;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Label;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 public class TableLayoutHelper extends JPanel {
 
@@ -31,11 +22,13 @@ public class TableLayoutHelper extends JPanel {
     private static final Insets BUTTON_INSETS = new Insets(-2, 0, -2, 0);
 
     private TableLayoutHelper(
+            String name,
             List<List<Object>> data,
             List<String> headers,
             Map<Integer, Double> colWidths,
             Map<Integer, Color> rowColors) {
         super();
+        this.setName(name);
 
         int numCols = headers.size();
         int numRows = data.size();
@@ -57,37 +50,44 @@ public class TableLayoutHelper extends JPanel {
     }
 
     public TableLayoutHelper(
+            String name,
             final Container pane,
             List<List<Object>> data,
             List<String> headers,
             Map<Integer, Double> colWidths,
             Map<Integer, Color> rowColors) {
-        this(data, headers, colWidths, rowColors);
+        this(name, data, headers, colWidths, rowColors);
         this.addToPane(pane);
     }
 
     public TableLayoutHelper(
+            String name,
             final JScrollPane pane,
             List<List<Object>> data,
             List<String> headers,
             Map<Integer, Double> colWidths,
             Map<Integer, Color> rowColors) {
-        this(data, headers, colWidths, rowColors);
+        this(name, data, headers, colWidths, rowColors);
         this.addToPane(pane);
     }
 
     public TableLayoutHelper(
+            String name,
             final JScrollPane pane,
             List<List<Object>> data,
             List<String> headers,
             Map<Integer, Double> colWidths) {
-        this(data, headers, colWidths, new HashMap<>());
+        this(name, data, headers, colWidths, new HashMap<>());
         this.addToPane(pane);
     }
 
     public TableLayoutHelper(
-            final JScrollPane pane, List<List<Object>> data, List<String> headers) {
-        this(data, headers, new HashMap<>(), new HashMap<>());
+            String name,
+            final JScrollPane pane,
+            List<List<Object>> data,
+            List<String> headers
+    ) {
+        this(name, data, headers, new HashMap<>(), new HashMap<>());
         this.addToPane(pane);
     }
 

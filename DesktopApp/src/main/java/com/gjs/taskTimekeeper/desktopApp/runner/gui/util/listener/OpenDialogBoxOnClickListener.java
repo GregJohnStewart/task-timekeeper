@@ -1,10 +1,7 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.gui.util.listener;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import java.awt.Component;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -30,8 +27,7 @@ public class OpenDialogBoxOnClickListener extends MouseAdapter {
         this(parent, message, title, messageType, new ImageIcon(icon));
     }
 
-    public OpenDialogBoxOnClickListener(
-            Component parent, Object message, String title, int messageType) {
+    public OpenDialogBoxOnClickListener(Component parent, Object message, String title, int messageType) {
         this.parent = parent;
         this.message = message;
         this.title = title;
