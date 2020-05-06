@@ -54,6 +54,7 @@ subprojects {
         }
     }
 
+    // jacoco implementation inspiration: https://github.com/SurpSG/jacoco-offline-instrumentation
     configurations {
         jacoco
         jacocoRuntime
@@ -122,22 +123,41 @@ def moduleDependencies(Project project) {
     return modules
 }
 
-// TODO:: figure out why we don't get full coverage in jacoco
-task codeCoverageReport(type: JacocoReport) {
+task codeCoverageReport() {
     group "verification"
     description "Builds the coverage report from all sub projects' coverage reports."
-
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
-    }
-
-    reports {
-        xml.enabled true
-//        xml.destination "${buildDir}/reports/jacoco/report.xml"
-        html.enabled true
-        csv.enabled true
+    outputs.upToDateWhen { false }
+    doLast {
+        ant.taskdef(name: 'report',
+                classname: 'org.jacoco.ant.ReportTask',
+                classpath: configurations.jacoco.asPath)
+        ant.report() {
+            executiondata {
+                subprojects.buildDir.path.collect { file(it + '/jacoco/tests.exec') }.findAll { it.exists() }.each {
+                    ant.file(file: it.path)
+                }
+            }
+            structure(name: 'Example') {
+                classfiles {
+                    files(subprojects.sourceSets.main.output.classesDirs).each {
+                        if(it.exists()){
+                            fileset(dir: it)
+                        }
+                    }
+                }
+                sourcefiles {
+                    files(subprojects.sourceSets.main.java.srcDirs).each {
+                        if(it.exists()){
+                            fileset(dir: it)
+                        }
+                    }
+                }
+            }
+            String destDir = buildDir.path + '/reports/jacoco/'
+            html(destdir: destDir + 'html')
+            xml(destfile: destDir + 'report.xml')
+            csv(destfile: destDir + 'report.csv')
+        }
     }
 }
 codeCoverageReport.dependsOn {

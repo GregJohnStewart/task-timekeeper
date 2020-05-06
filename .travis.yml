@@ -37,9 +37,5 @@ jobs:
         # TODO:: do native compile, check
         - ./gradlew codeCoverageReport
 
-
-#script:
-#  - ./gradlew check
-#  - ./gradlew codeCoverageReport
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -f build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
+  - bash <(curl -s https://codecov.io/bash) -f build/reports/jacoco/report.xml
