@@ -2,6 +2,8 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
+import com.gjs.taskTimekeeper.webServer.server.exception.validation.ValidationException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import org.bson.types.ObjectId;
@@ -13,10 +15,10 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -31,6 +33,7 @@ public class UserEmailValidation {
     }
 
 
+    //TODO:: make return a html page to return to main ui
     @GET
     @Counted(name = "numRequests", description = "How many user email validation requests handled.")
     @Timed(name = "requestTimer", description = "A measure of how long it takes to validate user's email.", unit = MetricUnits.MILLISECONDS)
@@ -46,25 +49,43 @@ public class UserEmailValidation {
     )
     @APIResponse(
             responseCode = "400",
-            description = "Bad request given. Data given could not pass validation. (wrong key given for user, etc.)",
+            description = "Bad request given. Data given could not pass validation. (No id/ token given, bad token)",
+            content = @Content(mediaType = "text/plain")
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Bad request given. Could not find user from id given.",
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
-    public Response validateUserEmail(@PathParam String validationToken, @PathParam ObjectId userId) {
-        User user = User.findById(userId);
+    public Response validateUserEmail(@QueryParam("validationToken") String validationToken, @QueryParam("userId") ObjectId userId) {
+        if(validationToken == null){
+            throw new ValidationException("No token given.");
+        }
+        if(userId == null){
+            throw new ValidationException("No user id given.");
+        }
 
+        User user = User.findById(userId);
         if(user == null){
             throw new EntityNotFoundException("User was not found.");
         }
 
-        this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), validationToken);
+        try {
+            this.passwordService.assertPasswordMatchesHash(user.getEmailValidationToken(), validationToken);
+        }catch (IncorrectPasswordException e){
+            throw new ValidationException("Token given was invalid.");
+        }
 
         user.setEmailValidated(true);
         user.setEmailValidationToken(null);
         user.setLastEmailValidated(new Date());
 
+        user.update();
 
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).build();
     }
+
+    //TODO:: endpoint to resend
 
 }

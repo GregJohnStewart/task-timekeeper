@@ -35,3 +35,6 @@ compileJava {
     dependsOn ':BaseCode:Core:test'
     dependsOn 'incrementBuildVersion';
 }
+
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false

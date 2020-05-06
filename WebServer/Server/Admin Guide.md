@@ -52,7 +52,8 @@ You can define specific info about your server, like the server's name and conta
 runningInfo:
   organization: # The organization running the server
   serverName:   # The name of the server. defaults to organization
-  url:          # URL to the organization or running party
+  orgUrl:       # URL to the organization or running party
+  hostname:     # Hostname to use to hit this service. Defaults to "localhost"
   contactInfo:
     name:       # the name for the main contact
     email:      # the email of the main contact
