@@ -2,8 +2,8 @@ package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
-import com.gjs.taskTimekeeper.webServer.webLibrary.UserInfo;
-import com.gjs.taskTimekeeper.webServer.webLibrary.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;

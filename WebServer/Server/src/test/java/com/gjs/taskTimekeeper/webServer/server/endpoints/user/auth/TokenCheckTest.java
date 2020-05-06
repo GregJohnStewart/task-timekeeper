@@ -5,7 +5,7 @@ import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
 import com.gjs.taskTimekeeper.webServer.webLibrary.TokenCheckResponse;
-import com.gjs.taskTimekeeper.webServer.webLibrary.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.Header;

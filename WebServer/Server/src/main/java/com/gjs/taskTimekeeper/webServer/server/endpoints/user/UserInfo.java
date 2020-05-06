@@ -5,7 +5,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserReques
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserUnauthorizedException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
-import com.gjs.taskTimekeeper.webServer.webLibrary.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -56,7 +56,7 @@ public class UserInfo {
             description = "Got the user's info.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.UserInfo.class)
+                    schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class)
             )
     )
     @APIResponse(
@@ -108,7 +108,7 @@ public class UserInfo {
 
                     schema = @Schema(
                             type = SchemaType.ARRAY,
-                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.UserInfo.class
+                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
                     )
             )
     )
@@ -122,7 +122,7 @@ public class UserInfo {
     @RolesAllowed({"ADMIN"})
     public Response getUsersInfo(@Context SecurityContext ctx){
         List<User> users = User.listAll();
-        List<com.gjs.taskTimekeeper.webServer.webLibrary.UserInfo> userInfos = new ArrayList<>(users.size());
+        List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
 
         for(User curUser : users){
             userInfos.add(curUser.toUserInfo());
