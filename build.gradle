@@ -7,12 +7,20 @@
  */
 plugins {
     // https://github.com/jeremylong/dependency-check-gradle
-    //TODO:: re-enable when quarkus plays nice (webserver won't assemble with this)
-//    id "org.owasp.dependencycheck" version "5.2.4"
+    id "org.owasp.dependencycheck" version "5.3.2.1"
 }
+configurations {
+    jacoco
+    jacocoRuntime
+}
+dependencies {
+    jacoco group: 'org.jacoco', name: 'org.jacoco.ant', version: "${jacocoVersion}", classifier: 'nodeps'
+    jacocoRuntime group: 'org.jacoco', name: 'org.jacoco.agent', version: "${jacocoVersion}", classifier: 'runtime'
+}
+
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'jacoco'
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -20,8 +28,12 @@ allprojects {
     }
 }
 subprojects {
-    //TODO:: re-enable when quarkus plays nice (webserver won't assemble with this)
-//    apply plugin: 'org.owasp.dependencycheck'
+    //TODO: figure out why so many extra outputs (in non-project build directories), why all the reports appear the same
+    apply plugin: 'org.owasp.dependencycheck'
+    dependencyCheck {
+        outputDirectory = "${buildDir}/security-report"
+        format = "ALL"
+    }
 
     // task to increment the build version of sub projects
     task incrementBuildVersion {
@@ -41,22 +53,111 @@ subprojects {
             }
         }
     }
-}
-task codeCoverageReport(type: JacocoReport) {
-    group "verification"
-    description "Builds the coverage report from all sub projects' coverage reports."
 
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets it.sourceSets.main
+    // jacoco implementation inspiration: https://github.com/SurpSG/jacoco-offline-instrumentation
+    configurations {
+        jacoco
+        jacocoRuntime
+        jacocoInstrumented
     }
 
-    reports {
-        xml.enabled true
-//        xml.destination "${buildDir}/reports/jacoco/report.xml"
-        html.enabled true
-        csv.enabled true
+    dependencies {
+        jacoco group: 'org.jacoco', name: 'org.jacoco.ant', version: "${jacocoVersion}", classifier: 'nodeps'
+        jacocoRuntime group: 'org.jacoco', name: 'org.jacoco.agent', version: "${jacocoVersion}", classifier: 'runtime'
+    }
+
+    task preprocessClassesForJacoco(dependsOn: ['classes']) {
+        ext.outputDir = buildDir.path + '/classes-instrumented'
+        doLast {
+            ant.taskdef(name: 'instrument',
+                    classname: 'org.jacoco.ant.InstrumentTask',
+                    classpath: configurations.jacoco.asPath)
+            ant.instrument(destdir: outputDir) {
+                fileset(dir: sourceSets.main.java.outputDir, includes: '**/*.class', erroronmissingdir: false)
+            }
+        }
+    }
+
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(preprocessClassesForJacoco)) {
+            tasks.withType(Test) {
+                doFirst {
+                    systemProperty 'jacoco-agent.destfile', buildDir.path + '/jacoco/tests.exec'
+                    classpath -= files(sourceSets.main.java.outputDir)
+                    classpath += files(preprocessClassesForJacoco.outputDir) + configurations.jacocoRuntime
+
+                    def modulesDependencies = moduleDependencies(project)
+                    classpath -= files(modulesDependencies.jar.outputs.files)
+                    classpath += files(modulesDependencies.jacocoInstrumentedJar.outputs.files)
+                }
+            }
+        }
+    }
+
+    task jacocoInstrumentedJar(type: Jar, dependsOn: [preprocessClassesForJacoco]) {
+        baseName "${project.name}-instrumented"
+        from preprocessClassesForJacoco.outputDir
+    }
+
+    test.dependsOn preprocessClassesForJacoco
+    test.dependsOn jacocoInstrumentedJar
+
+    artifacts {
+        jacocoInstrumented jacocoInstrumentedJar
+    }
+
+
+
+}
+
+def moduleDependencies(Project project) {
+    ConfigurationContainer configurations = project.configurations
+    Configuration configuration = configurations.compile
+
+    DomainObjectSet<ProjectDependency> projectDependencies = configuration.dependencies.withType ProjectDependency
+    def modules = []
+    projectDependencies.forEach {
+        modules += it.dependencyProject
+        modules += moduleDependencies(it.dependencyProject)
+    }
+    return modules
+}
+
+task codeCoverageReport() {
+    group "verification"
+    description "Builds the coverage report from all sub projects' coverage reports."
+    outputs.upToDateWhen { false }
+    doLast {
+        ant.taskdef(name: 'report',
+                classname: 'org.jacoco.ant.ReportTask',
+                classpath: configurations.jacoco.asPath)
+        ant.report() {
+            executiondata {
+                subprojects.buildDir.path.collect { file(it + '/jacoco/tests.exec') }.findAll { it.exists() }.each {
+                    ant.file(file: it.path)
+                }
+            }
+            structure(name: 'Example') {
+                classfiles {
+                    files(subprojects.sourceSets.main.output.classesDirs).each {
+                        if(it.exists()){
+                            fileset(dir: it)
+                        }
+                    }
+                }
+                sourcefiles {
+                    files(subprojects.sourceSets.main.java.srcDirs).each {
+                        if(it.exists()){
+                            fileset(dir: it)
+                        }
+                    }
+                }
+            }
+            String destDir = buildDir.path + '/reports/jacoco/'
+            html(destdir: destDir + 'html')
+            xml(destfile: destDir + 'report.xml')
+            csv(destfile: destDir + 'report.csv')
+        }
     }
 }
 codeCoverageReport.dependsOn {
@@ -69,5 +170,5 @@ codeCoverageReport.dependsOn {
 task updateWrapper(type: Wrapper) {
     group "wrapper"
     description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
-    gradleVersion = '6.1'
+    gradleVersion = '6.3'
 }

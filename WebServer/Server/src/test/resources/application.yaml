@@ -7,11 +7,25 @@ quarkus:
       journal: false
   mailer:
     mock: true
+  smallrye-jwt:
+    enabled: true
+
+mp:
+  jwt:
+    verify:
+      privatekey:
+        location: security/testPrivateKeyPkcs8.pem
+      publickey:
+        location: security/testPublicKey.pem
+      issuer: ${runningInfo.organization} - ${runningInfo.serverName} Task Timekeeper Server
+    expiration:
+      default: 86400 # 1 day
+      extended: 2678400 # 1 month
 
 runningInfo:
   organization: The Testing Organization
   serverName: Testing
-  url: https://testing.com
+  orgUrl: https://testing.com
   contactInfo:
     name: Tester Mc Testerson
     email: test@foo.bar

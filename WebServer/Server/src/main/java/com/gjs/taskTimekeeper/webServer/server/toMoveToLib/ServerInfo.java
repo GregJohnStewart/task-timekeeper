@@ -9,9 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ServerInfo {
     private String organization;
+    private String orgUrl;
     private String serverName;
-    private String url;
     private ContactInfo contactInfo;
+    //TODO:: hostname/port to use to connect to service
+    private String hostname;
+    private int port;
 
     @Data
     @AllArgsConstructor
