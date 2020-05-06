@@ -1,13 +1,13 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordServiceTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.common.QuarkusTestResource;

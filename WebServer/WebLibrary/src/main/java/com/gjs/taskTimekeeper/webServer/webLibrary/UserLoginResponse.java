@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.toMoveToLib;
+package com.gjs.taskTimekeeper.webServer.webLibrary;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

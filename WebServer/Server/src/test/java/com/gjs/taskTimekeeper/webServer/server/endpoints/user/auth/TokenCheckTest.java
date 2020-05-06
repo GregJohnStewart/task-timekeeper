@@ -1,11 +1,11 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.TokenCheckResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.TokenCheckResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserLevel;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.Header;

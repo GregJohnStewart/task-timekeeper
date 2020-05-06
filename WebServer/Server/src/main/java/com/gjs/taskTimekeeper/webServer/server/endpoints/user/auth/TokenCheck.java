@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.TokenCheckResponse;
 import com.gjs.taskTimekeeper.webServer.server.utils.StaticUtils;
+import com.gjs.taskTimekeeper.webServer.webLibrary.TokenCheckResponse;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

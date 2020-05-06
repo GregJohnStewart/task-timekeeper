@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.ServerInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.ServerInfo;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

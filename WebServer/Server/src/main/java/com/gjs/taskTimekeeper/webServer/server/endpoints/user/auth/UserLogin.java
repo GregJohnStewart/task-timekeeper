@@ -4,8 +4,8 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLocked
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserLoginRequest;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserLoginResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserLoginRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.UserLoginResponse;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;

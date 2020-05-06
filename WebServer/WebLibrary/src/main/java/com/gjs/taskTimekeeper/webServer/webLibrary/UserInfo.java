@@ -1,6 +1,5 @@
-package com.gjs.taskTimekeeper.webServer.server.toMoveToLib;
+package com.gjs.taskTimekeeper.webServer.webLibrary;
 
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.ServerInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.ServerInfo;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
