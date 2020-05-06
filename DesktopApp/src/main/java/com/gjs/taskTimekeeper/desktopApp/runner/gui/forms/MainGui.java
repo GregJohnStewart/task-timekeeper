@@ -129,6 +129,12 @@ public class MainGui {
 
     private static final PieCharter<Task> TIME_SPENT_ON_TASKS_CHARTER =
             new PieCharter<>("Time Spent on Tasks", CHART_HEIGHT, CHART_WIDTH);
+    // names
+    public static final String SELECTED_PERIOD_ATT_PANE_DATA_TABLE = "selectedPeriodAttPaneDataTable";
+    public static final String SELECTED_PERIOD_TASK_STATS_DATA_TABLE = "selectedPeriodTaskStatsDataTable";
+    public static final String SELECTED_PERIOD_SPANS_DATA_TABLE = "selectedPeriodSpansDataTable";
+    public static final String PERIODS_TABLE_NAME = "periodsDataTable";
+    public static final String TASKS_DATA_TABLE = "tasksDataTable";
 
     // </editor-fold>
     // <editor-fold desc="Static methods">
@@ -261,6 +267,9 @@ public class MainGui {
     private JCheckBoxMenuItem saveOnExitMenuItem;
     private JCheckBoxMenuItem selectNewPeriodMenuItem;
 
+    public JFrame getMainFrame(){
+        return this.mainFrame;
+    }
     // </editor-fold>
     // <editor-fold desc="Actions/Handlers">
     private WindowListener windowListener =
@@ -755,6 +764,11 @@ public class MainGui {
     public MainGui(DesktopAppConfiguration config, Image icon, String appTitle)
             throws DataSourceParsingException {
         LOGGER.debug("Starting construction of MainGui.");
+        //naming wysiwyg components, for testing
+        this.mainTabPane.setName("mainTabPane");
+        this.selectedPeriodBannerPanel.setName("selectedPeriodBannerPanel");
+        this.tasksScrollPane.setName("tasksScrollPane");
+
         this.config = config;
         this.managerIO =
                 new ManagerIO(
@@ -782,10 +796,12 @@ public class MainGui {
         this.mainMenuBar = new JMenuBar();
         // File
         JMenu menu = new JMenu("File");
+        menu.setName("fileMenu");
         JMenuItem menuItem = new JMenuItem("Save");
         menuItem.setAction(this.saveAction);
         menu.add(menuItem);
         menuItem = new JMenuItem("Reload data");
+        menuItem.setName("reloadDataMenuItem");
         menuItem.setAction(reloadAction);
         menu.add(menuItem);
         menu.addSeparator();
@@ -795,6 +811,7 @@ public class MainGui {
         this.mainMenuBar.add(menu);
         // options
         menu = new JMenu("Options");
+        menu.setName("optionsMenu");
         this.autoSaveMenuItem = new JCheckBoxMenuItem();
         this.autoSaveMenuItem.setAction(new OptionChangedAction("Auto save"));
         menu.add(this.autoSaveMenuItem);
@@ -809,14 +826,18 @@ public class MainGui {
         this.mainMenuBar.add(menu);
         // info
         menu = new JMenu("Info");
+        menu.setName("infoMenu");
         menuItem = new JMenuItem("About");
+        menuItem.setName("aboutMenuItem");
         menuItem.addMouseListener(
                 new OpenDialogBoxOnClickListener(
                         this.mainPanel,
                         ABOUT_MESSAGE,
                         "About Task Timekeeper",
                         JOptionPane.INFORMATION_MESSAGE,
-                        icon));
+                        icon
+                )
+        );
         menu.add(menuItem);
         menu.addSeparator();
         menuItem = new JMenuItem("Github");
@@ -1055,6 +1076,7 @@ public class MainGui {
                     }
 
                     new TableLayoutHelper(
+                            SELECTED_PERIOD_ATT_PANE_DATA_TABLE,
                             this.selectedPeriodAttsPane,
                             periodAtts,
                             Arrays.asList("Attribute", "Value"));
@@ -1077,6 +1099,7 @@ public class MainGui {
                     }
 
                     new TableLayoutHelper(
+                            SELECTED_PERIOD_TASK_STATS_DATA_TABLE,
                             this.selectedPeriodTaskStatsPane,
                             taskStats,
                             Arrays.asList("Task Name", "Duration"),
@@ -1098,10 +1121,12 @@ public class MainGui {
                         List<Object> spanRow = new ArrayList<>(SPAN_LIST_TABLE_HEADERS.size());
 
                         JButton edit = new JButton("E");
+                        edit.setName(SELECTED_PERIOD_SPANS_DATA_TABLE + "Edit" + count);
                         edit.setAction(new EditSpanAction(count));
                         edit.setToolTipText("Edit");
 
                         JButton complete = new JButton("C");
+                        complete.setName(SELECTED_PERIOD_SPANS_DATA_TABLE + "Complete" + count);
                         complete.setAction(new CompleteSpanAction(count));
                         complete.setToolTipText("Complete");
                         if (span.isComplete() || !span.hasStartTime()) {
@@ -1109,6 +1134,7 @@ public class MainGui {
                         }
 
                         JButton delete = new JButton("D");
+                        delete.setName(SELECTED_PERIOD_SPANS_DATA_TABLE + "Delete" + count);
                         delete.setAction(new DeleteSpanAction(count));
                         delete.setToolTipText("Delete");
 
@@ -1125,10 +1151,12 @@ public class MainGui {
                     }
 
                     new TableLayoutHelper(
+                            SELECTED_PERIOD_SPANS_DATA_TABLE,
                             this.selectedPeriodSpansPane,
                             spanDetails,
                             SPAN_LIST_TABLE_HEADERS,
-                            SPAN_LIST_COL_WIDTHS);
+                            SPAN_LIST_COL_WIDTHS
+                    );
                     this.selectedPeriodAddSpanButton.setAction(this.addSpanAction);
                     this.selectedPeriodCompleteAllSpansButton.setAction(this.completeSpansAction);
                 }
@@ -1151,8 +1179,10 @@ public class MainGui {
                 List<Object> row = new ArrayList<>(PERIOD_LIST_TABLE_HEADERS.size());
 
                 JButton select = new JButton("S");
+                select.setName(PERIODS_TABLE_NAME + "Select" + curInd);
                 select.setAction(new SelectPeriodAction(curInd));
                 JButton delete = new JButton("D");
+                delete.setName(PERIODS_TABLE_NAME + "Delete" + curInd);
                 delete.setAction(new DeletePeriodAction(curInd));
 
                 if (this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod() != null
@@ -1160,7 +1190,8 @@ public class MainGui {
                                 .getManager()
                                 .getCrudOperator()
                                 .getSelectedWorkPeriod()
-                                .equals(period)) {
+                                .equals(period)
+                ) {
                     rowColors.put(curInd, Color.CYAN);
                     select.setEnabled(false);
                 }
@@ -1177,6 +1208,7 @@ public class MainGui {
             }
 
             new TableLayoutHelper(
+                    PERIODS_TABLE_NAME,
                     this.periodsScrollPane,
                     periodData,
                     PERIOD_LIST_TABLE_HEADERS,
@@ -1196,10 +1228,13 @@ public class MainGui {
                 List<Object> row = new ArrayList<>(TASK_LIST_TABLE_HEADERS.size());
 
                 JButton viewButton = new JButton("v");
+                viewButton.setName(TASKS_DATA_TABLE + "View" + curInd);
                 viewButton.setAction(new ViewTaskAction(curInd));
                 JButton editButton = new JButton("e");
+                editButton.setName(TASKS_DATA_TABLE + "Edit" + curInd);
                 editButton.setAction(new EditTaskAction(curInd));
                 JButton deleteButton = new JButton("d");
+                deleteButton.setName(TASKS_DATA_TABLE + "Delete" + curInd);
                 deleteButton.setAction(new DeleteTaskAction(curInd));
 
                 row.add(curInd);
@@ -1211,6 +1246,7 @@ public class MainGui {
             }
 
             new TableLayoutHelper(
+                    TASKS_DATA_TABLE,
                     this.tasksScrollPane,
                     periodData,
                     TASK_LIST_TABLE_HEADERS,
