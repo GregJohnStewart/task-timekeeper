@@ -5,16 +5,20 @@ plugins {
 }
 
 repositories {
-     mavenLocal()
-     mavenCentral()
+    mavenLocal()
+    mavenCentral()
     jcenter()
 }
 
 dependencies {
     compile project(":BaseCode:Core")
+    testCompile project(path: ":BaseCode:Core", configuration: 'jacocoInstrumented')
     compile project(":BaseCode:ManagerIO")
+    testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
     compile project(":BaseCode:Stats")
+    testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
     compile project(":WebServer:WebLibrary")
+    testCompile project(path: ":WebServer:WebLibrary", configuration: 'jacocoInstrumented')
 
     //apache
     compile 'org.apache.commons:commons-text:1.8'

@@ -28,6 +28,8 @@ repositories {
 dependencies {
     compile project(path: ":BaseCode:ManagerIO")
     compile project(path: ":BaseCode:Stats")
+    testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
+    testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
 
     //for processing command line arguments
     compile 'args4j:args4j:2.33'

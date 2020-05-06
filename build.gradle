@@ -9,9 +9,18 @@ plugins {
     // https://github.com/jeremylong/dependency-check-gradle
     id "org.owasp.dependencycheck" version "5.3.2.1"
 }
+configurations {
+    jacoco
+    jacocoRuntime
+}
+dependencies {
+    jacoco group: 'org.jacoco', name: 'org.jacoco.ant', version: "${jacocoVersion}", classifier: 'nodeps'
+    jacocoRuntime group: 'org.jacoco', name: 'org.jacoco.agent', version: "${jacocoVersion}", classifier: 'runtime'
+}
+
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'jacoco'
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -44,6 +53,73 @@ subprojects {
             }
         }
     }
+
+    configurations {
+        jacoco
+        jacocoRuntime
+        jacocoInstrumented
+    }
+
+    dependencies {
+        jacoco group: 'org.jacoco', name: 'org.jacoco.ant', version: "${jacocoVersion}", classifier: 'nodeps'
+        jacocoRuntime group: 'org.jacoco', name: 'org.jacoco.agent', version: "${jacocoVersion}", classifier: 'runtime'
+    }
+
+    task preprocessClassesForJacoco(dependsOn: ['classes']) {
+        ext.outputDir = buildDir.path + '/classes-instrumented'
+        doLast {
+            ant.taskdef(name: 'instrument',
+                    classname: 'org.jacoco.ant.InstrumentTask',
+                    classpath: configurations.jacoco.asPath)
+            ant.instrument(destdir: outputDir) {
+                fileset(dir: sourceSets.main.java.outputDir, includes: '**/*.class', erroronmissingdir: false)
+            }
+        }
+    }
+
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(preprocessClassesForJacoco)) {
+            tasks.withType(Test) {
+                doFirst {
+                    systemProperty 'jacoco-agent.destfile', buildDir.path + '/jacoco/tests.exec'
+                    classpath -= files(sourceSets.main.java.outputDir)
+                    classpath += files(preprocessClassesForJacoco.outputDir) + configurations.jacocoRuntime
+
+                    def modulesDependencies = moduleDependencies(project)
+                    classpath -= files(modulesDependencies.jar.outputs.files)
+                    classpath += files(modulesDependencies.jacocoInstrumentedJar.outputs.files)
+                }
+            }
+        }
+    }
+
+    task jacocoInstrumentedJar(type: Jar, dependsOn: [preprocessClassesForJacoco]) {
+        baseName "${project.name}-instrumented"
+        from preprocessClassesForJacoco.outputDir
+    }
+
+    test.dependsOn preprocessClassesForJacoco
+    test.dependsOn jacocoInstrumentedJar
+
+    artifacts {
+        jacocoInstrumented jacocoInstrumentedJar
+    }
+
+
+
+}
+
+def moduleDependencies(Project project) {
+    ConfigurationContainer configurations = project.configurations
+    Configuration configuration = configurations.compile
+
+    DomainObjectSet<ProjectDependency> projectDependencies = configuration.dependencies.withType ProjectDependency
+    def modules = []
+    projectDependencies.forEach {
+        modules += it.dependencyProject
+        modules += moduleDependencies(it.dependencyProject)
+    }
+    return modules
 }
 
 // TODO:: figure out why we don't get full coverage in jacoco
