@@ -1,3 +1,4 @@
+{@com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean serverInfo}
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
     <link rel="stylesheet" href="/res/style/main.css">
 
-    <title>Task Timekeeper Home</title>
+    <title>{title} - Task Timekeeper</title>
     <style>
     </style>
 </head>
@@ -57,40 +58,14 @@
         </div>
     </nav>
 
-    <ul class="nav nav-tabs" id="mainTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">Selected Period</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">Work Periods</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">Tasks</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">Stats</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="mainTabContent">
-        <div class="tab-pane fade show active" id="selectedPeriodContent" role="tabpanel" aria-labelledby="selectedPeriodTab">
-            <h2 class="tabContentTitle">Selected Period</h2>
-            <hr />
-        </div>
-        <div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
-            <h2 class="tabContentTitle">Work Periods</h2>
-            <hr />
-        </div>
-        <div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
-            <h2 class="tabContentTitle">Tasks</h2>
-            <hr />
-        </div>
-        <div class="tab-pane fade" id="statsContent" role="tabpanel" aria-labelledby="statsTab">
-            <h2 class="tabContentTitle">Stats</h2>
-            <hr />
-        </div>
+    <div id="messageDiv">
+
     </div>
+
+    {#insert pageContent}<h1>No body!</h1>{/}
+
     <hr />
-    <div class="row">
+    <div id="footer" class="row">
         <div class="col-sm-4">
             <h5>Task Timekeeper Server</h5>
             <p>
@@ -99,24 +74,38 @@
                 <a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br />
             </p>
         </div>
-        <div class="col-sm-4">
-            <!-- TODO:: template this info -->
+        <div id="serverInfo" class="col-sm-4">
             <h5>
                 Run by:<br />
-                <a href="-- url --" target="_blank">-- organization --</a>
+                {#if {serverInfo.orgUrl.isPresent()}}
+                <a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization.get()}</a>
+                {#else}
+                {serverInfo.organization.get()}
+                {/if}
             </h5>
+            {#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
             <h5>
                 Contact information:
             </h5>
             <address>
+                {#if {serverInfo.contactInfo.name.isPresent()}}
                 <h6>
-                    -- contact name --
+                    {serverInfo.contactInfo.name.get()}
                 </h6>
+                {/if}
+
+                {#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
                 <p>
-                    Email: <a href="mailto:-- contact email --">-- contact email --</a> <br />
-                    Phone: <a href="tel:-- contact phone number --">-- contact phone --</a>
+                    {#if {serverInfo.contactInfo.email.isPresent()}}
+                    Email: <a href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a> <br />
+                    {/if}
+                    {#if {serverInfo.contactInfo.phone.isPresent()}}
+                    Phone: <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a> <br />
+                    {/if}
                 </p>
+                {/if}
             </address>
+            {/if}
         </div>
     </div>
 </div>
