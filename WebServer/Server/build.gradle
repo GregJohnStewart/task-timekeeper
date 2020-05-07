@@ -63,6 +63,8 @@ dependencies {
 
     // TODO:: think about using webjars to pull in libs for web pages; https://www.webjars.org/
     compile 'org.webjars:bootstrap:4.4.1-1'
+    compile 'org.webjars:jquery:3.5.1'
+    compile 'org.webjars:js-cookie:2.2.1'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'

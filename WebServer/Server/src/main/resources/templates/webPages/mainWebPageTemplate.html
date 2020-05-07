@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="shortcut icon" href="/res/media/logo.svg"/>
+    <title>{title} - Task Timekeeper</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
     <link rel="stylesheet" href="/res/style/main.css">
+    {#for styleSheet in extraStyle}
+    <link rel="stylesheet" href="/res/style/{styleSheet}">
+    {/for}
 
-    <title>{title} - Task Timekeeper</title>
     <style>
     </style>
 </head>
@@ -28,24 +31,15 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- TODO:: make server status thing -->
+
         <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav mr-auto">
-                <!-- TODO:: implement other pages when have templating sorted out -->
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Time (Home) <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Help</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-            </ul>
+
             <ul class="navbar-nav ml-auto">
                 <!-- TODO:: implement when we know how this will work -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Login
+                    <a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#">Login</a>
@@ -107,10 +101,23 @@
             </address>
             {/if}
         </div>
+        <div class="col-sm-4">
+            <p>
+            Your privacy is important to the original project. It only creates one cookie, and that is for the login token.
+                The project also only collects what you give it, and it is up to the people running the server to ensure it is handled
+                well. Please contact the folks running the server for more information.
+            </p>
+            <!-- TODO:: legal disclaimer, etc. -->
+        </div>
     </div>
 </div>
 
 <script src="/res/lib/jquery/3.4.1/jquery.min.js"></script>
 <script src="/res/lib/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/res/lib/js.cookie/js.cookie.min.js"></script>
+<script src="/res/script/main.js"></script>
+{#for script in extraScripts}
+<script src="/res/script/{script}"></script>
+{/for}
 </body>
 </html>
