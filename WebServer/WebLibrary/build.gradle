@@ -28,8 +28,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.+'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+    testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
 }
 
 compileJava {
@@ -39,6 +38,7 @@ compileJava {
 }
 
 test {
+    useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"

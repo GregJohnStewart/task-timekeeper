@@ -20,7 +20,7 @@ public class EnumTest {
 
     @ParameterizedTest
     @MethodSource("getEnums")
-    public static void superficialEnumCodeCoverage(Class<? extends Enum<?>> enumClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void superficialEnumCodeCoverage(Class<? extends Enum<?>> enumClass) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         for (Object o : (Object[])enumClass.getMethod("values").invoke(null)) {
             enumClass.getMethod("valueOf", String.class).invoke(null, o.toString());
         }
