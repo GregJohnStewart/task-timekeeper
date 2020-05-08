@@ -70,16 +70,6 @@ function getServerStatus(){
     });
 }
 
-
-function doLogin(event){
-    console.log("Attempting to log user in...");
-    event.preventDefault();
-
-    var spinner = new Spinner(spinnerOpts).spin(document.getElementById("navbarLoginContent"));
-
-    return true;
-}
-
 $(document).ready(function() {
     console.log("Starting main initial.");
 
@@ -107,3 +97,18 @@ $(document).ready(function() {
 setInterval(function(){
     getServerStatus()
 }, (10 * 60 * 1000));
+
+$(".loginForm").on("submit", function(event){
+    event.preventDefault();
+    console.log("Login form submitted.");
+
+    var spinner = new Spinner(spinnerOpts).spin($(this).get(0));
+
+    var usernameEmailInput = $(this).find(':input.loginEmailUsername')[0];
+    var passwordInput = $(this).find(':input.loginPassword')[0];
+    var stayLoggedInInput = $(this).find(':input.loginStayLoggedIn')[0];
+
+    console.log("Attempting to log user in...");
+
+    return true;
+});

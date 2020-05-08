@@ -43,25 +43,24 @@
                 <li class="nav-item dropdown">
                     <a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
-
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <div id="navbarLoginContent" class="initialDisplay">
-                            <form id="navbarLogin" class="px-4 py-3 loginForm" onsubmit="return doLogin(event);">
+                            <form id="navbarLogin" class="px-4 py-3 loginForm">
                                 <div class="form-group">
-                                    <label for="exampleDropdownFormEmail1">Email/Username</label>
-                                    <input type="text" class="form-control" id="exampleDropdownFormEmail1"
-                                           placeholder="email@example.com">
+                                    <label for="navbarLoginEmailUsername">Email/Username</label>
+                                    <input type="text" class="form-control loginEmailUsername" id="navbarLoginEmailUsername"
+                                           placeholder="email/username" name="usernameEmail" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleDropdownFormPassword1">Password</label>
-                                    <input type="password" class="form-control" id="exampleDropdownFormPassword1"
-                                           placeholder="Password">
+                                    <label for="navbarLoginPassword">Password</label>
+                                    <input type="password" class="form-control loginPassword" id="navbarLoginPassword"
+                                           placeholder="Password" name="password" required>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                                        <label class="form-check-label" for="dropdownCheck">
+                                        <input type="checkbox" class="form-check-input loginStayLoggedIn" id="navbarLoginStayLoggedIn" name="stayLoggedIn">
+                                        <label class="form-check-label" for="navbarLoginStayLoggedIn">
                                             Remember me
                                         </label>
                                     </div>
