@@ -57,6 +57,8 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     testImplementation 'org.jsoup:jsoup:1.13.1'
+    testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest-assured:rest-assured'
     nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'

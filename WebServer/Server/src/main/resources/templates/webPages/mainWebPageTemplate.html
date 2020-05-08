@@ -11,6 +11,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
+    <link rel="stylesheet" href="/res/lib/fontawesome/fontawesome-free-5.13.0-web/css/all.css">
     <link rel="stylesheet" href="/res/style/main.css">
     {#for styleSheet in extraStyle}
     <link rel="stylesheet" href="/res/style/{styleSheet}">
@@ -23,7 +24,7 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand" href="/">
-            <img src="/res/media/logo.svg" alt="">
+            <img src="/res/media/logo.svg" alt="Task Timekeeper Logo">
             Task Timekeeper
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
@@ -36,17 +37,47 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
 
             <ul class="navbar-nav ml-auto">
-                <!-- TODO:: implement when we know how this will work -->
                 <li class="nav-item dropdown">
-                    <a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
 
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Login</a>
-                        <a class="dropdown-item" href="#">Form</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Here</a>
+                        <div id="navbarLoginContent" class="initialDisplay">
+                            <form id="navbarLogin" class="px-4 py-3 loginForm">
+                                <div class="form-group">
+                                    <label for="exampleDropdownFormEmail1">Email/Username</label>
+                                    <input type="text" class="form-control" id="exampleDropdownFormEmail1"
+                                           placeholder="email@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleDropdownFormPassword1">Password</label>
+                                    <input type="password" class="form-control" id="exampleDropdownFormPassword1"
+                                           placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                                        <label class="form-check-label" for="dropdownCheck">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Sign in</button>
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/">New around here? Sign up</a>
+                            <a class="dropdown-item" href="/">Forgot password?</a>
+                        </div>
+                        <div id="navbarLogoutContent" class="initialDisplay">
+                            <a class="dropdown-item logoutButton" href="#">Logout</a>
+                        </div>
                     </div>
+                </li>
+                <li class="nav-item" id="serverStatus" data-toggle="popover" title="Server Status" data-content="Checking server status...">
+                    <i id="serverStatusChecking" class="serverStatusIcon fas fa-question-circle fa-lg"></i>
+                    <i id="serverStatusDown" class="serverStatusIcon initialDisplay fas fa-exclamation-circle fa-lg"></i>
+                    <i id="serverStatusUp" class="serverStatusIcon initialDisplay fas fa-check-circle fa-lg"></i>
                 </li>
             </ul>
         </div>
@@ -58,26 +89,28 @@
 
     {#insert pageContent}<h1>No body!</h1>{/}
 
-    <hr />
+    <hr/>
     <div id="footer" class="row">
         <div class="col-sm-4">
             <h5>Task Timekeeper Server</h5>
             <p>
-                &copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br />
-                Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0 License</a><br />
-                <a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br />
+                &copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br/>
+                Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0
+                License</a><br/>
+                <a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br/>
             </p>
         </div>
         <div id="serverInfo" class="col-sm-4">
             <h5>
-                Run by:<br />
+                Run by:<br/>
                 {#if {serverInfo.orgUrl.isPresent()}}
                 <a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization.get()}</a>
                 {#else}
                 {serverInfo.organization.get()}
                 {/if}
             </h5>
-            {#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
+            {#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||
+            {serverInfo.contactInfo.phone.isPresent()}}
             <h5>
                 Contact information:
             </h5>
@@ -91,10 +124,13 @@
                 {#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
                 <p>
                     {#if {serverInfo.contactInfo.email.isPresent()}}
-                    Email: <a href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a> <br />
+                    Email: <a
+                        href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a>
+                    <br/>
                     {/if}
                     {#if {serverInfo.contactInfo.phone.isPresent()}}
-                    Phone: <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a> <br />
+                    Phone: <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
+                    <br/>
                     {/if}
                 </p>
                 {/if}
@@ -103,8 +139,10 @@
         </div>
         <div class="col-sm-4">
             <p>
-            Your privacy is important to the original project. It only creates one cookie, and that is for the login token.
-                The project also only collects what you give it, and it is up to the people running the server to ensure it is handled
+                Your privacy is important to the original project. It only creates one cookie, and that is for the login
+                token.
+                The project also only collects what you give it, and it is up to the people running the server to ensure
+                it is handled
                 well. Please contact the folks running the server for more information.
             </p>
             <!-- TODO:: legal disclaimer, etc. -->
