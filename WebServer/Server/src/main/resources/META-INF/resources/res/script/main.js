@@ -75,7 +75,7 @@ function doLogin(event){
     console.log("Attempting to log user in...");
     event.preventDefault();
 
-    var spinner = new Spinner(spinnerOpts).spin(document.body);
+    var spinner = new Spinner(spinnerOpts).spin(document.getElementById("navbarLoginContent"));
 
     return true;
 }

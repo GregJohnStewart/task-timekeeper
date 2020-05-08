@@ -166,8 +166,8 @@ user:
     autoApprove: false
 
 runningInfo:
-  serverName: \${runningInfo.organization}
   organization: The Testing Organization
+  serverName: \${runningInfo.organization}
   hostname: localhost
   port: \${quarkus.http.port}
 """

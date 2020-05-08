@@ -26,7 +26,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand" href="/">
             <img src="/res/media/logo.svg" alt="Task Timekeeper Logo">
-            Task Timekeeper
+            {#if {serverInfo.serverName.isPresent()}}
+                {serverInfo.serverName.get()}
+            {/if} Task Timekeeper Server
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,9 +107,9 @@
             <h5>
                 Run by:<br/>
                 {#if {serverInfo.orgUrl.isPresent()}}
-                <a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization.get()}</a>
+                <a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization}</a>
                 {#else}
-                {serverInfo.organization.get()}
+                {serverInfo.organization}
                 {/if}
             </h5>
             {#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||

@@ -14,9 +14,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @ConfigProperties(prefix = "runningInfo", namingStrategy = ConfigProperties.NamingStrategy.VERBATIM)
 public class ServerInfoBean {
-    //TODO:: determine if should be required or not
-    private Optional<String> organization;
-
+    private String organization;
     private Optional<String> serverName;
     private Optional<URL> orgUrl;
     private ContactInfo contactInfo;
@@ -26,7 +24,7 @@ public class ServerInfoBean {
     public ServerInfo toServerInfo() {
         ServerInfo info = new ServerInfo();
 
-        info.setOrganization(this.getOrganization().orElse(""));
+        info.setOrganization(this.getOrganization());
         info.setServerName(this.getServerName().orElse(""));
         URL url = this.getOrgUrl().orElse(null);
         info.setOrgUrl(url == null ? "" : url.toExternalForm());

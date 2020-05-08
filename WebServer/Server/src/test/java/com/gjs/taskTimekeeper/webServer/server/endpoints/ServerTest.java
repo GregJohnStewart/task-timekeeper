@@ -33,7 +33,7 @@ class ServerTest extends RunningServerTest {
                 .statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode());
         ServerInfo info = response.as(ServerInfo.class);
 
-        assertEquals(infoBean.getOrganization().get(), info.getOrganization());
+        assertEquals(infoBean.getOrganization(), info.getOrganization());
         assertEquals(infoBean.getServerName().get(), info.getServerName());
         assertEquals(infoBean.getOrgUrl().get().toString(), info.getOrgUrl());
         assertEquals(infoBean.getContactInfo().getName().get(), info.getContactInfo().getName());
