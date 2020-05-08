@@ -25,4 +25,7 @@ public class ManagerEntity extends OurMongoEntity {
     private byte[] timeManagerData;
 
     private Date lastUpdate;
+
+    //TODO:: get by user Id
+    //TODO:: has w/ user id
 }
