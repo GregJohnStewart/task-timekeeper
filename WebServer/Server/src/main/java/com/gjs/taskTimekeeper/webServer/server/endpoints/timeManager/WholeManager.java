@@ -1,7 +1,12 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
+import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
+import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerResponse;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -66,9 +71,35 @@ public class WholeManager {
         ObjectId userId = jwt.getClaim("userId");
         LOGGER.info("Getting Time Manager data for user {}", userId);
 
-        //TODO:: check if one with userId exists. If not, persist new one with null update time. Return the
+        ManagerEntity entity;
 
+        try{
+            entity = ManagerEntity.findByUserId(userId);
+        } catch (EntityNotFoundException e){
+            try {
+                entity = new ManagerEntity(
+                        userId,
+                        MANAGER_MAPPER.writeValueAsBytes(new TimeManager()),
+                        null
+                );
+            } catch (JsonProcessingException e2) {
+                LOGGER.error("Failed to create new empty manager entity for user: ", e2);
+                throw new WebServerException("Failed to create new empty manager entity for user: ", e2);
+            }
+            entity.persist();
+        }
 
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("").build();
+        return Response
+                .status(200)
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .entity(
+                        new WholeTimeManagerResponse(
+                                entity.getTimeManagerData(),
+                                entity.getLastUpdate()
+                        )
+                )
+                .build();
     }
+
+    //TODO: PATCH or POST to update
 }

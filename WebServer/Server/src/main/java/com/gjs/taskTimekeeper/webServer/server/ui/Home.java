@@ -5,6 +5,8 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.qute.api.ResourcePath;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +28,10 @@ public class Home {
     Template homeTemplate;
 
     @GET
-    @Counted(name = "numRequests", description = "How many times he ui was loaded.")
+    @Counted(name = "numRequests", description = "How many times the ui was loaded.")
     @Consumes(MediaType.TEXT_HTML)
     @Produces(MediaType.TEXT_HTML)
+    @Tags({@Tag(name="UI (Webpages)")})
     public TemplateInstance load() {
         TemplateInstance instance = homeTemplate.data("title", "Home");
         instance = instance.data("serverInfo", this.serverInfoBean);
