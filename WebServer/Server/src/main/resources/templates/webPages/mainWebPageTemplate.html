@@ -48,14 +48,14 @@
                         <div id="navbarLoginContent" class="initialDisplay">
                             <form id="navbarLogin" class="px-4 py-3 loginForm">
                                 <div class="form-group">
-                                    <label for="navbarLoginEmailUsername">Email/Username</label>
+                                    <label for="navbarLoginEmailUsername">Email or Username:</label>
                                     <input type="text" class="form-control loginEmailUsername" id="navbarLoginEmailUsername"
-                                           placeholder="email/username" name="usernameEmail" required>
+                                           placeholder="email or username" name="usernameEmail" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="navbarLoginPassword">Password</label>
+                                    <label for="navbarLoginPassword">Password:</label>
                                     <input type="password" class="form-control loginPassword" id="navbarLoginPassword"
-                                           placeholder="Password" name="password" required>
+                                           placeholder="password" name="password" required>
                                 </div>
                                 <div class="form-group">
                                     <div class="form-check">
@@ -65,14 +65,16 @@
                                         </label>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Sign in</button>
+                                <button type="submit" class="btn btn-primary">Sign in <i class="fas fa-sign-in-alt"></i></button>
                             </form>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/">New around here? Sign up</a>
-                            <a class="dropdown-item" href="/">Forgot password?</a>
+                            <a class="dropdown-item" href="/accountReset"><i class="fas fa-unlock-alt fa-fw"></i> Forgot password?</a>
+                            <a class="dropdown-item" href="/"><i class="fas fa-user-plus fa-fw"></i> Create Account</a>
                         </div>
                         <div id="navbarLogoutContent" class="initialDisplay">
-                            <a class="dropdown-item logoutButton" href="#">Logout</a>
+                            <a class="dropdown-item logoutButton" href="/userSettings"><i class="fas fa-user-cog fa-fw"></i> User Settings</a>
+                            <a id="adminLink" class="dropdown-item logoutButton initialDisplay" href="/admin"><i class="fas fa-users-cog fa-fw"></i> Admin Settings</a>
+                            <a id="logoutButton" class="dropdown-item logoutButton" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
                         </div>
                     </div>
                 </li>
@@ -126,12 +128,12 @@
                 {#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
                 <p>
                     {#if {serverInfo.contactInfo.email.isPresent()}}
-                    Email: <a
+                    <i class="far fa-envelope fa-fw"></i> <a
                         href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a>
                     <br/>
                     {/if}
                     {#if {serverInfo.contactInfo.phone.isPresent()}}
-                    Phone: <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
+                    <i class="fas fa-phone-alt fa-fw"></i> <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
                     <br/>
                     {/if}
                 </p>
