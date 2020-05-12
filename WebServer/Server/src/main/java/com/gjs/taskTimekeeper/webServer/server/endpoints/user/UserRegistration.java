@@ -94,6 +94,8 @@ public class UserRegistration {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public CompletionStage<Response> registerUser(UserRegistrationRequest request) throws UnsupportedEncodingException, MalformedURLException {
         LOGGER.info("Got User Registration request.");
 

@@ -70,6 +70,8 @@ public class UserLogin {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User"),@Tag(name="Auth")})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response loginUser(UserLoginRequest loginRequest){
         User user = User.findByEmailOrUsername(loginRequest.getUser());
 

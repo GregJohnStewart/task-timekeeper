@@ -58,6 +58,8 @@ public class UserEmailValidation {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
     public Response validateUserEmail(@QueryParam("validationToken") String validationToken, @QueryParam("userId") ObjectId userId) {
         if(validationToken == null){
             throw new ValidationException("No token given.");

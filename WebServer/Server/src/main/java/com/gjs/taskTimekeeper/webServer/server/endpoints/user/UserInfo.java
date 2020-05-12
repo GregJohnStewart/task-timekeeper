@@ -26,6 +26,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -73,6 +74,7 @@ public class UserInfo {
     @SecurityRequirement(name="JwtAuth")
     @RolesAllowed({"ADMIN", "REGULAR"})
     @Path("/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("userId") String userId, @Context SecurityContext ctx){
         ObjectId userObjectId = new ObjectId(userId);
         LOGGER.info("Got {} as a path parameter.", userId);

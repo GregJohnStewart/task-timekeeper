@@ -21,8 +21,6 @@ public abstract class RunningServerTest {
         this.cleanup();
     }
 
-
-
     public void cleanup(){
         this.mailbox.clear();
         TestMongo.cleanMongo();

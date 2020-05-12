@@ -26,9 +26,11 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -92,8 +94,9 @@ public class WholeManager {
     @Tags({@Tag(name="Time Manager")})
     @SecurityRequirement(name="JwtAuth")
     @RolesAllowed({"ADMIN", "REGULAR"})
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getTimeManager(@Context SecurityContext ctx){
-        ObjectId userId = jwt.getClaim("userId");
+        ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
         LOGGER.info("Getting Time Manager data for user {}", userId);
 
         ManagerEntity entity = getOrCreateNew(userId);
@@ -144,7 +147,9 @@ public class WholeManager {
     @Tags({@Tag(name="Time Manager")})
     @SecurityRequirement(name="JwtAuth")
     @RolesAllowed({"ADMIN", "REGULAR"})
-    public Response patchTimeManager(@Context SecurityContext ctx, WholeTimeManagerUpdateRequest updateRequest){
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response patchTimeManager(WholeTimeManagerUpdateRequest updateRequest, @Context SecurityContext ctx){
         ObjectId userId = jwt.getClaim("userId");
         LOGGER.info("Updating Time Manager data for user {}", userId);
 
