@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.database.request.Entity
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.bson.types.ObjectId;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection="Users")
 public class ManagerEntity extends OurMongoEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerEntity.class);
@@ -28,6 +30,8 @@ public class ManagerEntity extends OurMongoEntity {
 
     /**
      * Gets the manager entity for the given user.
+     *
+     * TODO:: test
      * @param userId The id of the user to get the manager entity for.
      * @return
      * @throws EntityNotFoundException
@@ -45,39 +49,4 @@ public class ManagerEntity extends OurMongoEntity {
 
         return managerEntities.get(0);
     }
-
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ManagerEntity)) return false;
-        final ManagerEntity other = (ManagerEntity) o;
-        if (!other.canEqual((Object) this)) return false;
-        if (!super.equals(o)) return false;
-        final Object this$userId = this.getUserId();
-        final Object other$userId = other.getUserId();
-        if (this$userId == null ? other$userId != null : !this$userId.equals(other$userId)) return false;
-        if (!java.util.Arrays.equals(this.getTimeManagerData(), other.getTimeManagerData())) return false;
-        final Object this$lastUpdate = this.getLastUpdate();
-        final Object other$lastUpdate = other.getLastUpdate();
-        if (this$lastUpdate == null ? other$lastUpdate != null : !this$lastUpdate.equals(other$lastUpdate))
-            return false;
-        return true;
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof ManagerEntity;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = super.hashCode();
-        final Object $userId = this.getUserId();
-        result = result * PRIME + ($userId == null ? 43 : $userId.hashCode());
-        result = result * PRIME + java.util.Arrays.hashCode(this.getTimeManagerData());
-        final Object $lastUpdate = this.getLastUpdate();
-        result = result * PRIME + ($lastUpdate == null ? 43 : $lastUpdate.hashCode());
-        return result;
-    }
-
-
-    //TODO:: has w/ user id
 }
