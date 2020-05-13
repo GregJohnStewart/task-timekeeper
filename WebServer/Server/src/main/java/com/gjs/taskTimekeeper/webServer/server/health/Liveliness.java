@@ -16,4 +16,6 @@ public class Liveliness implements HealthCheck {
     public HealthCheckResponse call() {
         return HealthCheckResponse.up("Simple liveliness health check.");
     }
+
+    //TODO:: add health check for default certs
 }

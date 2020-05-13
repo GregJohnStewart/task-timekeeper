@@ -12,8 +12,10 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.UserUtils;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerUpdateRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Date;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -127,8 +130,42 @@ public class WholeManagerTest extends RunningServerTest {
         );
     }
 
-    //TODO:: bad auth
+    @Test
+    public void testGetWholeManagerBadAuth() throws JsonProcessingException {
+        this.setupExisting();
+
+        ManagerEntity previousEntity = this.testEntity;
+
+        ValidatableResponse validatableResponse = given().get("/api/timeManager/manager").then();
+
+        validatableResponse.assertThat().statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+
+        assertEquals(
+                previousEntity,
+                ManagerEntity.findByUserId(this.testUser.id)
+        );
+    }
+
     //TODO:: post
     //TODO:: post bad data
-    //TODO:: post bad auth
+
+    @Test
+    public void testPatchWholeManagerBadAuth() throws JsonProcessingException {
+        this.setupExisting();
+
+        ManagerEntity previousEntity = this.testEntity;
+
+        ValidatableResponse validatableResponse = given()
+                .contentType(ContentType.JSON)
+                .body(new WholeTimeManagerUpdateRequest(MANAGER_MAPPER.writeValueAsBytes(new TimeManager())))
+                .patch("/api/timeManager/manager")
+                .then();
+
+        validatableResponse.assertThat().statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+
+        assertEquals(
+                previousEntity,
+                ManagerEntity.findByUserId(this.testUser.id)
+        );
+    }
 }

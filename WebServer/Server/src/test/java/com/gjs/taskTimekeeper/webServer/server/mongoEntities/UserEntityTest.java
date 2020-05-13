@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -136,4 +137,18 @@ public class UserEntityTest extends RunningServerTest {
         });
     }
 
+
+    @Test
+    public void testEquals(){
+        User entityOne = new User();
+        entityOne.persist();
+        User entityTwo = new User();
+        entityTwo.persist();
+
+        assertNotEquals(
+                entityOne,
+                entityTwo
+        );
+        //TODO:: more
+    }
 }

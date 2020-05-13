@@ -16,9 +16,8 @@ public abstract class OurMongoEntity extends PanacheMongoEntity {
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
-        if (!(o instanceof User)) return false;
-        final User other = (User) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!(o instanceof OurMongoEntity)) return false;
+        final OurMongoEntity other = (OurMongoEntity) o;
         if(this.id != null) {
             if (!this.id.equals(other.id)) return false;
         } else {
