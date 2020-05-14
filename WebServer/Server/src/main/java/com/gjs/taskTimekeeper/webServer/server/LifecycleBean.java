@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server;
 
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.webServer.server.service.DefaultKeysChecker;
+import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.api.ResourcePath;
 import io.quarkus.runtime.ShutdownEvent;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import java.net.MalformedURLException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
@@ -27,6 +29,7 @@ public class LifecycleBean {
 
     private final Template startTemplate;
     private final DefaultKeysChecker defaultKeysChecker;
+    private final ServerUrlService serverUrlService;
 
     private final String serverVersion;
     private final String buildTime;
@@ -37,8 +40,9 @@ public class LifecycleBean {
 
     public LifecycleBean(
             @ResourcePath("startTemplate")
-            Template startTemplate,
+                    Template startTemplate,
             DefaultKeysChecker defaultKeysChecker,
+            ServerUrlService serverUrlService,
             @ConfigProperty(name = "version")
                     String serverVersion,
             @ConfigProperty(name = "buildtime")
@@ -54,6 +58,7 @@ public class LifecycleBean {
     ){
         this.startTemplate = startTemplate;
         this.defaultKeysChecker = defaultKeysChecker;
+        this.serverUrlService = serverUrlService;
 
         this.serverVersion = serverVersion;
         this.buildTime = buildTime;
@@ -63,9 +68,10 @@ public class LifecycleBean {
         this.webLibVersion = webLibVersion;
     }
 
-    void onStart(@Observes StartupEvent ev) throws InterruptedException {
+    void onStart(@Observes StartupEvent ev) throws InterruptedException, MalformedURLException {
         this.startDateTime = ZonedDateTime.now();
         LOGGER.info("Task Timekeeper Web Server starting.");
+        LOGGER.info("Base URL: {}", this.serverUrlService.getBaseServerUrl());
         LOGGER.debug("Version: {}", this.serverVersion);
         LOGGER.debug("build time: {}", this.buildTime);
         LOGGER.debug("Core lib version: {}", this.coreVersion);
@@ -75,6 +81,7 @@ public class LifecycleBean {
 
         System.out.println(
                 this.startTemplate
+                        .data("baseUrl", this.serverUrlService.getBaseServerUrl())
                         .data("serverVersion", this.serverVersion)
                         .data("buildTime", this.buildTime)
                         .data("coreVersion", this.coreVersion)

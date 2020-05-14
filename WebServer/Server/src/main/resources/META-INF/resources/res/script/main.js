@@ -92,6 +92,8 @@ $(document).ready(function() {
         loginText.text("Login");
         $("#navbarLoginContent").show();
     }
+
+    $('<span id="loadedFlag"></span>').appendTo(document.body);
 });
 
 setInterval(function(){
