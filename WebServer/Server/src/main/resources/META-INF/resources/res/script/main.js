@@ -70,6 +70,22 @@ function getServerStatus(){
     });
 }
 
+var messageDiv = $("#messageDiv")
+function addMessage(type, message, heading){
+    if(heading != null){
+        heading = '<h4 class="alert-heading">'+heading+'</h4>';
+    }else{
+        heading = "";
+    }
+    $('<div class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
+         heading + "\n" +
+         message + "\n" +
+         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
+           '<span aria-hidden="true">&times;</span>\n'+
+         '</button>\n' +
+       '</div>').appendTo(messageDiv.get(0))
+}
+
 $(document).ready(function() {
     console.log("Starting main initial.");
 
@@ -92,6 +108,8 @@ $(document).ready(function() {
         loginText.text("Login");
         $("#navbarLoginContent").show();
     }
+//  debug
+//    addMessage("success","Welcome!", "Welcome to the server");
 
     $('<span id="loadedFlag"></span>').appendTo(document.body);
 });

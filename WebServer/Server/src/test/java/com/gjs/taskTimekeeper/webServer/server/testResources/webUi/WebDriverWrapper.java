@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
@@ -59,5 +61,12 @@ public class WebDriverWrapper implements Closeable {
         }else {
             LOGGER.debug("Web browser already closed or wasn't opened.");
         }
+    }
+
+    public void assertLoggedOut(){
+        assertEquals(
+                "Login",
+                this.getDriver().findElement(By.id("loginNavText")).getText()
+        );
     }
 }
