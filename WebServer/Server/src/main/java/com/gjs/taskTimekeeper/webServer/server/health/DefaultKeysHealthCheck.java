@@ -1,29 +1,33 @@
 package com.gjs.taskTimekeeper.webServer.server.health;
 
 import com.gjs.taskTimekeeper.webServer.server.service.DefaultKeysChecker;
-import com.google.inject.Inject;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Readiness;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Health check to mak sure it is known if we are or aren't using a packaged key.
- *
- * TODO:: follow up with the builder nonsense: https://github.com/quarkusio/quarkus/issues/9282
+ * Health check to make sure it is known if we are or aren't using a packaged key.
  */
 @Readiness
 @ApplicationScoped
 public class DefaultKeysHealthCheck implements HealthCheck {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultKeysHealthCheck.class);
     private static final String CHECK_NAME = "Not using packaged keys.";
 
-    @Inject
-    DefaultKeysChecker defaultKeysChecker;
+    private final DefaultKeysChecker defaultKeysChecker;
+
+    public DefaultKeysHealthCheck(DefaultKeysChecker defaultKeysChecker) {
+        this.defaultKeysChecker = defaultKeysChecker;
+    }
 
     @Override
     public HealthCheckResponse call() {
+        LOGGER.debug("Creating health check response for default keys check.");
         HealthCheckResponseBuilder builder = HealthCheckResponse.builder();
 
         builder = builder.name(CHECK_NAME);
