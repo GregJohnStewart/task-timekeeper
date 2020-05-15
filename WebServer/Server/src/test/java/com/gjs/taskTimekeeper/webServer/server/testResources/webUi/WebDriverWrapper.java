@@ -50,6 +50,14 @@ public class WebDriverWrapper implements Closeable {
                 driver -> driver.findElement(By.id(LOADED_FLAG_ID))
         );
 
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+
+        }
+
+        LOGGER.info("\"{}\" loaded successfully.", url);
+
         return this;
     }
 

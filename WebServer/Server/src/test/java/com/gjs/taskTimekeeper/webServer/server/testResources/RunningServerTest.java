@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import javax.inject.Inject;
 
-
+//@Execution(ExecutionMode.CONCURRENT)
 public abstract class RunningServerTest {
     @Inject
     MockMailbox mailbox;

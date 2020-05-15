@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Date;
 
+//TODO:: make incremented test users to allow for concurrent tests
 @Getter
 @ApplicationScoped
 public class UserUtils {
