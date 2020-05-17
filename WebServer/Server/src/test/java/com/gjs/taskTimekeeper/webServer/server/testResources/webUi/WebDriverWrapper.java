@@ -3,12 +3,15 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
@@ -44,9 +47,11 @@ public class WebDriverWrapper implements Closeable {
 
         WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
 
-        pageLoadWait.until(
+        WebElement loadedFlag = pageLoadWait.until(
                 driver -> driver.findElement(By.id(LOADED_FLAG_ID))
         );
+
+        assertNotNull(loadedFlag);
 
         try {
             Thread.sleep(250);

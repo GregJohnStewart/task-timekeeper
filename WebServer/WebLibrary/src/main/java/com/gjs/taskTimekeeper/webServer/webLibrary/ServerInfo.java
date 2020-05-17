@@ -12,7 +12,7 @@ public class ServerInfo {
     private String orgUrl;
     private String serverName;
     private ContactInfo contactInfo;
-    //TODO:: hostname/port to use to connect to service
+
     private String hostname;
     private int port;
 
