@@ -39,3 +39,5 @@ jobs:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f build/reports/jacoco/report.xml
+after_failure:
+  - find ./ -type f -iname "*.log" | xargs tail -n +1
