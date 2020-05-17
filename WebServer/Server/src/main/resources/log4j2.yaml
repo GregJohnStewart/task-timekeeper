@@ -1,5 +1,5 @@
 Configutation:
-  name: TestingLoggingConfiguration
+  name: LoggingConfiguration
 
   Properties:
     Property:
@@ -8,7 +8,7 @@ Configutation:
       - name: archiveMaxFiles
         value: 5
       - name: logPath
-        value: "logs/test"
+        value: "logs"
       - name: logArchivePath
         value: "/archive"
       - name: logArchiveStampFormat

@@ -64,6 +64,14 @@ public class WebDriverWrapper implements Closeable {
         return this;
     }
 
+    public WebDriverWait getWait(){
+        return this.getWait(10);
+    }
+
+    public WebDriverWait getWait(int timeoutSecs){
+        return new WebDriverWait(this.getDriver(), timeoutSecs);
+    }
+
     @Override
     public void close() {
         if(this.getDriver() != null){
@@ -75,9 +83,7 @@ public class WebDriverWrapper implements Closeable {
     }
 
     public void assertLoggedOut(){
-        WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
-
-        pageLoadWait.until(
+        this.getWait(60).until(
                 driver -> {
                     String topText = driver.findElement(By.id("loginNavText")).getText();
                     if(
