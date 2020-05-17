@@ -72,6 +72,12 @@ public class WebDriverWrapper implements Closeable {
     }
 
     public void assertLoggedOut(){
+        WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
+
+        pageLoadWait.until(
+                driver -> driver.findElement(By.id("loginNavText"))
+        );
+
         assertEquals(
                 "Login",
                 this.getDriver().findElement(By.id("loginNavText")).getText()
