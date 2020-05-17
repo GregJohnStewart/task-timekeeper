@@ -56,7 +56,7 @@ public class WebDriverWrapper implements Closeable {
 
         }
 
-        LOGGER.info("\"{}\" loaded successfully.", url);
+        LOGGER.info("\"{}\" page loaded successfully.", url);
 
         return this;
     }

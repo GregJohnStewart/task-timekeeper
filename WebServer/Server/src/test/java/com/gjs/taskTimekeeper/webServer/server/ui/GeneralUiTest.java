@@ -7,6 +7,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,13 @@ public class GeneralUiTest extends ServerWebUiTest {
         LOGGER.info("Loaded the home page.");
 
         this.wrapper.assertLoggedOut();
+
+        WebDriverWait pageLoadWait = new WebDriverWait(this.wrapper.getDriver(), 10);
+
+        pageLoadWait.until(
+                driver -> driver.findElement(By.id("navbarLoginContent"))
+        );
+
         this.wrapper.getDriver().findElement(By.id("navbarLoginContent")).isDisplayed();
     }
 
