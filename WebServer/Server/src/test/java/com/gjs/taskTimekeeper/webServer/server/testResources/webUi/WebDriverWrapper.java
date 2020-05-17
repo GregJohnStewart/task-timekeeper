@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
@@ -76,8 +74,13 @@ public class WebDriverWrapper implements Closeable {
 
         pageLoadWait.until(
                 driver -> {
-                    assertEquals("Login", driver.findElement(By.id("loginNavText")).getText());
-                    return driver.findElement(By.id("loginNavText"));
+                    String topText = driver.findElement(By.id("loginNavText")).getText();
+                    if(
+                            "Login".equals(topText)
+                    ) {
+                        return driver.findElement(By.id("loginNavText"));
+                    }
+                    return null;
                 }
         );
     }
