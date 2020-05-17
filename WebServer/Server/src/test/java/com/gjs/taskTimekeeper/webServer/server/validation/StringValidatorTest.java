@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.validation;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,7 +10,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StringValidatorTest {
+public class StringValidatorTest extends WebServerTest {
     private StringValidator stringValidator = new StringValidator();
 
     @Test

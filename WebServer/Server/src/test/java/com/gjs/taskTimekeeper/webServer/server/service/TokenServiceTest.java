@@ -1,9 +1,10 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
 import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
 import org.junit.jupiter.api.Test;
 
-public class TokenServiceTest {
+public class TokenServiceTest extends WebServerTest {
 
     private PasswordValidator validator = new PasswordValidator();
     private TokenService service = new TokenService(this.validator);
