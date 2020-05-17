@@ -75,12 +75,10 @@ public class WebDriverWrapper implements Closeable {
         WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
 
         pageLoadWait.until(
-                driver -> driver.findElement(By.id("loginNavText"))
-        );
-
-        assertEquals(
-                "Login",
-                this.getDriver().findElement(By.id("loginNavText")).getText()
+                driver -> {
+                    assertEquals("Login", driver.findElement(By.id("loginNavText")).getText());
+                    return driver.findElement(By.id("loginNavText"));
+                }
         );
     }
 }
