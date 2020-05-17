@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
+    public static final long DEFAULT_WAIT_TIMEOUT = 10;
 
     static {
         WebDriverManager.firefoxdriver().setup();
@@ -65,10 +66,10 @@ public class WebDriverWrapper implements Closeable {
     }
 
     public WebDriverWait getWait(){
-        return this.getWait(10);
+        return this.getWait(DEFAULT_WAIT_TIMEOUT);
     }
 
-    public WebDriverWait getWait(int timeoutSecs){
+    public WebDriverWait getWait(long timeoutSecs){
         return new WebDriverWait(this.getDriver(), timeoutSecs);
     }
 
@@ -87,7 +88,7 @@ public class WebDriverWrapper implements Closeable {
                 driver -> {
                     String topText = driver.findElement(By.id("loginNavText")).getText();
                     if(
-                            "Login".equals(topText)
+                           topText.contains("Login")
                     ) {
                         return driver.findElement(By.id("loginNavText"));
                     }
