@@ -9,7 +9,6 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.testResources.entity.UserUtils;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerUpdateRequest;
@@ -20,7 +19,6 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Date;
@@ -34,11 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
 public class WholeManagerTest extends RunningServerTest {
-
     private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
-
-    @Inject
-    private UserUtils userUtils;
 
     private User testUser;
     private String testUserJwt;
@@ -46,7 +40,7 @@ public class WholeManagerTest extends RunningServerTest {
 
     @PostConstruct
     public void setupTestUser(){
-        this.testUser = userUtils.getTestUser(true);
+        this.testUser = userUtils.setupTestUser(true);
         this.testUserJwt = this.userUtils.getTestUserJwt();
     }
 

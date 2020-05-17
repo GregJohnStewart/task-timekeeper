@@ -1,13 +1,11 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.service.PasswordServiceTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -16,54 +14,38 @@ import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.assertErrorMessage;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
 public class UserEmailValidationTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEmailValidationTest.class);
 
-    private static final String USER_EMAIL = "test@testing.tst";
     public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
 
-    @Inject
-    MockMailbox mailbox;
-
-
-    @BeforeEach
-    void init() {
-        mailbox.clear();
-    }
-
-    private void assertErrorMessage(String expected, String message){
-        if(!message.matches(expected)){
-            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
-        }
-    }
-
     private UserRegistrationRequest getTestRequest() {
+        User testUser = this.userUtils.setupTestUser(false);
+
         return new UserRegistrationRequest(
-                "test_user",
-                USER_EMAIL,
-                PasswordServiceTest.GOOD_PASS
+                testUser.getUsername(),
+                testUser.getEmail(),
+                this.userUtils.getTestUserPassword()
         );
     }
 
@@ -84,7 +66,7 @@ public class UserEmailValidationTest extends RunningServerTest {
         return registrationResponse;
     }
 
-    private URL getValudationLinkFromEmail(UserRegistrationResponse registrationResponse) throws MalformedURLException {
+    private URL getValidationLinkFromEmail(UserRegistrationResponse registrationResponse) throws MalformedURLException {
         List<Mail> sent = mailbox.getMessagesSentTo(registrationResponse.getEmail());
         assertEquals(1, sent.size());
         Mail actual = sent.get(0);
@@ -127,7 +109,7 @@ public class UserEmailValidationTest extends RunningServerTest {
     public void validateNewUserTest() throws MalformedURLException {
         UserRegistrationResponse registrationResponse = this.doNewUserRequest();
 
-        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+        URL validationUrl = this.getValidationLinkFromEmail(registrationResponse);
 
         Response response = given()
                 .when()
@@ -150,7 +132,7 @@ public class UserEmailValidationTest extends RunningServerTest {
     public void validateNewUserBadUserIdTest() throws MalformedURLException {
         UserRegistrationResponse registrationResponse = this.doNewUserRequest();
 
-        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+        URL validationUrl = this.getValidationLinkFromEmail(registrationResponse);
 
         Map<String, String> query = this.getParams(validationUrl.getQuery());
 
@@ -179,7 +161,7 @@ public class UserEmailValidationTest extends RunningServerTest {
     public void validateNewUserNoUserIdTest() throws MalformedURLException {
         UserRegistrationResponse registrationResponse = this.doNewUserRequest();
 
-        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+        URL validationUrl = this.getValidationLinkFromEmail(registrationResponse);
 
         Map<String, String> query = this.getParams(validationUrl.getQuery());
 
@@ -203,7 +185,7 @@ public class UserEmailValidationTest extends RunningServerTest {
     public void validateNewUserBadValidationTokenTest() throws MalformedURLException {
         UserRegistrationResponse registrationResponse = this.doNewUserRequest();
 
-        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+        URL validationUrl = this.getValidationLinkFromEmail(registrationResponse);
 
         Map<String, String> query = this.getParams(validationUrl.getQuery());
 
@@ -228,7 +210,7 @@ public class UserEmailValidationTest extends RunningServerTest {
     public void validateNewUserNoValidationTokenTest() throws MalformedURLException {
         UserRegistrationResponse registrationResponse = this.doNewUserRequest();
 
-        URL validationUrl = this.getValudationLinkFromEmail(registrationResponse);
+        URL validationUrl = this.getValidationLinkFromEmail(registrationResponse);
 
         Map<String, String> query = this.getParams(validationUrl.getQuery());
 

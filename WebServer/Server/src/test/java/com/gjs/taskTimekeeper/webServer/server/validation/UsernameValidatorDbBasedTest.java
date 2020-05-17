@@ -18,12 +18,12 @@ class UsernameValidatorDbBasedTest extends RunningServerTest {
     public void addNewUserNameTest(){
         //add initial test user
         User testUser = new User();
-        testUser.setUsername(validator.validateAndSanitize("user01"));
+        testUser.setUsername(validator.validateAndSanitize("user01UsernameTest"));
         testUser.persist();
 
         //check
         Assertions.assertDoesNotThrow(() -> {
-            this.validator.validateSanitizeAssertDoesntExist("user02");
+            this.validator.validateSanitizeAssertDoesntExist("user02UsernameTest");
         });
     }
 
@@ -31,12 +31,12 @@ class UsernameValidatorDbBasedTest extends RunningServerTest {
     public  void addNewUserDuplicateNameTest(){
         //add initial test user
         User testUser = new User();
-        testUser.setUsername(validator.validateAndSanitize("user01"));
+        testUser.setUsername(validator.validateAndSanitize("user01UsernameTest"));
         testUser.persist();
 
         //check
         Assertions.assertThrows(UsernameValidationException.class, () -> {
-            this.validator.validateSanitizeAssertDoesntExist("user01");
+            this.validator.validateSanitizeAssertDoesntExist("user01UsernameTest");
         });
     }
 }

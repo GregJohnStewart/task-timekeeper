@@ -59,10 +59,10 @@ public class UserEntityTest extends RunningServerTest {
     public void testFindByEmail(){
         User user = new User();
         user.setUsername("testForFindByEmail");
-        user.setEmail("test@test.com");
+        user.setEmail("testForFindByEmail@test.com");
         user.persist();
 
-        User userGotten = User.findByEmail("test@test.com");
+        User userGotten = User.findByEmail("testForFindByEmail@test.com");
 
         assertEquals(user, userGotten);
     }
@@ -71,11 +71,11 @@ public class UserEntityTest extends RunningServerTest {
     public void testFindByBadEmail(){
         User user = new User();
         user.setUsername("testForFindByBadEmail");
-        user.setEmail("test@test.com");
+        user.setEmail("testFindByBadEmail@test.com");
         user.persist();
 
         assertThrows(EntityNotFoundException.class, ()->{
-            User.findByEmail("test@badtest.com");
+            User.findByEmail("testForFindByBadEmail@badtest.com");
         });
     }
 
@@ -83,7 +83,7 @@ public class UserEntityTest extends RunningServerTest {
     public void testFindByUsername(){
         User user = new User();
         user.setUsername("testForFindByUsername");
-        user.setEmail("test@test.com");
+        user.setEmail("testForFindByUsername@test.com");
         user.persist();
 
         User userGotten = User.findByUsername("testForFindByUsername");
@@ -94,12 +94,12 @@ public class UserEntityTest extends RunningServerTest {
     @Test
     public void testFindByBadUsername(){
         User user = new User();
-        user.setUsername("testForFindByUsername");
-        user.setEmail("test@test.com");
+        user.setUsername("testForFindByBadUsername");
+        user.setEmail("testForFindByBadUsername@test.com");
         user.persist();
 
         assertThrows(EntityNotFoundException.class, ()->{
-            User.findByUsername("testForFindByBadUsername");
+            User.findByUsername("testForFindByBadUsernameBaaad");
         });
     }
 
@@ -107,14 +107,14 @@ public class UserEntityTest extends RunningServerTest {
     public void testFindByEmailOrUsername(){
         User user = new User();
         user.setUsername("testForFindByUsernameOrEmail");
-        user.setEmail("test@test.com");
+        user.setEmail("testForFindByUsernameOrEmail@test.com");
         user.persist();
 
         User userGotten = User.findByEmailOrUsername("testForFindByUsernameOrEmail");
 
         assertEquals(user, userGotten);
 
-        userGotten = User.findByEmailOrUsername("test@test.com");
+        userGotten = User.findByEmailOrUsername("testForFindByUsernameOrEmail@test.com");
 
         assertEquals(user, userGotten);
     }
@@ -123,7 +123,7 @@ public class UserEntityTest extends RunningServerTest {
     public void testFindByBadEmailOrUsername(){
         User user = new User();
         user.setUsername("testForFindByBadUsernameOrEmail");
-        user.setEmail("test@test.com");
+        user.setEmail("testForFindByBadUsernameOrEmail@test.com");
         user.persist();
 
         assertThrows(EntityNotFoundException.class, ()->{
@@ -141,8 +141,14 @@ public class UserEntityTest extends RunningServerTest {
     @Test
     public void testEquals(){
         User entityOne = new User();
-        entityOne.persist();
         User entityTwo = new User();
+
+        assertEquals(
+                entityOne,
+                entityTwo
+        );
+
+        entityOne.persist();
         entityTwo.persist();
 
         assertNotEquals(

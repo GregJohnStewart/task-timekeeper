@@ -4,6 +4,7 @@ import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestRestUtils {
 
@@ -18,5 +19,11 @@ public class TestRestUtils {
         setupJwtCall(request, token);
 
         return request;
+    }
+
+    public static void assertErrorMessage(String expected, String message){
+        if(!message.matches(expected)){
+            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
+        }
     }
 }

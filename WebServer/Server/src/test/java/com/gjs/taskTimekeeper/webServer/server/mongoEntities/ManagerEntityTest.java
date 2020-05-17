@@ -6,17 +6,27 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
 public class ManagerEntityTest extends RunningServerTest {
 
+    //TODO:: more?
+
     @Test
     public void testEquals(){
         ManagerEntity entityOne = new ManagerEntity();
-        entityOne.persist();
         ManagerEntity entityTwo = new ManagerEntity();
+
+
+        assertEquals(
+                entityOne,
+                entityTwo
+        );
+
+        entityOne.persist();
         entityTwo.persist();
 
         assertNotEquals(

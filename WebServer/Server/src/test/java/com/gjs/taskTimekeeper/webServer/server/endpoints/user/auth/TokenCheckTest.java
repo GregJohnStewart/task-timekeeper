@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -65,13 +64,9 @@ public class TokenCheckTest extends RunningServerTest {
 
     @Test
     public void checkValidUserJwt(){
-        User testUser = new User();
-        testUser.setUsername("helloWorld");
-        testUser.setEmail("test@world.com");
-        testUser.setLastLogin(new Date());
+        User testUser = this.userUtils.setupTestUser(true);
         testUser.setLevel(UserLevel.REGULAR);
-
-        testUser.persist();
+        testUser.update();
 
         String token = this.jwtService.generateTokenString(testUser, false);
 
@@ -92,13 +87,9 @@ public class TokenCheckTest extends RunningServerTest {
 
     @Test
     public void checkValidAdminJwt(){
-        User testUser = new User();
-        testUser.setUsername("helloWorld");
-        testUser.setEmail("test@world.com");
-        testUser.setLastLogin(new Date());
+        User testUser = this.userUtils.setupTestUser(true);
         testUser.setLevel(UserLevel.ADMIN);
-
-        testUser.persist();
+        testUser.update();
 
         String token = this.jwtService.generateTokenString(testUser, false);
 
