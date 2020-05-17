@@ -17,7 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultKeysHealthCheck implements HealthCheck {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultKeysHealthCheck.class);
-    private static final String CHECK_NAME = "Not using packaged keys.";
+    public static final String CHECK_NAME = "Not using packaged keys.";
 
     private final DefaultKeysChecker defaultKeysChecker;
 
