@@ -3,7 +3,6 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -12,12 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
+    private static final boolean HEADLESS = true;
 
     static {
         WebDriverManager.firefoxdriver().setup();
@@ -33,7 +31,7 @@ public class WebDriverWrapper implements Closeable {
     public void init(){
         if(this.driver == null){
             LOGGER.info("Opening web browser");
-            this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
+            this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
         }else{
             LOGGER.info("Driver already started.");
         }
@@ -49,17 +47,9 @@ public class WebDriverWrapper implements Closeable {
 
         WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
 
-        WebElement loadedFlag = pageLoadWait.until(
+        pageLoadWait.until(
                 driver -> driver.findElement(By.id(LOADED_FLAG_ID))
         );
-
-        assertNotNull(loadedFlag);
-
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-
-        }
 
         LOGGER.info("\"{}\" page loaded successfully.", url);
 
@@ -85,7 +75,7 @@ public class WebDriverWrapper implements Closeable {
     }
 
     public void assertLoggedOut(){
-        this.getWait(60).until(
+        this.getWait().until(
                 driver -> {
                     String topText = driver.findElement(By.id("loginNavText")).getText();
                     if(
