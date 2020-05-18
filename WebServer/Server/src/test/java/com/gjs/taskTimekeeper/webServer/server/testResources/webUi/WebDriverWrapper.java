@@ -45,9 +45,7 @@ public class WebDriverWrapper implements Closeable {
         this.init();
         this.getDriver().get(this.urlBase + url);
 
-        WebDriverWait pageLoadWait = new WebDriverWait(this.getDriver(), 10);
-
-        pageLoadWait.until(
+        this.getWait().until(
                 driver -> driver.findElement(By.id(LOADED_FLAG_ID))
         );
 
