@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class WebDriverWrapper implements Closeable {
     public void init(){
         if(this.driver == null){
             LOGGER.info("Opening web browser");
-            this.driver = new FirefoxDriver();
+            this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
         }else{
             LOGGER.info("Driver already started.");
         }
