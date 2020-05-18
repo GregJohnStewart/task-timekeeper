@@ -11,3 +11,15 @@
 .tabContentTitle {
     margin-top: 5px;
 }
+
+.serverStatusIcon {
+    cursor: pointer;
+}
+
+.alert {
+    margin-top: 5px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
+}

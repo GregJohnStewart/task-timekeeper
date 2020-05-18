@@ -3,13 +3,14 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
+import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
 import com.gjs.taskTimekeeper.webServer.server.validation.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.UsernameValidator;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
 import io.quarkus.mailer.MailTemplate;
 import io.quarkus.qute.RawString;
 import io.quarkus.qute.api.ResourcePath;
@@ -43,6 +44,7 @@ import java.util.concurrent.CompletionStage;
 public class UserRegistration {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistration.class);
 
+    private final ServerUrlService serverUrlService;
     private final PasswordService passwordService;
     private final UsernameValidator usernameValidator;
     private final EmailValidator emailValidator;
@@ -55,16 +57,17 @@ public class UserRegistration {
     private long numAdded = 0;
 
     public UserRegistration(
-            PasswordService passwordService,
+            ServerUrlService serverUrlService, PasswordService passwordService,
             UsernameValidator usernameValidator,
             EmailValidator emailValidator,
-            @ConfigProperty(name="user.new.autoApprove")
-            boolean newUserAutoApprove,
+            @ConfigProperty(name = "user.new.autoApprove")
+                    boolean newUserAutoApprove,
             @ResourcePath("email/welcomeVerification")
-            MailTemplate welcomeEmailTemplate,
+                    MailTemplate welcomeEmailTemplate,
             TokenService tokenService,
             ServerInfoBean serverInfoBean
     ){
+        this.serverUrlService = serverUrlService;
         this.passwordService = passwordService;
         this.usernameValidator = usernameValidator;
         this.emailValidator = emailValidator;
@@ -94,6 +97,8 @@ public class UserRegistration {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User")})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public CompletionStage<Response> registerUser(UserRegistrationRequest request) throws UnsupportedEncodingException, MalformedURLException {
         LOGGER.info("Got User Registration request.");
 
@@ -130,11 +135,7 @@ public class UserRegistration {
 
         newUser.persist();
 
-        //TODO:: http/s selection
-        String validationLink = "http://" +
-                        this.serverInfoBean.getHostname() +
-                        ":" +
-                        this.serverInfoBean.getPort() +
+        String validationLink = this.serverUrlService.getBaseServerUrl().toString() +
                         "/api/user/emailValidation" +
                         "?" +
                         "userId=" + newUser.id +

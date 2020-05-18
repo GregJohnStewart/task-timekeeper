@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.ServerInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.ServerInfo;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -33,7 +33,7 @@ class ServerTest extends RunningServerTest {
                 .statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode());
         ServerInfo info = response.as(ServerInfo.class);
 
-        assertEquals(infoBean.getOrganization().get(), info.getOrganization());
+        assertEquals(infoBean.getOrganization(), info.getOrganization());
         assertEquals(infoBean.getServerName().get(), info.getServerName());
         assertEquals(infoBean.getOrgUrl().get().toString(), info.getOrgUrl());
         assertEquals(infoBean.getContactInfo().getName().get(), info.getContactInfo().getName());

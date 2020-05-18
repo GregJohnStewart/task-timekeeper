@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.validation;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.EmailValidationException;
+import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-class EmailValidatorTest {
+class EmailValidatorTest extends WebServerTest {
     private static Stream<Arguments> expectValid() {
         return Stream.of(
                 Arguments.of(

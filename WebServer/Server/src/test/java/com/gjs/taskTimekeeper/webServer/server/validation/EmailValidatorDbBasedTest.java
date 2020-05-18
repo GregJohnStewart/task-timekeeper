@@ -18,12 +18,12 @@ class EmailValidatorDbBasedTest extends RunningServerTest {
     public void addNewUserNameTest(){
         //add initial test user
         User testUser = new User();
-        testUser.setEmail(validator.validateAndSanitize("user01@hello.world"));
+        testUser.setEmail(validator.validateAndSanitize("user01addNewUserNameTest@hello.world"));
         testUser.persist();
 
         //check
         Assertions.assertDoesNotThrow(() -> {
-            this.validator.validateSanitizeAssertDoesntExist("user02@hello.world");
+            this.validator.validateSanitizeAssertDoesntExist("user02addNewUserNameTest@hello.world");
         });
     }
 
@@ -31,12 +31,12 @@ class EmailValidatorDbBasedTest extends RunningServerTest {
     public  void addNewUserDuplicateEmailTest(){
         //add initial test user
         User testUser = new User();
-        testUser.setEmail(validator.validateAndSanitize("user01@hello.world"));
+        testUser.setEmail(validator.validateAndSanitize("user01addNewUserDuplicateEmailTest@hello.world"));
         testUser.persist();
 
         //check
         Assertions.assertThrows(EmailValidationException.class, () -> {
-            this.validator.validateSanitizeAssertDoesntExist("user01@hello.world");
+            this.validator.validateSanitizeAssertDoesntExist("user01addNewUserDuplicateEmailTest@hello.world");
         });
     }
 }

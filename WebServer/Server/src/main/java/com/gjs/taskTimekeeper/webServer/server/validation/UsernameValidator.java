@@ -32,7 +32,7 @@ public class UsernameValidator extends StringValidator {
             throw new UsernameValidationException("Username too long. Can't be more than "+USERNAME_MAX_LENGTH+" characters long.");
         }
         if(WHITESPACE_PATTERN.matcher(trimmed).find()){
-            LOGGER.warn("Username has whitespace, given: {}", trimmed);
+            LOGGER.warn("Username has whitespace, given: \"{}\"", trimmed);
             throw new UsernameValidationException("Username cannot contain whitespace.");
         }
     }

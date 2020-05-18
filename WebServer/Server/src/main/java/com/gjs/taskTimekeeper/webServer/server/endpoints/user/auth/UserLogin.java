@@ -4,8 +4,8 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLocked
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserLoginRequest;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserLoginResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLoginRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLoginResponse;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
@@ -70,6 +70,8 @@ public class UserLogin {
             content = @Content(mediaType = "text/plain")
     )
     @Tags({@Tag(name="User"),@Tag(name="Auth")})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response loginUser(UserLoginRequest loginRequest){
         User user = User.findByEmailOrUsername(loginRequest.getUser());
 

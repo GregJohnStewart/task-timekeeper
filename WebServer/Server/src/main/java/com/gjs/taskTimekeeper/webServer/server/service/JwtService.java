@@ -2,8 +2,8 @@ package com.gjs.taskTimekeeper.webServer.server.service;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.utils.StaticUtils;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import org.apache.commons.io.IOUtils;

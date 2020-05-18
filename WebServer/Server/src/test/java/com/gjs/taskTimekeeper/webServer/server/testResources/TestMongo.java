@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources;
 
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -58,6 +59,9 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         LOGGER.info("Cleaning Mongo of all entries.");
         LOGGER.info("Deleting {} users.", User.listAll().size());
         User.deleteAll();
+        Assert.isEmpty(User.findAll());
+        LOGGER.info("Deleting {} manager entities.", ManagerEntity.listAll().size());
+        ManagerEntity.deleteAll();
         Assert.isEmpty(User.findAll());
     }
 

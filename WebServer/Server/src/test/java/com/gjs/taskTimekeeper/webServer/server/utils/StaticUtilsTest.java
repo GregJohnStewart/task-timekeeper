@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.utils;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StaticUtilsTest {
+public class StaticUtilsTest extends WebServerTest {
     private static final String WORKING_DIR = System.getProperty("user.dir");
     private static final String WORKING_DIR_FILE = "file:" + WORKING_DIR;
     private static final String RESOURCES_DIR = WORKING_DIR + "/build/resources/test/";

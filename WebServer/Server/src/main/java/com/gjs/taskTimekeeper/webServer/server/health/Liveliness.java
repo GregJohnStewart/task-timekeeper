@@ -12,8 +12,10 @@ import javax.enterprise.context.ApplicationScoped;
 @Liveness
 @ApplicationScoped
 public class Liveliness implements HealthCheck {
+    public static final String SIMPLE_LIVELINESS_HEALTH_CHECK = "Simple liveliness check.";
+
     @Override
     public HealthCheckResponse call() {
-        return HealthCheckResponse.up("Simple liveliness health check.");
+        return HealthCheckResponse.up(SIMPLE_LIVELINESS_HEALTH_CHECK);
     }
 }

@@ -1,6 +1,8 @@
 language: java
 services:
   - xvfb
+before_install:
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 jobs:
   include:
     # base code/ desktop app in jdk 11/8
@@ -39,3 +41,5 @@ jobs:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f build/reports/jacoco/report.xml
+#after_failure:
+#  - find ./ -type f -iname "*.log" | xargs tail -n +1

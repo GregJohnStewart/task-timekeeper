@@ -1,21 +1,21 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
-import com.gjs.taskTimekeeper.webServer.server.service.PasswordServiceTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationRequest;
-import com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,24 +26,22 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.assertErrorMessage;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
+@Execution(ExecutionMode.SAME_THREAD)
 public class UserRegistrationTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistrationTest.class);
 
     private static final String USER_EMAIL = "test@testing.tst";
     public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
-
-    @Inject
-    MockMailbox mailbox;
 
     @Inject
     PasswordService passwordService;
@@ -54,10 +52,12 @@ public class UserRegistrationTest extends RunningServerTest {
     }
 
     private UserRegistrationRequest getTestRequest() {
+        User testUser = this.userUtils.setupTestUser(false);
+
         return new UserRegistrationRequest(
-                "test_user",
-                USER_EMAIL,
-                PasswordServiceTest.GOOD_PASS
+                testUser.getUsername(),
+                testUser.getEmail(),
+                this.userUtils.getTestUserPassword()
         );
     }
 
@@ -93,14 +93,9 @@ public class UserRegistrationTest extends RunningServerTest {
         passwordService.assertPasswordMatchesHash(newUser.getHashedPass(), request.getPlainPassword());
     }
 
-    private void assertErrorMessage(String expected, String message){
-        if(!message.matches(expected)){
-            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
-        }
-    }
-
     @Test
     public void registerFirstUserTest() {
+        this.cleanupDatabaseAndMail();
         UserRegistrationRequest registrationRequest = this.getTestRequest();
         Response response = given()
                 .when()
@@ -178,7 +173,7 @@ public class UserRegistrationTest extends RunningServerTest {
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
 
-        this.assertErrorMessage("Username already exists.", response.asString());
+        assertErrorMessage("Username already exists.", response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 
@@ -196,7 +191,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
-        this.assertErrorMessage(expectedError, response.asString());
+        assertErrorMessage(expectedError, response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 
@@ -230,7 +225,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
-        this.assertErrorMessage("Password is too short. Must be at least 32 characters. Was 0 character\\(s\\).", response.asString());
+        assertErrorMessage("Password is too short. Must be at least 32 characters. Was 0 character\\(s\\).", response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 
@@ -247,19 +242,16 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
-        this.assertErrorMessage("Received an invalid email.", response.asString());
+        assertErrorMessage("Received an invalid email.", response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 
     @Test
     public void registerUserDuplicateEmailTest() {
-        String email = "test@test.com";
-        User firstUser = new User();
-        firstUser.setEmail(email);
-        firstUser.persist();
+        User firstUser = this.userUtils.setupTestUser(true);
 
         UserRegistrationRequest registrationRequest = this.getTestRequest();
-        registrationRequest.setEmail(email);
+        registrationRequest.setEmail(firstUser.getEmail());
 
         Response response = given()
                 .when()
@@ -268,7 +260,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
-        this.assertErrorMessage("Email already exists.", response.asString());
+        assertErrorMessage("Email already exists.", response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 }

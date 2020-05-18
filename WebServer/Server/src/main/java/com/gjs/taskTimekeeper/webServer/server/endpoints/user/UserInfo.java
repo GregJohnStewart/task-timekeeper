@@ -4,8 +4,8 @@ import com.gjs.taskTimekeeper.webServer.server.exception.database.request.Entity
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRequestException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserUnauthorizedException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.UserLevel;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -26,6 +26,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -56,7 +57,7 @@ public class UserInfo {
             description = "Got the user's info.",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserInfo.class)
+                    schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class)
             )
     )
     @APIResponse(
@@ -73,6 +74,7 @@ public class UserInfo {
     @SecurityRequirement(name="JwtAuth")
     @RolesAllowed({"ADMIN", "REGULAR"})
     @Path("/{userId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("userId") String userId, @Context SecurityContext ctx){
         ObjectId userObjectId = new ObjectId(userId);
         LOGGER.info("Got {} as a path parameter.", userId);
@@ -108,7 +110,7 @@ public class UserInfo {
 
                     schema = @Schema(
                             type = SchemaType.ARRAY,
-                            implementation = com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserInfo.class
+                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
                     )
             )
     )
@@ -122,7 +124,7 @@ public class UserInfo {
     @RolesAllowed({"ADMIN"})
     public Response getUsersInfo(@Context SecurityContext ctx){
         List<User> users = User.listAll();
-        List<com.gjs.taskTimekeeper.webServer.server.toMoveToLib.UserInfo> userInfos = new ArrayList<>(users.size());
+        List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
 
         for(User curUser : users){
             userInfos.add(curUser.toUserInfo());

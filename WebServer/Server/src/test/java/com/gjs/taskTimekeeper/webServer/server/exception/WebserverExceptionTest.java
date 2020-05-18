@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.validation.EmailValidat
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.UsernameValidationException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.ValidationException;
+import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WebserverExceptionTest  {
+public class WebserverExceptionTest extends WebServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebServerException.class);
 
     public static final String TEST_MESSAGE = "test messssage";

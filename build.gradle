@@ -137,7 +137,7 @@ task codeCoverageReport() {
                     ant.file(file: it.path)
                 }
             }
-            structure(name: 'Example') {
+            structure(name: 'Task-Timekeeper Coverage Report') {
                 classfiles {
                     files(subprojects.sourceSets.main.output.classesDirs).each {
                         if(it.exists()){
