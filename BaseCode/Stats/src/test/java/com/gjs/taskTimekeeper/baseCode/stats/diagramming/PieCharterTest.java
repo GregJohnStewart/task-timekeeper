@@ -1,12 +1,11 @@
 package com.gjs.taskTimekeeper.baseCode.stats.diagramming;
 
-import static org.junit.Assert.*;
-
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
+import org.junit.jupiter.api.Test;
+
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import org.junit.Test;
 
 /** TODO:: figure out how to test better */
 public class PieCharterTest {

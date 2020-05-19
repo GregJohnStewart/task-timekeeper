@@ -1,14 +1,16 @@
 package com.gjs.taskTimekeeper.baseCode.stats.processor;
 
-import static org.junit.Assert.assertEquals;
-
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TimeSpentOnTaskProcessorTest extends StatProcessorTest<TimeSpentOnTaskProcessor> {
 
     @Override
+    @BeforeEach
     public void setupProcessor() {
         this.processor = new TimeSpentOnTaskProcessor();
     }

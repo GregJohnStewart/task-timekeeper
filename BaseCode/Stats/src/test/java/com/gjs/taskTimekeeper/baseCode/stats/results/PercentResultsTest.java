@@ -1,9 +1,14 @@
 package com.gjs.taskTimekeeper.baseCode.stats.results;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** TODO:: update for value strings */
 public class PercentResultsTest {
@@ -24,14 +29,19 @@ public class PercentResultsTest {
         assertEquals((Double) 100.0, this.results.getPercentages().get("hello"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetNullValue() {
-        this.results.setValue("hello", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            this.results.setValue("hello", null);
+        });
+
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetNullObject() {
-        this.results.setValue(null, 1.0);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            this.results.setValue(null, 1.0);
+        });
     }
 
     @Test
@@ -125,9 +135,12 @@ public class PercentResultsTest {
         assertEquals((Double) 75.0, this.results.getPercentages().get("warld"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setValuesNull() {
-        this.results.setValues(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            this.results.setValues(null);
+        });
+
     }
 
     @Test
@@ -170,9 +183,11 @@ public class PercentResultsTest {
         assertEquals((Double) 60.0, this.results.getPercentages().get("warld"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addOrOverrideValuesNull() {
-        this.results.addOrOverrideValues(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            this.results.addOrOverrideValues(null);
+        });
     }
 
     @Test
@@ -194,9 +209,11 @@ public class PercentResultsTest {
         assertEquals((Double) 90.0, this.results.getPercentages().get("world"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void constructWithNullMap() {
-        new PercentResults<>(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new PercentResults<>(null);
+        });
     }
 
     @Test
