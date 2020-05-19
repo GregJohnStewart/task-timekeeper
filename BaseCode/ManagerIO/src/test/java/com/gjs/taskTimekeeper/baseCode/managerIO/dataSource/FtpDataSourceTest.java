@@ -1,15 +1,11 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceCredentialException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceNotFoundException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockftpserver.fake.FakeFtpServer;
 import org.mockftpserver.fake.UserAccount;
 import org.mockftpserver.fake.filesystem.DirectoryEntry;
@@ -17,6 +13,12 @@ import org.mockftpserver.fake.filesystem.FileEntry;
 import org.mockftpserver.fake.filesystem.FileSystem;
 import org.mockftpserver.fake.filesystem.Permissions;
 import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
     private static final String USERNAME = "user";
@@ -97,12 +99,14 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         assertArrayEquals(this.testData, data);
     }
 
-    @Test(expected = DataSourceCredentialException.class)
+    @Test
     public void testReadBadCreds() throws MalformedURLException {
         URL url = getUrl("some", "rando", "/data/save");
         this.testSource = new FtpDataSource(url);
 
-        this.testSource.readDataIn();
+        Assertions.assertThrows(DataSourceCredentialException.class, () -> {
+            this.testSource.readDataIn();
+        });
     }
 
     @Test
@@ -116,12 +120,9 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
 
         assertTrue(this.testSource.isReadOnly());
 
-        try {
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
             this.testSource.writeDataOut(INITIAL_SAVE_DATA);
-            Assert.fail();
-        } catch (DataSourceReadOnlyException e) {
-            // nothing to test
-        }
+        });
     }
 
     @Test
@@ -129,19 +130,13 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         URL url = getUrl("readOnlyDir/nonExistantFile");
         this.testSource = new FtpDataSource(url);
 
-        try {
-            this.testSource.readDataIn();
-            Assert.fail();
-        } catch (DataSourceReadOnlyException e) {
-            // nothing to do
-        }
 
-        try {
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
+            this.testSource.readDataIn();
+        });
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
             this.testSource.isReadOnly();
-            Assert.fail();
-        } catch (DataSourceReadOnlyException e) {
-            // nothing to do
-        }
+        });
     }
 
     @Test
@@ -149,12 +144,9 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         URL url = getUrl("nonExistantFile");
         this.testSource = new FtpDataSource(url);
 
-        try {
+        Assertions.assertThrows(DataSourceNotFoundException.class, () -> {
             this.testSource.readDataIn();
-            Assert.fail();
-        } catch (DataSourceNotFoundException e) {
-            // nothing to do
-        }
+        });
     }
 
     @Test
@@ -162,11 +154,8 @@ public class FtpDataSourceTest extends DataSourceTest<FtpDataSource> {
         URL url = getUrl("noPerms");
         this.testSource = new FtpDataSource(url);
 
-        try {
+        Assertions.assertThrows(DataSourceNotFoundException.class, () -> {
             this.testSource.readDataIn();
-            Assert.fail();
-        } catch (DataSourceNotFoundException e) {
-            // nothing to do
-        }
+        });
     }
 }

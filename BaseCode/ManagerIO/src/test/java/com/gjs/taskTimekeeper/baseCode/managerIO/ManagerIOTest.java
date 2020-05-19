@@ -6,7 +6,8 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.ByteArrayDataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,11 +15,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManagerIOTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerIOTest.class);
@@ -111,14 +112,18 @@ public class ManagerIOTest {
         assertSame(outputter, this.io.getManager().getCrudOperator().getOutputter());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setNullOutputterTest() {
-        this.io.setOutputter(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            this.io.setOutputter(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setNullDataSource() {
-        this.io.setDataSource(null, false);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            this.io.setDataSource(null, false);
+        });
     }
 
     @Test
@@ -143,9 +148,11 @@ public class ManagerIOTest {
         assertSame(ds, this.io.getDataSource());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setNullTimeManager() {
-        this.io.setManager(null, true);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            this.io.setManager(null, true);
+        });
     }
 
     @Test
@@ -182,10 +189,12 @@ public class ManagerIOTest {
     }
     // </editor-fold>
     // <editor-fold desc="Loading/ state test">
-    @Test(expected = ManagerIOReadException.class)
+    @Test
     public void isDifferentFromSourceBadSource() {
         this.source.writeDataOut(new byte[0]);
-        this.io.isDifferentFromSource();
+        Assertions.assertThrows(ManagerIOReadException.class, () -> {
+            this.io.isDifferentFromSource();
+        });
     }
 
     @Test
@@ -195,10 +204,12 @@ public class ManagerIOTest {
         assertTrue(this.io.isDifferentFromSource());
     }
 
-    @Test(expected = ManagerIOReadException.class)
+    @Test
     public void isUnsavedBadSource() {
         this.source.writeDataOut(new byte[0]);
-        this.io.isUnSaved(true);
+        Assertions.assertThrows(ManagerIOReadException.class, () -> {
+            this.io.isUnSaved(true);
+        });
     }
 
     @Test
@@ -234,10 +245,13 @@ public class ManagerIOTest {
         assertEquals(this.populatedManager, retrievedManager);
     }
 
-    @Test(expected = ManagerIOReadException.class)
+    @Test
     public void loadEmptyTimeManagerNoCreate() throws IOException {
         this.source.writeDataOut(new byte[0]);
-        io.loadManagerFromSource(false);
+
+        Assertions.assertThrows(ManagerIOReadException.class, () -> {
+            io.loadManagerFromSource(false);
+        });
     }
 
     @Test
@@ -255,14 +269,17 @@ public class ManagerIOTest {
         assertEquals(retrievedManager, resultFromSource);
     }
 
-    @Test(expected = ManagerIOReadException.class)
+    @Test
     public void loadBadTimeManager() throws IOException {
         this.source.writeDataOut(this.populatedManagerData);
         byte[] sourceBuff = this.source.getBuffer();
         sourceBuff[sourceBuff.length - 1] = 4;
         sourceBuff[sourceBuff.length - 2] = 4;
         sourceBuff[sourceBuff.length - 3] = 4;
-        io.loadManager(true);
+
+        Assertions.assertThrows(ManagerIOReadException.class, () -> {
+            io.loadManager(true);
+        });
     }
     // </editor-fold>
     // <editor-fold desc="Saving Tests">

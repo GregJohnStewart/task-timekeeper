@@ -4,8 +4,10 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSource
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceWriteException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import org.junit.After;
-import org.junit.Test;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileDataSourceTest.class);
@@ -27,14 +29,14 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
                             .getClassLoader()
                             .getResource("testTimeManagerData/")
                             .getFile());
-    private final File testFile = new File(testFileFolder.getPath() + "/temp.tks");
+    private final File testFile = new File(testFileFolder.getPath() + "/temp"+ RandomStringUtils.randomAlphanumeric(4)+".tks");
 
     public FileDataSourceTest() {
         LOGGER.debug("Test file location: {}", testFile);
         this.testSource = new FileDataSource(testFile);
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         this.testFileFolder.setWritable(true);
         if (testFile.exists() && testFile.isFile()) {
@@ -67,16 +69,20 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         this.testSource.ensureReadWriteCapable();
     }
 
-    @Test(expected = ManagerIOException.class)
+    @Test
     public void ensureReadWriteCapableActuallyADirTest() throws IOException {
         this.testSource = new FileDataSource(testFileFolder);
-        this.testSource.ensureReadWriteCapable();
+        Assertions.assertThrows(ManagerIOException.class, () -> {
+            this.testSource.ensureReadWriteCapable();
+        });
     }
 
-    @Test(expected = DataSourceWriteException.class)
+    @Test
     public void ensureReadWriteCapableReadOnlyDirTest() throws IOException {
         testFileFolder.setWritable(false);
-        this.testSource.ensureReadWriteCapable();
+        Assertions.assertThrows(ManagerIOException.class, () -> {
+            this.testSource.ensureReadWriteCapable();
+        });
     }
 
     @Test
@@ -84,23 +90,29 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         this.testSource.ensureReadWriteCapable();
     }
 
-    @Test(expected = ManagerIOException.class)
+    @Test
     public void ensureReadWriteCapableNoCreateNewFileTest() throws IOException {
-        this.testSource.ensureReadWriteCapable(false);
+        Assertions.assertThrows(ManagerIOException.class, () -> {
+            this.testSource.ensureReadWriteCapable(false);
+        });
     }
 
-    @Test(expected = DataSourceReadException.class)
+    @Test
     public void ensureReadWriteCapableCantReadTest() throws IOException {
         this.createFile();
         testFile.setReadable(false);
-        this.testSource.ensureReadWriteCapable();
+        Assertions.assertThrows(DataSourceReadException.class, () -> {
+            this.testSource.ensureReadWriteCapable();
+        });
     }
 
-    @Test(expected = DataSourceReadOnlyException.class)
+    @Test
     public void ensureReadWriteCapableCantWriteTest() throws IOException {
         this.createFile();
         testFile.setWritable(false);
-        this.testSource.ensureReadWriteCapable();
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
+            this.testSource.ensureReadWriteCapable();
+        });
     }
     // </editor-fold>
 
@@ -122,9 +134,11 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         assertArrayEquals(this.testData, this.testSource.readDataIn());
     }
 
-    @Test(expected = DataSourceReadException.class)
+    @Test
     public void readNoFileTest() throws IOException {
-        this.testSource.readDataIn();
+        Assertions.assertThrows(DataSourceReadException.class, () -> {
+            this.testSource.readDataIn();
+        });
     }
 
     @Test
@@ -133,11 +147,13 @@ public class FileDataSourceTest extends DataSourceTest<FileDataSource> {
         assertArrayEquals(this.testData, this.testSource.readDataIn());
     }
 
-    @Test(expected = DataSourceWriteException.class)
+    @Test
     public void writeReadOnlyTest() throws IOException {
         this.createFile();
         this.testFile.setWritable(false);
 
-        this.testSource.writeDataOut(this.testData);
+        Assertions.assertThrows(DataSourceWriteException.class, () -> {
+            this.testSource.writeDataOut(this.testData);
+        });
     }
 }

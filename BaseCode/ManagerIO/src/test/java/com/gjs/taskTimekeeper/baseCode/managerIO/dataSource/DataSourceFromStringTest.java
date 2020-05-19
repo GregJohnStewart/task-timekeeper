@@ -1,58 +1,48 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceParsingException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
+
 public class DataSourceFromStringTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceFromStringTest.class);
 
-    private final String sourceString;
-    private final Class expectedSourceType;
-
-    public DataSourceFromStringTest(String sourceString, Class expectedSourceType) {
-        this.sourceString = sourceString;
-        this.expectedSourceType = expectedSourceType;
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                Arguments.of("", DataSourceParsingException.class),
+                Arguments.of("hello world", DataSourceParsingException.class),
+                Arguments.of("hello/world", DataSourceParsingException.class),
+                Arguments.of("/hello/world", DataSourceParsingException.class),
+                Arguments.of("mailto:hello/world", DataSourceParsingException.class),
+                Arguments.of("/hello/", DataSourceParsingException.class),
+                Arguments.of("file://hello/world", FileDataSource.class),
+                Arguments.of("file:/hello/world", FileDataSource.class),
+                Arguments.of("file:hello/world", FileDataSource.class),
+                Arguments.of("ftp:/hello/world", FtpDataSource.class)
+        );
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][] {
-                    {"", DataSourceParsingException.class},
-                    {"hello world", DataSourceParsingException.class},
-                    {"hello/world", DataSourceParsingException.class},
-                    {"/hello/world", DataSourceParsingException.class},
-                    {"mailto:hello/world", DataSourceParsingException.class},
-                    {"/hello/", DataSourceParsingException.class},
-                    {"file://hello/world", FileDataSource.class},
-                    {"file:/hello/world", FileDataSource.class},
-                    {"file:hello/world", FileDataSource.class},
-                    {"ftp:/hello/world", FtpDataSource.class},
-                });
-    }
-
-    @Test
-    public void test() {
-        if (Exception.class.isAssignableFrom(this.expectedSourceType)) {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void test(String sourceString, Class expectedSourceType) {
+        if (Exception.class.isAssignableFrom(expectedSourceType)) {
             try {
-                DataSource.fromString(this.sourceString);
-                Assert.fail();
+                DataSource.fromString(sourceString);
+                fail();
             } catch (Exception e) {
                 assertEquals(expectedSourceType, e.getClass());
             }
         } else {
-            DataSource source = DataSource.fromString(this.sourceString);
+            DataSource source = DataSource.fromString(sourceString);
             assertEquals(expectedSourceType, source.getClass());
         }
     }
