@@ -1,23 +1,28 @@
 package com.gjs.taskTimekeeper.baseCode.core.crudAction.actionDoer;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ActionDoerTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testActionDoerNullTimeManager() {
-        new TaskDoer(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new TaskDoer(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testActionDoerNullOutputter() {
-        new TaskDoer(new TimeManager(), null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new TaskDoer(new TimeManager(), null);
+        });
     }
 
     // <editor-fold desc="Attribute parsing tests">
@@ -44,14 +49,18 @@ public class ActionDoerTest {
         assertEquals(0, atts.size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseAttributesNullString() {
-        ActionDoer.parseAttributes(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ActionDoer.parseAttributes(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void parseAttributesEmptyString() {
-        ActionDoer.parseAttributes("");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            ActionDoer.parseAttributes("");
+        });
     }
     // </editor-fold>
 }

@@ -1,27 +1,35 @@
 package com.gjs.taskTimekeeper.baseCode.core.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NameTest {
 
     // <editor-fold desc="Validator Tests">
-    @Test(expected = IllegalArgumentException.class)
+    //TODO:: parameteritize these bad name tests
+    @Test
     public void validateNameStringTestNull() {
-        Name.validateName(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Name.validateName(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void validateNameStringTestEmpty() {
-        Name.validateName("");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Name.validateName("");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void validateNameStringTestWhitespace() {
-        Name.validateName("     \n\r");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Name.validateName("     \n\r");
+        });
     }
 
     @Test
