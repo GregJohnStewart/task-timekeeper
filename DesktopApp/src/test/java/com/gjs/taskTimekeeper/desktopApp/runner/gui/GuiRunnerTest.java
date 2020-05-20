@@ -4,11 +4,14 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliManagerRunnerTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.kohsuke.args4j.CmdLineException;
 
 import java.io.File;
 
 /** super basic tests for gui. Basically just testing if the gui can be stood up. */
+@Execution(ExecutionMode.SAME_THREAD)
 public class GuiRunnerTest {
     private static final File fullTestFile =
             new File(
