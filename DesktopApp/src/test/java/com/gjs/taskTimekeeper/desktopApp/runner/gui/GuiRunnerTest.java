@@ -3,12 +3,12 @@ package com.gjs.taskTimekeeper.desktopApp.runner.gui;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.commandLine.CliManagerRunnerTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
 
 import java.io.File;
 
-/** TODO:: figure out how to properly test Swing apps */
+/** super basic tests for gui. Basically just testing if the gui can be stood up. */
 public class GuiRunnerTest {
     private static final File fullTestFile =
             new File(

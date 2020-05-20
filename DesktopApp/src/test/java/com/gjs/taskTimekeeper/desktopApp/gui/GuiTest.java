@@ -5,7 +5,9 @@ import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunner;
 import org.assertj.swing.fixture.FrameFixture;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
+@Execution(ExecutionMode.SAME_THREAD)
 public abstract class GuiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuiTest.class);
 
@@ -50,7 +53,7 @@ public abstract class GuiTest {
     }
 
 
-    @After
+    @AfterEach
     public void ensureClosed() throws InterruptedException {
         this.fixture.cleanUp();
         try{
@@ -64,7 +67,7 @@ public abstract class GuiTest {
         }
     }
 
-    @After
+    @AfterEach
     public void cleanupWorkingFile() throws IOException {
         LOGGER.info("Resetting working file after tests.");
         TestFileUtils.resetWorkingFiles();

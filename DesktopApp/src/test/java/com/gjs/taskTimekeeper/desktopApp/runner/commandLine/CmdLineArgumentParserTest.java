@@ -1,15 +1,19 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CmdLineArgumentParserTest {
 
-    @Test(expected = CmdLineException.class)
+    @Test
     public void badConfigGiven() throws CmdLineException {
-        new CmdLineArgumentParser(false, new String[] {""});
+        Assertions.assertThrows(CmdLineException.class, () -> {
+            new CmdLineArgumentParser(false, new String[] {""});
+        });
     }
 
     @Test

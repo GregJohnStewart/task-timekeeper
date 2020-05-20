@@ -1,25 +1,16 @@
 package com.gjs.taskTimekeeper.desktopApp.config.utils;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class StringPlaceholderTest {
-    private final String withPlaceholder;
-    private final String expected;
 
-    public StringPlaceholderTest(String withPlaceholder, String expected) {
-        this.withPlaceholder = withPlaceholder;
-        this.expected = expected;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -49,8 +40,9 @@ public class StringPlaceholderTest {
                 });
     }
 
-    @Test
-    public void testPlaceholder() {
-        assertEquals(this.expected, StringPlaceholder.processPlaceholders(this.withPlaceholder));
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testPlaceholder(String withPlaceholder, String expected) {
+        assertEquals(expected, StringPlaceholder.processPlaceholders(withPlaceholder));
     }
 }

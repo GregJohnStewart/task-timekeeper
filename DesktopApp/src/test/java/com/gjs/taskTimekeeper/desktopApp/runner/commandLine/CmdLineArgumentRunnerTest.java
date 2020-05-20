@@ -1,16 +1,18 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import com.gjs.taskTimekeeper.baseCode.managerIO.ManagerIO;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunnerTest;
-import java.io.File;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CmdLineArgumentRunnerTest {
     private static final File testFile =
@@ -28,9 +30,11 @@ public class CmdLineArgumentRunnerTest {
         return config;
     }
 
-    @Test(expected = DoExit.class)
+    @Test
     public void runExit() throws CmdLineException {
-        new CmdLineArgumentRunner(getTestConfig(), false, "-q").run();
+        Assertions.assertThrows(DoExit.class, () -> {
+            new CmdLineArgumentRunner(getTestConfig(), false, "-q").run();
+        });
     }
 
     @Test

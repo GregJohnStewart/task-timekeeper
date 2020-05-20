@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.desktopApp.gui.basic;
 import com.gjs.taskTimekeeper.desktopApp.gui.GuiTest;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.GuiAssertions;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.GuiNavigation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

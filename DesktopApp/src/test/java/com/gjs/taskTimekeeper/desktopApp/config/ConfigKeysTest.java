@@ -1,9 +1,11 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
-import static org.junit.Assert.*;
-
 import com.gjs.taskTimekeeper.desktopApp.config.exception.ConfigKeyDoesNotExistException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ConfigKeysTest {
 
@@ -12,9 +14,11 @@ public class ConfigKeysTest {
         assertEquals(ConfigKeys.APP_NAME, ConfigKeys.getKeyOf("app.name"));
     }
 
-    @Test(expected = ConfigKeyDoesNotExistException.class)
+    @Test
     public void getKeyOfBadKey() {
-        ConfigKeys.getKeyOf("app.nameded");
+        Assertions.assertThrows(ConfigKeyDoesNotExistException.class, () -> {
+            ConfigKeys.getKeyOf("app.nameded");
+        });
     }
 
     @Test

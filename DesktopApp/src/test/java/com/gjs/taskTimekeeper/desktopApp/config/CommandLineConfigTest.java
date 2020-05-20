@@ -1,12 +1,12 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CommandLineConfigTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandLineConfigTest.class);
