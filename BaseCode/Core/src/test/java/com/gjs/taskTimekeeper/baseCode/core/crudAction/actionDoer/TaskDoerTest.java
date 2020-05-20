@@ -7,16 +7,16 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskDoerTest extends ActionDoerExtendingTest {
 

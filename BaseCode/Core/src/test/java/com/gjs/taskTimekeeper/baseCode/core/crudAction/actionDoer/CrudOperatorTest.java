@@ -5,27 +5,31 @@ import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class CrudOperatorTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setOperatorNullTest() {
-        CrudOperator op = new CrudOperator(new TimeManager());
-
-        op.setOutputter(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new CrudOperator(new TimeManager()).setOutputter(null);
+        });
     }
 
     @Test
     public void setOutputterTest() {
         CrudOperator op = new CrudOperator(new TimeManager());
 
-        op.setOutputter(new Outputter());
-        // TODO: verify new outputter was set
+        Outputter outputter = new Outputter();
+
+        op.setOutputter(outputter);
+
+        assertSame(outputter, op.getOutputter());
     }
 
     @Test

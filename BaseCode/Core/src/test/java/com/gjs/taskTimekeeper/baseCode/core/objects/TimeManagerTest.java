@@ -2,7 +2,8 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,9 +11,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimeManagerTest {
     private static final Task testTask = new Task("Test task");
@@ -83,9 +84,11 @@ public class TimeManagerTest {
         assertTrue(manager.getTasks().isEmpty());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setWorkPeriodsWithNull() {
-        new TimeManager().setWorkPeriods(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new TimeManager().setWorkPeriods(null);
+        });
     }
 
     @Test
@@ -101,9 +104,11 @@ public class TimeManagerTest {
         assertTrue(manager.getTasks().contains(testTask));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addWorkPeriodWithNull() {
-        new TimeManager().addWorkPeriod(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new TimeManager().addWorkPeriod(null);
+        });
     }
 
     @Test
@@ -124,9 +129,11 @@ public class TimeManagerTest {
         assertTrue(manager.getTasks().contains(testTask));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setTasksWithNull() {
-        new TimeManager().setTasks(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new TimeManager().setTasks(null);
+        });
     }
 
     @Test
@@ -165,9 +172,11 @@ public class TimeManagerTest {
         assertTrue(manager.getTasks().contains(testTask));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addTaskWithNull() {
-        new TimeManager().addTask(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new TimeManager().addTask(null);
+        });
     }
 
     @Test
@@ -195,9 +204,11 @@ public class TimeManagerTest {
         assertTrue(manager.getTasks().contains(testTaskTwo));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addTimespanWithNull() {
-        new TimeManager().addTimespan(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new TimeManager().addTimespan(null);
+        });
     }
 
     @Test()

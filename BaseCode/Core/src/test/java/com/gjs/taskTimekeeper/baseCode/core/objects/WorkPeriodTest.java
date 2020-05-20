@@ -2,8 +2,8 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -14,12 +14,13 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WorkPeriodTest {
     private static final Task testTask = new Task("Test task");
@@ -128,10 +129,12 @@ public class WorkPeriodTest {
         assertEquals(1, main.compareTo(o));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testComparetoNull() {
-        //noinspection ResultOfMethodCallIgnored
-        new WorkPeriod().compareTo((WorkPeriod) null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            //noinspection ResultOfMethodCallIgnored
+            new WorkPeriod().compareTo((WorkPeriod) null);
+        });
     }
 
     @Test
@@ -177,9 +180,11 @@ public class WorkPeriodTest {
         assertEquals(2, period.getNumTimespans());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetNullTimespans() {
-        new WorkPeriod(Arrays.asList((Timespan) null));
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new WorkPeriod(Arrays.asList((Timespan) null));
+        });
     }
 
     @Test
@@ -197,19 +202,25 @@ public class WorkPeriodTest {
         assertEquals(3, period.getNumTimespans());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setNullTimespans() {
-        new WorkPeriod().setTimespans(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new WorkPeriod().setTimespans(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setNullAtts() {
-        new WorkPeriod().setAttributes(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new WorkPeriod().setAttributes(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addNullTimespan() {
-        new WorkPeriod().addTimespan(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new WorkPeriod().addTimespan(null);
+        });
     }
 
     @Test
@@ -342,7 +353,7 @@ public class WorkPeriodTest {
 
         WorkPeriod deserialized = mapper.readValue(serialized, WorkPeriod.class);
 
-        assertTrue(period.equals(deserialized));
+        assertEquals(period, deserialized);
     }
 
     @Test
@@ -352,8 +363,9 @@ public class WorkPeriodTest {
         assertEquals(0, one.compareTo(two));
 
         try {
+            //noinspection ResultOfMethodCallIgnored
             one.compareTo((WorkPeriod) null);
-            Assert.fail();
+            fail();
         } catch (NullPointerException e) {
             // expected
         }

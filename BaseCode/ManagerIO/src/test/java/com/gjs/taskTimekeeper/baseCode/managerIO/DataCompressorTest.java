@@ -1,13 +1,14 @@
 package com.gjs.taskTimekeeper.baseCode.managerIO;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerCompressionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataCompressorTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataCompressorTest.class);
@@ -28,13 +29,16 @@ public class DataCompressorTest {
         assertArrayEquals("Hello World".getBytes(), returned);
     }
 
-    @Test(expected = ManagerCompressionException.class)
+    @Test
     public void decompressBadCompressDataTest() {
         byte[] returned = DataCompressor.compress("Hello World".getBytes());
         returned[returned.length - 2] = 5;
         returned[returned.length - 3] = 4;
         returned[returned.length - 4] = 3;
-        DataCompressor.decompress(returned);
+
+        Assertions.assertThrows(ManagerCompressionException.class, () -> {
+            DataCompressor.decompress(returned);
+        });
     }
 
     @Test

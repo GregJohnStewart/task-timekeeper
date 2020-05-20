@@ -3,15 +3,16 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // TODO:: rewrite these better
 public class TaskTest {
@@ -36,19 +37,25 @@ public class TaskTest {
         assertEquals(newTask.hashCode(), newTasktwo.hashCode());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNullSetName() {
-        new Task((Name) null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new Task((Name) null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNullSetAttributes() {
-        new Task("hello", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new Task("hello", null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWhitespaceName() {
-        new Task("\t \n");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new Task("\t \n");
+        });
     }
 
     @Test

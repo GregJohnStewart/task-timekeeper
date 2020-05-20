@@ -2,11 +2,12 @@ package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
+import org.junit.jupiter.api.Test;
+import org.kohsuke.args4j.CmdLineException;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import org.junit.Test;
-import org.kohsuke.args4j.CmdLineException;
 
 /** TODO:: write better */
 public class CliManagerRunnerTest {

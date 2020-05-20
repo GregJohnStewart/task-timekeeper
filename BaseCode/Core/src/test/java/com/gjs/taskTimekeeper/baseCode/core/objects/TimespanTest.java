@@ -2,17 +2,18 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimespanTest {
 
@@ -50,9 +51,11 @@ public class TimespanTest {
         assertEquals(newSpan.hashCode(), newSpanTwo.hashCode());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNullTask() {
-        new Timespan((Task) null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new Timespan((Task) null);
+        });
     }
 
     @Test
@@ -60,18 +63,22 @@ public class TimespanTest {
         assertEquals(Duration.ZERO, new Timespan(new Task("task")).getDuration());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testBadStart() {
-        (new Timespan(new Task("")))
-                .setEndTime(LocalDateTime.MIN)
-                .setStartTime(LocalDateTime.now());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            (new Timespan(new Task("")))
+                    .setEndTime(LocalDateTime.MIN)
+                    .setStartTime(LocalDateTime.now());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testBadEnd() {
-        (new Timespan(new Task("")))
-                .setStartTime(LocalDateTime.MAX)
-                .setEndTime(LocalDateTime.now());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            (new Timespan(new Task("")))
+                    .setStartTime(LocalDateTime.MAX)
+                    .setEndTime(LocalDateTime.now());
+        });
     }
 
     @Test
@@ -105,9 +112,11 @@ public class TimespanTest {
         assertEquals(0, main.compareTo(o));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCompareNull() {
-        new Timespan(new Task("task")).compareTo(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new Timespan(new Task("task")).compareTo(null);
+        });
     }
 
     @Test

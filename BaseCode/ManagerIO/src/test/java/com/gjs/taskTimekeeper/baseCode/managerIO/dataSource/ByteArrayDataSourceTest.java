@@ -2,12 +2,14 @@ package com.gjs.taskTimekeeper.baseCode.managerIO.dataSource;
 
 import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSourceReadOnlyException;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+//TODO:: make these source tests part of a larger abstract class?
 public class ByteArrayDataSourceTest extends DataSourceTest<ByteArrayDataSource> {
 
     public ByteArrayDataSourceTest() {
@@ -19,9 +21,11 @@ public class ByteArrayDataSourceTest extends DataSourceTest<ByteArrayDataSource>
         new ByteArrayDataSource().ensureReadWriteCapable();
     }
 
-    @Test(expected = DataSourceReadOnlyException.class)
+    @Test
     public void testEnsureReadWriteCapableReadOnly() throws ManagerIOException {
-        new ByteArrayDataSource().setReadOnly(true).ensureReadWriteCapable();
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
+            new ByteArrayDataSource().setReadOnly(true).ensureReadWriteCapable();
+        });
     }
 
     @Test
@@ -35,9 +39,12 @@ public class ByteArrayDataSourceTest extends DataSourceTest<ByteArrayDataSource>
         assertArrayEquals(this.testDataTwo, this.testSource.getBuffer());
     }
 
-    @Test(expected = DataSourceReadOnlyException.class)
+    @Test
     public void testWriteDataOutReadOnly() throws IOException {
         this.testSource.setReadOnly(true);
-        this.testSource.writeDataOut(this.testDataTwo);
+
+        Assertions.assertThrows(DataSourceReadOnlyException.class, () -> {
+            this.testSource.writeDataOut(this.testDataTwo);
+        });
     }
 }

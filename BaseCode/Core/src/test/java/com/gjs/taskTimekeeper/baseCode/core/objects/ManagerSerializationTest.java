@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.core.objects;
 
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ManagerSerializationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerSerializationTest.class);
 
     private TimeManager manager;
 
-    @Before
+    @BeforeEach
     public void setup() {
         manager = new TimeManager();
         Task task =

@@ -1,24 +1,15 @@
 package com.gjs.taskTimekeeper.desktopApp.runner.commandLine.utils;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class CommandLineArgumentSplitterTest {
-    private final String toParse;
-    private final String[] expected;
 
-    public CommandLineArgumentSplitterTest(String toParse, String[] expected) {
-        this.toParse = toParse;
-        this.expected = expected;
-    }
-
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][] {
@@ -29,8 +20,9 @@ public class CommandLineArgumentSplitterTest {
                 });
     }
 
-    @Test
-    public void split() {
-        assertArrayEquals(this.expected, CommandLineArgumentSplitter.split(this.toParse));
+    @ParameterizedTest
+    @MethodSource("data")
+    public void split(String toParse, String[] expected) {
+        assertArrayEquals(expected, CommandLineArgumentSplitter.split(toParse));
     }
 }

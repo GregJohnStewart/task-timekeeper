@@ -1,11 +1,13 @@
 package com.gjs.taskTimekeeper.desktopApp.config;
 
-import static com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys.CONFIG_FILE;
-import static com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys.RUN_MODE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunnerTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kohsuke.args4j.CmdLineException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,14 +15,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.kohsuke.args4j.CmdLineException;
 
-@RunWith(Parameterized.class)
+import static com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys.CONFIG_FILE;
+import static com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys.RUN_MODE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@Execution(ExecutionMode.SAME_THREAD)
 public class DesktopAppConfigurationTest {
     private static final File TEST_USER_CONFIG_FILE =
             new File(
@@ -39,7 +40,6 @@ public class DesktopAppConfigurationTest {
 
     private DesktopAppConfiguration config;
 
-    @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[][] {
@@ -92,47 +92,31 @@ public class DesktopAppConfigurationTest {
                 });
     }
 
-    private final String userConfigFileContents;
-    private final Map<String, String> envVars;
-    private final String[] cmdLineArgs;
-    private final Map<ConfigKeys, String> entriesToAssert;
-
-    public DesktopAppConfigurationTest(
-            String userPropertiesFileContents,
-            Map<String, String> envVars,
-            String[] cmdLineArgs,
-            Map<ConfigKeys, String> entriesToAssert) {
-        this.userConfigFileContents = userPropertiesFileContents;
-        this.envVars = envVars;
-        this.cmdLineArgs = cmdLineArgs;
-        this.entriesToAssert = entriesToAssert;
-
-        this.writeUserConfigFile();
-    }
-
-    @Before
-    public void writeUserConfigFile() {
-        writeToUserConfigFile(this.userConfigFileContents.getBytes());
-    }
-
-    @After
+    @AfterEach
     public void cleanup() {
         writeToUserConfigFile(new byte[0]);
     }
 
-    @Test
-    public void test() throws CmdLineException {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void test(
+            String userPropertiesFileContents,
+            Map<String, String> envVars,
+            String[] cmdLineArgs,
+            Map<ConfigKeys, String> entriesToAssert
+    ) throws CmdLineException {
+        writeToUserConfigFile(userPropertiesFileContents.getBytes());
         DesktopAppConfiguration config;
-        if (this.envVars == null) {
-            config = new DesktopAppConfiguration(this.cmdLineArgs);
+        if (envVars == null) {
+            config = new DesktopAppConfiguration(cmdLineArgs);
         } else {
-            config = new DesktopAppConfiguration(this.envVars, this.cmdLineArgs);
+            config = new DesktopAppConfiguration(envVars, cmdLineArgs);
         }
 
         for (Map.Entry<Object, Object> expecting : config.getAllProperties()) {
             assertNotNull(expecting.getValue());
         }
-        for (Map.Entry<ConfigKeys, String> expecting : this.entriesToAssert.entrySet()) {
+        for (Map.Entry<ConfigKeys, String> expecting : entriesToAssert.entrySet()) {
             assertEquals(expecting.getValue(), config.getProperty(expecting.getKey()));
         }
     }

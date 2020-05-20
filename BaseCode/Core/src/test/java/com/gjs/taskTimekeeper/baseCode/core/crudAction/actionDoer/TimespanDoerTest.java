@@ -6,18 +6,18 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimespanDoerTest extends ActionDoerExtendingTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoerTest.class);
@@ -26,7 +26,7 @@ public class TimespanDoerTest extends ActionDoerExtendingTest {
         super(KeeperObjectType.SPAN);
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         this.selectPeriodAt(1);
     }

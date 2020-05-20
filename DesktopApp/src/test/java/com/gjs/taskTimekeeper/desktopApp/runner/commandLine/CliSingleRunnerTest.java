@@ -3,9 +3,10 @@ package com.gjs.taskTimekeeper.desktopApp.runner.commandLine;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunnerTest;
-import java.io.File;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
+
+import java.io.File;
 
 public class CliSingleRunnerTest {
     private static final File testFile =

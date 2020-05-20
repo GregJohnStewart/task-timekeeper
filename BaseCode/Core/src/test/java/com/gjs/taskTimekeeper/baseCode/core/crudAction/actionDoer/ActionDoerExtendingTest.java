@@ -9,15 +9,15 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.core.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class ActionDoerExtendingTest {
 
@@ -145,7 +145,7 @@ public abstract class ActionDoerExtendingTest {
         this.errorStream.reset();
     }
 
-    @Before
+    @BeforeEach
     public void setOutputterVerbosity() {
         manager.getCrudOperator().setOutputLevelThreshold(OutputLevel.VERBOSE);
     }
