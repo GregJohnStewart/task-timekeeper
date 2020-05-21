@@ -60,7 +60,7 @@ function getServerStatus(){
         var response = data.responseJSON;
 
         if(response == null){
-            output += "Did not get a response from the server. It could be down.";
+            output += "Did not get a response from the server. It could be down, or you have lost connection to the server.";
         } else {
             output += "Failed the following checks:<ul>";
             response.checks.forEach(function(entry, index){
