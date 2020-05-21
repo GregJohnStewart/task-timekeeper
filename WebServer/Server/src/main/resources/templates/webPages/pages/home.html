@@ -80,7 +80,30 @@
             <h2>
                 Create Account
             </h2>
-            -- form --
+            <form id="homeCreateAccount">
+                <div class="form-group">
+                    <label for="homeLoginEmailUsername">Email:</label>
+                    <input type="email" class="form-control loginEmailUsername" id="createAccountEmail"
+                           placeholder="Email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeLoginEmailUsername">Username:</label>
+                    <input type="text" class="form-control loginEmailUsername" id="createAccountUsername"
+                           placeholder="Username" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeLoginPassword">Password:</label>
+                    <input type="password" class="form-control loginPassword" id="createAccountPassword"
+                           placeholder="Password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeLoginPassword">Password Confirmation:</label>
+                    <input type="password" class="form-control loginPassword" id="createAccountPasswordConfirm"
+                           placeholder="Password Confirm" name="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Account <i class="fas fa-user-plus"></i></button>
+            </form>
         </div>
     </div>
 </div>

@@ -55,17 +55,22 @@ function getServerStatus(){
         serverStatusDown.show();
         serverStatusUp.hide();
 
-        var output = "Server status is DOWN:<br /><br />Failed the following checks:<ul>";
+        var output = "Server status is DOWN:<br /><br />";
 
         var response = data.responseJSON;
 
-        response.checks.forEach(function(entry, index){
-            if(entry.status !== "UP"){
-                output += "<li>" + entry.name + " (" + entry.status + ")</li>";
-            }
-        });
+        if(response == null){
+            output += "Did not get a response from the server. It could be down.";
+        } else {
+            output += "Failed the following checks:<ul>";
+            response.checks.forEach(function(entry, index){
+                if(entry.status !== "UP"){
+                    output += "<li>" + entry.name + " (" + entry.status + ")</li>";
+                }
+            });
+            output += "</ul>";
+        }
 
-        output += "</ul>";
         serverStatus.attr("data-content", output);
     });
 }

@@ -25,4 +25,10 @@ class HomeTest extends ServerWebUiTest {
 
         LOGGER.info("Loaded the home page.");
     }
+
+    @Test
+    public void testUserAccountCreationForm(){
+        this.wrapper.navigateTo("");
+
+    }
 }
