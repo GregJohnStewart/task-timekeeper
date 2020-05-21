@@ -23,9 +23,9 @@ import java.util.Map;
  */
 public class TestMongo implements QuarkusTestResourceLifecycleManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestMongo.class);
-    private static MongodExecutable MONGO = null;
+    private static volatile MongodExecutable MONGO = null;
 
-    public static void startMongoTestServer() throws IOException {
+    public static synchronized void startMongoTestServer() throws IOException {
         if(MONGO != null){
             LOGGER.info("Flapdoodle Mongo already started.");
             return;
@@ -41,7 +41,7 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         MONGO.start();
     }
 
-    public static void stopMongoTestServer(){
+    public static synchronized void stopMongoTestServer(){
         if (MONGO == null) {
             LOGGER.warn("Mongo was not started.");
             return;
@@ -50,7 +50,7 @@ public class TestMongo implements QuarkusTestResourceLifecycleManager {
         MONGO = null;
     }
 
-    public static void cleanMongo() {
+    public synchronized static void cleanMongo() {
         if(MONGO == null){
             LOGGER.warn("Mongo was not started.");
             return;

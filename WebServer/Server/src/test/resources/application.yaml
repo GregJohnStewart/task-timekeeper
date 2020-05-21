@@ -9,6 +9,8 @@ quarkus:
     mock: true
   smallrye-jwt:
     enabled: true
+  http:
+    test-port: 0
 
 mp:
   jwt:
