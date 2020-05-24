@@ -22,8 +22,6 @@ public class UserUtils {
 
     private static int userCount = 0;
 
-
-
     public static synchronized int getCurUserCount(){
         return ++userCount;
     }
