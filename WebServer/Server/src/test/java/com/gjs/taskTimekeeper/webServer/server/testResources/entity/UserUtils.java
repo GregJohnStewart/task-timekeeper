@@ -27,6 +27,7 @@ public class UserUtils {
     }
 
     private String testUserEmail;
+    private String testUserUsername;
     private String testUserPassword;
     private String testUserPasswordHash;
 
@@ -72,6 +73,7 @@ public class UserUtils {
         }
 
         this.testUserEmail = testUser.getEmail();
+        this.testUserUsername = testUser.getUsername();
 
         return testUser;
     }

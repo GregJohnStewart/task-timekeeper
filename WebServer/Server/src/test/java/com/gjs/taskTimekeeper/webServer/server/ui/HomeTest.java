@@ -13,7 +13,8 @@ import org.openqa.selenium.remote.RemoteWebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.assertElementsInvalid;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
@@ -46,21 +47,40 @@ class HomeTest extends ServerWebUiTest {
         WebElement createAccountSubmitButton = createAccountForm.findElement(By.id("createAccountSubmitButton"));
 
         //doesn't submit on no input
-        createAccountSubmitButton.click();
+        {
+            submitFormAndAssertElementsInvalid(
+                    (RemoteWebElement) createAccountForm,
+                    "createAccountEmail",
+                    "createAccountUsername",
+                    "createAccountPassword",
+                    "createAccountPasswordConfirm"
+            );
+        }
+        clearForm(createAccountForm);
 
-        assertElementsInvalid(
-                (RemoteWebElement) createAccountForm,
-                "createAccountEmail",
-                "createAccountUsername",
-                "createAccountPassword",
-                "createAccountPasswordConfirm"
-        );
+        //doesn't submit with fine input, except for bad password confirm
+        {
+            createAccountEmailInput.sendKeys(this.userUtils.getTestUserEmail());
+            createAccountUsernameInput.sendKeys(this.userUtils.getTestUserUsername());
+            createAccountPasswordInput.sendKeys(this.userUtils.getTestUserPassword());
+            createAccountPasswordInput.sendKeys(this.userUtils.getTestUserPassword() + "hello world");
 
-        createAccountForm.clear();
+            submitFormAndAssertElementsInvalid(
+                    (RemoteWebElement) createAccountForm,
+                    "createAccountPasswordConfirm"
+            );
+        }
 
-        //TODO:: continue tests
+        //submits, have new user, got email
+        {
+            createAccountPasswordInput.clear();
+            createAccountPasswordInput.sendKeys(this.userUtils.getTestUserPassword());
 
-        //doesn't submit
+            //TODO: submit, test user, email
+        }
+
+
+
         LOGGER.info("Done.");
     }
 }

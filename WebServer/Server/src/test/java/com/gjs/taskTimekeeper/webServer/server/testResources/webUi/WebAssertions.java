@@ -5,6 +5,8 @@ import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.util.List;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class WebAssertions {
@@ -14,6 +16,12 @@ public class WebAssertions {
             String... expectedInvalidElementIds
     ){
         List<WebElement> invalidElements = formElement.findElementsByCssSelector(":invalid");
+
+        assertEquals(
+                expectedInvalidElementIds.length,
+                invalidElements.size(),
+                "The number of invalid elements did not match the expected amount."
+        );
 
         for(String curExpectedElementId : expectedInvalidElementIds){
             boolean found = false;
@@ -30,5 +38,13 @@ public class WebAssertions {
         }
 
         return invalidElements;
+    }
+
+    public static List<WebElement> submitFormAndAssertElementsInvalid(
+            RemoteWebElement formElement,
+            String... expectedInvalidElementIds
+    ){
+        submitForm(formElement);
+        return assertElementsInvalid(formElement, expectedInvalidElementIds);
     }
 }
