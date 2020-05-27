@@ -20,23 +20,47 @@ $("#homeCreateAccount").on("submit", function(event){
 
     var spinner = new Spinner(spinnerOpts).spin($(this).get(0));
 
-    var usernameInput = $(this).find(':input#createAccountEmail')[0];
-    var emailInput = $(this).find(':input#createAccountUsername')[0];
+    var messageDiv = $(this).find(".form-response");
+    var usernameInput = $(this).find(':input#createAccountUsername')[0];
+    var emailInput = $(this).find(':input#createAccountEmail')[0];
     var passwordInput = $(this).find(':input#createAccountPassword')[0];
 
     console.log("Attempting to create user account...");
 
     $.ajax({
         url: "/api/user/registration",
-        data : {
-          username : usernameInput.value,
-          email : emailInput.value,
-          password : passwordInput.value
-        }
+        method: "POST",
+        contentType: "application/json; charset=UTF-8",
+        dataType: 'json',
+        data : JSON.stringify({
+            username : usernameInput.value,
+            email : emailInput.value,
+            plainPassword : passwordInput.value
+        })
     }).done(function(data){
         console.log("Got response from registration: " + JSON.stringify(data));
+
+        addMessageToDiv(
+            messageDiv,
+            "success",
+            "Check your email for an email confirmation. After that, you can log in!",
+            "Success!"
+        );
+        spinner.stop();
     }).fail(function(data){
         console.warn("Bad response from registration: " + JSON.stringify(data));
+
+        var code = data.status;
+        var statusText = data.statusText;
+        var responseText = data.responseText;
+
+        addMessageToDiv(
+            messageDiv,
+            "danger",
+            "Error! " + responseText,
+            statusText
+        );
+        spinner.stop();
     });
 
     return true;

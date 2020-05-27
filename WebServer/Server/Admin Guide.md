@@ -38,6 +38,8 @@ You can check the logs of the mongo instance using: `podman logs timekeeper-mong
 
 To start it after the fact: `podman start timekeeper-mongo`
 
+For admin of the server, one can use [MongoDb Compass](https://www.mongodb.com/products/compass)
+
 ### Running the server
 
 #### Running with container
@@ -94,6 +96,8 @@ Note that `runningInfo.serverName` is used in the context of: "<serverName> Task
 
 ### Security/ Keys
 
+TODO:: jwt tokens vs https/ ssl tokens
+
 The service requires a `.pem` public and private key to make JWT tokens for users to login with. The private key must be in `pkcs8` format.
 
 Test keys are in the test resources directory, under 'security'. You will have to make your own and specify the location of the `.pem`s with the `mp.jwt.verify.publickey.location` and `mp.jwt.verify.privatekey.location` properties.
@@ -113,9 +117,9 @@ Given the previous commands, you would set `mp.jwt.verify.publickey.location` to
 
 If you are a 'real organization' you might want to use keys that were issued by a real cert provider.
 
-#### The Packaged Key
+#### The Packaged Keys
 
-There is a packaged keys to enable running right off the bat, but you _should not_ use them in production under any circumstances. The service will only run for ten minutes if these keys are used. 
+There is a set of packaged keys to enable running right off the bat, but you _should not_ use them in production under any circumstances. The service will only run for ten minutes if these keys are used. 
 
 ### User
 
@@ -131,15 +135,12 @@ TODO
 
 ### Health checks
 
-Health checks can be found at `/health` ([http://localhost:8080/health]())
+Health checks can be found at `/health` (http://localhost:8080/health)
 
 ### Metrics
 
 Metrics can be found at:
- - `/metrics` ([http://localhost:8080/metrics]())
- - `/metrics/application` ([http://localhost:8080/metrics/application]())
- 
-
-
+ - `/metrics` (http://localhost:8080/metrics)
+ - `/metrics/application` (http://localhost:8080/metrics/application)
 
 []: https://www.graalvm.org/docs/getting-started/

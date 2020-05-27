@@ -76,7 +76,7 @@ function getServerStatus(){
 }
 
 var messageDiv = $("#messageDiv")
-function addMessage(type, message, heading){
+function addMessageToDiv(jqueryObj, type, message, heading){
     if(heading != null){
         heading = '<h4 class="alert-heading">'+heading+'</h4>';
     }else{
@@ -88,7 +88,10 @@ function addMessage(type, message, heading){
          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
            '<span aria-hidden="true">&times;</span>\n'+
          '</button>\n' +
-       '</div>').appendTo(messageDiv.get(0))
+       '</div>').appendTo(jqueryObj.get(0))
+}
+function addMessage(type, message, heading){
+    addMessageToDiv(messageDiv, type, message, heading);
 }
 
 $(document).ready(function() {
