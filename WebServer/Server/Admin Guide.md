@@ -94,6 +94,10 @@ This configuration is optional (in whole or part), and is mostly used in the fro
 
 Note that `runningInfo.serverName` is used in the context of: "<serverName> Task Timekeeper Server"
 
+### Setting up Email
+
+TODO
+
 ### Security/ Keys
 
 TODO:: jwt tokens vs https/ ssl tokens
