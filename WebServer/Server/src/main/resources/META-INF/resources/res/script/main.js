@@ -76,13 +76,18 @@ function getServerStatus(){
 }
 
 var messageDiv = $("#messageDiv")
-function addMessageToDiv(jqueryObj, type, message, heading){
+function addMessageToDiv(jqueryObj, type, message, heading, id){
     if(heading != null){
         heading = '<h4 class="alert-heading">'+heading+'</h4>';
     }else{
         heading = "";
     }
-    $('<div class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
+    if(id != null){
+        id = 'id="'+id+'"'
+    }else{
+        id = "";
+    }
+    $('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
          heading + "\n" +
          message + "\n" +
          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
@@ -90,8 +95,8 @@ function addMessageToDiv(jqueryObj, type, message, heading){
          '</button>\n' +
        '</div>').appendTo(jqueryObj.get(0))
 }
-function addMessage(type, message, heading){
-    addMessageToDiv(messageDiv, type, message, heading);
+function addMessage(type, message, heading, id){
+    addMessageToDiv(messageDiv, type, message, heading, id);
 }
 
 $(document).ready(function() {

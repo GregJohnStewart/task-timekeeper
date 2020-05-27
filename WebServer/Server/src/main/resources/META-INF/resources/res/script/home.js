@@ -44,7 +44,8 @@ $("#homeCreateAccount").on("submit", function(event){
             messageDiv,
             "success",
             "Check your email for an email confirmation. After that, you can log in!",
-            "Success!"
+            "Success!",
+            "createAccountSuccessMessage"
         );
         spinner.stop();
     }).fail(function(data){
@@ -58,7 +59,8 @@ $("#homeCreateAccount").on("submit", function(event){
             messageDiv,
             "danger",
             "Error! " + responseText,
-            statusText
+            statusText,
+            "createAccountError"
         );
         spinner.stop();
     });
