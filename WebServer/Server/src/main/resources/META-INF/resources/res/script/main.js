@@ -131,6 +131,10 @@ setInterval(function(){
     getServerStatus()
 }, (10 * 60 * 1000));
 
+$("#logoutButton").on("click", function(event){
+    logout();
+});
+
 $(".loginForm").on("submit", function(event){
     event.preventDefault();
     console.log("Login form submitted.");
@@ -142,6 +146,38 @@ $(".loginForm").on("submit", function(event){
     var stayLoggedInInput = $(this).find(':input.loginStayLoggedIn')[0];
 
     console.log("Attempting to log user in...");
+
+    $.ajax({
+            url: "/api/user/auth/login",
+            method: "POST",
+            contentType: "application/json; charset=UTF-8",
+            dataType: 'json',
+            data : JSON.stringify({
+                extendedTimeout: true,
+                plainPass: passwordInput.value,
+                user: usernameEmailInput.value
+            })
+        }).done(function(data){
+            console.log("Got response from login request: " + JSON.stringify(data));
+
+            Cookies.set("loginToken", data.token);
+            window.location.reload(false);
+        }).fail(function(data){
+            console.warn("Bad response from login attempt: " + JSON.stringify(data));
+
+            var code = data.status;
+            var statusText = data.statusText;
+            var responseText = data.responseText;
+
+            addMessageToDiv(
+                messageDiv,
+                "danger",
+                "Error! " + responseText,
+                statusText,
+                "createAccountError"
+            );
+            spinner.stop();
+        });
 
     return true;
 });
