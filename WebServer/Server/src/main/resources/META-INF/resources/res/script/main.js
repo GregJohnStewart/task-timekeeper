@@ -23,6 +23,7 @@ var spinnerOpts = {
 
 
 function userLoggedIn(){
+    console.debug("login token: " + loginToken);
     //TODO:: if cookie not null, do token check call
     return loginToken != null;
 }
@@ -111,9 +112,25 @@ $(document).ready(function() {
         console.log("User logged in.");
 
         loginText.html('Logged in as: <span id="navUsername"></span>');
-        $("#navbarLogoutContent").show();
 
         //TODO:: get user info to fill out the rest, make dropdown logout
+        $("#navbarLogoutContent").show();
+        $.ajax({
+            url: "/api/user/info",
+            method: "GET",
+            headers : {
+                Authorization: "Bearer " + loginToken
+            }
+        }).done(function(data){
+            console.log("Got response from getting the user's info request: " + JSON.stringify(data));
+
+
+        }).fail(function(data){
+            console.warn("Bad response from getting user info attempt: " + JSON.stringify(data));
+            if(data.status == "401"){
+//                logout();
+            }
+        });
 
     } else {
         console.log("User NOT logged in.");
