@@ -2,19 +2,43 @@
 
 This is a guide for setting up the Task Timekeeper server to be used by users.
 
+[TOC]
+
 ## Initial setup and running
 
 ### Setting up a Mongo instance
 
 The server needs a MongoDB instance to connect to. It can be running really anywhere, as long as you have connection to it.
 
-#### Getting a quick and easy MongoDB instance running (Docker)
+#### Getting a quick and easy MongoDB instance running (Podman (Docker))
 
-TODO:: move to use PodMan instead of docker
+##### 0) Install Podman (or docker)
 
-`sudo docker run -ti --rm -p 27017:27017 mongo:4.0`
+https://podman.io/getting-started/installation.html
 
-TODO:: how to get it to save the database file and reuse it later
+https://podman.io/getting-started/
+
+##### 1) Setup data directory
+
+```bash
+sudo mkdir /data
+sudo mkdir /data/db
+
+sudo chown -R $USER /data 
+sudo chgrp -R $USER /data 
+``` 
+
+##### 2) Create mongo container, tie it to the `/data/db` folder.  
+
+`podman run --name timekeeper_mongo -p=27017:27017 --mount type=bind,destination=/data/db -d mongo`
+
+You can make sure it is running using: `podman ps`
+
+You can check the logs of the mongo instance using: `podman logs timekeeper-mongo`
+
+To start it after the fact: `podman start timekeeper-mongo`
+
+For admin of the server, one can use [MongoDb Compass](https://www.mongodb.com/products/compass)
 
 ### Running the server
 
@@ -44,6 +68,10 @@ You can probably also use a yaml file.
 
 ### Connecting to a Mongodb instance
 
+The configuration will by default try to connect to mongodb at `127.0.0.1:27017`. It will use the `task-timekeeper` database name and `task-timekeeper-server` application name.
+
+More information on how to configure the Mongo client can be found on the [all config options guide](https://quarkus.io/guides/all-config#quarkus-mongodb-client_quarkus-mongodb-client).
+
 ### Setting Up Your Information
 
 You can define specific info about your server, like the server's name and contact information:
@@ -66,7 +94,13 @@ This configuration is optional (in whole or part), and is mostly used in the fro
 
 Note that `runningInfo.serverName` is used in the context of: "<serverName> Task Timekeeper Server"
 
+### Setting up Email
+
+TODO
+
 ### Security/ Keys
+
+TODO:: jwt tokens vs https/ ssl tokens
 
 The service requires a `.pem` public and private key to make JWT tokens for users to login with. The private key must be in `pkcs8` format.
 
@@ -87,9 +121,9 @@ Given the previous commands, you would set `mp.jwt.verify.publickey.location` to
 
 If you are a 'real organization' you might want to use keys that were issued by a real cert provider.
 
-#### The Packaged Key
+#### The Packaged Keys
 
-There is a packaged keys to enable running right off the bat, but you _should not_ use them in production under any circumstances. The service will only run for ten minutes if these keys are used. 
+There is a set of packaged keys to enable running right off the bat, but you _should not_ use them in production under any circumstances. The service will only run for ten minutes if these keys are used. 
 
 ### User
 
@@ -105,15 +139,12 @@ TODO
 
 ### Health checks
 
-Health checks can be found at `/health` ([http://localhost:8080/health]())
+Health checks can be found at `/health` (http://localhost:8080/health)
 
 ### Metrics
 
 Metrics can be found at:
- - `/metrics` ([http://localhost:8080/metrics]())
- - `/metrics/application` ([http://localhost:8080/metrics/application]())
- 
-
-
+ - `/metrics` (http://localhost:8080/metrics)
+ - `/metrics/application` (http://localhost:8080/metrics/application)
 
 []: https://www.graalvm.org/docs/getting-started/

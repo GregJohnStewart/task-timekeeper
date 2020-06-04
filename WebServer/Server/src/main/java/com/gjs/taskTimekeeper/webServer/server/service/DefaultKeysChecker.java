@@ -11,11 +11,12 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class DefaultKeysChecker{
-    private static final String PACKAGED_PRIVATE = "packagedPrivateKey.pem";
-    private static final String PACKAGED_PUBLIC = "packagedPublicKey.pem";
+    private static final String[] PACKAGED_KEYWORDS = new String[]{
+            "packagedPrivateKey",
+            "packagedPublicKey"
+    };
 
-    String privateKeyLocation;
-    String publicKeyLocation;
+    private final String[] keyLocations;
 
     public DefaultKeysChecker(
             @ConfigProperty(name="mp.jwt.verify.privatekey.location")
@@ -23,13 +24,28 @@ public class DefaultKeysChecker{
             @ConfigProperty(name="mp.jwt.verify.publickey.location")
                     String publicKeyLocation
     ){
-        this.privateKeyLocation = privateKeyLocation;
-        this.publicKeyLocation = publicKeyLocation;
+        this.keyLocations = new String[]{
+                privateKeyLocation,
+                publicKeyLocation
+        };
     }
 
     public boolean usingPackagedKeys(){
-        return this.privateKeyLocation.contains(PACKAGED_PRIVATE) ||
-                this.publicKeyLocation.contains(PACKAGED_PUBLIC);
+        return anyMatch(
+                this.keyLocations,
+                PACKAGED_KEYWORDS
+        );
+    }
+
+    private boolean anyMatch(String[] strings, String[] toLookFor){
+        for(String curString : strings){
+            for(String curLookingFor : toLookFor){
+                if(curString.contains(curLookingFor)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

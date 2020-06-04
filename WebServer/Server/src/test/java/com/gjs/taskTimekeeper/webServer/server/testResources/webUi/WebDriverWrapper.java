@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -60,6 +61,12 @@ public class WebDriverWrapper implements Closeable {
 
     public WebDriverWait getWait(long timeoutSecs){
         return new WebDriverWait(this.getDriver(), timeoutSecs);
+    }
+
+    public WebElement waitForElement(By by){
+        return this.getWait().until(
+                driver -> driver.findElement(by)
+        );
     }
 
     @Override

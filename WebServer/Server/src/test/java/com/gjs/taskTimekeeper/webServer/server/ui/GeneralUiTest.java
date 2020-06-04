@@ -39,11 +39,15 @@ public class GeneralUiTest extends ServerWebUiTest {
 
     @Test
     public void navbarLogin() {
-        //TODO
+        this.userUtils.setupTestUser(true);
+
         LOGGER.info("Loading the home page.");
         this.wrapper.navigateTo("");
         LOGGER.info("Loaded the home page.");
 
         this.wrapper.getDriver().findElement(By.id("loginNavText")).click();
+
+
+
     }
 }

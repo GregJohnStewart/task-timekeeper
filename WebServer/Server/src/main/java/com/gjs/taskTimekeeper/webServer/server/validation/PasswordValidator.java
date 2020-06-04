@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 @Getter
@@ -18,7 +19,7 @@ public class PasswordValidator extends StringValidator {
     private final boolean includeSpecialChars;
     private final boolean includeNumbers;
 
-//    @ConfigProperties(prefix = "validation.password.rules")
+    @Inject
     public PasswordValidator (
             @ConfigProperty(name="validation.password.rules.minLength")
                     int minLength,

@@ -22,13 +22,12 @@ public class UserUtils {
 
     private static int userCount = 0;
 
-
-
     public static synchronized int getCurUserCount(){
         return ++userCount;
     }
 
     private String testUserEmail;
+    private String testUserUsername;
     private String testUserPassword;
     private String testUserPasswordHash;
 
@@ -74,6 +73,7 @@ public class UserUtils {
         }
 
         this.testUserEmail = testUser.getEmail();
+        this.testUserUsername = testUser.getUsername();
 
         return testUser;
     }

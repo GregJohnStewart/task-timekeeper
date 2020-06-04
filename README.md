@@ -1,7 +1,10 @@
 # task-timekeeper
 All-in one tool for keeping track of time spent on tasks
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://travis-ci.com/GregJohnStewart/task-timekeeper.svg?branch=master)](https://travis-ci.com/GregJohnStewart/task-timekeeper) [![codecov](https://codecov.io/gh/GregJohnStewart/task-timekeeper/branch/master/graph/badge.svg)](https://codecov.io/gh/GregJohnStewart/task-timekeeper)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://travis-ci.com/GregJohnStewart/task-timekeeper.svg?branch=master)](https://travis-ci.com/GregJohnStewart/task-timekeeper)
+[![codecov](https://codecov.io/gh/GregJohnStewart/task-timekeeper/branch/master/graph/badge.svg)](https://codecov.io/gh/GregJohnStewart/task-timekeeper)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f21d072dded2fbace43d/maintainability)](https://codeclimate.com/github/GregJohnStewart/task-timekeeper/maintainability)
 
 The base code behind all the projects is located in the [BaseCode](BaseCode) project.
 

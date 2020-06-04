@@ -80,6 +80,7 @@ public class UserLogin {
         }
 
         //TODO:: check num login attempts. If over limit, add and kick out. Put it to the database to make this happen?
+        //TODO:: generalize canLogin logic into user object.
 
         this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), loginRequest.getPlainPass());
 

@@ -225,7 +225,7 @@ public class UserRegistrationTest extends RunningServerTest {
                 .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
-        assertErrorMessage("Password is too short. Must be at least 32 characters. Was 0 character\\(s\\).", response.asString());
+        assertErrorMessage("Password is too short. Must be at least 8 characters. Was 0 character\\(s\\).", response.asString());
         assertEmailNotSent(registrationRequest.getEmail());
     }
 

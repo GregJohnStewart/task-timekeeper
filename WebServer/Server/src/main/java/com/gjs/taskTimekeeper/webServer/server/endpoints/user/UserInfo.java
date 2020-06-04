@@ -1,11 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
-import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRequestException;
-import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserUnauthorizedException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -48,9 +45,40 @@ public class UserInfo {
     JsonWebToken jwt;
 
     @GET
+    @Counted(name = "numGetOwnRequests", description = "How many own user info requests handled.")
+    @Operation(
+            summary = "Gets the user's info who made the request."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Got the user's info.",
+            content = @Content(
+                    mediaType = "application/json",
+
+                    schema = @Schema(
+                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
+                    )
+            )
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
+            content = @Content(mediaType = "text/plain")
+    )
+    @Tags({@Tag(name="User")})
+    @SecurityRequirement(name="JwtAuth")
+    @RolesAllowed({"ADMIN", "REGULAR"})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsersInfo(@Context SecurityContext ctx){
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
+                User.findById(jwt.getClaim(JwtService.JWT_USER_ID_CLAIM))
+        ).build();
+    }
+
+    @GET
     @Counted(name = "numGetOneRequests", description = "How many user info requests handled.")
     @Operation(
-            summary = "Gets a set of the user's info."
+            summary = "Gets a set of the given user's info."
     )
     @APIResponse(
             responseCode = "200",
@@ -72,31 +100,25 @@ public class UserInfo {
     )
     @Tags({@Tag(name="User")})
     @SecurityRequirement(name="JwtAuth")
-    @RolesAllowed({"ADMIN", "REGULAR"})
+    @RolesAllowed({"ADMIN"})
     @Path("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("userId") String userId, @Context SecurityContext ctx){
-        ObjectId userObjectId = new ObjectId(userId);
         LOGGER.info("Got {} as a path parameter.", userId);
-        ObjectId jwtObjectId = jwt.getClaim(JwtService.JWT_USER_ID_CLAIM);
-        ObjectId userIdToGetInfoOf = userObjectId;
-        if(userIdToGetInfoOf == null){
-            userIdToGetInfoOf = jwtObjectId;
-        }
-        if(userIdToGetInfoOf == null){
-            throw new UserRequestException("Could not get a user id to find.");
-        }
-        if(!jwtObjectId.equals(userIdToGetInfoOf) && !ctx.isUserInRole(UserLevel.ADMIN.name())){
-            throw new UserUnauthorizedException("Not authorized to view the info about another user.");
-        }
+        ObjectId userObjectId = new ObjectId(userId);
 
-        User user = User.findById(userIdToGetInfoOf);
+        User user = User.findById(userObjectId);
         if(user == null){
             throw new EntityNotFoundException("User requested could not be found.");
         }
         return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(user.toUserInfo()).build();
     }
 
+    /**
+     * TODO:: filtering params
+     * @param ctx
+     * @return
+     */
     @GET
     @Counted(name = "numGetAllRequests", description = "How many user info requests handled.")
     @Operation(
@@ -107,7 +129,6 @@ public class UserInfo {
             description = "Got the users' info.",
             content = @Content(
                     mediaType = "application/json",
-
                     schema = @Schema(
                             type = SchemaType.ARRAY,
                             implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
@@ -122,7 +143,9 @@ public class UserInfo {
     @Tags({@Tag(name="User")})
     @SecurityRequirement(name="JwtAuth")
     @RolesAllowed({"ADMIN"})
-    public Response getUsersInfo(@Context SecurityContext ctx){
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUsersInfo(@Context SecurityContext ctx){
         List<User> users = User.listAll();
         List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
 
