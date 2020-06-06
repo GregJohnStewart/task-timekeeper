@@ -21,6 +21,7 @@ var spinnerOpts = {
   position: 'absolute' // Element positioning
 };
 
+var wholeBody = $('body')
 
 function userLoggedIn(){
     console.debug("login token: " + loginToken);
@@ -34,46 +35,119 @@ function logout(){
     location.reload(true);
 }
 
+function doRestCall({
+	spinnerContainer = wholeBody.get(0),
+	url = null,
+	timeout = (5*60*1000),
+	method = 'GET',
+	data = null,
+	authorized = false,
+	done,
+	fail,
+	failNoResponse = null
+} = {}){
+	console.log("Making rest call.");
+	var spinner = (spinnerContainer === null ? null : new Spinner(spinnerOpts).spin(spinnerContainer));
+
+	var ajaxOps = {
+		url: url,
+		method: method,
+		timeout: timeout,
+	};
+
+	if(data != null){
+		ajaxOps.contentType = "application/json; charset=UTF-8";
+		ajaxOps.dataType = 'json';
+		ajaxOps.data = JSON.stringify(data);
+	}
+
+	if(authorized){
+		ajaxOps.headers = {
+			Authorization: "Bearer " + loginToken
+		}
+	}
+
+	$.ajax(
+		ajaxOps
+	).done(function(data){
+		console.log("Got successful response: " + JSON.stringify(data));
+		done(data);
+	}).fail(function(data){
+		console.warn("Request failed: " + JSON.stringify(data));
+
+		var response = data.responseJSON;
+
+		if(response == null){ // no response from server
+			console.info("Failed due to lack of connection to server.");
+			if(failNoResponse != null){
+				failNoResponse(data);
+			}else{
+				addMessage(
+					"danger",
+					"Try refreshing the page, or wait until later. Contact the server operators for help and details.",
+					"Failed to connect to server."
+				);
+			}
+		}else{
+			fail(data);
+		}
+	}).always(function(){
+		if(spinner != null){
+			spinner.stop();
+		}
+	});
+}
+
 var serverStatusChecking = $("#serverStatusChecking");
 var serverStatusDown = $("#serverStatusDown");
 var serverStatusUp = $("#serverStatusUp");
+var serverStatusDisconnect = $("#serverStatusDisconnect");
 var serverStatus = $("#serverStatus");
+var downOutputHead = "Server status is DOWN:<br /><br />";
 function getServerStatus(){
-    console.log("Getting health status from server...");
+	console.log("Getting health status from server...");
 
-    $.ajax({
-        url: "/health",
-        timeout: (5*60*1000) //in milliseconds
-    }).done(function(data){
-        console.log("Health result from server was UP: " + JSON.stringify(data));
-        serverStatusChecking.hide();
-        serverStatusDown.hide();
-        serverStatusUp.show();
-        serverStatus.attr("data-content", "Server status is UP");
-    }).fail(function(data){
-        console.warn("Health result from server was DOWN: " + JSON.stringify(data));
-        serverStatusChecking.hide();
-        serverStatusDown.show();
-        serverStatusUp.hide();
+	doRestCall({
+		spinnerContainer: null,
+		url: "/health",
+		timeout: (1*60*1000),
+		done: function(data){
+			console.log("Health result from server was UP: " + JSON.stringify(data));
+			serverStatusChecking.hide();
+			serverStatusDown.hide();
+			serverStatusDisconnect.hide();
+			serverStatusUp.show();
+			serverStatus.attr("data-content", "Server status is UP");
+		},
+		fail: function(data){
+			console.warn("Health result from server was DOWN: " + JSON.stringify(data));
+			serverStatusChecking.hide();
+			serverStatusUp.hide();
+			serverStatusDisconnect.hide();
+			serverStatusDown.show();
 
-        var output = "Server status is DOWN:<br /><br />";
+			var response = data.responseJSON;
 
-        var response = data.responseJSON;
+			var output = downOutputHead + "Failed the following checks:<ul>";
+				response.checks.forEach(function(entry, index){
+					if(entry.status !== "UP"){
+						output += "<li>" + entry.name + " (" + entry.status + ")</li>";
+					}
+				});
+			output += "</ul>";
+			serverStatus.attr("data-content", output);
+		},
+		failNoResponse: function(data){
+			console.warn("Health result from server was DOWN: " + JSON.stringify(data));
+			serverStatusChecking.hide();
+			serverStatusUp.hide();
+			serverStatusDown.hide();
+			serverStatusDisconnect.show();
 
-        if(response == null){
-            output += "Did not get a response from the server. It could be down, or you have lost connection to the server.";
-        } else {
-            output += "Failed the following checks:<ul>";
-            response.checks.forEach(function(entry, index){
-                if(entry.status !== "UP"){
-                    output += "<li>" + entry.name + " (" + entry.status + ")</li>";
-                }
-            });
-            output += "</ul>";
-        }
-
-        serverStatus.attr("data-content", output);
-    });
+			var output = downOutputHead + "Did not get a response from the server. It could be down, or you have lost connection to the server.";
+			serverStatus.attr("data-content", output);
+		}
+	});
 }
 
 var messageDiv = $("#messageDiv")
@@ -146,7 +220,7 @@ $(document).ready(function() {
 
 setInterval(function(){
     getServerStatus()
-}, (10 * 60 * 1000));
+}, (2 * 60 * 1000));
 
 $("#logoutButton").on("click", function(event){
     logout();
