@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
-public class UserEntityTest extends RunningServerTest {
+public class UserEntityTest extends RunningServerTest{
     private static final Logger LOGGER = LoggerFactory.getLogger(UserEntityTest.class);
-
+    
     @Test
     public void testPersistUser(){
         LOGGER.debug("Creating test user.");
@@ -30,102 +30,102 @@ public class UserEntityTest extends RunningServerTest {
         LOGGER.debug("Persisting user.");
         user.persist();
         LOGGER.debug("Persisted user.");
-
+        
         List<User> users = User.listAll();
-
+        
         assertFalse(users.isEmpty());
         User foundUser = User.findById(user.id);
         assertEquals(user, foundUser);
     }
-
+    
     @Test
     public void testFindById(){
         User user = new User();
         user.setUsername("testForFindIdUser");
         user.persist();
-
+        
         User userGotten = User.findById(user.id);
         assertEquals(user, userGotten);
     }
-
+    
     @Test
     public void testFindByBadId(){
         User userGotten = User.findById(new ObjectId());
-
+        
         assertNull(userGotten);
     }
-
+    
     @Test
     public void testFindByEmail(){
         User user = new User();
         user.setUsername("testForFindByEmail");
         user.setEmail("testForFindByEmail@test.com");
         user.persist();
-
+        
         User userGotten = User.findByEmail("testForFindByEmail@test.com");
-
+        
         assertEquals(user, userGotten);
     }
-
+    
     @Test
     public void testFindByBadEmail(){
         User user = new User();
         user.setUsername("testForFindByBadEmail");
         user.setEmail("testFindByBadEmail@test.com");
         user.persist();
-
+        
         assertThrows(EntityNotFoundException.class, ()->{
             User.findByEmail("testForFindByBadEmail@badtest.com");
         });
     }
-
+    
     @Test
     public void testFindByUsername(){
         User user = new User();
         user.setUsername("testForFindByUsername");
         user.setEmail("testForFindByUsername@test.com");
         user.persist();
-
+        
         User userGotten = User.findByUsername("testForFindByUsername");
-
+        
         assertEquals(user, userGotten);
     }
-
+    
     @Test
     public void testFindByBadUsername(){
         User user = new User();
         user.setUsername("testForFindByBadUsername");
         user.setEmail("testForFindByBadUsername@test.com");
         user.persist();
-
+        
         assertThrows(EntityNotFoundException.class, ()->{
             User.findByUsername("testForFindByBadUsernameBaaad");
         });
     }
-
+    
     @Test
     public void testFindByEmailOrUsername(){
         User user = new User();
         user.setUsername("testForFindByUsernameOrEmail");
         user.setEmail("testForFindByUsernameOrEmail@test.com");
         user.persist();
-
+        
         User userGotten = User.findByEmailOrUsername("testForFindByUsernameOrEmail");
-
+        
         assertEquals(user, userGotten);
-
+        
         userGotten = User.findByEmailOrUsername("testForFindByUsernameOrEmail@test.com");
-
+        
         assertEquals(user, userGotten);
     }
-
+    
     @Test
     public void testFindByBadEmailOrUsername(){
         User user = new User();
         user.setUsername("testForFindByBadUsernameOrEmail");
         user.setEmail("testForFindByBadUsernameOrEmail@test.com");
         user.persist();
-
+        
         assertThrows(EntityNotFoundException.class, ()->{
             User userGotten = User.findByEmailOrUsername("someBadUsername");
         });
@@ -136,24 +136,24 @@ public class UserEntityTest extends RunningServerTest {
             User userGotten = User.findByEmailOrUsername("bad everything");
         });
     }
-
-
+    
+    
     @Test
     public void testEquals(){
         User entityOne = new User();
         User entityTwo = new User();
-
+        
         assertEquals(
-                entityOne,
-                entityTwo
+            entityOne,
+            entityTwo
         );
-
+        
         entityOne.persist();
         entityTwo.persist();
-
+        
         assertNotEquals(
-                entityOne,
-                entityTwo
+            entityOne,
+            entityTwo
         );
         //TODO:: more
     }
