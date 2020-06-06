@@ -259,7 +259,6 @@ $(".loginForm").on("submit", function(event){
 				statusText,
 				"createAccountError"
 			);
-			spinner.stop();
 		}
 	});
 	return true;

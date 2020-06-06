@@ -155,9 +155,9 @@ mp:
   jwt:
     verify:
       privatekey:
-        location: security/packagedPublicKeyPkcs8.pem
+        location: security/packagedPrivateKeyPkcs8.pem
       publickey:
-        location: security/packagedPrivateKey.pem
+        location: security/packagedPublicKey.pem
       issuer: \${runningInfo.organization} - \${runningInfo.serverName} Task Timekeeper Server
     expiration:
       default: 86400 # 1 day
