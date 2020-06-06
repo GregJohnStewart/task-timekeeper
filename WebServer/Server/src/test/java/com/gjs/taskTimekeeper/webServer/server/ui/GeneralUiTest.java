@@ -11,6 +11,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
 public class GeneralUiTest extends ServerWebUiTest{
@@ -45,6 +47,19 @@ public class GeneralUiTest extends ServerWebUiTest{
 		this.wrapper.navigateTo("");
 		LOGGER.info("Loaded the home page.");
 		
+		//TODO:: invalid data tests
+		
 		this.wrapper.getDriver().findElement(By.id("loginNavText")).click();
+		
+		this.wrapper.getDriver().findElement(By.id("navbarLoginEmailUsername")).sendKeys(this.userUtils.getTestUserEmail());
+		this.wrapper.getDriver().findElement(By.id("navbarLoginPassword")).sendKeys(this.userUtils.getTestUserPassword());
+		this.wrapper.getDriver().findElement(By.id("navbarLoginSubmitButton")).click();
+		
+		this.wrapper.waitForPageRefreshingFormToComplete(true);
+		
+		assertEquals(
+			this.userUtils.getTestUserUsername(),
+			this.wrapper.waitForElement(By.id("navUsername")).getText()
+		);
 	}
 }

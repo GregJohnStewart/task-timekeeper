@@ -2,157 +2,160 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="shortcut icon" href="/res/media/logo.svg"/>
-    <title>{title} - Task Timekeeper</title>
+	<link rel="shortcut icon" href="/res/media/logo.svg"/>
+	<title>{title} - Task Timekeeper</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
-    <link rel="stylesheet" href="/res/lib/fontawesome/fontawesome-free-5.13.0-web/css/all.css">
-    <link rel="stylesheet" href="/res/lib/spin.js/spin.css">
-    <link rel="stylesheet" href="/res/style/main.css">
-    {#for styleSheet in extraStyle}
-    <link rel="stylesheet" href="/res/style/{styleSheet}">
-    {/for}
+	<!-- CSS -->
+	<link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
+	<link rel="stylesheet" href="/res/lib/fontawesome/fontawesome-free-5.13.0-web/css/all.css">
+	<link rel="stylesheet" href="/res/lib/spin.js/spin.css">
+	<link rel="stylesheet" href="/res/style/main.css">
+	{#for styleSheet in extraStyle}
+	<link rel="stylesheet" href="/res/style/{styleSheet}">
+	{/for}
 
-    <style>
-    </style>
+	<style>
+	</style>
 </head>
 <body>
 <div id="mainContainer" class="container">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="/">
-            <img src="/res/media/logo.svg" alt="Task Timekeeper Logo">
-            {#if {serverInfo.serverName.isPresent()}}
-                {serverInfo.serverName.get()}
-            {/if} Task&nbsp;Timekeeper&nbsp;Server
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+		<a class="navbar-brand" href="/">
+			<img src="/res/media/logo.svg" alt="Task Timekeeper Logo">
+			{#if {serverInfo.serverName.isPresent()}}
+			{serverInfo.serverName.get()}
+			{/if} Task&nbsp;Timekeeper&nbsp;Server
+		</a>
+		<button
+				class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+				aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-        <!-- TODO:: make server status thing -->
+		<!-- TODO:: make server status thing -->
 
-        <div class="collapse navbar-collapse" id="navbarColor01">
+		<div class="collapse navbar-collapse" id="navbarColor01">
 
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <div id="navbarLoginContent" class="initialDisplay">
-                            <form id="navbarLogin" class="px-4 py-3 loginForm">
-                                <div class="form-group">
-                                    <label for="navbarLoginEmailUsername">Email or Username:</label>
-                                    <input type="text" class="form-control loginEmailUsername" id="navbarLoginEmailUsername"
-                                           placeholder="email or username" name="usernameEmail" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="navbarLoginPassword">Password:</label>
-                                    <input type="password" class="form-control loginPassword" id="navbarLoginPassword"
-                                           placeholder="password" name="password" required>
-                                </div>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input loginStayLoggedIn" id="navbarLoginStayLoggedIn" name="stayLoggedIn">
-                                        <label class="form-check-label" for="navbarLoginStayLoggedIn">
-                                            Remember me
-                                        </label>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Sign in <i class="fas fa-sign-in-alt"></i></button>
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/accountReset"><i class="fas fa-unlock-alt fa-fw"></i> Forgot password?</a>
-                            <a class="dropdown-item" href="/"><i class="fas fa-user-plus fa-fw"></i> Create Account</a>
-                        </div>
-                        <div id="navbarLogoutContent" class="initialDisplay">
-                            <a class="dropdown-item logoutButton" href="/userSettings"><i class="fas fa-user-cog fa-fw"></i> User Settings</a>
-                            <a id="adminLink" class="dropdown-item logoutButton initialDisplay" href="/admin"><i class="fas fa-users-cog fa-fw"></i> Admin Settings</a>
-                            <a id="logoutButton" class="dropdown-item logoutButton" href="#"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item" id="serverStatus" data-toggle="popover" title="Server Status" data-content="Checking server status...">
-                    <i id="serverStatusChecking" class="serverStatusIcon fas fa-question-circle fa-lg fa-fw"></i>
-                    <i id="serverStatusDown" class="serverStatusIcon initialDisplay fas fa-exclamation-circle fa-lg fa-fw text-warning outlined"></i>
-                    <i id="serverStatusUp" class="serverStatusIcon initialDisplay fas fa-check-circle fa-lg fa-fw text-info outlined"></i>
-                    <i id="serverStatusDisconnect" class="serverStatusIcon initialDisplay fas fa-bolt fa-lg fa-fw text-danger outlined"></i>
-                </li>
-            </ul>
-        </div>
-    </nav>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown">
+					<a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<div id="navbarLoginContent" class="initialDisplay">
+							<form id="navbarLogin" class="px-4 py-3 loginForm">
+								<div class="form-group">
+									<label for="navbarLoginEmailUsername">Email or Username:</label>
+									<input type="text" class="form-control loginEmailUsername" id="navbarLoginEmailUsername" placeholder="email or username" name="usernameEmail" required>
+								</div>
+								<div class="form-group">
+									<label for="navbarLoginPassword">Password:</label>
+									<input type="password" class="form-control loginPassword" id="navbarLoginPassword" placeholder="password" name="password" required>
+								</div>
+								<div class="form-group">
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input loginStayLoggedIn" id="navbarLoginStayLoggedIn" name="stayLoggedIn">
+										<label class="form-check-label" for="navbarLoginStayLoggedIn">
+											Remember me
+										</label>
+									</div>
+								</div>
+								<button id="navbarLoginSubmitButton" type="submit" class="btn btn-primary">Sign in <i class="fas fa-sign-in-alt"></i>
+								</button>
+							</form>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/accountReset"><i class="fas fa-unlock-alt fa-fw"></i> Forgot
+								password?</a>
+							<a class="dropdown-item" href="/"><i class="fas fa-user-plus fa-fw"></i> Create Account</a>
+						</div>
+						<div id="navbarLogoutContent" class="initialDisplay">
+							<a class="dropdown-item logoutButton" href="/userSettings"><i class="fas fa-user-cog fa-fw"></i>
+								User Settings</a>
+							<a id="adminLink" class="dropdown-item logoutButton initialDisplay" href="/admin"><i class="fas fa-users-cog fa-fw"></i>
+								Admin Settings</a>
+							<a id="logoutButton" class="dropdown-item logoutButton" href="#"><i class="fas fa-sign-out-alt fa-fw"></i>
+								Logout</a>
+						</div>
+					</div>
+				</li>
+				<li class="nav-item" id="serverStatus" data-toggle="popover" title="Server Status" data-content="Checking server status...">
+					<i id="serverStatusChecking" class="serverStatusIcon fas fa-question-circle fa-lg fa-fw"></i>
+					<i id="serverStatusDown" class="serverStatusIcon initialDisplay fas fa-exclamation-circle fa-lg fa-fw text-warning outlined"></i>
+					<i id="serverStatusUp" class="serverStatusIcon initialDisplay fas fa-check-circle fa-lg fa-fw text-info outlined"></i>
+					<i id="serverStatusDisconnect" class="serverStatusIcon initialDisplay fas fa-bolt fa-lg fa-fw text-danger outlined"></i>
+				</li>
+			</ul>
+		</div>
+	</nav>
 
-    <div id="messageDiv">
+	<div id="messageDiv">
 
-    </div>
+	</div>
 
-    {#insert pageContent}<h1>No body!</h1>{/}
+	{#insert pageContent}<h1>No body!</h1>{/}
 
-    <hr/>
-    <div id="footer" class="row">
-        <div class="col-sm-4">
-            <h5>Task Timekeeper Server</h5>
-            <p>
-                &copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br/>
-                Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0
-                License</a><br/>
-                <a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br/>
-            </p>
-        </div>
-        <div id="serverInfo" class="col-sm-4">
-            <h5>
-                Run by:<br/>
-                {#if {serverInfo.orgUrl.isPresent()}}
-                <a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization}</a>
-                {#else}
-                {serverInfo.organization}
-                {/if}
-            </h5>
-            {#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||
-            {serverInfo.contactInfo.phone.isPresent()}}
-            <h5>
-                Contact information:
-            </h5>
-            <address>
-                {#if {serverInfo.contactInfo.name.isPresent()}}
-                <h6>
-                    {serverInfo.contactInfo.name.get()}
-                </h6>
-                {/if}
+	<hr/>
+	<div id="footer" class="row">
+		<div class="col-sm-4">
+			<h5>Task Timekeeper Server</h5>
+			<p>
+				&copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br/>
+				Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0
+				License</a><br/>
+				<a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br/>
+			</p>
+		</div>
+		<div id="serverInfo" class="col-sm-4">
+			<h5>
+				Run by:<br/>
+				{#if {serverInfo.orgUrl.isPresent()}}
+				<a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization}</a>
+				{#else}
+				{serverInfo.organization}
+				{/if}
+			</h5>
+			{#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||
+			{serverInfo.contactInfo.phone.isPresent()}}
+			<h5>
+				Contact information:
+			</h5>
+			<address>
+				{#if {serverInfo.contactInfo.name.isPresent()}}
+				<h6>
+					{serverInfo.contactInfo.name.get()}
+				</h6>
+				{/if}
 
-                {#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
-                <p>
-                    {#if {serverInfo.contactInfo.email.isPresent()}}
-                    <i class="far fa-envelope fa-fw"></i> <a
-                        href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a>
-                    <br/>
-                    {/if}
-                    {#if {serverInfo.contactInfo.phone.isPresent()}}
-                    <i class="fas fa-phone-alt fa-fw"></i> <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
-                    <br/>
-                    {/if}
-                </p>
-                {/if}
-            </address>
-            {/if}
-        </div>
-        <div class="col-sm-4">
-            <p>
-                Your privacy is important to the original project. It only creates one cookie, and that is for the login
-                token.
-                The project also only collects what you give it, and it is up to the people running the server to ensure
-                it is handled
-                well. Please contact the folks running the server for more information.
-            </p>
-            <!-- TODO:: legal disclaimer, etc. -->
-        </div>
-    </div>
+				{#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
+				<p>
+					{#if {serverInfo.contactInfo.email.isPresent()}}
+					<i class="far fa-envelope fa-fw"></i> <a
+						href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a>
+					<br/>
+					{/if}
+					{#if {serverInfo.contactInfo.phone.isPresent()}}
+					<i class="fas fa-phone-alt fa-fw"></i> <a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
+					<br/>
+					{/if}
+				</p>
+				{/if}
+			</address>
+			{/if}
+		</div>
+		<div class="col-sm-4">
+			<p>
+				Your privacy is important to the original project. It only creates one cookie, and that is for the login
+				token.
+				The project also only collects what you give it, and it is up to the people running the server to ensure
+				it is handled
+				well. Please contact the folks running the server for more information.
+			</p>
+			<!-- TODO:: legal disclaimer, etc. -->
+		</div>
+	</div>
 </div>
 
 <script src="/res/lib/jquery/3.4.1/jquery.min.js"></script>

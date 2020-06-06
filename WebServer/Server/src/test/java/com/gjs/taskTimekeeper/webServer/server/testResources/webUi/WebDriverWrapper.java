@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -41,18 +42,32 @@ public class WebDriverWrapper implements Closeable {
     public WebDriver getDriver(){
         return this.driver;
     }
-
+    
+    @Override
+    public void close() {
+        if(this.getDriver() != null){
+            LOGGER.info("Closing the webpage.");
+            this.getDriver().close();
+        }else {
+            LOGGER.debug("Web browser already closed or wasn't opened.");
+        }
+    }
+    
     public WebDriverWrapper navigateTo(String url) {
         this.init();
         this.getDriver().get(this.urlBase + url);
-
-        this.getWait().until(
-                driver -> driver.findElement(By.id(LOADED_FLAG_ID))
-        );
-
+        
+        this.waitForPageLoad();
+        
         LOGGER.info("\"{}\" page loaded successfully.", url);
-
+        
         return this;
+    }
+    
+    public void waitForPageLoad(){
+        this.getWait().until(
+            driver -> driver.findElement(By.id(LOADED_FLAG_ID))
+        );
     }
 
     public WebDriverWait getWait(){
@@ -68,15 +83,31 @@ public class WebDriverWrapper implements Closeable {
                 driver -> driver.findElement(by)
         );
     }
-
-    @Override
-    public void close() {
-        if(this.getDriver() != null){
-            LOGGER.info("Closing the webpage.");
-            this.getDriver().close();
-        }else {
-            LOGGER.debug("Web browser already closed or wasn't opened.");
+    
+    public WebDriverWrapper waitForAjaxComplete(){
+        try{
+            this.getWait().until(
+                driver->(boolean)((JavascriptExecutor)driver).executeScript("return jQuery.active == 0")
+            );
+        }catch(Throwable e){
+            LOGGER.warn("Error when waiting for ajaxto finish: \"{}\"", e.getMessage(), e);
+            if(!e.getMessage().equals("ReferenceError: jQuery is not defined")){
+                throw e;
+            }
         }
+        return this;
+    }
+    
+    public WebDriverWrapper waitForPageRefreshingFormToComplete(boolean loggedIn){
+        this.waitForAjaxComplete();
+        this.waitForPageLoad();
+        
+        if(loggedIn){
+            this.getWait().until(
+                driver->!driver.findElement(By.id("navUsername")).getText().equals("")
+            );
+        }
+        return this;
     }
 
     public void assertLoggedOut(){

@@ -186,7 +186,6 @@ $(document).ready(function() {
 		console.log("User logged in.");
 		loginText.html('Logged in as: <span id="navUsername"></span>');
 
-		//TODO:: get user info to fill out the rest, make dropdown logout
 		$("#navbarLogoutContent").show();
 		
 		doRestCall({
@@ -195,6 +194,8 @@ $(document).ready(function() {
 			authorized: true,
 			done: function(data){
 				console.log("Got response from getting the user's info request: " + JSON.stringify(data));
+
+				$("#navUsername").text(data.username)
 			},
 			fail: function(data){
 				console.warn("Bad response from getting user info attempt: " + JSON.stringify(data));

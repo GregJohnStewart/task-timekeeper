@@ -70,8 +70,12 @@ public class UserInfo {
     @RolesAllowed({"ADMIN", "REGULAR"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsersInfo(@Context SecurityContext ctx){
+        ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
+        LOGGER.debug("Getting user's own info. User: {}", userId);
+        User user = User.findById(userId);
+        
         return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
-                User.findById(jwt.getClaim(JwtService.JWT_USER_ID_CLAIM))
+            user.toUserInfo()
         ).build();
     }
 
