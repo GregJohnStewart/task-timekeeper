@@ -47,16 +47,11 @@ $("#homeCreateAccount").on("submit", function(event){
 		},
 		fail: function(data){
 			console.warn("Bad response from registration: " + JSON.stringify(data));
-
-			var code = data.status;
-			var statusText = data.statusText;
-			var responseText = data.responseText;
-
 			addMessageToDiv(
 				messageDiv,
 				"danger",
-				"Error! " + responseText,
-				statusText,
+				"Error! " + data.responseText,
+				data.statusText,
 				"createAccountError"
 			);
 		}
