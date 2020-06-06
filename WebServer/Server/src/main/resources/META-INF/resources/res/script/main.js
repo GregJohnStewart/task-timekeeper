@@ -24,15 +24,15 @@ var spinnerOpts = {
 var wholeBody = $('body')
 
 function userLoggedIn(){
-    console.debug("login token: " + loginToken);
-    //TODO:: if cookie not null, do token check call
-    return loginToken != null;
+	console.debug("login token: " + loginToken);
+	//TODO:: if cookie not null, do token check call
+	return loginToken != null;
 }
 
 function logout(){
-    console.log("Logging out user.");
-    Cookies.remove('loginToken');
-    location.reload(true);
+	console.log("Logging out user.");
+	Cookies.remove('loginToken');
+	location.reload(true);
 }
 
 function doRestCall({
@@ -77,7 +77,7 @@ function doRestCall({
 
 		var response = data.responseJSON;
 
-		if(response == null){ // no response from server
+		if(data.status == 0){ // no response from server
 			console.info("Failed due to lack of connection to server.");
 			if(failNoResponse != null){
 				failNoResponse(data);
@@ -152,123 +152,114 @@ function getServerStatus(){
 
 var messageDiv = $("#messageDiv")
 function addMessageToDiv(jqueryObj, type, message, heading, id){
-    if(heading != null){
-        heading = '<h4 class="alert-heading">'+heading+'</h4>';
-    }else{
-        heading = "";
-    }
-    if(id != null){
-        id = 'id="'+id+'"'
-    }else{
-        id = "";
-    }
-    $('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
-         heading + "\n" +
-         message + "\n" +
-         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
-           '<span aria-hidden="true">&times;</span>\n'+
-         '</button>\n' +
-       '</div>').appendTo(jqueryObj.get(0))
+	if(heading != null){
+		heading = '<h4 class="alert-heading">'+heading+'</h4>';
+	}else{
+		heading = "";
+	}
+	if(id != null){
+		id = 'id="'+id+'"'
+	}else{
+		id = "";
+	}
+	$('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
+		heading + "\n" +
+		message + "\n" +
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
+			'<span aria-hidden="true">&times;</span>\n'+
+		'</button>\n' +
+		'</div>').appendTo(jqueryObj.get(0))
 }
 function addMessage(type, message, heading, id){
-    addMessageToDiv(messageDiv, type, message, heading, id);
+	addMessageToDiv(messageDiv, type, message, heading, id);
 }
 
 $(document).ready(function() {
-    console.log("Starting main initial.");
+	console.log("Starting main initial.");
 
-    $('[data-toggle="popover"]').popover({html:true});
-    getServerStatus();
+	$('[data-toggle="popover"]').popover({html:true});
+	getServerStatus();
 
-    var loginText = $("#loginNavText");
+	var loginText = $("#loginNavText");
 
-    if(userLoggedIn()){
-        console.log("User logged in.");
+	if(userLoggedIn()){
+		console.log("User logged in.");
+		loginText.html('Logged in as: <span id="navUsername"></span>');
 
-        loginText.html('Logged in as: <span id="navUsername"></span>');
+		//TODO:: get user info to fill out the rest, make dropdown logout
+		$("#navbarLogoutContent").show();
+		
+		doRestCall({
+			spinnerContainer: null,
+			url: "/api/user/info",
+			authorized: true,
+			done: function(data){
+				console.log("Got response from getting the user's info request: " + JSON.stringify(data));
+			},
+			fail: function(data){
+				console.warn("Bad response from getting user info attempt: " + JSON.stringify(data));
+				if(data.status == "401"){
+					//logout();
+				}
+			},
+		});
+	} else {
+		console.log("User NOT logged in.");
 
-        //TODO:: get user info to fill out the rest, make dropdown logout
-        $("#navbarLogoutContent").show();
-        $.ajax({
-            url: "/api/user/info",
-            method: "GET",
-            headers : {
-                Authorization: "Bearer " + loginToken
-            }
-        }).done(function(data){
-            console.log("Got response from getting the user's info request: " + JSON.stringify(data));
+		loginText.text("Login");
+		$("#navbarLoginContent").show();
+	}
 
-
-        }).fail(function(data){
-            console.warn("Bad response from getting user info attempt: " + JSON.stringify(data));
-            if(data.status == "401"){
-//                logout();
-            }
-        });
-
-    } else {
-        console.log("User NOT logged in.");
-
-        loginText.text("Login");
-        $("#navbarLoginContent").show();
-    }
-//  debug
-//    addMessage("success","Welcome!", "Welcome to the server");
-
-    $('<span id="loadedFlag"></span>').appendTo(document.body);
+	$('<span id="loadedFlag"></span>').appendTo(document.body);
 });
 
 setInterval(function(){
-    getServerStatus()
+	getServerStatus()
 }, (2 * 60 * 1000));
 
 $("#logoutButton").on("click", function(event){
-    logout();
+	logout();
 });
 
 $(".loginForm").on("submit", function(event){
-    event.preventDefault();
-    console.log("Login form submitted.");
+	event.preventDefault();
+	console.log("Login form submitted.");
 
-    var spinner = new Spinner(spinnerOpts).spin($(this).get(0));
+	var usernameEmailInput = $(this).find(':input.loginEmailUsername')[0];
+	var passwordInput = $(this).find(':input.loginPassword')[0];
+	var stayLoggedInInput = $(this).find(':input.loginStayLoggedIn')[0];
 
-    var usernameEmailInput = $(this).find(':input.loginEmailUsername')[0];
-    var passwordInput = $(this).find(':input.loginPassword')[0];
-    var stayLoggedInInput = $(this).find(':input.loginStayLoggedIn')[0];
+	console.log("Attempting to log user in...");
 
-    console.log("Attempting to log user in...");
+	doRestCall({
+		spinnerContainer: $(this).get(0),
+		url: "/api/user/auth/login",
+		method: 'POST',
+		data: {
+			extendedTimeout: true,
+			plainPass: passwordInput.value,
+			user: usernameEmailInput.value
+		},
+		done: function(data){
+			console.log("Got response from login request: " + JSON.stringify(data));
+			Cookies.set("loginToken", data.token);
+			window.location.reload(false);
+		},
+		fail: function(data){
+			console.warn("Bad response from login attempt: " + JSON.stringify(data));
+			var code = data.status;
+			var statusText = data.statusText;
+			var responseText = data.responseText;
 
-    $.ajax({
-            url: "/api/user/auth/login",
-            method: "POST",
-            contentType: "application/json; charset=UTF-8",
-            dataType: 'json',
-            data : JSON.stringify({
-                extendedTimeout: true,
-                plainPass: passwordInput.value,
-                user: usernameEmailInput.value
-            })
-        }).done(function(data){
-            console.log("Got response from login request: " + JSON.stringify(data));
-
-            Cookies.set("loginToken", data.token);
-            window.location.reload(false);
-        }).fail(function(data){
-            console.warn("Bad response from login attempt: " + JSON.stringify(data));
-
-            var code = data.status;
-            var statusText = data.statusText;
-            var responseText = data.responseText;
-
-            addMessageToDiv(
-                messageDiv,
-                "danger",
-                "Error! " + responseText,
-                statusText,
-                "createAccountError"
-            );
-            spinner.stop();
-        });
-
-    return true;
+			addMessageToDiv(
+				messageDiv,
+				"danger",
+				"Error! " + responseText,
+				statusText,
+				"createAccountError"
+			);
+			spinner.stop();
+		}
+	});
+	return true;
 });
