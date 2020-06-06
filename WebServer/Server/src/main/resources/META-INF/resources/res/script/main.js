@@ -44,7 +44,8 @@ function doRestCall({
 	authorized = false,
 	done,
 	fail,
-	failNoResponse = null
+	failNoResponse = null,
+	failNoResponseCheckStatus = true
 } = {}){
 	console.log("Making rest call.");
 	var spinner = (spinnerContainer === null ? null : new Spinner(spinnerOpts).spin(spinnerContainer));
@@ -78,6 +79,9 @@ function doRestCall({
 		var response = data.responseJSON;
 
 		if(data.status == 0){ // no response from server
+			if(failNoResponseCheckStatus){
+				getServerStatus();
+			}
 			console.info("Failed due to lack of connection to server.");
 			if(failNoResponse != null){
 				failNoResponse(data);
@@ -111,6 +115,7 @@ function getServerStatus(){
 		spinnerContainer: null,
 		url: "/health",
 		timeout: (1*60*1000),
+		failNoResponseCheckStatus: false,
 		done: function(data){
 			console.log("Health result from server was UP: " + JSON.stringify(data));
 			serverStatusChecking.hide();
