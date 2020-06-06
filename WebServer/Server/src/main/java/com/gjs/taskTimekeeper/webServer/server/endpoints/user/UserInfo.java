@@ -33,131 +33,141 @@ import java.util.List;
 
 /**
  * Endpoints to allow users' to get info about themselves and others.
- *
+ * <p>
  * TODO:: log and test
  */
 @Path("/api/user/info/")
 @RequestScoped
-public class UserInfo {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfo.class);
-
-    @Inject
-    JsonWebToken jwt;
-
-    @GET
-    @Counted(name = "numGetOwnRequests", description = "How many own user info requests handled.")
-    @Operation(
-            summary = "Gets the user's info who made the request."
-    )
-    @APIResponse(
-            responseCode = "200",
-            description = "Got the user's info.",
-            content = @Content(
-                    mediaType = "application/json",
-
-                    schema = @Schema(
-                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
-                    )
-            )
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
-            content = @Content(mediaType = "text/plain")
-    )
-    @Tags({@Tag(name="User")})
-    @SecurityRequirement(name="JwtAuth")
-    @RolesAllowed({"ADMIN", "REGULAR"})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsersInfo(@Context SecurityContext ctx){
-        ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
-        LOGGER.debug("Getting user's own info. User: {}", userId);
-        User user = User.findById(userId);
-        
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
-            user.toUserInfo()
-        ).build();
-    }
-
-    @GET
-    @Counted(name = "numGetOneRequests", description = "How many user info requests handled.")
-    @Operation(
-            summary = "Gets a set of the given user's info."
-    )
-    @APIResponse(
-            responseCode = "200",
-            description = "Got the user's info.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class)
-            )
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
-            content = @Content(mediaType = "text/plain")
-    )
-    @APIResponse(
-            responseCode = "401",
-            description = "User was not authorized to get the info on another user",
-            content = @Content(mediaType = "text/plain")
-    )
-    @Tags({@Tag(name="User")})
-    @SecurityRequirement(name="JwtAuth")
-    @RolesAllowed({"ADMIN"})
-    @Path("/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserInfo(@PathParam("userId") String userId, @Context SecurityContext ctx){
-        LOGGER.info("Got {} as a path parameter.", userId);
-        ObjectId userObjectId = new ObjectId(userId);
-
-        User user = User.findById(userObjectId);
-        if(user == null){
-            throw new EntityNotFoundException("User requested could not be found.");
-        }
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(user.toUserInfo()).build();
-    }
-
-    /**
-     * TODO:: filtering params
-     * @param ctx
-     * @return
-     */
-    @GET
-    @Counted(name = "numGetAllRequests", description = "How many user info requests handled.")
-    @Operation(
-            summary = "Gets all the users' info."
-    )
-    @APIResponse(
-            responseCode = "200",
-            description = "Got the users' info.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(
-                            type = SchemaType.ARRAY,
-                            implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
-                    )
-            )
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
-            content = @Content(mediaType = "text/plain")
-    )
-    @Tags({@Tag(name="User")})
-    @SecurityRequirement(name="JwtAuth")
-    @RolesAllowed({"ADMIN"})
-    @Path("/all")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllUsersInfo(@Context SecurityContext ctx){
-        List<User> users = User.listAll();
-        List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
-
-        for(User curUser : users){
-            userInfos.add(curUser.toUserInfo());
-        }
-
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(userInfos).build();
-    }
-
+public class UserInfo{
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserInfo.class);
+	
+	@Inject
+	JsonWebToken jwt;
+	
+	@GET
+	@Counted(name = "numGetOwnRequests", description = "How many own user info requests handled.")
+	@Operation(
+		summary = "Gets the user's info who made the request."
+	)
+	@APIResponse(
+		responseCode = "200",
+		description = "Got the user's info.",
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(
+				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
+			)
+		)
+	)
+	@APIResponse(
+		responseCode = "400",
+		description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
+		content = @Content(mediaType = "text/plain")
+	)
+	@Tags({@Tag(name = "User")})
+	@SecurityRequirement(name = "JwtAuth")
+	@RolesAllowed({"ADMIN", "REGULAR"})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUsersInfo(
+		@Context
+			SecurityContext ctx
+	){
+		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
+		LOGGER.debug("Getting user's own info. User: {}", userId);
+		User user = User.findById(userId);
+		
+		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
+			user.toUserInfo()
+		).build();
+	}
+	
+	@GET
+	@Counted(name = "numGetOneRequests", description = "How many user info requests handled.")
+	@Operation(
+		summary = "Gets a set of the given user's info."
+	)
+	@APIResponse(
+		responseCode = "200",
+		description = "Got the user's info.",
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class)
+		)
+	)
+	@APIResponse(
+		responseCode = "400",
+		description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
+		content = @Content(mediaType = "text/plain")
+	)
+	@APIResponse(
+		responseCode = "401",
+		description = "User was not authorized to get the info on another user",
+		content = @Content(mediaType = "text/plain")
+	)
+	@Tags({@Tag(name = "User")})
+	@SecurityRequirement(name = "JwtAuth")
+	@RolesAllowed({"ADMIN"})
+	@Path("/{userId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserInfo(
+		@PathParam("userId")
+			String userId,
+		@Context
+			SecurityContext ctx
+	){
+		LOGGER.info("Got {} as a path parameter.", userId);
+		ObjectId userObjectId = new ObjectId(userId);
+		
+		User user = User.findById(userObjectId);
+		if(user == null){
+			throw new EntityNotFoundException("User requested could not be found.");
+		}
+		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(user.toUserInfo()).build();
+	}
+	
+	/**
+	 * TODO:: filtering params
+	 *
+	 * @param ctx
+	 * @return
+	 */
+	@GET
+	@Counted(name = "numGetAllRequests", description = "How many user info requests handled.")
+	@Operation(
+		summary = "Gets all the users' info."
+	)
+	@APIResponse(
+		responseCode = "200",
+		description = "Got the users' info.",
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(
+				type = SchemaType.ARRAY,
+				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
+			)
+		)
+	)
+	@APIResponse(
+		responseCode = "400",
+		description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
+		content = @Content(mediaType = "text/plain")
+	)
+	@Tags({@Tag(name = "User")})
+	@SecurityRequirement(name = "JwtAuth")
+	@RolesAllowed({"ADMIN"})
+	@Path("/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllUsersInfo(
+		@Context
+			SecurityContext ctx
+	){
+		List<User> users = User.listAll();
+		List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
+		
+		for(User curUser : users){
+			userInfos.add(curUser.toUserInfo());
+		}
+		
+		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(userInfos).build();
+	}
 }

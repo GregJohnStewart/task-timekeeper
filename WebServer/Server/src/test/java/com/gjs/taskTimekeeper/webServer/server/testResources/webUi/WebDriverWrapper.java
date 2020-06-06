@@ -13,47 +13,47 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
-public class WebDriverWrapper implements Closeable {
+public class WebDriverWrapper implements Closeable{
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
     private static final boolean HEADLESS = true;
-
-    static {
+    
+    static{
         WebDriverManager.firefoxdriver().setup();
     }
-
+    
     private WebDriver driver = null;
     private final String urlBase;
-
-    public WebDriverWrapper(String urlBase) {
+    
+    public WebDriverWrapper(String urlBase){
         this.urlBase = urlBase;
     }
-
+    
     public void init(){
         if(this.driver == null){
             LOGGER.info("Opening web browser");
             this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
-        }else{
+        } else{
             LOGGER.info("Driver already started.");
         }
     }
-
+    
     public WebDriver getDriver(){
         return this.driver;
     }
     
     @Override
-    public void close() {
+    public void close(){
         if(this.getDriver() != null){
             LOGGER.info("Closing the webpage.");
             this.getDriver().close();
-        }else {
+        } else{
             LOGGER.debug("Web browser already closed or wasn't opened.");
         }
     }
     
-    public WebDriverWrapper navigateTo(String url) {
+    public WebDriverWrapper navigateTo(String url){
         this.init();
         this.getDriver().get(this.urlBase + url);
         
@@ -66,21 +66,21 @@ public class WebDriverWrapper implements Closeable {
     
     public void waitForPageLoad(){
         this.getWait().until(
-            driver -> driver.findElement(By.id(LOADED_FLAG_ID))
+            driver->driver.findElement(By.id(LOADED_FLAG_ID))
         );
     }
-
+    
     public WebDriverWait getWait(){
         return this.getWait(DEFAULT_WAIT_TIMEOUT);
     }
-
+    
     public WebDriverWait getWait(long timeoutSecs){
         return new WebDriverWait(this.getDriver(), timeoutSecs);
     }
-
+    
     public WebElement waitForElement(By by){
         return this.getWait().until(
-                driver -> driver.findElement(by)
+            driver->driver.findElement(by)
         );
     }
     
@@ -89,9 +89,9 @@ public class WebDriverWrapper implements Closeable {
             this.getWait().until(
                 driver->(boolean)((JavascriptExecutor)driver).executeScript("return jQuery.active == 0")
             );
-        }catch(Throwable e){
-            LOGGER.warn("Error when waiting for ajaxto finish: \"{}\"", e.getMessage(), e);
-            if(!e.getMessage().equals("ReferenceError: jQuery is not defined")){
+        } catch(Throwable e){
+            LOGGER.warn("Error when waiting for ajax to finish: \"{}\"", e.getMessage(), e);
+            if(!e.getMessage().contains("jQuery is not defined")){
                 throw e;
             }
         }
@@ -109,18 +109,18 @@ public class WebDriverWrapper implements Closeable {
         }
         return this;
     }
-
+    
     public void assertLoggedOut(){
         this.getWait().until(
-                driver -> {
-                    String topText = driver.findElement(By.id("loginNavText")).getText();
-                    if(
-                           topText.contains("Login")
-                    ) {
-                        return driver.findElement(By.id("loginNavText"));
-                    }
-                    return null;
+            driver->{
+                String topText = driver.findElement(By.id("loginNavText")).getText();
+                if(
+                    topText.contains("Login")
+                ){
+                    return driver.findElement(By.id("loginNavText"));
                 }
+                return null;
+            }
         );
     }
 }
