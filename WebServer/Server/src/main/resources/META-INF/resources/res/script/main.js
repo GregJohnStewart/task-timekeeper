@@ -1,7 +1,7 @@
 var loginToken = Cookies.get("loginToken");
 
 var spinnerOpts = {
-  lines: 13, // The number of lines to draw
+  lines: 20, // The number of lines to draw
   length: 38, // The length of each line
   width: 17, // The line thickness
   radius: 45, // The radius of the inner circle
@@ -25,7 +25,6 @@ var wholeBody = $('body')
 
 function userLoggedIn(){
 	console.debug("login token: " + loginToken);
-	//TODO:: if cookie not null, do token check call
 	return loginToken != null;
 }
 
@@ -204,9 +203,7 @@ $(document).ready(function() {
 			},
 			fail: function(data){
 				console.warn("Bad response from getting user info attempt: " + JSON.stringify(data));
-				if(data.status == "401"){
-					//logout();
-				}
+				logout();
 			},
 		});
 	} else {
@@ -242,13 +239,20 @@ $(".loginForm").on("submit", function(event){
 		url: "/api/user/auth/login",
 		method: 'POST',
 		data: {
-			extendedTimeout: true,
+			extendedTimeout: stayLoggedInInput.checked,
 			plainPass: passwordInput.value,
 			user: usernameEmailInput.value
 		},
 		done: function(data){
 			console.log("Got response from login request: " + JSON.stringify(data));
-			Cookies.set("loginToken", data.token);
+			var cookieOps = {secure: true, expires: 1};
+
+			if(stayLoggedInInput.checked){
+				console.debug("User chose to stay logged in.");
+				cookieOps.expires = 31;
+			}
+
+			Cookies.set("loginToken", data.token, cookieOps);
 			window.location.reload(false);
 		},
 		fail: function(data){

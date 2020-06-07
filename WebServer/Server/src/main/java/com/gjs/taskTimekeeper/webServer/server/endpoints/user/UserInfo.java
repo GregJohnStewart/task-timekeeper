@@ -105,7 +105,7 @@ public class UserInfo {
 		description = "User was not authorized to get the info on another user",
 		content = @Content(mediaType = "text/plain")
 	)
-	@Tags({@Tag(name = "User")})
+	@Tags({@Tag(name = "User"), @Tag(name = "Admin Related")})
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"ADMIN"})
 	@Path("/{userId}")
@@ -153,7 +153,7 @@ public class UserInfo {
 		description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
 		content = @Content(mediaType = "text/plain")
 	)
-	@Tags({@Tag(name = "User")})
+	@Tags({@Tag(name = "User"), @Tag(name = "Admin Related")})
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"ADMIN"})
 	@Produces(MediaType.APPLICATION_JSON)
