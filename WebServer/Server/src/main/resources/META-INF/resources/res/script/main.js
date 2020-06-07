@@ -195,7 +195,7 @@ $(document).ready(function() {
 		
 		doRestCall({
 			spinnerContainer: null,
-			url: "/api/user/info",
+			url: "/api/user/info/self",
 			authorized: true,
 			done: function(data){
 				console.log("Got response from getting the user's info request: " + JSON.stringify(data));

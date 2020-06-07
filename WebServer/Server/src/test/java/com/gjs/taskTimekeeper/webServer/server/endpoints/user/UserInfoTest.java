@@ -1,0 +1,58 @@
+package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
+
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
+import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.Response;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@QuarkusTest
+@QuarkusTestResource(TestMongo.class)
+public class UserInfoTest extends RunningServerTest {
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoTest.class);
+	
+	@Test
+	public void testUserOwnInfo() {
+		User testUser = this.userUtils.setupTestUser(true);
+		
+		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt()).get(
+			"/api/user/info/self").then();
+		
+		validatableResponse.statusCode(Response.Status.OK.getStatusCode());
+		
+		assertEquals(
+			testUser.toUserInfo(),
+			validatableResponse.extract().as(UserInfo.class)
+		);
+	}
+	
+	//TODO
+	//	@Test
+	//	public void testUserInfoId() {
+	//		User testUser = this.userUtils.setupTestUser(true);
+	//
+	//
+	//
+	//		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt()).get(
+	//			"/api/user/info/self").then();
+	//
+	//		validatableResponse.statusCode(Response.Status.OK.getStatusCode());
+	//
+	//		assertEquals(
+	//			testUser.toUserInfo(),
+	//			validatableResponse.extract().as(UserInfo.class)
+	//		);
+	//	}
+	
+	//TODO:: test get all users' info
+}
