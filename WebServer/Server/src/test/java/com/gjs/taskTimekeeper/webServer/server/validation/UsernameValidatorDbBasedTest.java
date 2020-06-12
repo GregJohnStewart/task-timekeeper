@@ -16,27 +16,21 @@ class UsernameValidatorDbBasedTest extends RunningServerTest {
 
     @Test
     public void addNewUserNameTest(){
-        //add initial test user
-        User testUser = new User();
-        testUser.setUsername(validator.validateAndSanitize("user01UsernameTest"));
-        testUser.persist();
+        User testUser = this.userUtils.setupTestUser(true).getUserObj();
 
         //check
         Assertions.assertDoesNotThrow(() -> {
-            this.validator.validateSanitizeAssertDoesntExist("user02UsernameTest");
+            this.validator.validateSanitizeAssertDoesntExist(this.userUtils.setupTestUser().getUsername());
         });
     }
 
     @Test
     public  void addNewUserDuplicateNameTest(){
-        //add initial test user
-        User testUser = new User();
-        testUser.setUsername(validator.validateAndSanitize("user01UsernameTest"));
-        testUser.persist();
+        User testUser = this.userUtils.setupTestUser(true).getUserObj();
 
         //check
         Assertions.assertThrows(UsernameValidationException.class, () -> {
-            this.validator.validateSanitizeAssertDoesntExist("user01UsernameTest");
+            this.validator.validateSanitizeAssertDoesntExist(testUser.getUsername());
         });
     }
 }

@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import io.quarkus.mailer.Mail;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -66,12 +67,14 @@ class HomeTest extends ServerWebUiTest{
 		}
 		clearForm(createAccountForm);
 		
+		TestUser testUser = this.userUtils.setupTestUser();
 		//doesn't submit with fine input, except for bad password confirm
 		{
-			createAccountEmailInput.sendKeys(this.userUtils.getTestUserEmail());
-			createAccountUsernameInput.sendKeys(this.userUtils.getTestUserUsername());
-			createAccountPasswordInput.sendKeys(this.userUtils.getTestUserPassword());
-			createAccountPasswordConfirmInput.sendKeys(this.userUtils.getTestUserPassword() + "hello world");
+			
+			createAccountEmailInput.sendKeys(testUser.getEmail());
+			createAccountUsernameInput.sendKeys(testUser.getUsername());
+			createAccountPasswordInput.sendKeys(testUser.getPlainPassword());
+			createAccountPasswordConfirmInput.sendKeys(testUser.getPlainPassword() + "hello world");
 			
 			submitFormAndAssertElementsInvalid(
 				(RemoteWebElement)createAccountForm,
@@ -82,15 +85,15 @@ class HomeTest extends ServerWebUiTest{
 		//submits, have new user, got email
 		{
 			createAccountPasswordConfirmInput.clear();
-			createAccountPasswordConfirmInput.sendKeys(this.userUtils.getTestUserPassword());
+			createAccountPasswordConfirmInput.sendKeys(testUser.getPlainPassword());
 			
 			createAccountSubmitButton.click();
 			
 			this.wrapper.waitForElement(By.id("createAccountSuccessMessage"));
 			
-			User testUser = User.findByEmail(this.userUtils.getTestUserEmail());
+			User user = User.findByEmail(testUser.getEmail());
 			
-			List<Mail> sent = mailbox.getMessagesSentTo(testUser.getEmail());
+			List<Mail> sent = mailbox.getMessagesSentTo(user.getEmail());
 			assertEquals(1, sent.size());
 			Mail actual = sent.get(0);
 			
@@ -102,6 +105,4 @@ class HomeTest extends ServerWebUiTest{
 		
 		LOGGER.info("Done.");
 	}
-	
-	//TODO:: home login form
 }

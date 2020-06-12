@@ -23,9 +23,9 @@ public class UserInfoTest extends RunningServerTest {
 	
 	@Test
 	public void testUserOwnInfo() {
-		User testUser = this.userUtils.setupTestUser(true);
+		User testUser = this.userUtils.setupTestUser(true).getUserObj();
 		
-		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt()).get(
+		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt(testUser)).get(
 			"/api/user/info/self").then();
 		
 		validatableResponse.statusCode(Response.Status.OK.getStatusCode());

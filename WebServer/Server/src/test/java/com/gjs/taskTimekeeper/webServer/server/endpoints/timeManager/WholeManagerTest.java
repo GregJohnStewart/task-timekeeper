@@ -40,8 +40,8 @@ public class WholeManagerTest extends RunningServerTest {
 
     @PostConstruct
     public void setupTestUser(){
-        this.testUser = userUtils.setupTestUser(true);
-        this.testUserJwt = this.userUtils.getTestUserJwt();
+        this.testUser = userUtils.setupTestUser(true).getUserObj();
+        this.testUserJwt = this.userUtils.getTestUserJwt(testUser);
     }
 
     private void assertEntityEqualsResponse(ManagerEntity managerEntity, WholeTimeManagerResponse response){

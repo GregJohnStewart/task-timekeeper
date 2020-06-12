@@ -1,5 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.rest;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 
@@ -15,15 +17,23 @@ public class TestRestUtils {
     public static RequestSpecification newJwtCall(String token){
         RequestSpecification request = given()
                 .when();
-
+    
         setupJwtCall(request, token);
-
+    
         return request;
     }
-
-    public static void assertErrorMessage(String expected, String message){
-        if(!message.matches(expected)){
-            fail("Error message \""+message+"\" did not match expected: \""+expected+"\"");
+    
+    public static void assertErrorMessage(String expected, String message) {
+        if(!message.matches(expected)) {
+            fail("Error message \"" + message + "\" did not match expected: \"" + expected + "\"");
         }
+    }
+    
+    public static UserRegistrationRequest getUserRegistrationRequest(TestUser testUser) {
+        return new UserRegistrationRequest(
+            testUser.getUsername(),
+            testUser.getEmail(),
+            testUser.getPlainPassword()
+        );
     }
 }

@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.entity;
 
-import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
@@ -19,66 +18,73 @@ public class UserUtils {
     private static final String testUserEmailFormat = "testUser%03d@test.test";
     private static final String testUserNameFormat = "testUser%03d";
     public static final String TEST_USER_PASSWORD = "aA1!0000000000000000000000000001";
-
+    
     private static int userCount = 0;
-
-    public static synchronized int getCurUserCount(){
+    
+    public static synchronized int getCurUserCount() {
         return ++userCount;
     }
-
-    private String testUserEmail;
-    private String testUserUsername;
-    private String testUserPassword;
-    private String testUserPasswordHash;
-
+    
     private final JwtService jwtService;
-
-    public UserUtils(JwtService jwtService,PasswordService passwordService, TokenService tokenService) {
+    private final PasswordService passwordService;
+    private final TokenService tokenService;
+    
+    public UserUtils(JwtService jwtService, PasswordService passwordService, TokenService tokenService) {
         this.jwtService = jwtService;
-        this.testUserPassword = tokenService.generateToken();
-        this.testUserPasswordHash = passwordService.createPasswordHash(this.testUserPassword);
+        this.passwordService = passwordService;
+        this.tokenService = tokenService;
     }
-
-    public User getTestUser(){
-        return User.findByEmail(this.getTestUserEmail());
-    }
-
-    public User setupTestUser(boolean persist){
-        if(this.testUserPassword == null){
-            throw new IllegalStateException("Test user password not setup.");
-        }
-
+    
+    public TestUser setupTestUser() {
         int curUserCount = getCurUserCount();
-        User testUser = new User();
-
-        testUser.setEmail(String.format(testUserEmailFormat, curUserCount));
-        testUser.setUsername(String.format(testUserNameFormat, curUserCount));
-        testUser.setHashedPass(this.testUserPasswordHash);
-
-        testUser.setLastLogin(new Date());
-
+        
+        TestUser output = new TestUser(
+            this,
+            String.format(testUserEmailFormat, curUserCount),
+            String.format(testUserNameFormat, curUserCount),
+            this.tokenService.generateToken()
+        );
+        
         LOGGER.info("Creating test user No {}", curUserCount);
-        LOGGER.info("Username: {}", testUser.getUsername());
-        LOGGER.info("   Email: {}", testUser.getEmail());
-
-        try{
-            User.findByEmail(testUser.getEmail());
-            throw new IllegalStateException("Test user "+testUser.getUsername()+" already exists.");
-        }catch (EntityNotFoundException e){
-            //what we want
+        LOGGER.info("Username: {}", output.getUsername());
+        LOGGER.info("   Email: {}", output.getEmail());
+        LOGGER.info("Password: {}", output.getPlainPassword());
+        
+        return output;
+    }
+    
+    public TestUser setupTestUser(boolean persist) {
+        TestUser testUser = this.setupTestUser();
+        if(persist) {
+            setupNewUser(testUser, true);
         }
-
-        if(persist){
-            testUser.persist();
-        }
-
-        this.testUserEmail = testUser.getEmail();
-        this.testUserUsername = testUser.getUsername();
-
         return testUser;
     }
-
-    public String getTestUserJwt(){
-        return jwtService.generateTokenString(this.getTestUser(), false);
+    
+    public User setupNewUser(TestUser testUser, boolean persist) {
+        User newUser = new User();
+        
+        newUser.setEmail(testUser.getEmail());
+        newUser.setUsername(testUser.getUsername());
+        newUser.setHashedPass(this.passwordService.createPasswordHash(testUser.getPlainPassword()));
+        
+        newUser.setLastLogin(new Date());
+        
+        if(persist) {
+            newUser.persist();
+        }
+        
+        return newUser;
+    }
+    
+    public String getTestUserJwt(User testUser) {
+        if(!testUser.isPersisted()) {
+            throw new IllegalStateException("Can't get jwt for user that is not persisted.");
+        }
+        return jwtService.generateTokenString(testUser, false);
+    }
+    
+    public String getTestUserJwt(TestUser testUser) {
+        return this.getTestUserJwt(testUser.getUserObj());
     }
 }

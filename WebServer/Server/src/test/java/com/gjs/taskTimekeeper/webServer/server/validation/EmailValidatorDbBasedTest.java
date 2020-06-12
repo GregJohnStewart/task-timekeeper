@@ -15,28 +15,22 @@ class EmailValidatorDbBasedTest extends RunningServerTest {
     private EmailValidator validator = new EmailValidator();
 
     @Test
-    public void addNewUserNameTest(){
-        //add initial test user
-        User testUser = new User();
-        testUser.setEmail(validator.validateAndSanitize("user01addNewUserNameTest@hello.world"));
-        testUser.persist();
-
+    public void assertValidAndDoesntExistTest() {
+        User testUser = this.userUtils.setupTestUser(true).getUserObj();
+    
         //check
-        Assertions.assertDoesNotThrow(() -> {
-            this.validator.validateSanitizeAssertDoesntExist("user02addNewUserNameTest@hello.world");
+        Assertions.assertDoesNotThrow(()->{
+            this.validator.validateSanitizeAssertDoesntExist(this.userUtils.setupTestUser().getEmail());
         });
     }
 
     @Test
     public  void addNewUserDuplicateEmailTest(){
-        //add initial test user
-        User testUser = new User();
-        testUser.setEmail(validator.validateAndSanitize("user01addNewUserDuplicateEmailTest@hello.world"));
-        testUser.persist();
+        User testUser = this.userUtils.setupTestUser(true).getUserObj();
 
         //check
         Assertions.assertThrows(EmailValidationException.class, () -> {
-            this.validator.validateSanitizeAssertDoesntExist("user01addNewUserDuplicateEmailTest@hello.world");
+            this.validator.validateSanitizeAssertDoesntExist(testUser.getEmail());
         });
     }
 }

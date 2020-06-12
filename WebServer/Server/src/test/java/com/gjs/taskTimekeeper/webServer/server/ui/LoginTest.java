@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.ui;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class LoginTest extends ServerWebUiTest {
 		this.wrapper.navigateTo();
 		LOGGER.info("Loaded the home page.");
 		
-		this.userUtils.setupTestUser(true);
+		TestUser testUser = this.userUtils.setupTestUser(true);
 		
 		
 		//TODO:: invalid data tests
@@ -58,16 +59,16 @@ public class LoginTest extends ServerWebUiTest {
 		
 		this.wrapper.getDriver()
 					.findElement(By.id("navbarLoginEmailUsername"))
-					.sendKeys(this.userUtils.getTestUserEmail());
+					.sendKeys(testUser.getEmail());
 		this.wrapper.getDriver()
 					.findElement(By.id("navbarLoginPassword"))
-					.sendKeys(this.userUtils.getTestUserPassword());
+					.sendKeys(testUser.getPlainPassword());
 		this.wrapper.getDriver().findElement(By.id("navbarLoginSubmitButton")).click();
 		
 		this.wrapper.waitForPageRefreshingFormToComplete(true);
 		
 		assertEquals(
-			this.userUtils.getTestUserUsername(),
+			testUser.getUsername(),
 			this.wrapper.waitForElement(By.id("navUsername")).getText()
 		);
 	}

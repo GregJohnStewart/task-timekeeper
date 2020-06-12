@@ -55,14 +55,14 @@ public class WebDriverWrapper implements Closeable{
         }
     }
     
-    public WebDriverWrapper navigateTo(String url){
+    public WebDriverWrapper navigateTo(String url) {
         this.init();
         this.getDriver().get(this.urlBase + url);
-        
+    
         this.waitForPageLoad();
-        
+    
         LOGGER.info("\"{}\" page loaded successfully.", url);
-        
+    
         return this;
     }
     
@@ -76,7 +76,7 @@ public class WebDriverWrapper implements Closeable{
         );
     }
     
-    public WebDriverWait getWait(){
+    public WebDriverWait getWait() {
         return this.getWait(DEFAULT_WAIT_TIMEOUT);
     }
     

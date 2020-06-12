@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
@@ -40,12 +41,12 @@ public class UserEmailValidationTest extends RunningServerTest {
     public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
 
     private UserRegistrationRequest getTestRequest() {
-        User testUser = this.userUtils.setupTestUser(false);
+		TestUser testUser = this.userUtils.setupTestUser(false);
 
         return new UserRegistrationRequest(
-                testUser.getUsername(),
-                testUser.getEmail(),
-                this.userUtils.getTestUserPassword()
+			testUser.getUsername(),
+			testUser.getEmail(),
+			testUser.getPlainPassword()
         );
     }
 
