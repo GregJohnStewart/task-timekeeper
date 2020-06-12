@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfo {
-	//TODO:: add id
+	private String id;
 	private String username;
 	private String email;
 	private boolean emailValidated;
