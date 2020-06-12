@@ -66,7 +66,11 @@ public class WebDriverWrapper implements Closeable{
         return this;
     }
     
-    public void waitForPageLoad(){
+    public WebDriverWrapper navigateTo() {
+        return this.navigateTo("");
+    }
+    
+    public void waitForPageLoad() {
         this.getWait().until(
             driver->driver.findElement(By.id(LOADED_FLAG_ID))
         );
@@ -100,7 +104,7 @@ public class WebDriverWrapper implements Closeable{
         return this;
     }
     
-    public WebDriverWrapper waitForPageRefreshingFormToComplete(boolean loggedIn){
+    public WebDriverWrapper waitForPageRefreshingFormToComplete(boolean loggedIn) {
         this.waitForAjaxComplete();
         this.waitForPageLoad();
     
