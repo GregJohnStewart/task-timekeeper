@@ -28,16 +28,17 @@ public class LoginTest extends ServerWebUiTest {
 		WebElement loginForm = this.wrapper.getDriver().findElement(by);
 		TestUser testUser = this.userUtils.setupTestUser(true);
 		
+		if(nav) {
+			this.wrapper.openNavMenu();
+		}
+		
 		WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
 		WebElement passwordInput = loginForm.findElement(By.name("password"));
 		WebElement rememberInput = loginForm.findElement(By.name("stayLoggedIn"));
 		WebElement submitButton = loginForm.findElement(By.className("loginSubmit"));
+		WebElement resetButton = loginForm.findElement(By.className("resetButton"));
 		
 		//TODO:: invalid data tests
-		
-		if(nav) {
-			this.wrapper.openNavMenu();
-		}
 		
 		usernameEmailInput.sendKeys(testUser.getEmail());
 		passwordInput.sendKeys(testUser.getPlainPassword());

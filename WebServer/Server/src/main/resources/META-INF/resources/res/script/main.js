@@ -167,11 +167,11 @@ function addMessageToDiv(jqueryObj, type, message, heading, id){
 		id = "";
 	}
 	$('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
-		heading + "\n" +
-		message + "\n" +
 		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
 			'<span aria-hidden="true">&times;</span>\n'+
 		'</button>\n' +
+		heading + "\n" +
+		message + "\n" +
 		'</div>').appendTo(jqueryObj.get(0))
 }
 function addMessage(type, message, heading, id){
@@ -228,6 +228,8 @@ $(".loginForm").on("submit", function(event){
 	event.preventDefault();
 	console.log("Login form submitted.");
 
+	var responseDiv = $(this).find("div.form-response");
+
 	var usernameEmailInput = $(this).find(':input.loginEmailUsername')[0];
 	var passwordInput = $(this).find(':input.loginPassword')[0];
 	var stayLoggedInInput = $(this).find(':input.loginStayLoggedIn')[0];
@@ -258,7 +260,7 @@ $(".loginForm").on("submit", function(event){
 		fail: function(data){
 			console.warn("Bad response from login attempt: " + JSON.stringify(data));
 			addMessageToDiv(
-				messageDiv,
+				responseDiv,
 				"danger",
 				"Error! " + data.responseText,
 				data.statusText,
