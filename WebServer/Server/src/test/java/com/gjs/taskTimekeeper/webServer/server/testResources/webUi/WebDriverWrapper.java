@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -84,11 +85,10 @@ public class WebDriverWrapper implements Closeable{
         
         WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
         WebElement passwordInput = loginForm.findElement(By.name("password"));
-        WebElement submitButton = loginForm.findElement(By.className("loginSubmit"));
         
         usernameEmailInput.sendKeys(testUser.getEmail());
         passwordInput.sendKeys(testUser.getPlainPassword());
-        submitButton.click();
+        submitForm(loginForm);
         
         this.waitForPageRefreshingFormToComplete(true);
         

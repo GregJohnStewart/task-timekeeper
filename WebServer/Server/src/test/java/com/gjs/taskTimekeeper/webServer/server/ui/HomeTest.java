@@ -58,6 +58,7 @@ class HomeTest extends ServerWebUiTest{
 		//doesn't submit on no input
 		{
 			submitFormAndAssertElementsInvalid(
+				"id",
 				(RemoteWebElement)createAccountForm,
 				"createAccountEmail",
 				"createAccountUsername",
@@ -77,6 +78,7 @@ class HomeTest extends ServerWebUiTest{
 			createAccountPasswordConfirmInput.sendKeys(testUser.getPlainPassword() + "hello world");
 			
 			submitFormAndAssertElementsInvalid(
+				"id",
 				(RemoteWebElement)createAccountForm,
 				"createAccountPasswordConfirm"
 			);

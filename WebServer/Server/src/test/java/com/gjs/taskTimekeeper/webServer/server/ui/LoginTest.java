@@ -9,10 +9,14 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -35,14 +39,40 @@ public class LoginTest extends ServerWebUiTest {
 		WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
 		WebElement passwordInput = loginForm.findElement(By.name("password"));
 		WebElement rememberInput = loginForm.findElement(By.name("stayLoggedIn"));
-		WebElement submitButton = loginForm.findElement(By.className("loginSubmit"));
-		WebElement resetButton = loginForm.findElement(By.className("resetButton"));
 		
-		//TODO:: invalid data tests
+		{
+			submitFormAndAssertElementsInvalid(
+				"name",
+				(RemoteWebElement)loginForm,
+				"usernameEmail",
+				"password"
+			);
+			clearForm(loginForm);
+			
+			passwordInput.sendKeys(testUser.getPlainPassword());
+			
+			submitFormAndAssertElementsInvalid(
+				"name",
+				(RemoteWebElement)loginForm,
+				"usernameEmail"
+			);
+			clearForm(loginForm);
+			
+			usernameEmailInput.sendKeys(testUser.getUsername());
+			
+			submitFormAndAssertElementsInvalid(
+				"name",
+				(RemoteWebElement)loginForm,
+				"password"
+			);
+			clearForm(loginForm);
+		}
+		
+		//TODO:: bad submit tests
 		
 		usernameEmailInput.sendKeys(testUser.getEmail());
 		passwordInput.sendKeys(testUser.getPlainPassword());
-		submitButton.click();
+		submitForm(loginForm);
 		
 		this.wrapper.waitForPageRefreshingFormToComplete(true);
 		
