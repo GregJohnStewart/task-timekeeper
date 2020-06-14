@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class WebDriverWrapper implements Closeable{
@@ -68,6 +70,34 @@ public class WebDriverWrapper implements Closeable{
     
     public WebDriverWrapper navigateTo() {
         return this.navigateTo("");
+    }
+    
+    public WebDriverWrapper openNavMenu() {
+        //TODO:: determine if already opened
+        this.getDriver().findElement(By.id("loginNavText")).click();
+        return this;
+    }
+    
+    public WebDriverWrapper login(TestUser testUser) {
+        this.openNavMenu();
+        WebElement loginForm = this.getDriver().findElement(By.id("navbarLogin"));
+        
+        WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
+        WebElement passwordInput = loginForm.findElement(By.name("password"));
+        WebElement submitButton = loginForm.findElement(By.className("loginSubmit"));
+        
+        usernameEmailInput.sendKeys(testUser.getEmail());
+        passwordInput.sendKeys(testUser.getPlainPassword());
+        submitButton.click();
+        
+        this.waitForPageRefreshingFormToComplete(true);
+        
+        assertEquals(
+            testUser.getUsername(),
+            this.waitForElement(By.id("navUsername")).getText()
+        );
+        this.assertLoggedIn(testUser);
+        return this;
     }
     
     public void waitForPageLoad() {
@@ -131,7 +161,21 @@ public class WebDriverWrapper implements Closeable{
                 String topText = driver.findElement(By.id("loginNavText")).getText();
                 if(
                     topText.contains("Login")
-                ){
+                ) {
+                    return driver.findElement(By.id("loginNavText"));
+                }
+                return null;
+            }
+        );
+    }
+    
+    public void assertLoggedIn(TestUser user) {
+        this.getWait().until(
+            driver->{
+                String topText = driver.findElement(By.id("loginNavText")).getText();
+                if(
+                    topText.contains("Logged in as: " + user.getUsername())
+                ) {
                     return driver.findElement(By.id("loginNavText"));
                 }
                 return null;

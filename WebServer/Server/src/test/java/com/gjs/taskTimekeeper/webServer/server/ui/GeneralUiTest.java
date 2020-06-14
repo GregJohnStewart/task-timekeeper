@@ -16,5 +16,4 @@ public class GeneralUiTest extends ServerWebUiTest{
 	public GeneralUiTest(ServerInfoBean infoBean){
 		super(infoBean);
 	}
-	
 }

@@ -8,6 +8,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,32 @@ public class LoginTest extends ServerWebUiTest {
 		super(infoBean);
 	}
 	
-	private void testLoginForm(By by) {
-		//TODO
+	private void testLoginForm(By by, boolean nav) {
+		WebElement loginForm = this.wrapper.getDriver().findElement(by);
+		TestUser testUser = this.userUtils.setupTestUser(true);
+		
+		WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
+		WebElement passwordInput = loginForm.findElement(By.name("password"));
+		WebElement rememberInput = loginForm.findElement(By.name("stayLoggedIn"));
+		WebElement submitButton = loginForm.findElement(By.className("loginSubmit"));
+		
+		//TODO:: invalid data tests
+		
+		if(nav) {
+			this.wrapper.openNavMenu();
+		}
+		
+		usernameEmailInput.sendKeys(testUser.getEmail());
+		passwordInput.sendKeys(testUser.getPlainPassword());
+		submitButton.click();
+		
+		this.wrapper.waitForPageRefreshingFormToComplete(true);
+		
+		assertEquals(
+			testUser.getUsername(),
+			this.wrapper.waitForElement(By.id("navUsername")).getText()
+		);
+		this.wrapper.assertLoggedIn(testUser);
 	}
 	
 	@Test
@@ -46,30 +71,32 @@ public class LoginTest extends ServerWebUiTest {
 	
 	@Test
 	public void navbarLogin() {
-		LOGGER.info("Loading the home page.");
 		this.wrapper.navigateTo();
-		LOGGER.info("Loaded the home page.");
+		
+		testLoginForm(By.id("navbarLogin"), true);
+	}
+	
+	@Test
+	public void homeLogin() {
+		this.wrapper.navigateTo();
+		testLoginForm(By.id("homeLogin"), false);
+	}
+	
+	@Test
+	public void logout() {
+		this.wrapper.navigateTo();
+		this.wrapper.assertLoggedOut();
 		
 		TestUser testUser = this.userUtils.setupTestUser(true);
 		
+		this.wrapper.login(testUser);
 		
-		//TODO:: invalid data tests
+		this.wrapper.openNavMenu();
 		
-		this.wrapper.getDriver().findElement(By.id("loginNavText")).click();
+		this.wrapper.getDriver().findElement(By.id("logoutButton")).click();
 		
-		this.wrapper.getDriver()
-					.findElement(By.id("navbarLoginEmailUsername"))
-					.sendKeys(testUser.getEmail());
-		this.wrapper.getDriver()
-					.findElement(By.id("navbarLoginPassword"))
-					.sendKeys(testUser.getPlainPassword());
-		this.wrapper.getDriver().findElement(By.id("navbarLoginSubmitButton")).click();
+		this.wrapper.waitForPageRefreshingFormToComplete(false);
 		
-		this.wrapper.waitForPageRefreshingFormToComplete(true);
-		
-		assertEquals(
-			testUser.getUsername(),
-			this.wrapper.waitForElement(By.id("navUsername")).getText()
-		);
+		this.wrapper.assertLoggedOut();
 	}
 }
