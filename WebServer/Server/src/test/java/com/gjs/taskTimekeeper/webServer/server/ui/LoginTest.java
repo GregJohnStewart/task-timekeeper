@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertFormErrorMessage;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,6 +48,7 @@ public class LoginTest extends ServerWebUiTest {
 				"usernameEmail",
 				"password"
 			);
+			this.wrapper.assertLoggedOut();
 			clearForm(loginForm);
 			
 			passwordInput.sendKeys(testUser.getPlainPassword());
@@ -56,6 +58,7 @@ public class LoginTest extends ServerWebUiTest {
 				(RemoteWebElement)loginForm,
 				"usernameEmail"
 			);
+			this.wrapper.assertLoggedOut();
 			clearForm(loginForm);
 			
 			usernameEmailInput.sendKeys(testUser.getUsername());
@@ -65,10 +68,39 @@ public class LoginTest extends ServerWebUiTest {
 				(RemoteWebElement)loginForm,
 				"password"
 			);
+			this.wrapper.assertLoggedOut();
 			clearForm(loginForm);
 		}
 		
-		//TODO:: bad submit tests
+		//bad login
+		{
+			usernameEmailInput.sendKeys(testUser.getUsername() + "baaaaddddd");
+			passwordInput.sendKeys(testUser.getPlainPassword());
+			
+			submitFormAndAssertFormErrorMessage(
+				this.wrapper,
+				loginForm,
+				"Error! No user with given username or email found.",
+				"Not Found"
+			);
+			this.wrapper.assertLoggedOut();
+			this.wrapper.closeAllMessages();
+			clearForm(loginForm);
+			
+			
+			usernameEmailInput.sendKeys(testUser.getUsername());
+			passwordInput.sendKeys(testUser.getPlainPassword() + "oops");
+			
+			submitFormAndAssertFormErrorMessage(
+				this.wrapper,
+				loginForm,
+				"Error! Password given was incorrect.",
+				"Unauthorized"
+			);
+			this.wrapper.assertLoggedOut();
+			this.wrapper.closeAllMessages();
+			clearForm(loginForm);
+		}
 		
 		usernameEmailInput.sendKeys(testUser.getEmail());
 		passwordInput.sendKeys(testUser.getPlainPassword());

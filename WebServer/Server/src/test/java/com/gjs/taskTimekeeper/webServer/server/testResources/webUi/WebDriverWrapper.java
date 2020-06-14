@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.restassured.response.ValidatableResponse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,11 +13,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Response;
 import java.io.Closeable;
+import java.util.List;
 
+import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.newJwtCall;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class WebDriverWrapper implements Closeable{
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
@@ -138,14 +143,6 @@ public class WebDriverWrapper implements Closeable{
         this.waitForAjaxComplete();
         this.waitForPageLoad();
     
-        //        boolean check = true;
-        //
-        ////        while(check){
-        ////            if(!check){
-        ////                LOGGER.info("exiting");
-        ////            }
-        ////        }
-        //
         if(loggedIn) {
             assertNotNull(this.driver.manage().getCookieNamed("loginToken"));
             this.getWait().until(
@@ -155,7 +152,17 @@ public class WebDriverWrapper implements Closeable{
         return this;
     }
     
-    public void assertLoggedOut(){
+    public WebDriverWrapper closeAllMessages() {
+        List<WebElement> messageCloseButtons = this.getDriver().findElements(By.className("messageClose"));
+        
+        for(WebElement curMessageClose : messageCloseButtons) {
+            curMessageClose.click();
+        }
+        this.waitForAjaxComplete();
+        return this;
+    }
+    
+    public void assertLoggedOut() {
         this.getWait().until(
             driver->{
                 String topText = driver.findElement(By.id("loginNavText")).getText();
@@ -167,6 +174,7 @@ public class WebDriverWrapper implements Closeable{
                 return null;
             }
         );
+        assertNull(this.driver.manage().getCookieNamed("loginToken"));
     }
     
     public void assertLoggedIn(TestUser user) {
@@ -181,5 +189,10 @@ public class WebDriverWrapper implements Closeable{
                 return null;
             }
         );
+    
+        String token = this.driver.manage().getCookieNamed("loginToken").getValue();
+        assertNotNull(token);
+        ValidatableResponse response = newJwtCall(token).get("/api/user/auth/tokenCheck").then();
+        response.statusCode(Response.Status.OK.getStatusCode());
     }
 }

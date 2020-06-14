@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.slf4j.Logger;
@@ -57,5 +58,49 @@ public class WebAssertions {
 	) {
 		submitForm(formElement);
 		return assertElementsInvalid(identifyingAttribute, formElement, expectedInvalidElementIds);
+	}
+	
+	public static void assertFormErrorMessage(
+		WebElement formElement,
+		String expectedMessageRegex,
+		String expectedHeaderRegex
+	) {
+		List<WebElement> messages = formElement.findElements(By.className("alertMessage"));
+		
+		assertEquals(
+			1,
+			messages.size()
+		);
+		
+		for(WebElement message : messages) {
+			boolean headerOk = false;
+			boolean messageOk = false;
+			
+			if(expectedHeaderRegex != null) {
+				String header = message.findElement(By.className("alert-heading")).getText();
+				headerOk = expectedHeaderRegex.matches(header);
+			} else {
+				headerOk = true;
+			}
+			
+			String messageText = message.findElement(By.className("message")).getText();
+			messageOk = expectedMessageRegex.matches(messageText);
+			
+			if(headerOk && messageOk) {
+				return;
+			}
+		}
+		fail("Could not find message that matches the expected header and/or message.");
+	}
+	
+	public static void submitFormAndAssertFormErrorMessage(
+		WebDriverWrapper wrapper,
+		WebElement formElement,
+		String expectedMessageRegex,
+		String expectedHeaderRegex
+	) {
+		submitForm(formElement);
+		wrapper.waitForAjaxComplete();
+		assertFormErrorMessage(formElement, expectedMessageRegex, expectedHeaderRegex);
 	}
 }

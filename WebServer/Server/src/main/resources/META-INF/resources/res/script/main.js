@@ -166,12 +166,14 @@ function addMessageToDiv(jqueryObj, type, message, heading, id){
 	}else{
 		id = "";
 	}
-	$('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show" role="alert">\n'+
-		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n'+
+	$('<div '+id+' class="alert alert-'+type+' alert-dismissible fade show alertMessage" role="alert">\n'+
+		'<button type="button" class="close messageClose" data-dismiss="alert" aria-label="Close">\n'+
 			'<span aria-hidden="true">&times;</span>\n'+
 		'</button>\n' +
 		heading + "\n" +
+		'<span class="message">\n' +
 		message + "\n" +
+		'</span>\n' +
 		'</div>').appendTo(jqueryObj.get(0))
 }
 function addMessage(type, message, heading, id){
