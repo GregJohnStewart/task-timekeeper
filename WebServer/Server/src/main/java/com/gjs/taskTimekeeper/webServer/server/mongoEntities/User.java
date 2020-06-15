@@ -1,9 +1,9 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.notification.NotificationSettings;
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,14 +36,13 @@ public class User extends OurMongoEntity {
 	private UserLevel level = UserLevel.REGULAR;
 	private boolean locked = false;
 	private String lockReason;
+	private NotificationSettings notificationSettings;
 	
 	private Date joinDateTime = new Date();
 	private Date noLoginsBefore = new Date();
 	private Date lastLogin;
 	private Long numLogins = 0L;
 	private List<Date> lastHourLoginAttempts = new ArrayList<>();
-	
-	private NotificationSettings notificationSettings = new NotificationSettings(true);
 	
 	/**
 	 * @param email The email of the user to find

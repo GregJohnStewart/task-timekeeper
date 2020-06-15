@@ -1,8 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 
-import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
-import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojo.NotificationSettings;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
@@ -51,21 +49,19 @@ public class UserRegistration {
     private final TokenService tokenService;
     private final boolean newUserAutoApprove;
     private final MailTemplate welcomeEmailTemplate;
-    private final ServerInfoBean serverInfoBean;
 
     //stats
     private long numAdded = 0;
 
     public UserRegistration(
-            ServerUrlService serverUrlService, PasswordService passwordService,
-            UsernameValidator usernameValidator,
-            EmailValidator emailValidator,
-            @ConfigProperty(name = "user.new.autoApprove")
+        ServerUrlService serverUrlService, PasswordService passwordService,
+        UsernameValidator usernameValidator,
+        EmailValidator emailValidator,
+        @ConfigProperty(name = "user.new.autoApprove")
                     boolean newUserAutoApprove,
-            @ResourcePath("email/welcomeVerification")
+        @ResourcePath("email/welcomeVerification")
                     MailTemplate welcomeEmailTemplate,
-            TokenService tokenService,
-            ServerInfoBean serverInfoBean
+        TokenService tokenService
     ){
         this.serverUrlService = serverUrlService;
         this.passwordService = passwordService;
@@ -74,7 +70,6 @@ public class UserRegistration {
         this.newUserAutoApprove = newUserAutoApprove;
         this.welcomeEmailTemplate = welcomeEmailTemplate;
         this.tokenService = tokenService;
-        this.serverInfoBean = serverInfoBean;
     }
 
     @POST
@@ -126,7 +121,6 @@ public class UserRegistration {
             newUser.setLevel(UserLevel.REGULAR);
             newUser.setApprovedUser(this.newUserAutoApprove);
         }
-        newUser.setNotificationSettings(new NotificationSettings(true));
 
         String emailValidationToken = this.tokenService.generateToken();
         newUser.setEmailValidationToken(
@@ -148,7 +142,6 @@ public class UserRegistration {
                 .data("name", newUser.getUsername())
                 .data("validationLink", new RawString(validationLink))
                 .send();
-
 
         this.numAdded++;
         return completionStage.thenApply(
