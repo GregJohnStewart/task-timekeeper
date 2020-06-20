@@ -1,0 +1,90 @@
+{@com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean serverInfo}
+{@com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService serverUrlService}
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" media="all" href="/assets/application-mailer-dbc5154d3c4160e8fa7ef52fa740fa402760c39b5d22c8f6d64ad5999499d263.css"/>
+	<style>
+#navBrand {
+    height: 30px;
+    width: 30px;
+}
+
+
+	</style>
+</head>
+<body class="bg-light">
+<div class="container">
+	<div class="alert alert-success">
+		<a class="navbar-brand" href="{serverUrlService.getBaseServerUrl()}">
+			<img id="navBrand" src="https://github.com/GregJohnStewart/task-timekeeper/blob/master/WebServer/Server/src/main/resources/META-INF/resources/res/media/logo.svg">
+			Task&nbsp;Timekeeper&nbsp;Server
+		</a>
+	</div>
+	<!-- BEGIN BODY -->
+
+	{#insert htmlBody}No body!{/}
+
+	<!-- END BODY -->
+	<hr/>
+	<div class="row">
+		<div class="col-sm-4">
+			<h5>Task Timekeeper Server</h5>
+			<p>
+				&copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br/>
+				Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0
+				License</a><br/>
+				<a href="https://github.com/GregJohnStewart/task-timekeeper" target="_blank">Github</a><br/>
+			</p>
+		</div>
+		<div id="serverInfo" class="col-sm-4">
+			<h5>
+				Run by:<br/>
+				{#if {serverInfo.orgUrl.isPresent()}}
+				<a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization}</a>
+				{#else}
+				{serverInfo.organization}
+				{/if}
+			</h5>
+			{#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||
+			{serverInfo.contactInfo.phone.isPresent()}}
+			<h5>
+				Contact information:
+			</h5>
+			<address>
+				{#if {serverInfo.contactInfo.name.isPresent()}}
+				<h6>
+					{serverInfo.contactInfo.name.get()}
+				</h6>
+				{/if}
+
+				{#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
+				<p>
+					{#if {serverInfo.contactInfo.email.isPresent()}}
+					<a href="mailto:{serverInfo.contactInfo.email.get()}">{serverInfo.contactInfo.email.get()}</a>
+					<br/>
+					{/if}
+					{#if {serverInfo.contactInfo.phone.isPresent()}}
+					<a href="tel:{serverInfo.contactInfo.phone.get()}">{serverInfo.contactInfo.phone.get()}</a>
+					<br/>
+					{/if}
+				</p>
+				{/if}
+			</address>
+			{/if}
+		</div>
+		<div class="col-sm-4">
+			<p>
+				Your privacy is important to the original project. It only creates one cookie, and that is for the login
+				token.
+				The project also only collects what you give it, and it is up to the people running the server to ensure
+				it is handled
+				well. Please contact the folks running the server for more information.
+			</p>
+			<!-- TODO:: legal disclaimer, etc. -->
+		</div>
+	</div>
+</div>
+</body>
+</html>
+

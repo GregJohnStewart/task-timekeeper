@@ -11,19 +11,25 @@ import java.net.URL;
  */
 @ApplicationScoped
 public class ServerUrlService {
-
+    
     private final ServerInfoBean serverInfoBean;
-
+    
     public ServerUrlService(
-            ServerInfoBean serverInfoBean
+        ServerInfoBean serverInfoBean
     ) {
         this.serverInfoBean = serverInfoBean;
     }
-
+    
+    /**
+     * TODO:: remove malformed url throws
+     *
+     * @return
+     * @throws MalformedURLException
+     */
     public URL getBaseServerUrl() throws MalformedURLException {
         //TODO:: http/s selection
         return new URL(
-                "http://" +
+            "http://" +
                 this.serverInfoBean.getHostname() +
                 ":" +
                 this.serverInfoBean.getPort()

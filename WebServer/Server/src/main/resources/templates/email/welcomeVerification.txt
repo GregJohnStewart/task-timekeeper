@@ -1,0 +1,9 @@
+{#include email/textEmailTemplate}
+{#textBody}
+    Welcome to the timekeeper server {name}!<br />
+
+    Please click the following link to verify your email address:
+
+    {validationLink}
+{/textBody}
+{/include}

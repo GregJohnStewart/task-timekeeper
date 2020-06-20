@@ -1,0 +1,11 @@
+{@com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean serverInfo}
+{@com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService serverUrlService}
+
+Hello {name},
+
+{#insert textBody}No body!{/}
+
+Thanks, Your Task Timekeeper Server
+
+{serverUrlService.getBaseServerUrl()}
+(Server run by {serverInfo.organization}{#if {serverInfo.orgUrl.isPresent()}} - {serverInfo.orgUrl.get()}{/if})
