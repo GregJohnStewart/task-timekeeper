@@ -34,11 +34,13 @@ public class TextEmailTemplateTest extends RunningServerTest {
 	}
 	
 	// TODO:: follow up with email happenings
-	//	@Test
+	//		@Test
 	public void testTextEmailTemplate() throws MalformedURLException {
 		TestUser testUser = this.userUtils.setupTestUser(false);
 		String content = textEmailTemplate
-			//			.instance()
+			.instance()
+			.data("serverInfo", this.serverInfoBean)
+			.data("serverUrlService", this.serverUrlService)
 			.data("name", testUser.getUsername())
 			.render();
 		

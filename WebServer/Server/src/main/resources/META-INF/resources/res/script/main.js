@@ -1,4 +1,5 @@
 var loginToken = Cookies.get("loginToken");
+var getParams = new URLSearchParams(window.location.search);
 
 var spinnerOpts = {
   lines: 20, // The number of lines to draw
@@ -32,6 +33,14 @@ function logout(){
 	console.log("Logging out user.");
 	Cookies.remove('loginToken');
 	location.reload(true);
+}
+
+function requireLogin(){
+	if(!userLoggedIn()){
+		console.error("User must be logged in to view this page.");
+		window.location.replace("/?responseType=danger&message=Must%20be%20logged%20in%20to%20access%20that%20page.");
+	} else {
+	}
 }
 
 function doRestCall({
@@ -180,6 +189,10 @@ function addMessage(type, message, heading, id){
 	addMessageToDiv(messageDiv, type, message, heading, id);
 }
 
+function hasResponseMessage(){
+	return getParams.has("responseType");
+}
+
 $(document).ready(function() {
 	console.log("Starting main initial.");
 
@@ -214,6 +227,20 @@ $(document).ready(function() {
 		loginText.text("Login");
 		$("#navbarLoginContent").show();
 	}
+
+	var uri = window.location.toString();
+	if (uri.indexOf("?") > 0) {
+		var clean_uri = uri.substring(0, uri.indexOf("?"));
+		window.history.replaceState({}, document.title, clean_uri);
+	}
+
+	if(hasResponseMessage()){
+		addMessage(
+			getParams.get("responseType"),
+			getParams.get("message")
+		);
+	}
+
 
 	$('<span id="loadedFlag"></span>').appendTo(document.body);
 });
