@@ -62,7 +62,7 @@ As a prerequisite, GraalVM must be used instead of an 'official' JDK.
 
 https://quarkus.io/guides/config#overriding-properties-at-runtime
 
-Using a configuration file placed in `$PWD/config/application.properties`; By placing an application.properties file inside a directory named config which resides in the directory where the application runs, any runtime properties defined in that file will override the default configuration. Furthermore any runtime properties added to this file that were not part of the original application.properties file will also be taken into account.
+Using a configuration file placed in `$PWD/config/application.properties`; By placing an application.properties file inside a directory named config which resides in the directory where the application runs, any runtime properties defined in that file will override the default configuration. Furthermore any runtime properties added to this file that were not part of the original application.properties file will also be taken into account. Do not tweak values in the src/main/resources/application.yaml, this particular file is automatically generated at build time and will be overwritten.
 
 You can probably also use a yaml file.
 
@@ -78,25 +78,29 @@ You can define specific info about your server, like the server's name and conta
 
 ```yaml
 runningInfo:
-  organization: # The organization running the server
-  serverName:   # The name of the server. defaults to organization
+  organization: # The organization running the server. Defaults to "The Testing Organization"
+  serverName:   # The name of the server. Defaults to organization
   orgUrl:       # URL to the organization or running party
   hostname:     # Hostname to use to hit this service. Defaults to "localhost"
+  port:			# Port to use to hit the service. Defaults to the config value "quarkus.http.port"
   contactInfo:
     name:       # the name for the main contact
     email:      # the email of the main contact
     phone:  # the telephone number of the main contact
 ```
 
-These mainly show up in the webpage, but can also be accessed at `/api/server/info`.
+Notes:
 
-This configuration is optional (in whole or part), and is mostly used in the front end webpages.
-
-Note that `runningInfo.serverName` is used in the context of: "<serverName> Task Timekeeper Server"
+- These mainly show up in the web ui, but can also be accessed at `/api/server/info`.
+- This configuration is optional (in whole or part), but will help your users distinguish it from other running instances.
+- `runningInfo.serverName` is used in the context of: "<serverName> Task Timekeeper Server"
+- `hostname` and `port` do _not_ change the actual host/port of the service. These values are used to build url's for the server to link to itself. The purpose is to be able to be placed behind a network or firewall. For instance, if you wanted to run the server in your home network and access it from outside it, you would set the `hostname` to your network's ip/host, and `port` to the port you are using to forward in.
 
 ### Setting up Email
 
-TODO
+https://quarkus.io/guides/all-config#quarkus-mailer_quarkus-mailer
+
+
 
 ### Security/ Keys
 
@@ -135,13 +139,79 @@ There are a couple of configurations related to the users themselves:
 
 ### User/ User Management
 
+#### Admin Rights
+
+Admins will be able to do the following to other users:
+
+- approve
+- disapprove
+- lock
+- promote/ demote admin status
+
 #### User Workflows
 
+##### Account Creation
+
+###### First User
+
 ```sequence
-Alice->Bob: Hello Bob, how are you?
-Note right of Bob: Bob thinks
-Bob-->Alice: I am good thanks!
+First User->Task Timekeeper: Sends account create request
+Note right of Task Timekeeper: Verifies user data
+Note right of Task Timekeeper: Approves user
+Note right of Task Timekeeper: Makes user admin
+Task Timekeeper->First User: Sends Verification Email
+Task Timekeeper->First User: Returns creation response
+First User -> Task Timekeeper: clicks email validation link
+Note right of Task Timekeeper: Marks user's account as validated
+Note right of First User: User now allowed to login, has admin priviliges
 ```
+
+###### Nth user
+
+```sequence
+New User->Task Timekeeper: Sends account create request
+Note right of Task Timekeeper: Verifies user data
+Note right of Task Timekeeper: <if set to auto approve> Approves user
+Task Timekeeper->New User: Sends Verification Email
+Task Timekeeper->New User: Returns creation response
+New User -> Task Timekeeper: clicks email validation link
+Note right of Task Timekeeper: Marks user's account as validated
+Admin --> Task Timekeeper: Marks user as approved (if needed)
+Task Timekeeper --> New User: Notifies that user is approved
+Note right of New User: User now allowed to login
+```
+
+
+
+##### Password Reset
+
+```sequence
+User->Task Timekeeper: Sends password reset request
+Note right of Task Timekeeper: Generates reset token
+Task Timekeeper -> User: Sends user email with reset link with token
+User -> Task Timekeeper: Clicks reset link with token
+Note right of Task Timekeeper: Verifies token
+Task Timekeeper -> User: Temporary, short lived JWT token for resetting password (token JUST for reset)
+User -> Task Timekeeper: Uses temp token to reset password
+Task Timekeeper -> User: Notifies that password was reset
+```
+
+
+
+##### Email Change
+
+```sequence
+User->Task Timekeeper: Sends email change request (requires jwt)
+Note right of Task Timekeeper: Generates email change token
+Task Timekeeper -> User: Sends alert email to old email that email being changed
+Task Timekeeper -> User: Sends user email at new address with reset link with token
+User -> Task Timekeeper: Clicks email change link with token
+Note right of Task Timekeeper: Verifies token, updates email
+Task Timekeeper -> User: Alerts to old email about change
+Task Timekeeper -> User: Alerts to new email about change
+```
+
+
 
 ### Health checks
 
