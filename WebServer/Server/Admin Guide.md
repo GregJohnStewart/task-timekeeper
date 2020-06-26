@@ -26,7 +26,7 @@ sudo mkdir /data/db
 
 sudo chown -R $USER /data 
 sudo chgrp -R $USER /data 
-``` 
+```
 
 ##### 2) Create mongo container, tie it to the `/data/db` folder.  
 
@@ -135,7 +135,13 @@ There are a couple of configurations related to the users themselves:
 
 ### User/ User Management
 
-TODO
+#### User Workflows
+
+```sequence
+Alice->Bob: Hello Bob, how are you?
+Note right of Bob: Bob thinks
+Bob-->Alice: I am good thanks!
+```
 
 ### Health checks
 
