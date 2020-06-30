@@ -101,7 +101,9 @@ public class WebAssertions {
 					return messageElement;
 				}
 			}
-			fail("Could not find message that matches the expected header and/or message and/or type. Page: " + webDriverWrapper
+			fail("Could not find message that matches the expected header and/or message and/or type. Page: (" + webDriverWrapper
+				.getDriver()
+				.getCurrentUrl() + ") " + webDriverWrapper
 				.getDriver()
 				.getPageSource());
 			return false;
