@@ -3,5 +3,36 @@
 <h1>
 	User Settings
 </h1>
+<ul class="nav nav-tabs" id="mainTab" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link active" id="loginSettingsTab" data-toggle="tab" href="#loginSettingsContent" role="tab" aria-controls="loginSettingsContent" aria-selected="true">
+			Login
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="accountDetailsTab" data-toggle="tab" href="#accountDetailsContent" role="tab" aria-controls="accountDetailsContent" aria-selected="false">
+			Account Details
+		</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" id="notificationsTab" data-toggle="tab" href="#notificationsContent" role="tab" aria-controls="notificationsContent" aria-selected="false">
+			Notifications
+		</a>
+	</li>
+</ul>
+<div class="tab-content" id="mainTabContent">
+	<div class="tab-pane fade show active" id="loginSettingsContent" role="tabpanel" aria-labelledby="loginSettingsTab">
+		<h2 class="tabContentTitle">Login Settings</h2>
+		<hr/>
+	</div>
+	<div class="tab-pane fade" id="accountDetailsContent" role="tabpanel" aria-labelledby="accountDetailsTab">
+		<h2 class="tabContentTitle">Account Details</h2>
+		<hr/>
+	</div>
+	<div class="tab-pane fade" id="notificationsContent" role="tabpanel" aria-labelledby="notificationsTab">
+		<h2 class="tabContentTitle">Notifications</h2>
+		<hr/>
+	</div>
+</div>
 {/pageContent}
 {/include}
