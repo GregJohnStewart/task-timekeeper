@@ -27,11 +27,16 @@ public class User extends OurMongoEntity {
 	private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 	
 	private String username;
+	
 	private String hashedPass;
+	private String passResetTokenHash = null;
+	
 	private String email;
 	private boolean emailValidated = false;
-	private Date lastEmailValidated;
-	private String emailValidationToken;
+	private Date lastEmailValidated = null;
+	private String emailValidationTokenHash = null;
+	private String newEmail = null;
+	
 	private boolean approvedUser = false;
 	private UserLevel level = UserLevel.REGULAR;
 	private boolean locked = false;

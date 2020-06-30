@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.io.Closeable;
+import java.net.URL;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.newJwtCall;
@@ -23,42 +24,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class WebDriverWrapper implements Closeable{
+public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
     private static final boolean HEADLESS = true;
     
-    static{
+    static {
         WebDriverManager.firefoxdriver().setup();
     }
     
     private WebDriver driver = null;
     private final String urlBase;
     
-    public WebDriverWrapper(String urlBase){
+    public WebDriverWrapper(String urlBase) {
         this.urlBase = urlBase;
     }
     
-    public void init(){
-        if(this.driver == null){
+    public void init() {
+        if(this.driver == null) {
             LOGGER.info("Opening web browser");
             this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
-        } else{
+        } else {
             LOGGER.info("Driver already started.");
         }
     }
     
-    public WebDriver getDriver(){
+    public WebDriver getDriver() {
         return this.driver;
     }
     
     @Override
-    public void close(){
-        if(this.getDriver() != null){
+    public void close() {
+        if(this.getDriver() != null) {
             LOGGER.info("Closing the webpage.");
             this.getDriver().close();
-        } else{
+        } else {
             LOGGER.debug("Web browser already closed or wasn't opened.");
         }
     }
@@ -66,12 +67,20 @@ public class WebDriverWrapper implements Closeable{
     public WebDriverWrapper navigateTo(String url) {
         this.init();
         this.getDriver().get(this.urlBase + url);
-    
+        
         this.waitForPageLoad();
-    
+        
         LOGGER.info("\"{}\" page loaded successfully.", url);
-    
+        
         return this;
+    }
+    
+    public WebDriverWrapper navigateToServer(URL url) {
+        String path = url.toString();
+        
+        path = path.substring(path.indexOf("/", 9));
+        
+        return this.navigateTo(path);
     }
     
     public WebDriverWrapper navigateTo() {
@@ -115,24 +124,24 @@ public class WebDriverWrapper implements Closeable{
         return this.getWait(DEFAULT_WAIT_TIMEOUT);
     }
     
-    public WebDriverWait getWait(long timeoutSecs){
+    public WebDriverWait getWait(long timeoutSecs) {
         return new WebDriverWait(this.getDriver(), timeoutSecs);
     }
     
-    public WebElement waitForElement(By by){
+    public WebElement waitForElement(By by) {
         return this.getWait().until(
             driver->driver.findElement(by)
         );
     }
     
-    public WebDriverWrapper waitForAjaxComplete(){
-        try{
+    public WebDriverWrapper waitForAjaxComplete() {
+        try {
             this.getWait().until(
                 driver->(boolean)((JavascriptExecutor)driver).executeScript("return jQuery.active == 0")
             );
-        } catch(Throwable e){
+        } catch(Throwable e) {
             LOGGER.warn("Error when waiting for ajax to finish: \"{}\"", e.getMessage(), e);
-            if(!e.getMessage().contains("jQuery is not defined")){
+            if(!e.getMessage().contains("jQuery is not defined")) {
                 throw e;
             }
         }
@@ -142,7 +151,7 @@ public class WebDriverWrapper implements Closeable{
     public WebDriverWrapper waitForPageRefreshingFormToComplete(boolean loggedIn) {
         this.waitForAjaxComplete();
         this.waitForPageLoad();
-    
+        
         if(loggedIn) {
             assertNotNull(this.driver.manage().getCookieNamed("loginToken"));
             this.getWait().until(
@@ -189,7 +198,7 @@ public class WebDriverWrapper implements Closeable{
                 return null;
             }
         );
-    
+        
         String token = this.driver.manage().getCookieNamed("loginToken").getValue();
         assertNotNull(token);
         ValidatableResponse response = newJwtCall(token).get("/api/user/auth/tokenCheck").then();
