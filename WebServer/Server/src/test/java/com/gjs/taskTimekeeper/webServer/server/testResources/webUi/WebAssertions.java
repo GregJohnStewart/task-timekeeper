@@ -61,8 +61,6 @@ public class WebAssertions {
 		return assertElementsInvalid(identifyingAttribute, formElement, expectedInvalidElementIds);
 	}
 	
-	//TODO:: assert message in general
-	
 	public static void assertPageHasMessage(
 		WebDriverWrapper webDriverWrapper,
 		String type,
@@ -101,11 +99,17 @@ public class WebAssertions {
 					return messageElement;
 				}
 			}
-			fail("Could not find message that matches the expected header and/or message and/or type. Page: (" + webDriverWrapper
-				.getDriver()
-				.getCurrentUrl() + ") " + webDriverWrapper
-				.getDriver()
-				.getPageSource());
+			LOGGER.error(
+				"Could not find message that matches the expected header and/or message and/or type. Page: ({}) {}",
+				webDriverWrapper.getDriver().getCurrentUrl(),
+				webDriverWrapper.getDriver().getPageSource()
+			);
+			//			fail("Could not find message that matches the expected header and/or message and/or type. Page: (" + webDriverWrapper
+			//				.getDriver()
+			//				.getCurrentUrl() + ") " + webDriverWrapper
+			//				.getDriver()
+			//				.getPageSource()
+			//			);
 			return false;
 		});
 	}
