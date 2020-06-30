@@ -151,7 +151,9 @@ public class WebDriverWrapper implements Closeable {
     public WebDriverWrapper waitForPageRefreshingFormToComplete(boolean loggedIn) {
         this.waitForAjaxComplete();
         this.waitForPageLoad();
-        
+        this.waitForAjaxComplete();
+        this.waitForPageLoad();
+    
         if(loggedIn) {
             assertNotNull(this.driver.manage().getCookieNamed("loginToken"));
             this.getWait().until(
