@@ -153,6 +153,7 @@ public class WebDriverWrapper implements Closeable {
         this.waitForPageLoad();
         this.waitForAjaxComplete();
         this.waitForPageLoad();
+        this.waitForAjaxComplete();
     
         if(loggedIn) {
             assertNotNull(this.driver.manage().getCookieNamed("loginToken"));

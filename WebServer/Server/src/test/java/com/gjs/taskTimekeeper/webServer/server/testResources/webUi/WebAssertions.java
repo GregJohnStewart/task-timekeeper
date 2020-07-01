@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.slf4j.Logger;
@@ -68,49 +69,53 @@ public class WebAssertions {
 		String expectedMessageRegex
 	) {
 		webDriverWrapper.getWait().until(webDriver->{
-			WebElement pageAlertDiv = webDriverWrapper.getDriver().findElement(By.id("messageDiv"));
-			List<WebElement> messages = pageAlertDiv.findElements(By.className("alertMessage"));
-			
-			for(WebElement messageElement : messages) {
-				boolean headerOk = false;
-				boolean messageOk = false;
-				boolean typeOk = messageElement.getAttribute("class").contains("alert-" + type);
+			try {
+				WebElement pageAlertDiv = webDriverWrapper.getDriver().findElement(By.id("messageDiv"));
+				List<WebElement> messages = pageAlertDiv.findElements(By.className("alertMessage"));
 				
-				if(expectedHeaderRegex == null) {
-					try {
-						String headerText = messageElement.findElement(By.className("alert-heading")).getText();
-						headerOk = false;
-					} catch(NoSuchElementException e) {
-						headerOk = true;
+				for(WebElement messageElement : messages) {
+					boolean headerOk = false;
+					boolean messageOk = false;
+					boolean typeOk = messageElement.getAttribute("class").contains("alert-" + type);
+					
+					if(expectedHeaderRegex == null) {
+						try {
+							String headerText = messageElement.findElement(By.className("alert-heading")).getText();
+							headerOk = false;
+						} catch(NoSuchElementException e) {
+							headerOk = true;
+						}
+					} else {
+						try {
+							String headerText = messageElement.findElement(By.className("alert-heading")).getText();
+							headerOk = expectedHeaderRegex.matches(headerText);
+						} catch(NoSuchElementException e) {
+							headerOk = false;
+						}
 					}
-				} else {
-					try {
-						String headerText = messageElement.findElement(By.className("alert-heading")).getText();
-						headerOk = expectedHeaderRegex.matches(headerText);
-					} catch(NoSuchElementException e) {
-						headerOk = false;
+					
+					String messageText = messageElement.findElement(By.className("message")).getText();
+					messageOk = expectedMessageRegex.matches(messageText);
+					
+					if(headerOk && messageOk && typeOk) {
+						return messageElement;
 					}
 				}
-				
-				String messageText = messageElement.findElement(By.className("message")).getText();
-				messageOk = expectedMessageRegex.matches(messageText);
-				
-				if(headerOk && messageOk && typeOk) {
-					return messageElement;
-				}
+				LOGGER.error(
+					"Could not find message that matches the expected header and/or message and/or type. Page: ({}) {}",
+					webDriverWrapper.getDriver().getCurrentUrl(),
+					webDriverWrapper.getDriver().getPageSource()
+				);
+				//			fail("Could not find message that matches the expected header and/or message and/or type. Page: (" + webDriverWrapper
+				//				.getDriver()
+				//				.getCurrentUrl() + ") " + webDriverWrapper
+				//				.getDriver()
+				//				.getPageSource()
+				//			);
+				return false;
+			} catch(StaleElementReferenceException e) {
+				return false;
 			}
-			LOGGER.error(
-				"Could not find message that matches the expected header and/or message and/or type. Page: ({}) {}",
-				webDriverWrapper.getDriver().getCurrentUrl(),
-				webDriverWrapper.getDriver().getPageSource()
-			);
-			//			fail("Could not find message that matches the expected header and/or message and/or type. Page: (" + webDriverWrapper
-			//				.getDriver()
-			//				.getCurrentUrl() + ") " + webDriverWrapper
-			//				.getDriver()
-			//				.getPageSource()
-			//			);
-			return false;
 		});
 	}
 	
