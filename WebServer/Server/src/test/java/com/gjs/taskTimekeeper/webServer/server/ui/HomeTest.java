@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.resetForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -66,7 +66,7 @@ class HomeTest extends ServerWebUiTest{
 				"createAccountPasswordConfirm"
 			);
 		}
-		clearForm(createAccountForm);
+		resetForm(createAccountForm);
 		
 		TestUser testUser = this.userUtils.setupTestUser();
 		//doesn't submit with fine input, except for bad password confirm

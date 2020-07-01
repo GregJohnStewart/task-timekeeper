@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.newJwtCall;
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,7 +28,7 @@ public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
-    private static final boolean HEADLESS = false;
+    private static final boolean HEADLESS = true;
     
     static {
         WebDriverManager.firefoxdriver().setup();

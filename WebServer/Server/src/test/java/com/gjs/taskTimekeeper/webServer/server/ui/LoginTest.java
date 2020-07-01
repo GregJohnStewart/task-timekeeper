@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertFormErrorMessage;
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.resetForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.submitForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -49,7 +49,7 @@ public class LoginTest extends ServerWebUiTest {
 				"password"
 			);
 			this.wrapper.assertLoggedOut();
-			clearForm(loginForm);
+			resetForm(loginForm);
 			
 			passwordInput.sendKeys(testUser.getPlainPassword());
 			
@@ -59,7 +59,7 @@ public class LoginTest extends ServerWebUiTest {
 				"usernameEmail"
 			);
 			this.wrapper.assertLoggedOut();
-			clearForm(loginForm);
+			resetForm(loginForm);
 			
 			usernameEmailInput.sendKeys(testUser.getUsername());
 			
@@ -69,7 +69,7 @@ public class LoginTest extends ServerWebUiTest {
 				"password"
 			);
 			this.wrapper.assertLoggedOut();
-			clearForm(loginForm);
+			resetForm(loginForm);
 		}
 		
 		//bad login
@@ -85,7 +85,7 @@ public class LoginTest extends ServerWebUiTest {
 			);
 			this.wrapper.assertLoggedOut();
 			this.wrapper.closeAllMessages();
-			clearForm(loginForm);
+			resetForm(loginForm);
 			
 			
 			usernameEmailInput.sendKeys(testUser.getUsername());
@@ -99,7 +99,7 @@ public class LoginTest extends ServerWebUiTest {
 			);
 			this.wrapper.assertLoggedOut();
 			this.wrapper.closeAllMessages();
-			clearForm(loginForm);
+			resetForm(loginForm);
 		}
 		
 		usernameEmailInput.sendKeys(testUser.getEmail());

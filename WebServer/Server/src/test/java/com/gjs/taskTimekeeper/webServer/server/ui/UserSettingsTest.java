@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.ui;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
+import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
@@ -10,10 +11,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.submitForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.resetForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.submitForm;
 
 @QuarkusTest
 @QuarkusTestResource(TestMongo.class)
@@ -21,13 +25,16 @@ public class UserSettingsTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserSettingsTest.class);
 	
 	private final TokenService tokenService;
+	private final PasswordService passwordService;
 	
 	public UserSettingsTest(
 		ServerInfoBean infoBean,
-		TokenService tokenService
+		TokenService tokenService,
+		PasswordService passwordService
 	) {
 		super(infoBean);
 		this.tokenService = tokenService;
+		this.passwordService = passwordService;
 	}
 	
 	@Test
@@ -49,7 +56,29 @@ public class UserSettingsTest extends ServerWebUiTest {
 			
 			String newPass = tokenService.generateToken();
 			
-			//TODO:: error states
+			{
+				submitFormAndAssertElementsInvalid(
+					"name",
+					(RemoteWebElement)passwordChangeForm,
+					"currentPassword",
+					"newPassword",
+					"newPasswordConfirm"
+				);
+				
+				resetForm(passwordChangeForm);
+				
+				currentPasswordInput.sendKeys(testUser.getPlainPassword());
+				newPasswordInput.sendKeys(newPass);
+				newPasswordConfirmInput.sendKeys(newPass + "bad");
+				
+				submitFormAndAssertElementsInvalid(
+					"name",
+					(RemoteWebElement)passwordChangeForm,
+					"newPasswordConfirm"
+				);
+				
+				resetForm(passwordChangeForm);
+			}
 			
 			currentPasswordInput.sendKeys(testUser.getPlainPassword());
 			newPasswordInput.sendKeys(newPass);
@@ -59,8 +88,8 @@ public class UserSettingsTest extends ServerWebUiTest {
 			
 			this.wrapper.waitForElement(By.id("changePasswordSuccessMessage"));
 			
-			//TODO:: message check, email check, updated password check
-			
+			//TODO:: message check, email check
+			this.passwordService.assertPasswordMatchesHash(testUser.getUserObj().getHashedPass(), newPass);
 		}
 	}
 }
