@@ -28,7 +28,7 @@ public class WebDriverWrapper implements Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
-    private static final boolean HEADLESS = true;
+    private static final boolean HEADLESS = false;
     
     static {
         WebDriverManager.firefoxdriver().setup();
@@ -41,8 +41,12 @@ public class WebDriverWrapper implements Closeable {
         this.urlBase = urlBase;
     }
     
+    public boolean isInitted() {
+        return this.driver != null;
+    }
+    
     public void init() {
-        if(this.driver == null) {
+        if(!this.isInitted()) {
             LOGGER.info("Opening web browser");
             this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
         } else {
@@ -94,12 +98,16 @@ public class WebDriverWrapper implements Closeable {
     }
     
     public WebDriverWrapper login(TestUser testUser) {
+        if(!this.isInitted()) {
+            this.navigateTo();
+        }
+    
         this.openNavMenu();
         WebElement loginForm = this.getDriver().findElement(By.id("navbarLogin"));
-        
+    
         WebElement usernameEmailInput = loginForm.findElement(By.name("usernameEmail"));
         WebElement passwordInput = loginForm.findElement(By.name("password"));
-        
+    
         usernameEmailInput.sendKeys(testUser.getEmail());
         passwordInput.sendKeys(testUser.getPlainPassword());
         submitForm(loginForm);

@@ -75,17 +75,22 @@ public class UpdateUserPassword {
 	public CompletionStage<Object> registerUser(UserUpdatePasswordRequest request) {
 		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
 		User user = User.findById(userId);
+		LOGGER.debug("Attempting up update user password: {}", userId);
 		
 		this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), request.getOldPlainPassword());
-		user.setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
 		
-		user.update();
-		
+		LOGGER.debug("User's old passwords matched.");
 		CompletionStage<Void> completionStage = this.notificationService.alertToAccountChange(
 			user,
 			"password changed",
 			"Your password was changed."
 		);
+		
+		user.setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
+		user.update();
+		
+		LOGGER.debug("User's passwords were updated.");
+		
 		return completionStage.thenApply(
 			x->Response.noContent().build()
 		);

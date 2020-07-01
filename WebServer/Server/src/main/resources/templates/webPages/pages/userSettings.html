@@ -6,31 +6,103 @@
 <ul class="nav nav-tabs" id="mainTab" role="tablist">
 	<li class="nav-item">
 		<a class="nav-link active" id="loginSettingsTab" data-toggle="tab" href="#loginSettingsContent" role="tab" aria-controls="loginSettingsContent" aria-selected="true">
-			Login
+			<i class="fas fa-key fa-fw"></i> Login
 		</a>
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" id="accountDetailsTab" data-toggle="tab" href="#accountDetailsContent" role="tab" aria-controls="accountDetailsContent" aria-selected="false">
-			Account Details
+			<i class="fas fa-info fa-fw"></i> Account Details
 		</a>
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" id="notificationsTab" data-toggle="tab" href="#notificationsContent" role="tab" aria-controls="notificationsContent" aria-selected="false">
-			Notifications
+			<i class="far fa-bell fa-fw"></i> Notifications
 		</a>
 	</li>
 </ul>
 <div class="tab-content" id="mainTabContent">
+	<!-- Login Settings -->
 	<div class="tab-pane fade show active" id="loginSettingsContent" role="tabpanel" aria-labelledby="loginSettingsTab">
 		<h2 class="tabContentTitle">Login Settings</h2>
 		<hr/>
+		<div class="accordion" id="loginSettingsAccordion">
+			<!-- Password change -->
+			<div class="card">
+				<div class="card-header accordionHeader" id="passwordChangeHeader">
+					<h2 class="mb-0">
+						<button class="btn btn-link btn-block text-left btn-accordion" type="button" data-toggle="collapse" data-target="#passwordChangeCollapse" aria-controls="passwordChangeCollapse">
+							<i class="fas fa-asterisk fa-fw"></i> Password Change
+						</button>
+					</h2>
+				</div>
+				<div id="passwordChangeCollapse" class="collapse" aria-labelledby="passwordChangeHeader" data-parent="#loginSettingsAccordion">
+					<div class="card-body">
+						<form id="changePasswordForm">
+							<div class="form-group">
+								<label for="changePasswordCurrentPassword">Current Password:</label>
+								<input type="password" class="form-control loginPassword" id="changePasswordCurrentPassword" placeholder="Password" name="password" required>
+							</div>
+							<div class="form-group">
+								<label for="changePasswordNewPassword">New Password:</label>
+								<input type="password" class="form-control loginPassword" id="changePasswordNewPassword" placeholder="Password" name="password" required>
+							</div>
+							<div class="form-group">
+								<label for="changePasswordNewPasswordConfirm">New Password Confirmation:</label>
+								<input type="password" class="form-control loginPassword" id="changePasswordNewPasswordConfirm" placeholder="Password Confirm" name="password" required>
+							</div>
+
+							<button type="submit" class="btn btn-primary submitButton">
+								Change Password
+							</button>
+							<button type="reset" class="btn btn-link resetButton">Reset</button>
+							<div class="form-response">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Username change -->
+			<div class="card">
+				<div class="card-header accordionHeader" id="usernameChangeHeader">
+					<h2 class="mb-0">
+						<button class="btn btn-link btn-block text-left btn-accordion" type="button" data-toggle="collapse" data-target="#usernameChangeCollapse" aria-controls="usernameChangeCollapse">
+							<i class="fas fa-user-tag fa-fw"></i> Username Change
+						</button>
+					</h2>
+				</div>
+				<div id="usernameChangeCollapse" class="collapse" aria-labelledby="usernameChangeHeader" data-parent="#loginSettingsAccordion">
+					<div class="card-body">
+						-username change form-
+					</div>
+				</div>
+			</div>
+			<!-- Email Change -->
+			<div class="card">
+				<div class="card-header accordionHeader" id="emailChangeHeader">
+					<h2 class="mb-0">
+						<button class="btn btn-link btn-block text-left btn-accordion" type="button" data-toggle="collapse" data-target="#emailChangeCollapse" aria-controls="emailChangeCollapse">
+							<i class="far fa-envelope fa-fw"></i> Email Change
+						</button>
+					</h2>
+				</div>
+				<div id="emailChangeCollapse" class="collapse" aria-labelledby="emailChangeHeader" data-parent="#loginSettingsAccordion">
+					<div class="card-body">
+						-email change form-
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+	<!-- Account Details -->
 	<div class="tab-pane fade" id="accountDetailsContent" role="tabpanel" aria-labelledby="accountDetailsTab">
 		<h2 class="tabContentTitle">Account Details</h2>
 		<hr/>
 	</div>
+	<!-- Notifications -->
 	<div class="tab-pane fade" id="notificationsContent" role="tabpanel" aria-labelledby="notificationsTab">
-		<h2 class="tabContentTitle">Notifications</h2>
+		<h2 class="tabContentTitle">
+			Notification Settings
+		</h2>
 		<hr/>
 	</div>
 </div>
