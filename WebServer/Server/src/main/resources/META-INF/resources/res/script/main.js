@@ -205,7 +205,9 @@ $(document).ready(function() {
 		console.log("User logged in.");
 		loginText.html('Logged in as: <span id="navUsername"></span>');
 
-		$("#navbarLogoutContent").show();
+		$(".loggedInContent").each(function(i, obj){
+			$(obj).show();
+		});
 		
 		doRestCall({
 			spinnerContainer: null,
@@ -225,7 +227,10 @@ $(document).ready(function() {
 		console.log("User NOT logged in.");
 
 		loginText.text("Login");
-		$("#navbarLoginContent").show();
+
+		$(".loggedOutContent").each(function(i, obj){
+			$(obj).show();
+		});
 	}
 
 	var uri = window.location.toString();

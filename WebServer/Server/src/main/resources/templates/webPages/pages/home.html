@@ -1,6 +1,6 @@
 {#include webPages/mainWebPageTemplate}
 {#pageContent}
-<div id="loggedInContent" class="initialDisplay">
+<div id="loggedInContent" class="initiallyHidden">
 	<ul class="nav nav-tabs" id="mainTab" role="tablist">
 		<li class="nav-item">
 			<a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">
@@ -38,7 +38,7 @@
 		</div>
 	</div>
 </div>
-<div id="loggedOutContent" class="initialDisplay">
+<div id="loggedOutContent" class="initiallyHidden loggedOutContent">
 	<h1>
 		Welcome to Task Timekeeper
 	</h1>

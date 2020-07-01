@@ -80,6 +80,7 @@ public class WebAssertions {
 					
 					if(expectedHeaderRegex == null) {
 						try {
+							//require no heading
 							String headerText = messageElement.findElement(By.className("alert-heading")).getText();
 							headerOk = false;
 						} catch(NoSuchElementException e) {

@@ -34,8 +34,6 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<!-- TODO:: make server status thing -->
-
 		<div class="collapse navbar-collapse" id="navbarColor01">
 
 			<ul class="navbar-nav ml-auto">
@@ -43,7 +41,7 @@
 					<a id="loginNavText" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<div id="navbarLoginContent" class="initialDisplay">
+						<div id="navbarLoginContent" class="initiallyHidden loggedOutContent">
 							<form id="navbarLogin" class="px-4 py-3 loginForm">
 								<div class="form-group">
 									<label for="navbarLoginEmailUsername">Email or Username:</label>
@@ -74,10 +72,10 @@
 							</a>
 							<a class="dropdown-item" href="/"><i class="fas fa-user-plus fa-fw"></i> Create Account</a>
 						</div>
-						<div id="navbarLogoutContent" class="initialDisplay">
+						<div id="navbarLogoutContent" class="initiallyHidden loggedInContent">
 							<a class="dropdown-item logoutButton" href="/userSettings"><i class="fas fa-user-cog fa-fw"></i>
 								User Settings</a>
-							<a id="adminLink" class="dropdown-item logoutButton initialDisplay" href="/admin">
+							<a id="adminLink" class="dropdown-item logoutButton initiallyHidden" href="/admin">
 								<i class="fas fa-users-cog fa-fw"></i>
 								Admin Settings
 							</a>
@@ -90,9 +88,9 @@
 				</li>
 				<li class="nav-item" id="serverStatus" data-toggle="popover" title="Server Status" data-content="Checking server status...">
 					<i id="serverStatusChecking" class="serverStatusIcon fas fa-question-circle fa-lg fa-fw"></i>
-					<i id="serverStatusDown" class="serverStatusIcon initialDisplay fas fa-exclamation-circle fa-lg fa-fw text-warning outlined"></i>
-					<i id="serverStatusUp" class="serverStatusIcon initialDisplay fas fa-check-circle fa-lg fa-fw text-info outlined"></i>
-					<i id="serverStatusDisconnect" class="serverStatusIcon initialDisplay fas fa-bolt fa-lg fa-fw text-danger outlined"></i>
+					<i id="serverStatusDown" class="serverStatusIcon initiallyHidden fas fa-exclamation-circle fa-lg fa-fw text-warning outlined"></i>
+					<i id="serverStatusUp" class="serverStatusIcon initiallyHidden fas fa-check-circle fa-lg fa-fw text-info outlined"></i>
+					<i id="serverStatusDisconnect" class="serverStatusIcon initiallyHidden fas fa-bolt fa-lg fa-fw text-danger outlined"></i>
 				</li>
 			</ul>
 		</div>

@@ -13,6 +13,9 @@
 :root {
     --brand-img-size: 30px;
 }
+.initiallyHidden {
+    display: none;
+}
 .navbar-brand > img {
     height: var(--brand-img-size);
     width: var(--brand-img-size);
