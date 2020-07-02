@@ -14,24 +14,65 @@ var taskAddEditModalAttTableContent = $("#taskAddEditModalAttTableContent");
 
 function loadTaskData(){
 	console.log("loading task data");
-	for(i = 0; i < timekeeperData.timeManagerData.tasks.length; i++){
-		var task = timekeeperData.timeManagerData.tasks[i];
-		console.log("Adding task named " + task.name);
-		tasksTableContent.append(
+	tasksTableContent.empty();
+
+	var managerData = getManagerData();
+
+	var curInd = managerData.tasks.length;
+	managerData.tasks.forEach(function(task){
+		console.log("Adding task named " + task.name.name);
+		tasksTableContent.prepend(
 			'<tr>' +
-			'<td>'+i+'</td>' +
+			'<td>'+curInd+'</td>' +
 			'<td>'+task.name.name+'</td>' +
 			'<td>' +
 			'<button type="button" class="btn btn-warning btn-sm" onclick=""><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
-			'<button type="button" class="btn btn-danger btn-sm" onclick=""><i class="far fa-trash-alt fa-fw"></i></button>' +
+			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curInd+')"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
 		);
-	}
+		curInd--;
+	});
 	console.log("DONE loading task data.");
 }
 
+function removeTask(i){
+	markScreenAsLoading();
+	console.log("Removing task indexed " + i);
+
+	if(!confirm("Are you sure?")){
+		console.log("User canceled the delete.");
+		doneLoading();
+		return;
+	}
+
+	doRestCall({
+		spinnerContainer: null,
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		authorized: true,
+		data: {
+			actionConfig: {
+				action: "REMOVE",
+				objectOperatingOn: "TASK",
+				index: i
+			}
+		},
+		done: function(data){
+			console.log("Successful task remove request: " + JSON.stringify(data));
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from removing task: " + JSON.stringify(data));
+			doneLoading();
+			addMessage(taskAddEditModalFormResponse, "danger", data.responseJSON.errOut);
+		},
+	});
+}
+
 function clearTaskAddEditForm(){
+	taskAddEditModalFormResponse.empty();
 	taskAddEditModalLabelText.empty();
 	taskAddEditModalIdInput.val("");
 	taskAddEditModalIdInputGroup.hide();
@@ -63,8 +104,8 @@ function taskAddEditFormAddAttribute(name, value){
 }
 
 function sendTaskAddRequest(event){
-	markScreenAsLoading();
 	event.preventDefault();
+	markScreenAsLoading();
 	console.log("Sending task add request");
 
 	var data = {
@@ -97,7 +138,7 @@ function sendTaskAddRequest(event){
 		done: function(data){
 			console.log("Successful add request: " + JSON.stringify(data));
 			taskAddEditModal.modal('hide')
-			timekeeperData = data.timeManagerData;
+			setTimekeeperDataFromResponse(data);
 			refreshPageData();
 		},
 		fail: function(data){

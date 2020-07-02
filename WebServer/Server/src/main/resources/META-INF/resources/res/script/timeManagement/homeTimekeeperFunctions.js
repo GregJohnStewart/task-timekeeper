@@ -4,6 +4,14 @@ var selectedPeriod = null;
 var loggedInContent = $("#loggedInContent");
 var contentSpinner = new Spinner(spinnerOpts);
 
+function setTimekeeperDataFromResponse(data){
+	timekeeperData = data;
+}
+
+function getManagerData(){
+	return timekeeperData.timeManagerData
+}
+
 function markScreenAsLoading(){
 	console.log("Marking page as loading.");
 	loggedInContent.fadeTo(0.25, 0.15);
@@ -36,7 +44,7 @@ function getTimekeeperData(toCall){
 		authorized: true,
 		done: function(data){
 			console.log("Got timekeeper data: " + JSON.stringify(data));
-			timekeeperData = data;
+			setTimekeeperDataFromResponse(data)
 			toCall();
 		},
 		fail: function(data){
