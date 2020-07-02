@@ -68,6 +68,7 @@ function doRestCall({
 		ajaxOps.contentType = "application/json; charset=UTF-8";
 		ajaxOps.dataType = 'json';
 		ajaxOps.data = JSON.stringify(data);
+		console.log("Sending json data: " + ajaxOps.data);
 	}
 
 	if(authorized){

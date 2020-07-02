@@ -36,7 +36,7 @@ public class CrudOperator {
 
     public CrudOperator(TimeManager manager, Outputter outputter) {
         this(manager);
-        this.outputter = outputter;
+        this.setOutputter(outputter);
     }
 
     public void setOutputLevelThreshold(OutputLevel outputLevel) {

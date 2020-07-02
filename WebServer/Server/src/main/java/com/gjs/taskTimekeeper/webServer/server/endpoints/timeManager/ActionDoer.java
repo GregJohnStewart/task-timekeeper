@@ -103,7 +103,7 @@ public class ActionDoer {
 		
 		boolean changed = operator.doObjAction(updateRequest.getActionConfig());
 		String regOutput = regStream.toString();
-		String errOutput = regStream.toString();
+		String errOutput = errStream.toString();
 		
 		Response.Status status = Response.Status.OK;
 		if(changed) {

@@ -17,14 +17,13 @@ function doneLoading(){
 
 function setupTimekeepingData(){
 	markScreenAsLoading();
-
 	getTimekeeperData(function(){refreshPageData()});
 }
 
 function refreshPageData(){
 	console.log("Refreshing page data.");
 
-	//TODO:: this
+	loadTaskData();
 
 	doneLoading();
 }
