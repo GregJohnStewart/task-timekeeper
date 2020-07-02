@@ -21,21 +21,25 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
 
 ## TODO::
 
- - Tests
-    - Password service (finish/ fix service)
-    - user registration service
-    - User
  - user endpoints
-    - get user info
     - update user info
         - whole user patch, convenience endpoints for common updates
-    - delete user
- - jwt user
-   - not accept keys before user datetime
-   
+    - delete user? how to handle last admin?
+ - jwt
+   - not accept keys before certain datetime. Only allow certain number of active jwts? keep track of jwts?  
  - enable https: https://quarkus.io/guides/http-reference
- - timekeeper endpoints
-    - add timekeeper object to mongo
-    - make endpoints, secured for user
- - move items in 'tomovetolib' to lib (need to fix jandex indexing....)
+ - finish user login settings page
+ - add user account recovery
+ - add user detail settings
+ - add user notification settings
+ - polish up emails
+ - add stats endpoints
+ - UI general
+   - add username validation
+   - add regex password validation
+   - add email validation
+   - home
+     - start on no tab, goto first selected if present, work periods if no periods, tasks if no tasks
+ 
+ 
  
