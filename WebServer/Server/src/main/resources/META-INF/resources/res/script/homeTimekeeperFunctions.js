@@ -1,4 +1,6 @@
 
+var timekeeperData = {};
+var selectedPeriod = null;
 var loggedInContent = $("#loggedInContent");
 var contentSpinner = new Spinner(spinnerOpts);
 
@@ -16,10 +18,10 @@ function doneLoading(){
 function setupTimekeepingData(){
 	markScreenAsLoading();
 
-	getTimekeeperData(refreshPageData);
+	getTimekeeperData(function(){refreshPageData()});
 }
 
-function refreshPageData(data){
+function refreshPageData(){
 	console.log("Refreshing page data.");
 
 	//TODO:: this
@@ -35,10 +37,12 @@ function getTimekeeperData(toCall){
 		authorized: true,
 		done: function(data){
 			console.log("Got timekeeper data: " + JSON.stringify(data));
-			toCall(data);
+			timekeeperData = data;
+			toCall();
 		},
 		fail: function(data){
 			console.warn("Bad response from getting timekeeper data: " + JSON.stringify(data));
+			timekeeperData = {};
 			//TODO:: handle
 		},
 	});

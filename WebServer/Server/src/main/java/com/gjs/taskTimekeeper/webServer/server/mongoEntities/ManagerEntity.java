@@ -24,6 +24,7 @@ public class ManagerEntity extends OurMongoEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerEntity.class);
 
     private ObjectId userId;
+    //TODO:: when mongo supports new java datetime objects, use real time manager object
     private byte[] timeManagerData;
 
     private Date lastUpdate;
