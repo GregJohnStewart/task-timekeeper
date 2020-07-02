@@ -48,7 +48,7 @@
 				<tfoot>
 				<tr>
 					<td colspan="3">
-						<button class="btn btn-success btn-block">
+						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();">
 							<i class="fas fa-plus fa-fw"></i> Add Task
 						</button>
 					</td>
@@ -135,6 +135,65 @@
 					</div>
 				</form>
 			</div>
+		</div>
+	</div>
+</div>
+<!-- Modals -->
+<div class="modal fade" id="taskAddEditModal" tabindex="-1" role="dialog" aria-labelledby="taskAddEditModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<form id="taskAddEditModalForm">
+				<div class="modal-header">
+					<h5 class="modal-title" id="taskAddEditModalLabel">
+						<span id="taskAddEditModalLabelText"></span> Task
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="input-group" id="taskAddEditModalIdInputGroup">
+						<div class="input-group-prepend">
+							<div class="input-group-text">#</div>
+						</div>
+						<input type="text" class="form-control" id="taskAddEditModalIdInput" disabled>
+					</div>
+					<div class="form-group">
+						<label for="taskAddEditModalNameInput">Name:</label>
+						<input type="text" class="form-control" id="taskAddEditModalNameInput" placeholder="Name of Task" required>
+					</div>
+					<table class="table table-bordered table-hover table-striped table-sm">
+						<thead>
+						<tr>
+							<th>Name</th>
+							<th>Value</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id="taskAddEditModalAttTableContent">
+						</tbody>
+						<tfoot>
+						<tr>
+							<td colspan="3">
+								<button type="button" class="btn btn-success btn-block" id="taskAddEditModalAddAttButton" onclick="taskAddEditFormAddAttribute('','');">
+									<i class="fas fa-plus fa-fw"></i> Add Attribute
+								</button>
+							</td>
+						</tr>
+						</tfoot>
+					</table>
+					<div class="form-response">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary" form="taskAddEditModalForm">
+						Save
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

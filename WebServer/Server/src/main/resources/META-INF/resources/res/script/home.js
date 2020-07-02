@@ -4,7 +4,7 @@ $( document ).ready(function() {
 	console.log("Starting home initial.");
 
 	if(userLoggedIn()){
-		setupTimekeepingData();
+		initTimekeeperPage();
 	} else {
 		document.getElementById("createAccountPassword").onchange = function(){validatePasswordInputs(document.getElementById("createAccountPassword"), document.getElementById("createAccountPasswordConfirm"))};
 		document.getElementById("createAccountPasswordConfirm").onchange = function(){validatePasswordInputs(document.getElementById("createAccountPassword"), document.getElementById("createAccountPasswordConfirm"))};

@@ -47,3 +47,9 @@ function getTimekeeperData(toCall){
 		},
 	});
 }
+
+function initTimekeeperPage(){
+	setupTimekeepingData();
+
+	clearTaskAddEditForm();
+}

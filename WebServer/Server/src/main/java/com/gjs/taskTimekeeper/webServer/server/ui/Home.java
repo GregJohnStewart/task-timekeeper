@@ -49,8 +49,12 @@ public class Home {
         TemplateInstance instance = homeTemplate.data("title", "Home");
         instance = instance.data("serverInfo", this.serverInfoBean);
         instance = instance.data("extraStyle", new String[]{"home.css"});
-        instance = instance.data("extraScripts", new String[]{"homeTimekeeperFunctions.js", "home.js"});
-
+        instance = instance.data("extraScripts", new String[]{
+            "timeManagement/tasks.js",
+            "timeManagement/homeTimekeeperFunctions.js",
+            "home.js"
+        });
+    
         return instance;
     }
 }
