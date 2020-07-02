@@ -34,6 +34,7 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
  - add user notification settings
  - polish up emails
  - add stats endpoints
+ - add admin tools
  - UI general
    - add username validation
    - add regex password validation
