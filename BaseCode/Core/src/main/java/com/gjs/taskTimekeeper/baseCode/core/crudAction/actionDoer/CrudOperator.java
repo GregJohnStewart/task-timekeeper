@@ -145,12 +145,15 @@ public class CrudOperator {
      * @return True if the manager was modified, false otherwise.
      */
     public boolean doObjAction(ActionConfig config) {
+        if(config == null) {
+            return false;
+        }
         setupDoers();
-        if (config.getSpecialAction() != null) {
+        if(config.getSpecialAction() != null) {
             return this.specialDoer.processSpecial(config);
         }
-
-        if (config.getAction() == null) {
+    
+        if(config.getAction() == null) {
             LOGGER.warn("No action given.");
             outputter.normPrintln(DEFAULT, "No action given. Doing nothing.");
             return false;

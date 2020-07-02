@@ -1,0 +1,31 @@
+package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action;
+
+import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@AllArgsConstructor()
+@NoArgsConstructor
+public class TimeManagerActionResponse extends WholeTimeManagerUpdateResponse {
+	private String regOut;
+	private String errOut;
+	
+	public TimeManagerActionResponse(
+		TimeManager timeManagerData,
+		Date lastUpdated,
+		boolean changed,
+		String regOut,
+		String errOut
+	) {
+		super(timeManagerData, lastUpdated, changed);
+		this.regOut = regOut;
+		this.errOut = errOut;
+	}
+}

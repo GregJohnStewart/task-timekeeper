@@ -1,15 +1,11 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
-import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
-import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerResponse;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerUpdateRequest;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerUpdateResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -39,6 +35,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
+import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity.MANAGER_MAPPER;
+import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity.getOrCreateNew;
+
 /**
  * TODO:: test
  */
@@ -47,37 +46,8 @@ import java.util.Date;
 public class WholeManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WholeManager.class);
 	
-	private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
-	
 	@Inject
 	JsonWebToken jwt;
-	
-	/**
-	 * Gets the user's manager entity. In the case where they don't already have one, an empty time manager is created for them.
-	 *
-	 * @param userId The id of the user to get the managerEntity for
-	 * @return
-	 */
-	private ManagerEntity getOrCreateNew(ObjectId userId) {
-		ManagerEntity entity;
-		
-		try {
-			entity = ManagerEntity.findByUserId(userId);
-		} catch(EntityNotFoundException e) {
-			try {
-				entity = new ManagerEntity(
-					userId,
-					MANAGER_MAPPER.writeValueAsBytes(new TimeManager()),
-					null
-				);
-			} catch(JsonProcessingException e2) {
-				LOGGER.error("Failed to create new empty manager entity for user: ", e2);
-				throw new WebServerException("Failed to create new empty manager entity for user: ", e2);
-			}
-			entity.persist();
-		}
-		return entity;
-	}
 	
 	private WholeTimeManagerUpdateResponse toUpdateResponse(ManagerEntity entity, boolean changed) {
 		try {
@@ -149,7 +119,7 @@ public class WholeManager {
 		)
 	)
 	@APIResponse(
-		responseCode = "304",
+		responseCode = "200",
 		description = "The data given was the same as the data held.",
 		content = @Content(
 			mediaType = "application/json",
@@ -159,7 +129,10 @@ public class WholeManager {
 	@APIResponse(
 		responseCode = "400",
 		description = "The time manager data given was invalid. Returns the data held.",
-		content = @Content(mediaType = "application/json")
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(implementation = WholeTimeManagerUpdateResponse.class)
+		)
 	)
 	@APIResponse(
 		responseCode = "401",
@@ -177,7 +150,7 @@ public class WholeManager {
 			SecurityContext ctx
 	)
 		throws JsonProcessingException {
-		ObjectId userId = jwt.getClaim("userId");
+		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
 		LOGGER.info("Updating Time Manager data for user {}", userId);
 		
 		ManagerEntity entity = getOrCreateNew(userId);
@@ -198,7 +171,7 @@ public class WholeManager {
 		) {
 			LOGGER.info("User posted the same data that was already held.");
 			return Response
-				.status(Response.Status.NOT_MODIFIED.getStatusCode())
+				.status(Response.Status.OK.getStatusCode())
 				.type(MediaType.APPLICATION_JSON_TYPE)
 				.entity(toUpdateResponse(entity, true))
 				.build();
