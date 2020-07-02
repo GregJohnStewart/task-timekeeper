@@ -33,34 +33,26 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @QuarkusTestResource(TestMongo.class)
 public class WholeManagerTest extends RunningServerTest {
     private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
-
+    
     private User testUser;
     private String testUserJwt;
     private ManagerEntity testEntity;
-
+    
     @PostConstruct
-    public void setupTestUser(){
+    public void setupTestUser() {
         this.testUser = userUtils.setupTestUser(true).getUserObj();
         this.testUserJwt = this.userUtils.getTestUserJwt(testUser);
     }
-
-    private void assertEntityEqualsResponse(ManagerEntity managerEntity, WholeTimeManagerResponse response){
+    
+    private void assertEntityEqualsResponse(ManagerEntity managerEntity, WholeTimeManagerResponse response)
+        throws JsonProcessingException {
         assertEquals(
-                managerEntity.getLastUpdate(),
-                response.getLastUpdate()
+            managerEntity.getLastUpdate(),
+            response.getLastUpdate()
         );
         assertArrayEquals(
-                managerEntity.getTimeManagerData(),
-                response.getTimeManagerData()
-        );
-    }
-
-    private void assertValidTimeManagerData(byte[] data, TimeManager expected) throws IOException {
-        TimeManager manager = MANAGER_MAPPER.readValue(data, TimeManager.class);
-
-        assertEquals(
-                expected,
-                manager
+            managerEntity.getTimeManagerData(),
+            MANAGER_MAPPER.writeValueAsBytes(response.getTimeManagerData())
         );
     }
 
@@ -82,19 +74,19 @@ public class WholeManagerTest extends RunningServerTest {
 
         WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
         assertNull(response.getLastUpdate());
-
-
+    
+    
         this.testEntity = ManagerEntity.findByUserId(testUser.id);
         assertNull(this.testEntity.getLastUpdate());
-
+    
         this.assertEntityEqualsResponse(
-                this.testEntity,
-                response
+            this.testEntity,
+            response
         );
-
-        this.assertValidTimeManagerData(
-                response.getTimeManagerData(),
-                new TimeManager()
+    
+        assertEquals(
+            response.getTimeManagerData(),
+            new TimeManager()
         );
     }
 
@@ -106,21 +98,21 @@ public class WholeManagerTest extends RunningServerTest {
                 .get("/api/timeManager/manager").then();
 
         validatableResponse.statusCode(Response.Status.OK.getStatusCode());
-
+    
         WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
         assertNotNull(response.getLastUpdate());
-
+    
         ManagerEntity updatedEntity = ManagerEntity.findByUserId(testUser.id);
         assertNotNull(updatedEntity.getLastUpdate());
-
+    
         assertEntityEqualsResponse(
-                updatedEntity,
-                response
+            updatedEntity,
+            response
         );
-
-        assertValidTimeManagerData(
-                response.getTimeManagerData(),
-                MANAGER_MAPPER.readValue(this.testEntity.getTimeManagerData(), TimeManager.class)
+    
+        assertEquals(
+            response.getTimeManagerData(),
+            MANAGER_MAPPER.readValue(this.testEntity.getTimeManagerData(), TimeManager.class)
         );
     }
 
@@ -150,8 +142,8 @@ public class WholeManagerTest extends RunningServerTest {
         ManagerEntity previousEntity = this.testEntity;
 
         ValidatableResponse validatableResponse = given()
-                .contentType(ContentType.JSON)
-                .body(new WholeTimeManagerUpdateRequest(MANAGER_MAPPER.writeValueAsBytes(new TimeManager())))
+            .contentType(ContentType.JSON)
+            .body(new WholeTimeManagerUpdateRequest(new TimeManager()))
                 .patch("/api/timeManager/manager")
                 .then();
 

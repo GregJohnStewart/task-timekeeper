@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager;
 
+import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WholeTimeManagerUpdateRequest {
-    private byte[] timeManagerData;
+	private TimeManager timeManagerData;
 }

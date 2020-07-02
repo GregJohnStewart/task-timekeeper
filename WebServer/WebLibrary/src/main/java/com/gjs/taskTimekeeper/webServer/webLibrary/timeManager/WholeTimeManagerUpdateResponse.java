@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager;
 
+import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WholeTimeManagerUpdateResponse {
-    private byte[] timeManagerData;
-    private Date lastUpdated;
+	private TimeManager timeManagerData;
+	private Date lastUpdated;
     private boolean changed;
 }
