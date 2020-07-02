@@ -56,6 +56,9 @@ function getTimekeeperData(toCall){
 }
 
 function initTimekeeperPage(){
+	taskAddEditModalForm.on("submit", function(event){sendTaskAddEditRequest(event)});
+
+
 	setupTimekeepingData();
 
 	clearTaskAddEditForm();

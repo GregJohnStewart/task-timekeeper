@@ -18,20 +18,22 @@ function loadTaskData(){
 
 	var managerData = getManagerData();
 
-	var curInd = managerData.tasks.length;
+	var curIndForKeeper = managerData.tasks.length;
+	var curIndForArray = 0;
 	managerData.tasks.forEach(function(task){
 		console.log("Adding task named " + task.name.name);
 		tasksTableContent.prepend(
 			'<tr>' +
-			'<td>'+curInd+'</td>' +
-			'<td>'+task.name.name+'</td>' +
+			'<td class="taskIndexCell">'+curIndForKeeper+'</td>' +
+			'<td class="taskNameCell">'+task.name.name+'</td>' +
 			'<td>' +
-			'<button type="button" class="btn btn-warning btn-sm" onclick=""><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
-			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curInd+')"><i class="far fa-trash-alt fa-fw"></i></button>' +
+			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal"><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
+			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
 		);
-		curInd--;
+		curIndForKeeper--;
+		curIndForArray++;
 	});
 	console.log("DONE loading task data.");
 }
@@ -86,11 +88,21 @@ taskAddEditModal.on('hidden.bs.modal', function (e) {
 
 function setupTaskAddEditFormForAdd(){
 	taskAddEditModalLabelText.text("Add");
-	taskAddEditModalForm.on("submit", function(event){sendTaskAddRequest(event)});
 }
 
-function setupTaskAddEditFormForEdit(i){
-	//TODO
+function setupTaskAddEditFormForEdit(btnObj, i){
+	var rowObj = $(btnObj).closest('tr');
+
+	var task = getManagerData().tasks[i];
+
+	taskAddEditModalIdInputGroup.show();
+	taskAddEditModalIdInput.val(rowObj.find(".taskIndexCell").text());
+
+	taskAddEditModalNameInput.val(task.name.name);
+
+	Object.keys(task.attributes).forEach(function(key) {
+		taskAddEditFormAddAttribute(key, task.attributes[key]);
+	});
 }
 
 function taskAddEditFormAddAttribute(name, value){
@@ -103,7 +115,7 @@ function taskAddEditFormAddAttribute(name, value){
 	);
 }
 
-function sendTaskAddRequest(event){
+function sendTaskAddEditRequest(event){
 	event.preventDefault();
 	markScreenAsLoading();
 	console.log("Sending task add request");
@@ -116,6 +128,12 @@ function sendTaskAddRequest(event){
 		}
 	};
 
+	if(!taskAddEditModalIdInputGroup.is(":hidden")){
+		data.actionConfig.action = "EDIT";
+		data.actionConfig.index = taskAddEditModalIdInput.val();
+		delete data.actionConfig.name;
+	}
+
 	var attributes = "";
 
 	var attNameInputs = taskAddEditModalAttTableContent.find(".taskAttNameInput");
@@ -126,7 +144,9 @@ function sendTaskAddRequest(event){
 	}
 
 	if(attributes != ""){
-		data['actionConfig']['attributes'] = attributes;
+		data.actionConfig.attributes = attributes;
+	}else{
+		data.actionConfig.attributes = ";";
 	}
 
 	doRestCall({
