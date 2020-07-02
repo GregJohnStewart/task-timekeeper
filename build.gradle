@@ -41,8 +41,7 @@ subprojects {
         description "Increments the build number in the version config."
 
         doLast {
-            def doBuildIncrement = false;
-            if(doBuildIncrement) {
+            if(doBuildIncrement == "true") {
                 def ver = version
                 String lastNumber = ver.substring(ver.lastIndexOf('.') + 1)
                 int increment = lastNumber.toInteger() + 1
