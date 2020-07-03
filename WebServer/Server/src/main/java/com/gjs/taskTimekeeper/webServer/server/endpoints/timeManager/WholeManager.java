@@ -24,6 +24,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -86,7 +87,11 @@ public class WholeManager {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTimeManager(
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@HeaderParam("provideStats")
+			boolean provideStats,
+		@HeaderParam("sanitizeText")
+			boolean sanitizeText
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
 		LOGGER.info("Getting Time Manager data for user {}", userId);
@@ -103,6 +108,8 @@ public class WholeManager {
 				)
 			)
 			.build();
+		
+		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 	
 	@PATCH
@@ -147,11 +154,22 @@ public class WholeManager {
 	public Response patchTimeManager(
 		WholeTimeManagerUpdateRequest updateRequest,
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@HeaderParam("provideStats")
+			boolean provideStats,
+		@HeaderParam("sanitizeText")
+			boolean sanitizeText
 	)
 		throws JsonProcessingException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		LOGGER.info("Updating Time Manager data for user {}", userId);
+		LOGGER.info(
+			"Updating Time Manager data for user {}, providing stats? {}. Sanitizing text? {}",
+			userId,
+			provideStats,
+			sanitizeText
+		);
+		
+		//TODO:: unsanitize text data in request
 		
 		ManagerEntity entity = getOrCreateNew(userId);
 		byte[] managerData = null;
@@ -186,5 +204,7 @@ public class WholeManager {
 			.type(MediaType.APPLICATION_JSON_TYPE)
 			.entity(toUpdateResponse(entity, true))
 			.build();
+		
+		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 }

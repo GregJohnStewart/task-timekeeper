@@ -25,6 +25,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -88,10 +89,21 @@ public class ActionDoer {
 	public Response patchTimeManager(
 		TimeManagerActionRequest updateRequest,
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@HeaderParam("provideStats")
+			boolean provideStats,
+		@HeaderParam("sanitizeText")
+			boolean sanitizeText
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		LOGGER.info("Updating Time Manager data for user {}", userId);
+		LOGGER.info(
+			"Updating Time Manager data with action for user {}, providing stats? {}. Sanitizing text? {}",
+			userId,
+			provideStats,
+			sanitizeText
+		);
+		
+		//TODO:: unsanitize text data in request
 		
 		ManagerEntity heldEntity = ManagerEntity.getOrCreateNew(userId);
 		Date updatedDate = heldEntity.getLastUpdate();
@@ -125,5 +137,7 @@ public class ActionDoer {
 				errOutput
 			))
 			.build();
+		
+		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 }
