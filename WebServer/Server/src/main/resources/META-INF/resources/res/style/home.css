@@ -6,3 +6,12 @@
 	width: 105px;
 	text-align: center;
 }
+
+.periodActionsCol {
+	width: 105px;
+	text-align: center;
+}
+
+.selectedIcon {
+	opacity: 0;
+}

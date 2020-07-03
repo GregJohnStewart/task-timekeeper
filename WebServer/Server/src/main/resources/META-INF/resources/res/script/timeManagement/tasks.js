@@ -26,8 +26,8 @@ function loadTaskData(){
 			'<td class="taskIndexCell">'+curIndForKeeper+'</td>' +
 			'<td class="taskNameCell">'+task.name.name+'</td>' +
 			'<td>' +
-			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal"><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
-			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');"><i class="far fa-trash-alt fa-fw"></i></button>' +
+			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal" title="View or Edit Task"><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
+			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');" title="Remove Task"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
 		);
@@ -67,7 +67,7 @@ function removeTask(i){
 		fail: function(data){
 			console.warn("Bad response from removing task: " + JSON.stringify(data));
 			doneLoading();
-			addMessage(taskAddEditModalFormResponse, "danger", data.responseJSON.errOut);
+			addMessage("danger", data.responseJSON.errOut);
 		},
 	});
 }
@@ -109,7 +109,7 @@ function taskAddEditFormAddAttribute(name, value){
 		'<tr>' +
 		'<td><input type="text" class="form-control taskAttNameInput" name="taskAttName" placeholder="name" value="' + name + '" required></td>' +
 		'<td><input type="text" class="form-control taskAttValueInput" name="taskAttValue" placeholder="value" value="' + value + '"></td>' +
-		'<td><button type="button" class="btn btn-danger btn-sm btn-block" onclick="$(this).closest(\'tr\').remove()"><i class="far fa-trash-alt fa-fw"></i></button></td>' +
+		'<td><button type="button" class="btn btn-danger btn-sm btn-block" onclick="$(this).closest(\'tr\').remove()" title="Remove Attribute"><i class="far fa-trash-alt fa-fw"></i></button></td>' +
 		'</tr>'
 	);
 }

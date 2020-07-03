@@ -35,15 +35,18 @@
 			<table class="table table-bordered table-hover table-striped table-sm">
 				<thead>
 				<tr>
-					<td colspan="3">
-						<button class="btn btn-success btn-block" id="addPeriodButton" onclick="">
+					<td colspan="6">
+						<button class="btn btn-success btn-block" id="addPeriodButton" onclick="addPeriod();" title="Add Period">
 							<i class="fas fa-plus fa-fw"></i> Add Period
 						</button>
 					</td>
 				</tr>
 				<tr>
 					<th class="numberCol">#</th>
-					<th>Name</th>
+					<th class="dateTimeCol">Start</th>
+					<th class="dateTimeCol">End</th>
+					<th class="durationCol">Duration</th>
+					<th>Complete</th>
 					<th class="periodActionsCol">Actions</th>
 				</tr>
 				</thead>
@@ -60,7 +63,7 @@
 				<thead>
 				<tr>
 					<td colspan="3">
-						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();">
+						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();" title="Add Task">
 							<i class="fas fa-plus fa-fw"></i> Add Task
 						</button>
 					</td>

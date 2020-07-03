@@ -45,12 +45,13 @@ function refreshPageData(){
 }
 
 function selectFirstPeriodIfNoneSelected(){
-	var haveWorkPeriods = getManagerData().workPeriods.length > 0;
+	var managerData = getManagerData();
+	var haveWorkPeriods = managerData.workPeriods.length > 0;
 
 	if(!haveWorkPeriods){
 		selectedPeriod = null;
 	}else if(selectedPeriod == null){
-		selectedPeriod = 1;
+		selectedPeriod = managerData.workPeriods.length;
 	}
 }
 
