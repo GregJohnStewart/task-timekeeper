@@ -4,6 +4,9 @@ var selectedPeriod = null;
 var loggedInContent = $("#loggedInContent");
 var contentSpinner = new Spinner(spinnerOpts);
 
+var selectedPeriodTab = $("#selectedPeriodTab");
+var periodsTab = $("#periodsTab");
+
 function setTimekeeperDataFromResponse(data){
 	timekeeperData = data;
 }
@@ -31,11 +34,36 @@ function setupTimekeepingData(){
 function refreshPageData(){
 	console.log("Refreshing page data.");
 
+	selectFirstPeriodIfNoneSelected();
+	manageSelectedTabView();
+
 	loadTaskData();
+	loadPeriodData();
+	loadSelectedPeriodData();
 
 	doneLoading();
 }
 
+function selectFirstPeriodIfNoneSelected(){
+	var haveWorkPeriods = getManagerData().workPeriods.length > 0;
+
+	if(!haveWorkPeriods){
+		selectedPeriod = null;
+	}else if(selectedPeriod == null){
+		selectedPeriod = 1;
+	}
+}
+
+function manageSelectedTabView(){
+	if(selectedPeriod == null){
+		selectedPeriodTab.prop("disabled", true);
+		selectedPeriodTab.addClass("disabled");
+		periodsTab.tab("show");
+	}else{
+		selectedPeriodTab.prop("disabled", false);
+		selectedPeriodTab.removeClass("disabled");
+	}
+}
 
 function getTimekeeperData(toCall){
 	doRestCall({

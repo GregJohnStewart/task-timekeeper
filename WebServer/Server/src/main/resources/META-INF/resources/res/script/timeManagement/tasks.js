@@ -1,6 +1,5 @@
 
 var tasksTableContent = $("#tasksTableContent");
-var addTaskButton = $("#addTaskButton");
 
 var taskAddEditModal = $("#taskAddEditModal");
 var taskAddEditModalForm = $("#taskAddEditModalForm");

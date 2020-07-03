@@ -32,12 +32,39 @@
 		<div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
 			<h2 class="tabContentTitle">Work Periods</h2>
 			<hr/>
+			<table class="table table-bordered table-hover table-striped table-sm">
+				<thead>
+				<tr>
+					<td colspan="3">
+						<button class="btn btn-success btn-block" id="addPeriodButton" onclick="">
+							<i class="fas fa-plus fa-fw"></i> Add Period
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<th class="numberCol">#</th>
+					<th>Name</th>
+					<th class="periodActionsCol">Actions</th>
+				</tr>
+				</thead>
+				<tbody id="periodsTableContent">
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
 		</div>
 		<div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
 			<h2 class="tabContentTitle">Tasks</h2>
 			<hr/>
 			<table class="table table-bordered table-hover table-striped table-sm">
 				<thead>
+				<tr>
+					<td colspan="3">
+						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();">
+							<i class="fas fa-plus fa-fw"></i> Add Task
+						</button>
+					</td>
+				</tr>
 				<tr>
 					<th class="numberCol">#</th>
 					<th>Name</th>
@@ -47,13 +74,6 @@
 				<tbody id="tasksTableContent">
 				</tbody>
 				<tfoot>
-				<tr>
-					<td colspan="3">
-						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();">
-							<i class="fas fa-plus fa-fw"></i> Add Task
-						</button>
-					</td>
-				</tr>
 				</tfoot>
 			</table>
 		</div>

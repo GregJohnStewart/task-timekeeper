@@ -51,6 +51,8 @@ public class Home {
         instance = instance.data("extraStyle", new String[]{"home.css"});
         instance = instance.data("extraScripts", new String[]{
             "timeManagement/tasks.js",
+            "timeManagement/periods.js",
+            "timeManagement/selectedPeriod.js",
             "timeManagement/homeTimekeeperFunctions.js",
             "home.js"
         });
