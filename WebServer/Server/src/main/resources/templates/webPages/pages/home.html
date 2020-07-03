@@ -1,88 +1,170 @@
 {#include webPages/mainWebPageTemplate}
 {#pageContent}
 <div id="loggedInContent" class="initiallyHidden loggedInContent">
-	<ul class="nav nav-tabs" id="mainTab" role="tablist">
-		<li class="nav-item">
-			<a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">
-				<i class="fas fa-user-clock fa-fw"></i> Selected Period
-			</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">
-				<i class="fas fa-business-time fa-fw"></i> Work Periods
-			</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">
-				<i class="fas fa-tasks fa-fw"></i> Tasks
-			</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">
-				<i class="fas fa-chart-pie fa-fw"></i> Stats
-			</a>
-		</li>
-	</ul>
+	<div class="card">
+		<div class="card-header">
+			<ul class="nav nav-tabs card-header-tabs" id="mainTab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">
+						<i class="fas fa-user-clock fa-fw"></i> Selected Period
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">
+						<i class="fas fa-business-time fa-fw"></i> Work Periods
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">
+						<i class="fas fa-tasks fa-fw"></i> Tasks
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">
+						<i class="fas fa-chart-pie fa-fw"></i> Stats
+					</a>
+				</li>
+			</ul>
+		</div>
 
-	<div class="tab-content" id="mainTabContent">
-		<div class="tab-pane fade show active" id="selectedPeriodContent" role="tabpanel" aria-labelledby="selectedPeriodTab">
-			<h2 class="tabContentTitle">Selected Period</h2>
-			<hr/>
-		</div>
-		<div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
-			<h2 class="tabContentTitle">Work Periods</h2>
-			<hr/>
-			<table class="table table-bordered table-hover table-striped table-sm">
-				<thead>
-				<tr>
-					<td colspan="6">
-						<button class="btn btn-success btn-block" id="addPeriodButton" onclick="addPeriod();" title="Add Period">
-							<i class="fas fa-plus fa-fw"></i> Add Period
-						</button>
-					</td>
-				</tr>
-				<tr>
-					<th class="numberCol">#</th>
-					<th class="dateTimeCol">Start</th>
-					<th class="dateTimeCol">End</th>
-					<th class="durationCol">Duration</th>
-					<th class="completeCol">Complete</th>
-					<th class="periodActionsCol">Actions</th>
-				</tr>
-				</thead>
-				<tbody id="periodsTableContent">
-				</tbody>
-				<tfoot>
-				</tfoot>
-			</table>
-		</div>
-		<div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
-			<h2 class="tabContentTitle">Tasks</h2>
-			<hr/>
-			<table class="table table-bordered table-hover table-striped table-sm">
-				<thead>
-				<tr>
-					<td colspan="3">
-						<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();" title="Add Task">
-							<i class="fas fa-plus fa-fw"></i> Add Task
-						</button>
-					</td>
-				</tr>
-				<tr>
-					<th class="numberCol">#</th>
-					<th>Name</th>
-					<th class="taskActionsCol">Actions</th>
-				</tr>
-				</thead>
-				<tbody id="tasksTableContent">
-				</tbody>
-				<tfoot>
-				</tfoot>
-			</table>
-		</div>
-		<div class="tab-pane fade" id="statsContent" role="tabpanel" aria-labelledby="statsTab">
-			<h2 class="tabContentTitle">Stats</h2>
-			<hr/>
+		<div class="card-body keeperSection">
+			<div class="tab-content" id="mainTabContent">
+				<div class="tab-pane fade show active" id="selectedPeriodContent" role="tabpanel" aria-labelledby="selectedPeriodTab">
+					<h2 class="tabContentTitle">Selected Period</h2>
+					<hr/>
+					<div class="card-group">
+						<div class="col-lg-9 col-md-12 card noPadding">
+							<div class="card-header noPadding">
+								Period Details
+							</div>
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item">Start:</li>
+								<li class="list-group-item">End:</li>
+								<li class="list-group-item">Duration:</li>
+								<li class="list-group-item">Complete:</li>
+							</ul>
+							<table class="table table-bordered table-striped table-sm taskStatsTable">
+								<thead>
+								<tr>
+									<th colspan="2">
+										<button class="btn btn-success btn-block" title="Edit Period Attributes">
+											<i class="fas fa-pencil-alt fa-fw"></i> Edit Period Attributes
+										</button>
+									</th>
+								</tr>
+								<tr>
+									<th>Attribute</th>
+									<th>Value</th>
+								</tr>
+								</thead>
+								<tbody id="selectedPeriodAttributesTableBody">
+								</tbody>
+							</table>
+						</div>
+						<div class="col-lg-3 card">
+							<div class="card-header">
+								Task Stats
+							</div>
+							<table class="card-body table table-bordered table-striped table-sm taskStatsTable">
+								<thead>
+								<tr>
+									<th>Task</th>
+									<th class="durationCol">Duration</th>
+								</tr>
+								</thead>
+								<tbody id="selectedPeriodTaskStatsTableBody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="col card">
+							<div class="card-header">
+								Timespans
+							</div>
+							<table class="table table-bordered table-hover table-striped table-sm">
+								<thead>
+								<tr>
+									<td colspan="3">
+										<button class="btn btn-success btn-block" title="Add Timespan">
+											<i class="fas fa-plus fa-fw"></i> Add Timespan
+										</button>
+									</td>
+									<td colspan="3">
+										<button class="btn btn-success btn-block" title="Complete All">
+											<i class="fas fa-check fa-fw"></i> Complete All
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<th class="numberCol">#</th>
+									<th class="dateTimeCol">Start</th>
+									<th class="dateTimeCol">End</th>
+									<th class="durationCol">Duration</th>
+									<th>Task</th>
+									<th class="spanActionsCol">Actions</th>
+								</tr>
+								</thead>
+								<tbody id="selectedPeriodTimespansTableContent">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
+					<h2 class="tabContentTitle">Work Periods</h2>
+					<hr/>
+					<table class="table table-bordered table-hover table-striped table-sm">
+						<thead>
+						<tr>
+							<td colspan="6">
+								<button class="btn btn-success btn-block" id="addPeriodButton" onclick="addPeriod();" title="Add Period">
+									<i class="fas fa-plus fa-fw"></i> Add Period
+								</button>
+							</td>
+						</tr>
+						<tr>
+							<th class="numberCol">#</th>
+							<th class="dateTimeCol">Start</th>
+							<th class="dateTimeCol">End</th>
+							<th class="durationCol">Duration</th>
+							<th class="completeCol">Complete</th>
+							<th class="periodActionsCol">Actions</th>
+						</tr>
+						</thead>
+						<tbody id="periodsTableContent">
+						</tbody>
+					</table>
+				</div>
+				<div class="tab-pane fade" id="tasksContent" role="tabpanel" aria-labelledby="tasksTab">
+					<h2 class="tabContentTitle">Tasks</h2>
+					<hr/>
+					<table class="table table-bordered table-hover table-striped table-sm">
+						<thead>
+						<tr>
+							<td colspan="3">
+								<button class="btn btn-success btn-block" data-toggle="modal" data-target="#taskAddEditModal" id="addTaskButton" onclick="setupTaskAddEditFormForAdd();" title="Add Task">
+									<i class="fas fa-plus fa-fw"></i> Add Task
+								</button>
+							</td>
+						</tr>
+						<tr>
+							<th class="numberCol">#</th>
+							<th>Name</th>
+							<th class="taskActionsCol">Actions</th>
+						</tr>
+						</thead>
+						<tbody id="tasksTableContent">
+						</tbody>
+						<tfoot>
+						</tfoot>
+					</table>
+				</div>
+				<div class="tab-pane fade" id="statsContent" role="tabpanel" aria-labelledby="statsTab">
+					<h2 class="tabContentTitle">Stats</h2>
+					<hr/>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -154,7 +236,8 @@
 
 					<button type="submit" class="btn btn-primary submitButton" id="createAccountSubmitButton">Create
 						Account <i class="fas fa-user-plus"></i></button>
-					<button type="reset" class="btn btn-link resetButton" id="resetAccountSubmitButton">Reset</button>
+					<button type="reset" class="btn btn-link resetButton" id="resetAccountSubmitButton">Reset
+					</button>
 					<div class="form-response">
 					</div>
 				</form>

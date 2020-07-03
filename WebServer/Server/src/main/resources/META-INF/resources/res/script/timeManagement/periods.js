@@ -14,14 +14,14 @@ function loadPeriodData(){
 		var isSelected = selectedPeriod == curIndForKeeper;
 
 		periodsTableContent.prepend(
-			'<tr>' +
+			'<tr '+(isSelected?'class="table-info"':'')+'>' +
 			'<td class="periodIndexCell">'+curIndForKeeper+'</td>' +
 			'<td class="periodStartCell">'+""+'</td>' +
 			'<td class="periodEndCell">'+""+'</td>' +
 			'<td class="periodDurationCell">'+""+'</td>' +
 			'<td class="periodCompleteCell">'+""+'</td>' +
 			'<td>' +
-			'<button type="button" class="btn btn-warning btn-sm" onclick="" '+(isSelected?'title="Already Selected" disabled':'title="Select this period"')+'><i class="fas fa-hand-pointer fa-fw '+(isSelected?"selectedIcon":"")+'"></i><i class="fas fa-user-clock fa-fw"></i></button>&nbsp;' +
+			'<button type="button" class="btn btn-warning btn-sm" onclick="'+(isSelected?'':"selectPeriod("+curIndForKeeper+");")+'" '+(isSelected?'title="Already Selected" disabled':'title="Select this period"')+'><i class="fas fa-hand-pointer fa-fw '+(isSelected?"selectedIcon":"")+'"></i><i class="fas fa-user-clock fa-fw"></i></button>&nbsp;' +
 			'<button type="button" class="btn btn-danger btn-sm" onclick="removePeriod('+curIndForKeeper+');" title="Delete this period"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
@@ -101,4 +101,11 @@ function removePeriod(indForKeeper){
 			addMessage("danger", data.responseJSON.errOut);
 		},
 	});
+}
+
+function selectPeriod(indForKeeper){
+	console.log("Selecting period with index " + indForKeeper);
+
+	selectedPeriod = indForKeeper;
+	refreshPageData();
 }

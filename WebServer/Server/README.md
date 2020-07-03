@@ -41,6 +41,9 @@ This server is fairly standalone, but relies on a Mongodb instance for storing d
    - add email validation
    - home
      - start on no tab, goto first selected if present, work periods if no periods, tasks if no tasks
- 
+ - sanitize inputs
+   - store unsanitized (not all implementations want sanitized)
+   - unsanitize incoming
+   - sanitize outgoing (if header)
  
  

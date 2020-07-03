@@ -5,7 +5,7 @@ plugins {
 //    id "org.galaxx.gradle.jandex" version "1.0.2"
 }
 
-version = '1.0.0.309'
+version = '1.0.0.311'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 

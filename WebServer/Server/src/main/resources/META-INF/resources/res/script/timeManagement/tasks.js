@@ -26,7 +26,7 @@ function loadTaskData(){
 			'<td class="taskIndexCell">'+curIndForKeeper+'</td>' +
 			'<td class="taskNameCell">'+task.name.name+'</td>' +
 			'<td>' +
-			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal" title="View or Edit Task"><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
+			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal" title="View or Edit Task"><i class="far fa-eye fa-fw"></i>/<i class="fas fa-pencil-alt fa-fw"></i></button>&nbsp;' +
 			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');" title="Remove Task"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
