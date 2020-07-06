@@ -131,6 +131,7 @@ public class ActionDoer {
 			.type(MediaType.APPLICATION_JSON_TYPE)
 			.entity(new TimeManagerActionResponse(
 				heldManager,
+				null,
 				updatedDate,
 				changed,
 				regOutput,

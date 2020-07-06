@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
 import org.bson.types.ObjectId;
@@ -51,16 +51,18 @@ public class WholeManager {
 	JsonWebToken jwt;
 	
 	private WholeTimeManagerUpdateResponse toUpdateResponse(ManagerEntity entity, boolean changed) {
+		WholeTimeManagerUpdateResponse response = new WholeTimeManagerUpdateResponse();
 		try {
-			return new WholeTimeManagerUpdateResponse(
-				MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class),
-				entity.getLastUpdate(),
-				changed
-			);
+			response.setTimeManagerData(MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class));
 		} catch(IOException e) {
 			LOGGER.error("FAILED to serialize stored time manager.");
 			throw new RuntimeException(e);
 		}
+		
+		response.setLastUpdated(entity.getLastUpdate());
+		response.setChanged(changed);
+		
+		return response;
 	}
 	
 	@GET
@@ -73,7 +75,7 @@ public class WholeManager {
 		description = "Got the user's time manager data.",
 		content = @Content(
 			mediaType = "application/json",
-			schema = @Schema(implementation = WholeTimeManagerResponse.class)
+			schema = @Schema(implementation = TimeManagerResponse.class)
 		)
 	)
 	@APIResponse(
@@ -102,10 +104,12 @@ public class WholeManager {
 			.status(Response.Status.OK.getStatusCode())
 			.type(MediaType.APPLICATION_JSON_TYPE)
 			.entity(
-				new WholeTimeManagerResponse(
+				new TimeManagerResponse(
 					MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class),
+					null,
 					entity.getLastUpdate()
-				)
+				) {
+				}
 			)
 			.build();
 		

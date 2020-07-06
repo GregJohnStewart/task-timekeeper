@@ -1,6 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.AllStats;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,12 +20,13 @@ public class TimeManagerActionResponse extends WholeTimeManagerUpdateResponse {
 	
 	public TimeManagerActionResponse(
 		TimeManager timeManagerData,
+		AllStats stats,
 		Date lastUpdated,
 		boolean changed,
 		String regOut,
 		String errOut
 	) {
-		super(timeManagerData, lastUpdated, changed);
+		super(timeManagerData, stats, lastUpdated, changed);
 		this.regOut = regOut;
 		this.errOut = errOut;
 	}

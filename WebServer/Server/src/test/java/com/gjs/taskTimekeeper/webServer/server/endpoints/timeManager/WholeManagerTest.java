@@ -10,7 +10,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -44,11 +44,11 @@ public class WholeManagerTest extends RunningServerTest {
         this.testUserJwt = this.userUtils.getTestUserJwt(testUser);
     }
     
-    private void assertEntityEqualsResponse(ManagerEntity managerEntity, WholeTimeManagerResponse response)
+    private void assertEntityEqualsResponse(ManagerEntity managerEntity, TimeManagerResponse response)
         throws JsonProcessingException {
         assertEquals(
             managerEntity.getLastUpdate(),
-            response.getLastUpdate()
+            response.getLastUpdated()
         );
         assertArrayEquals(
             managerEntity.getTimeManagerData(),
@@ -68,12 +68,12 @@ public class WholeManagerTest extends RunningServerTest {
     @Test
     public void testGetNewWholeManager() throws IOException {
         ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.testUserJwt)
-                .get("/api/timeManager/manager").then();
-
+                                                               .get("/api/timeManager/manager").then();
+    
         validatableResponse.statusCode(Response.Status.OK.getStatusCode());
-
-        WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
-        assertNull(response.getLastUpdate());
+    
+        TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
+        assertNull(response.getLastUpdated());
     
     
         this.testEntity = ManagerEntity.findByUserId(testUser.id);
@@ -93,14 +93,14 @@ public class WholeManagerTest extends RunningServerTest {
     @Test
     public void testGetExistingWholeManager() throws IOException {
         this.setupExisting();
-
+    
         ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.testUserJwt)
-                .get("/api/timeManager/manager").then();
-
+                                                               .get("/api/timeManager/manager").then();
+    
         validatableResponse.statusCode(Response.Status.OK.getStatusCode());
     
-        WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
-        assertNotNull(response.getLastUpdate());
+        TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
+        assertNotNull(response.getLastUpdated());
     
         ManagerEntity updatedEntity = ManagerEntity.findByUserId(testUser.id);
         assertNotNull(updatedEntity.getLastUpdate());
