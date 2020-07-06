@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.validation;
+package com.gjs.taskTimekeeper.webServer.server.validation.validate;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.EmailValidationException;
@@ -20,9 +20,9 @@ public class EmailValidator extends StringValidator {
             "A-Z]{2,7}$";
 
     private static final Pattern pattern = Pattern.compile(emailRegex);
-
+    
     @Override
-    protected String sanitize(String object) {
+    public String sanitize(String object) {
         //don't do anything to emails
         return object;
     }

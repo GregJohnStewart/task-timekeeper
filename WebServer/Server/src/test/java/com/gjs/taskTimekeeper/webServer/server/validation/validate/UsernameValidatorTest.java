@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.validation;
+package com.gjs.taskTimekeeper.webServer.server.validation.validate;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.UsernameValidationException;
 import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;

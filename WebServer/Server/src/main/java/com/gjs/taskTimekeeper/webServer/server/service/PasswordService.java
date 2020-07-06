@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
-import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
+import com.gjs.taskTimekeeper.webServer.server.validation.validate.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wildfly.common.codec.DecodeException;

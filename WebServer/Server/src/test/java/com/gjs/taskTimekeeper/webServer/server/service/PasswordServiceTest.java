@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedK
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
-import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
+import com.gjs.taskTimekeeper.webServer.server.validation.validate.PasswordValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

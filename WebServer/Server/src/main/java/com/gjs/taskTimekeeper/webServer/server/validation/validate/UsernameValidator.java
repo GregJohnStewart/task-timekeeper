@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.validation;
+package com.gjs.taskTimekeeper.webServer.server.validation.validate;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.UsernameValidationException;

@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.validation;
+package com.gjs.taskTimekeeper.webServer.server.validation.validate;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import lombok.Getter;
@@ -51,10 +51,10 @@ public class PasswordValidator extends StringValidator {
                 true
         );
     }
-
-
+    
+    
     @Override
-    protected String sanitize(String object) {
+    public String sanitize(String object) {
         //don't do anything to passwords
         return object;
     }

@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.server.validation;
+package com.gjs.taskTimekeeper.webServer.server.validation.validate;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
 import com.gjs.taskTimekeeper.webServer.server.testResources.WebServerTest;
