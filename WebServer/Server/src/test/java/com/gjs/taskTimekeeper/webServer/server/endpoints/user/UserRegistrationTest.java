@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 @Execution(ExecutionMode.SAME_THREAD)
 public class UserRegistrationTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistrationTest.class);

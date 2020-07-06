@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class ManagerEntityTest extends RunningServerTest {
 
     //TODO:: more?

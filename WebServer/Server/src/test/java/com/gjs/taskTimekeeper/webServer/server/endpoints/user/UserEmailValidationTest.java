@@ -3,9 +3,10 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions;
+import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
@@ -36,14 +37,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class UserEmailValidationTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserEmailValidationTest.class);
 	
 	public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
 	
-	protected UserEmailValidationTest(ServerInfoBean infoBean) {
-		super(infoBean);
+	protected UserEmailValidationTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
+		super(infoBean, wrapper);
 	}
 	
 	private UserRegistrationRequest getTestRequest() {

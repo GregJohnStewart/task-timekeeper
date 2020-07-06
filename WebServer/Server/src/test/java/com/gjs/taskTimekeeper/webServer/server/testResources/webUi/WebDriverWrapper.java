@@ -1,20 +1,19 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.restassured.response.ValidatableResponse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.Closeable;
 import java.net.URL;
 import java.util.List;
 
@@ -24,53 +23,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class WebDriverWrapper implements Closeable {
+@RequestScoped
+public class WebDriverWrapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
     public static final long DEFAULT_WAIT_TIMEOUT = 10;
-    private static final boolean HEADLESS = true;
     
-    static {
-        WebDriverManager.firefoxdriver().setup();
+    private final WebDriver driver;
+    private URL baseUrl;
+    
+    @Inject
+    public WebDriverWrapper() {
+        this.driver = TestResourceLifecycleManager.getWebDriver();
+        LOGGER.info("New web driver wrapper made. Driver: {}", this.driver);
     }
     
-    private WebDriver driver = null;
-    private final String urlBase;
-    
-    public WebDriverWrapper(String urlBase) {
-        this.urlBase = urlBase;
-    }
-    
-    public boolean isInitted() {
-        return this.driver != null;
-    }
-    
-    public void init() {
-        if(!this.isInitted()) {
-            LOGGER.info("Opening web browser");
-            this.driver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
-        } else {
-            LOGGER.info("Driver already started.");
-        }
+    public void setBaseUrl(URL url) {
+        baseUrl = url;
     }
     
     public WebDriver getDriver() {
         return this.driver;
     }
     
-    @Override
-    public void close() {
-        if(this.getDriver() != null) {
-            LOGGER.info("Closing the webpage.");
-            this.getDriver().close();
-        } else {
-            LOGGER.debug("Web browser already closed or wasn't opened.");
-        }
-    }
-    
     public WebDriverWrapper navigateTo(String url) {
-        this.init();
-        this.getDriver().get(this.urlBase + url);
+        this.getDriver().get(this.baseUrl.toString() + url);
         
         this.waitForPageLoad();
         
@@ -98,9 +75,7 @@ public class WebDriverWrapper implements Closeable {
     }
     
     public WebDriverWrapper login(TestUser testUser) {
-        if(!this.isInitted()) {
-            this.navigateTo();
-        }
+        this.navigateTo();
     
         this.openNavMenu();
         WebElement loginForm = this.getDriver().findElement(By.id("navbarLogin"));

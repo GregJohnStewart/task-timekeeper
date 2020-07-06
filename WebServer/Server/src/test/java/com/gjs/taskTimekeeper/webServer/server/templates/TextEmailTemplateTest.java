@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.templates;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.api.ResourcePath;
@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class TextEmailTemplateTest extends RunningServerTest {
 	
 	private final Template textEmailTemplate;

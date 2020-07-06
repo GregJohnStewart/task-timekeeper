@@ -4,8 +4,9 @@ import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.F
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.submitForm;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class UserSettingsTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserSettingsTest.class);
 	
@@ -29,10 +30,11 @@ public class UserSettingsTest extends ServerWebUiTest {
 	
 	public UserSettingsTest(
 		ServerInfoBean infoBean,
+		WebDriverWrapper wrapper,
 		TokenService tokenService,
 		PasswordService passwordService
 	) {
-		super(infoBean);
+		super(infoBean, wrapper);
 		this.tokenService = tokenService;
 		this.passwordService = passwordService;
 	}

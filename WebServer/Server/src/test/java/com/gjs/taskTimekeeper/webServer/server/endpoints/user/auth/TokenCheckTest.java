@@ -2,7 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.webLibrary.TokenCheckResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class TokenCheckTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenCheckTest.class);
 

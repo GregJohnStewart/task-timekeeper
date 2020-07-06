@@ -3,7 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionRequest;
@@ -24,7 +24,7 @@ import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntit
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 class ActionDoerTest extends RunningServerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoerTest.class);
 	

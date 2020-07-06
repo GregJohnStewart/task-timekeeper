@@ -8,7 +8,7 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class WholeManagerTest extends RunningServerTest {
     private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
     

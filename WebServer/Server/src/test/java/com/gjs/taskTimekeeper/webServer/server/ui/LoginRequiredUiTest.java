@@ -2,7 +2,8 @@ package com.gjs.taskTimekeeper.webServer.server.ui;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
+import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,12 +17,12 @@ import java.util.stream.Stream;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.assertPageHasMessage;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class LoginRequiredUiTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginRequiredUiTest.class);
 	
-	public LoginRequiredUiTest(ServerInfoBean infoBean) {
-		super(infoBean);
+	public LoginRequiredUiTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
+		super(infoBean, wrapper);
 	}
 	
 	public static Stream<Arguments> getPagesThatRequireLogin() {

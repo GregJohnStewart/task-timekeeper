@@ -3,8 +3,9 @@ package com.gjs.taskTimekeeper.webServer.server.ui;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import io.quarkus.mailer.Mail;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -22,16 +23,16 @@ import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.F
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
-class HomeTest extends ServerWebUiTest{
+@QuarkusTestResource(TestResourceLifecycleManager.class)
+class HomeTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HomeTest.class);
 	
-	HomeTest(ServerInfoBean infoBean){
-		super(infoBean);
+	HomeTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
+		super(infoBean, wrapper);
 	}
 	
 	@Test
-	public void basicLoadTest(){
+	public void basicLoadTest() {
 		LOGGER.info("Loading the home page.");
 		this.wrapper.navigateTo("");
 		
