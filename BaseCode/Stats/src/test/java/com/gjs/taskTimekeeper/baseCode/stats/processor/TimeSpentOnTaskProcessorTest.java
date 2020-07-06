@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.stats.processor;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
-import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.PercentStats;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,8 @@ public class TimeSpentOnTaskProcessorTest extends StatProcessorTest<TimeSpentOnT
     @Test
     public void process() {
         this.processor.process(this.manager);
-
-        PercentResults<Task> results = this.processor.getResults().get();
+	
+		PercentStats<Task> results = this.processor.getResults().get();
 
         assertEquals(3, results.getObjects().size());
         assertEquals(
@@ -35,8 +35,8 @@ public class TimeSpentOnTaskProcessorTest extends StatProcessorTest<TimeSpentOnT
     @Test
     public void processWithWorkPeriod() {
         this.processor.process(this.manager, this.manager.getWorkPeriods().first());
-
-        PercentResults<Task> results = this.processor.getResults().get();
+	
+		PercentStats<Task> results = this.processor.getResults().get();
 
         assertEquals(2, results.getObjects().size());
         assertEquals(

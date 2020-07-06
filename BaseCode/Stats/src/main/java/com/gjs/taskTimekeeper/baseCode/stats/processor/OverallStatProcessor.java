@@ -3,29 +3,32 @@ package com.gjs.taskTimekeeper.baseCode.stats.processor;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
-import com.gjs.taskTimekeeper.baseCode.stats.results.OverallResults;
-import com.gjs.taskTimekeeper.baseCode.stats.results.OverallResults.OverallResultsBuilder;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.OverallStats;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.OverallStats.OverallStatsBuilder;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.TreeSet;
 
-/** Stat processor for overall stats on a time manager. TODO:: test */
-public class OverallStatProcessor extends StatProcessor<OverallResults> {
-
+/**
+ * Stat processor for overall stats on a time manager. TODO:: test
+ */
+public class OverallStatProcessor extends StatProcessor<OverallStats> {
+    
     @Override
-    public OverallResults process(TimeManager manager) throws StatProcessingException {
-        OverallResultsBuilder builder = OverallResults.builder();
-
+    public OverallStats process(TimeManager manager) throws StatProcessingException {
+        OverallStatsBuilder builder = OverallStats.builder();
+        
         builder.numTasksTotal(manager.getTasks().size());
         builder.numPeriods(manager.getWorkPeriods().size());
-
+        
         boolean complete = true;
         Duration total = Duration.ZERO;
         Set<Name> tasksUsed = new TreeSet<>();
         int spanCount = 0;
         long numSecsInAllTasks = 0;
-        for (WorkPeriod period : manager.getWorkPeriods()) {
+        for(WorkPeriod period : manager.getWorkPeriods()) {
             if (complete && period.isUnCompleted()) {
                 complete = false;
             }
@@ -65,15 +68,15 @@ public class OverallStatProcessor extends StatProcessor<OverallResults> {
 
         return builder.build();
     }
-
+    
     // TODO:: test
-    public OverallResults process(TimeManager manager, WorkPeriod period)
-            throws StatProcessingException {
-        if (!manager.getWorkPeriods().contains(period)) {
+    public OverallStats process(TimeManager manager, WorkPeriod period)
+        throws StatProcessingException {
+        if(!manager.getWorkPeriods().contains(period)) {
             throw new StatProcessingException("Work period not in manager given.");
         }
-        OverallResultsBuilder builder = OverallResults.builderForWorkPeriod();
-
+        OverallStatsBuilder builder = OverallStats.builderForWorkPeriod();
+        
         builder.numTasksUsed(period.getTaskNames().size());
         builder.allComplete(!period.isUnCompleted());
         Duration totalTime = period.getTotalTime();

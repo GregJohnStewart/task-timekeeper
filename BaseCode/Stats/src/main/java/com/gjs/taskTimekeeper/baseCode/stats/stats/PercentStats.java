@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.baseCode.stats.results;
+package com.gjs.taskTimekeeper.baseCode.stats.stats;
 
 import java.util.Map;
 import java.util.Objects;
@@ -13,26 +13,29 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @param <T> The type of object to use for the percent.
  */
-public class PercentResults<T> extends Results {
+public class PercentStats <T> extends Stats {
     private ConcurrentMap<T, Double> percentages = new ConcurrentHashMap<>();
     private ConcurrentMap<T, String> valueStrings = new ConcurrentHashMap<>();
     private ConcurrentMap<T, Number> values = new ConcurrentHashMap<>();
-
-    /** Base constructor. No values added. */
-    public PercentResults() {}
-
+    
+    /**
+     * Base constructor. No values added.
+     */
+    public PercentStats() {
+    }
+    
     /**
      * Constructor to set the initial values.
      *
      * @param values The values to set initially.
      * @throws NullPointerException If the map of values given is null.
      */
-    public PercentResults(Map<T, Number> values, Map<T, String> strings)
-            throws NullPointerException {
+    public PercentStats(Map<T, Number> values, Map<T, String> strings)
+        throws NullPointerException {
         this.setValues(values, strings);
     }
-
-    public PercentResults(Map<T, Number> values) throws NullPointerException {
+    
+    public PercentStats(Map<T, Number> values) throws NullPointerException {
         this.setValues(values);
     }
 
@@ -204,7 +207,7 @@ public class PercentResults<T> extends Results {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PercentResults<?> that = (PercentResults<?>) o;
+        PercentStats<?> that = (PercentStats<?>) o;
         return getPercentages().equals(that.getPercentages()) && values.equals(that.values);
     }
 

@@ -16,8 +16,8 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.exception.DataSource
 import com.gjs.taskTimekeeper.baseCode.stats.diagramming.PieCharter;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.OverallStatProcessor;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.TimeSpentOnTaskProcessor;
-import com.gjs.taskTimekeeper.baseCode.stats.results.OverallResults;
-import com.gjs.taskTimekeeper.baseCode.stats.results.PercentResults;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.OverallStats;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.PercentStats;
 import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.editHelpers.AttributeEditor;
@@ -146,17 +146,17 @@ public class MainGui {
 
         return output;
     }
-
-    private static JPanel getOverallStatsPanel(OverallResults results) {
+    
+    private static JPanel getOverallStatsPanel(OverallStats results) {
         JPanel overallStatStatPane = new JPanel();
         overallStatStatPane.setLayout(new BoxLayout(overallStatStatPane, BoxLayout.Y_AXIS));
         overallStatStatPane.setBorder(OVERALL_STATS_BORDER);
-
+        
         overallStatStatPane.setSize(OVERALL_STATS_DIMENSION);
         overallStatStatPane.setPreferredSize(OVERALL_STATS_DIMENSION);
         overallStatStatPane.setMinimumSize(OVERALL_STATS_DIMENSION);
         overallStatStatPane.setMaximumSize(OVERALL_STATS_DIMENSION);
-
+        
         JLabel label = new JLabel("Overall stats:");
         Font font = label.getFont();
         font = font.deriveFont(font.getStyle() | Font.BOLD);
@@ -1255,15 +1255,15 @@ public class MainGui {
         // </editor-fold>
 
         // <editor-fold desc="Stats Panel">
-        OverallResults overallResults = OVERALL_STAT_PROCESSOR.process(managerIO.getManager());
+        OverallStats overallResults = OVERALL_STAT_PROCESSOR.process(managerIO.getManager());
         // <editor-fold desc="Overall Stats Panel">
         {
             JPanel overallStatsPanel = new JPanel(new WrapLayout());
 
             overallStatsPanel.add(getOverallStatsPanel(overallResults));
-
-            PercentResults<Task> results =
-                    TIME_SPENT_ON_TASK_PROCESSOR.process(this.managerIO.getManager());
+    
+            PercentStats<Task> results =
+                TIME_SPENT_ON_TASK_PROCESSOR.process(this.managerIO.getManager());
 
             overallStatsPanel.add(
                     new JLabel(new ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));
@@ -1278,18 +1278,20 @@ public class MainGui {
         // <editor-fold desc="Selected Period Stats Panel">
         if (this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod() != null) {
             this.statsTabPane.setEnabledAt(1, true);
-            OverallResults selectedResults =
-                    OVERALL_STAT_PROCESSOR.process(
-                            this.managerIO.getManager(),
-                            this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod());
+            OverallStats selectedResults =
+                OVERALL_STAT_PROCESSOR.process(
+                    this.managerIO.getManager(),
+                    this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod()
+                );
             JPanel selectedPeriodStatsPanel = new JPanel(new WrapLayout());
 
             selectedPeriodStatsPanel.add(getOverallStatsPanel(selectedResults));
-
-            PercentResults<Task> results =
-                    TIME_SPENT_ON_TASK_PROCESSOR.process(
-                            this.managerIO.getManager(),
-                            this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod());
+    
+            PercentStats<Task> results =
+                TIME_SPENT_ON_TASK_PROCESSOR.process(
+                    this.managerIO.getManager(),
+                    this.managerIO.getManager().getCrudOperator().getSelectedWorkPeriod()
+                );
 
             selectedPeriodStatsPanel.add(
                     new JLabel(new ImageIcon(TIME_SPENT_ON_TASKS_CHARTER.getChartImage(results))));

@@ -1,15 +1,16 @@
 package com.gjs.taskTimekeeper.baseCode.stats.diagramming;
 
-import com.gjs.taskTimekeeper.baseCode.stats.results.Results;
-import java.awt.image.BufferedImage;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.Stats;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.Dataset;
 
-public abstract class Charter<T extends Results, U extends Dataset> {
+import java.awt.image.BufferedImage;
+
+public abstract class Charter <T extends Stats, U extends Dataset> {
     protected String title;
     protected int height;
     protected int width;
-
+    
     public Charter(String title, int height, int width) {
         this.title = title;
         this.height = height;

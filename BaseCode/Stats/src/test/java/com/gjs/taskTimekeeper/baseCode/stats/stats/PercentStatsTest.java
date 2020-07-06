@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.baseCode.stats.results;
+package com.gjs.taskTimekeeper.baseCode.stats.stats;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,18 +10,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** TODO:: update for value strings */
-public class PercentResultsTest {
-    private PercentResults<String> results = new PercentResults<>();
-
-    @Test
-    public void testSetValue() {
-        assertTrue(this.results.getPercentages().isEmpty());
-
-        assertNull(this.results.setValue("hello", 1));
-
-        assertFalse(this.results.getPercentages().isEmpty());
-        assertEquals((Double) 100.0, this.results.getPercentages().get("hello"));
+/**
+ * TODO:: update for value strings
+ */
+public class PercentStatsTest {
+	private PercentStats<String> results = new PercentStats<>();
+	
+	@Test
+	public void testSetValue() {
+		assertTrue(this.results.getPercentages().isEmpty());
+		
+		assertNull(this.results.setValue("hello", 1));
+		
+		assertFalse(this.results.getPercentages().isEmpty());
+		assertEquals((Double)100.0, this.results.getPercentages().get("hello"));
 
         assertEquals((Double) 100.0, this.results.setValue("hello", 1.0));
 
@@ -193,13 +195,13 @@ public class PercentResultsTest {
     @Test
     public void constructWithMap() {
         this.results =
-                new PercentResults<>(
-                        new HashMap<String, Number>() {
-                            {
-                                put("hello", 10.0);
-                                put("world", 90.0);
-                            }
-                        });
+			new PercentStats<>(
+				new HashMap<String, Number>() {
+					{
+						put("hello", 10.0);
+						put("world", 90.0);
+					}
+				});
 
         assertEquals(2, this.results.getNumEntries());
         assertFalse(this.results.getObjects().isEmpty());
@@ -212,13 +214,13 @@ public class PercentResultsTest {
     @Test
     public void constructWithNullMap() {
         Assertions.assertThrows(NullPointerException.class, () -> {
-            new PercentResults<>(null);
+			new PercentStats<>(null);
         });
     }
 
     @Test
     public void equalsHashCode() {
-        assertEquals(this.results, new PercentResults<String>());
+		assertEquals(this.results, new PercentStats<String>());
 
         this.results.hashCode();
     }
