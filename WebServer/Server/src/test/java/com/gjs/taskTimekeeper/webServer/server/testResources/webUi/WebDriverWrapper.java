@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class WebDriverWrapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverWrapper.class);
     private static final String LOADED_FLAG_ID = "loadedFlag";
-    public static final long DEFAULT_WAIT_TIMEOUT = 10;
+    public static final long DEFAULT_WAIT_TIMEOUT = 15;
     
     private final WebDriver driver;
     private URL baseUrl;

@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class TestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestResourceLifecycleManager.class);
-    private static final boolean HEADLESS = false;
+    private static final boolean HEADLESS = true;
     
     private static volatile MongodExecutable MONGO = null;
     private static volatile WebDriver webDriver;
