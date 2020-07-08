@@ -5,7 +5,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class HTMLSanitizer implements Sanitizer<String>, DeSanitizer<String> {
+public class HTMLAnitizer extends Anitizer<String> {
     @Override
     public String deSanitize(String object) {
         return StringEscapeUtils.unescapeHtml4(object);

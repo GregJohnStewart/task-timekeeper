@@ -8,7 +8,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class TimeManagerActionDeSanitizer implements DeSanitizer<TimeManagerActionRequest> {
 	@Inject
-	HTMLSanitizer htmlSanitizer;
+	HTMLAnitizer htmlAnitizer;
 	
 	@Override
 	public TimeManagerActionRequest deSanitize(TimeManagerActionRequest object) {

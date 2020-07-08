@@ -8,10 +8,10 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class TimemanagerResponseSanitizer implements Sanitizer<TimeManagerResponse> {
     @Inject
-    HTMLSanitizer htmlSanitizer;
-    
-    @Inject
-    TimemanagerSanitizer timemanagerSanitizer;
+	HTMLAnitizer htmlAnitizer;
+	
+	@Inject
+	TimemanagerAnitizer timemanagerAnitizer;
     
     @Override
     public TimeManagerResponse sanitize(TimeManagerResponse object) {
