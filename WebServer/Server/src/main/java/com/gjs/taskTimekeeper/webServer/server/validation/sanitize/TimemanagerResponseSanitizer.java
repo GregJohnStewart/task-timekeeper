@@ -7,15 +7,16 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class TimemanagerResponseSanitizer implements Sanitizer<TimeManagerResponse> {
-    @Inject
+	@Inject
 	HTMLAnitizer htmlAnitizer;
 	
 	@Inject
 	TimemanagerAnitizer timemanagerAnitizer;
-    
-    @Override
-    public TimeManagerResponse sanitize(TimeManagerResponse object) {
-        //TODO
-        return object;
-    }
+	
+	@Override
+	public TimeManagerResponse sanitize(TimeManagerResponse object) {
+		//TODO
+		//TODO:: if instance of action response, sanitize outputs
+		return object;
+	}
 }

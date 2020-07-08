@@ -6,6 +6,8 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerActionDeSanitizer;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionResponse;
 import org.bson.types.ObjectId;
@@ -46,6 +48,12 @@ public class ActionDoer {
 	
 	@Inject
 	JsonWebToken jwt;
+	
+	@Inject
+	TimeManagerActionDeSanitizer actionDeSanitizer;
+	
+	@Inject
+	TimemanagerResponseSanitizer responseSanitizer;
 	
 	@PATCH
 	@Counted(name = "numPatchRequests", description = "How many manager data update requests handled.")
@@ -103,7 +111,7 @@ public class ActionDoer {
 			sanitizeText
 		);
 		
-		//TODO:: unsanitize text data in request
+		updateRequest = actionDeSanitizer.deSanitize(updateRequest);
 		
 		ManagerEntity heldEntity = ManagerEntity.getOrCreateNew(userId);
 		Date updatedDate = heldEntity.getLastUpdate();
@@ -126,19 +134,27 @@ public class ActionDoer {
 			status = Response.Status.BAD_REQUEST;
 		}
 		
+		TimeManagerActionResponse response = new TimeManagerActionResponse(
+			heldManager,
+			null,
+			updatedDate,
+			changed,
+			regOutput,
+			errOutput
+		);
+		
+		if(provideStats) {
+			//TODO
+		}
+		
+		if(sanitizeText) {
+			response = (TimeManagerActionResponse)responseSanitizer.sanitize(response);
+		}
+		
 		return Response
 			.status(status)
 			.type(MediaType.APPLICATION_JSON_TYPE)
-			.entity(new TimeManagerActionResponse(
-				heldManager,
-				null,
-				updatedDate,
-				changed,
-				regOutput,
-				errOutput
-			))
+			.entity(response)
 			.build();
-		
-		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 }

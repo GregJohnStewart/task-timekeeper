@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
@@ -40,7 +41,7 @@ import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntit
 import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity.getOrCreateNew;
 
 /**
- * TODO:: test
+ * TODO:: test thoroughly
  */
 @Path("/api/timeManager/manager")
 @RequestScoped
@@ -50,7 +51,15 @@ public class WholeManager {
 	@Inject
 	JsonWebToken jwt;
 	
-	private WholeTimeManagerUpdateResponse toUpdateResponse(ManagerEntity entity, boolean changed) {
+	@Inject
+	TimemanagerResponseSanitizer responseSanitizer;
+	
+	private WholeTimeManagerUpdateResponse toUpdateResponse(
+		ManagerEntity entity,
+		boolean changed,
+		boolean provideStats,
+		boolean sanitizeText
+	) {
 		WholeTimeManagerUpdateResponse response = new WholeTimeManagerUpdateResponse();
 		try {
 			response.setTimeManagerData(MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class));
@@ -61,6 +70,14 @@ public class WholeManager {
 		
 		response.setLastUpdated(entity.getLastUpdate());
 		response.setChanged(changed);
+		
+		if(provideStats) {
+			//TODO
+		}
+		
+		if(sanitizeText) {
+			response = (WholeTimeManagerUpdateResponse)responseSanitizer.sanitize(response);
+		}
 		
 		return response;
 	}
@@ -100,20 +117,24 @@ public class WholeManager {
 		
 		ManagerEntity entity = getOrCreateNew(userId);
 		
+		TimeManagerResponse output = new TimeManagerResponse(
+			MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class),
+			null,
+			entity.getLastUpdate()
+		);
+		
+		if(provideStats) {
+			//TODO
+		}
+		
+		if(sanitizeText) {
+			output = responseSanitizer.sanitize(output);
+		}
 		return Response
 			.status(Response.Status.OK.getStatusCode())
 			.type(MediaType.APPLICATION_JSON_TYPE)
-			.entity(
-				new TimeManagerResponse(
-					MANAGER_MAPPER.readValue(entity.getTimeManagerData(), TimeManager.class),
-					null,
-					entity.getLastUpdate()
-				) {
-				}
-			)
+			.entity(output)
 			.build();
-		
-		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 	
 	@PATCH
@@ -195,7 +216,7 @@ public class WholeManager {
 			return Response
 				.status(Response.Status.OK.getStatusCode())
 				.type(MediaType.APPLICATION_JSON_TYPE)
-				.entity(toUpdateResponse(entity, true))
+				.entity(toUpdateResponse(entity, true, provideStats, sanitizeText))
 				.build();
 		}
 		
@@ -206,7 +227,7 @@ public class WholeManager {
 		return Response
 			.status(Response.Status.ACCEPTED.getStatusCode())
 			.type(MediaType.APPLICATION_JSON_TYPE)
-			.entity(toUpdateResponse(entity, true))
+			.entity(toUpdateResponse(entity, true, provideStats, sanitizeText))
 			.build();
 		
 		//TODO:: before returning, do stats and sanitization (if needed)
