@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +19,8 @@ public class AllStats extends Stats {
 	public OverallStats overallStats;
 	/**
 	 * Stats for individual work periods.
+	 * <p>
+	 * The Integer key is to be the same index as one would access the period using the action doers.
 	 */
 	public Map<Integer, PeriodStats> periodStats;
 	/**

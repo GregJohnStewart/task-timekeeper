@@ -7,6 +7,7 @@ import com.gjs.taskTimekeeper.baseCode.stats.stats.AllStats;
 
 
 public class AllStatsProcessor extends StatProcessor<AllStats> {
+	
 	@Override
 	public AllStats process(TimeManager manager) throws StatProcessingException {
 		//TODO
