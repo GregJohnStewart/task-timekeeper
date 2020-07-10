@@ -47,11 +47,10 @@ function removeTask(i){
 		return;
 	}
 
-	doRestCall({
-		spinnerContainer: null,
+	doTimeManagerRestCall({
 		url: "/api/timeManager/manager/action",
 		method: 'PATCH',
-		authorized: true,
+
 		data: {
 			actionConfig: {
 				action: "REMOVE",
@@ -148,11 +147,10 @@ function sendTaskAddEditRequest(event){
 		data.actionConfig.attributes = ";";
 	}
 
-	doRestCall({
+	doTimeManagerRestCall({
 		spinnerContainer: taskAddEditModalForm.get(0),
 		url: "/api/timeManager/manager/action",
 		method: 'PATCH',
-		authorized: true,
 		data: data,
 		done: function(data){
 			console.log("Successful add request: " + JSON.stringify(data));

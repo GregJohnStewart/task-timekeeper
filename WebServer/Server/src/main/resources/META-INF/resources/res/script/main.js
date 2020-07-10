@@ -53,7 +53,8 @@ function doRestCall({
 	done,
 	fail,
 	failNoResponse = null,
-	failNoResponseCheckStatus = true
+	failNoResponseCheckStatus = true,
+	extraHeaders = {}
 } = {}){
 	console.log("Making rest call.");
 	var spinner = (spinnerContainer === null ? null : new Spinner(spinnerOpts).spin(spinnerContainer));
@@ -72,10 +73,13 @@ function doRestCall({
 	}
 
 	if(authorized){
-		ajaxOps.headers = {
-			Authorization: "Bearer " + loginToken
+		extraHeaders = {
+			...extraHeaders,
+			...{Authorization: "Bearer " + loginToken}
 		}
 	}
+
+	ajaxOps.headers = extraHeaders;
 
 	$.ajax(
 		ajaxOps

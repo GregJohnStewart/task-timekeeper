@@ -36,11 +36,9 @@ function addPeriod(){
 	markScreenAsLoading();
 	console.log("Sending period add request");
 
-	doRestCall({
-		spinnerContainer: null,
+	doTimeManagerRestCall({
 		url: "/api/timeManager/manager/action",
 		method: 'PATCH',
-		authorized: true,
 		data: {
 			actionConfig: {
 				action: "ADD",
@@ -71,11 +69,9 @@ function removePeriod(indForKeeper){
 		return;
 	}
 
-	doRestCall({
-		spinnerContainer: null,
+	doTimeManagerRestCall({
 		url: "/api/timeManager/manager/action",
 		method: 'PATCH',
-		authorized: true,
 		data: {
 			actionConfig: {
 				action: "REMOVE",

@@ -12,7 +12,11 @@ function setTimekeeperDataFromResponse(data){
 }
 
 function getManagerData(){
-	return timekeeperData.timeManagerData
+	return timekeeperData.timeManagerData;
+}
+
+function getStatsData(){
+	return timekeeperData.stats;
 }
 
 function markScreenAsLoading(){
@@ -67,10 +71,8 @@ function manageSelectedTabView(){
 }
 
 function getTimekeeperData(toCall){
-	doRestCall({
+	doTimeManagerRestCall({
 		spinnerContainer: null,
-		url: "/api/timeManager/manager",
-		authorized: true,
 		done: function(data){
 			console.log("Got timekeeper data: " + JSON.stringify(data));
 			setTimekeeperDataFromResponse(data)
@@ -87,8 +89,43 @@ function getTimekeeperData(toCall){
 function initTimekeeperPage(){
 	taskAddEditModalForm.on("submit", function(event){sendTaskAddEditRequest(event)});
 
-
 	setupTimekeepingData();
 
 	clearTaskAddEditForm();
+}
+
+function doTimeManagerRestCall({
+	spinnerContainer = null,
+	url = "/api/timeManager/manager",
+	timeout = (5*60*1000),
+	method = 'GET',
+	data = null,
+	authorized = true,
+	done,
+	fail,
+	failNoResponse = null,
+	failNoResponseCheckStatus = true,
+	extraHeaders = {}
+} = {}){
+	var extraHeaders = {
+		...extraHeaders,
+		...{
+			provideStats: true,
+			sanitizeText: true
+		}
+	}
+
+	doRestCall({
+		spinnerContainer: spinnerContainer,
+		url: url,
+		timeout: timeout,
+		method: method,
+		data: data,
+		authorized: true,
+		done: done,
+		fail: fail,
+		failNoResponse: failNoResponse,
+		failNoResponseCheckStatus: failNoResponseCheckStatus,
+		extraHeaders: extraHeaders
+	});
 }
