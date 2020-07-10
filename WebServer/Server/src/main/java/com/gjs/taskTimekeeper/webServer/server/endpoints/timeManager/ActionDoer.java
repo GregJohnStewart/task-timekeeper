@@ -5,6 +5,7 @@ import com.gjs.taskTimekeeper.baseCode.core.crudAction.actionDoer.CrudOperator;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
+import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerActionDeSanitizer;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
@@ -43,7 +44,7 @@ import java.util.Date;
 @RequestScoped
 public class ActionDoer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
-	
+	private static final AllStatsProcessor ALL_STATS_PROCESSOR = AllStatsProcessor.getInstance();
 	private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
 	
 	@Inject
@@ -144,7 +145,9 @@ public class ActionDoer {
 		);
 		
 		if(provideStats) {
-			//TODO
+			response.setStats(
+				ALL_STATS_PROCESSOR.process(response.getTimeManagerData())
+			);
 		}
 		
 		if(sanitizeText) {

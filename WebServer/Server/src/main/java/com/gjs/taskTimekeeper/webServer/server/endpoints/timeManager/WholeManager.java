@@ -2,7 +2,9 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerAnitizer;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
@@ -47,12 +49,16 @@ import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntit
 @RequestScoped
 public class WholeManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WholeManager.class);
+	private static final AllStatsProcessor ALL_STATS_PROCESSOR = AllStatsProcessor.getInstance();
 	
 	@Inject
 	JsonWebToken jwt;
 	
 	@Inject
 	TimemanagerResponseSanitizer responseSanitizer;
+	
+	@Inject
+	TimemanagerAnitizer timemanagerAnitizer;
 	
 	private WholeTimeManagerUpdateResponse toUpdateResponse(
 		ManagerEntity entity,
@@ -72,7 +78,9 @@ public class WholeManager {
 		response.setChanged(changed);
 		
 		if(provideStats) {
-			//TODO
+			response.setStats(
+				ALL_STATS_PROCESSOR.process(response.getTimeManagerData())
+			);
 		}
 		
 		if(sanitizeText) {
@@ -124,7 +132,9 @@ public class WholeManager {
 		);
 		
 		if(provideStats) {
-			//TODO
+			output.setStats(
+				ALL_STATS_PROCESSOR.process(output.getTimeManagerData())
+			);
 		}
 		
 		if(sanitizeText) {
@@ -200,7 +210,10 @@ public class WholeManager {
 		byte[] managerData = null;
 		
 		try {
-			managerData = MANAGER_MAPPER.writeValueAsBytes(updateRequest.getTimeManagerData());
+			TimeManager manager = updateRequest.getTimeManagerData();
+			manager = timemanagerAnitizer.deSanitize(manager);
+			
+			managerData = MANAGER_MAPPER.writeValueAsBytes(manager);
 		} catch(JsonProcessingException e) {
 			LOGGER.warn("FAILED to serialize manager object given by user.");
 			throw e;
@@ -229,7 +242,5 @@ public class WholeManager {
 			.type(MediaType.APPLICATION_JSON_TYPE)
 			.entity(toUpdateResponse(entity, true, provideStats, sanitizeText))
 			.build();
-		
-		//TODO:: before returning, do stats and sanitization (if needed)
 	}
 }
