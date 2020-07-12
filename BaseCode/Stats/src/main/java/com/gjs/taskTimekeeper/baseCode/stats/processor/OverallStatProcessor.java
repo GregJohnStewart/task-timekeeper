@@ -24,17 +24,19 @@ public class OverallStatProcessor extends StatProcessor<OverallStats> {
     @Override
     public OverallStats process(TimeManager manager) throws StatProcessingException {
         OverallStatsBuilder builder = OverallStats.builder();
-        
+    
+        //TODO:: start, end datetimes
+    
         builder.numTasksTotal(manager.getTasks().size());
         builder.numPeriods(manager.getWorkPeriods().size());
-        
+    
         boolean complete = true;
         Duration total = Duration.ZERO;
         Set<Name> tasksUsed = new TreeSet<>();
         int spanCount = 0;
         long numSecsInAllTasks = 0;
         for(WorkPeriod period : manager.getWorkPeriods()) {
-            if (complete && period.isUnCompleted()) {
+            if(complete && period.isUnCompleted()) {
                 complete = false;
             }
 
@@ -81,21 +83,23 @@ public class OverallStatProcessor extends StatProcessor<OverallStats> {
             throw new StatProcessingException("Work period not in manager given.");
         }
         OverallStatsBuilder builder = OverallStats.builderForWorkPeriod();
-        
+    
+        builder.startDateTime(period.getStart());
+        builder.endDateTime(period.getEnd());
         builder.numTasksUsed(period.getTaskNames().size());
         builder.allComplete(!period.isUnCompleted());
         Duration totalTime = period.getTotalTime();
         builder.totalTime(totalTime);
         builder.numSpans(period.getNumTimespans());
-
-        if (period.getNumTimespans() != 0) {
+    
+        if(period.getNumTimespans() != 0) {
             builder.averageSpanLength(
-                    Duration.of(
-                            totalTime.getSeconds() / period.getNumTimespans(), ChronoUnit.SECONDS));
+                Duration.of(
+                    totalTime.getSeconds() / period.getNumTimespans(), ChronoUnit.SECONDS));
         } else {
             builder.averageSpanLength(Duration.ZERO);
         }
-
+    
         return builder.build();
     }
 }

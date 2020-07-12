@@ -19,6 +19,22 @@ function getStatsData(){
 	return timekeeperData.stats;
 }
 
+function getSelectedPeriodData(){
+	if(selectedPeriod == null){
+		return null;
+	}
+
+	//TODO:: doublecheck this is right?
+	return getManagerData().workPeriods[selectedPeriod - 1]
+}
+
+function getSelectedPeriodStats(){
+	if(selectedPeriod == null){
+		return null;
+	}
+	return getStatsData().periodStats[selectedPeriod]
+}
+
 function markScreenAsLoading(){
 	console.log("Marking page as loading.");
 	loggedInContent.fadeTo(0.25, 0.15);

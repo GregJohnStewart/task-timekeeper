@@ -38,10 +38,10 @@
 								Period Details
 							</div>
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item">Start:</li>
-								<li class="list-group-item">End:</li>
-								<li class="list-group-item">Duration:</li>
-								<li class="list-group-item">Complete:</li>
+								<li class="list-group-item">Start: <span id="selectedPeriodStartSpan"></span></li>
+								<li class="list-group-item">End: <span id="selectedPeriodEndSpan"></span></li>
+								<li class="list-group-item">Duration: <span id="selectedPeriodDurationSpan"></span></li>
+								<li class="list-group-item">Complete: <span id="selectedPeriodCompleteSpan"></span></li>
 							</ul>
 							<table class="table table-bordered table-striped table-sm taskStatsTable">
 								<thead>
@@ -85,14 +85,12 @@
 							<table class="table table-bordered table-hover table-striped table-sm">
 								<thead>
 								<tr>
-									<td colspan="3">
-										<button class="btn btn-success btn-block" title="Add Timespan">
+									<td colspan="6" class="text-right">
+										<button class="btn btn-success" title="Add Timespan">
 											<i class="fas fa-plus fa-fw"></i> Add Timespan
 										</button>
-									</td>
-									<td colspan="3">
-										<button class="btn btn-success btn-block" title="Complete All">
-											<i class="fas fa-check fa-fw"></i> Complete All
+										<button class="btn btn-success" title="Complete All">
+											<i class="fas fa-check-double fa-fw"></i> Complete All
 										</button>
 									</td>
 								</tr>

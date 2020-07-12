@@ -6,12 +6,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class OverallStats extends Stats {
+    private final LocalDateTime startDateTime;
+    private final LocalDateTime endDateTime;
     /**
      * Total time recorded in the time manager or period.
      */
@@ -43,13 +46,27 @@ public class OverallStats extends Stats {
     
     // TODO:: test
     public OverallStats(
+        LocalDateTime startDateTime,
+        LocalDateTime endDateTime,
         Duration totalTime,
         int numTasksUsed,
         int numSpans,
         boolean allComplete,
         Duration averageSpanLength
     ) {
-        this(totalTime, -1, numTasksUsed, -1, numSpans, -1, allComplete, averageSpanLength, null);
+        this(
+            startDateTime,
+            endDateTime,
+            totalTime,
+            -1,
+            numTasksUsed,
+            -1,
+            numSpans,
+            -1,
+            allComplete,
+            averageSpanLength,
+            null
+        );
     }
     
     // TODO:: test

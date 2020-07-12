@@ -1,4 +1,13 @@
 
+var selectedPeriodStartSpan = $("#selectedPeriodStartSpan");
+var selectedPeriodEndSpan = $("#selectedPeriodEndSpan");
+var selectedPeriodDurationSpan = $("#selectedPeriodDurationSpan");
+var selectedPeriodCompleteSpan = $("#selectedPeriodCompleteSpan");
+var selectedPeriodAttributesTableBody = $("#selectedPeriodAttributesTableBody");
+var selectedPeriodTaskStatsTableBody = $("#selectedPeriodTaskStatsTableBody");
+var selectedPeriodTimespansTableContent = $("#selectedPeriodTimespansTableContent");
+
+
 function loadSelectedPeriodData(){
 	console.log("Loading selected period data");
 	clearSelectedPeriodData();
@@ -7,31 +16,43 @@ function loadSelectedPeriodData(){
 		return;
 	}
 
-	//TODO
-//	tasksTableContent.empty();
-//
-//	var managerData = getManagerData();
-//
-//	var curIndForKeeper = managerData.tasks.length;
-//	var curIndForArray = 0;
-//	managerData.tasks.forEach(function(task){
-//		console.log("Adding task named " + task.name.name);
-//		tasksTableContent.prepend(
-//			'<tr>' +
-//			'<td class="taskIndexCell">'+curIndForKeeper+'</td>' +
-//			'<td class="taskNameCell">'+task.name.name+'</td>' +
-//			'<td>' +
-//			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal"><i class="far fa-eye"></i>/<i class="fas fa-pencil-alt"></i></button>&nbsp;' +
-//			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');"><i class="far fa-trash-alt fa-fw"></i></button>' +
-//			'</td>' +
-//			'</tr>'
-//		);
-//		curIndForKeeper--;
-//		curIndForArray++;
+	var selectedPeriodData = getSelectedPeriodData();
+	var selectedPeriodStats = getSelectedPeriodStats();
+
+	console.log("Data for selected period: " + JSON.stringify(selectedPeriodData));
+	console.log("Stats for selected period: " + JSON.stringify(selectedPeriodStats));
+
+	// fill task table
+//	selectedPeriodStats.taskStats.forEach(function(index, value){
+		//TODO:: when we know what this looks like
 //	});
+
+
+	selectedPeriodStartSpan.text(selectedPeriodStats.startDateTime);
+	selectedPeriodEndSpan.text(selectedPeriodStats.endDateTime);
+	selectedPeriodDurationSpan.text(selectedPeriodStats.totalTime);
+	selectedPeriodCompleteSpan.text((selectedPeriodStats.allComplete?"Yes":"No"));
+
+
+	Object.keys(selectedPeriodData.attributes).forEach(function(key) {
+		tasksTableContent.prepend(
+			'<tr>' +
+			'<td>'+key+'</td>' +
+			'<td>'+selectedPeriodData.attributes[key]+'</td>' +
+			'</tr>'
+		);
+	});
+
 	console.log("DONE loading selected period data");
 }
 
 function clearSelectedPeriodData(){
-	//TODO
+	selectedPeriodStartSpan.empty();
+	selectedPeriodEndSpan.empty();
+	selectedPeriodDurationSpan.empty();
+	selectedPeriodCompleteSpan.empty();
+	selectedPeriodAttributesTableBody.empty();
+	selectedPeriodTaskStatsTableBody.empty();
+	selectedPeriodTimespansTableContent.empty();
+
 }
