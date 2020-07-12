@@ -15,6 +15,11 @@ import java.util.TreeSet;
  * Stat processor for overall stats on a time manager. TODO:: test
  */
 public class OverallStatProcessor extends StatProcessor<OverallStats> {
+    private static final OverallStatProcessor INSTANCE = new OverallStatProcessor();
+    
+    public static OverallStatProcessor getInstance() {
+        return INSTANCE;
+    }
     
     @Override
     public OverallStats process(TimeManager manager) throws StatProcessingException {
