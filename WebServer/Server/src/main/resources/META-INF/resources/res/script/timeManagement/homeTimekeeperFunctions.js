@@ -104,6 +104,7 @@ function getTimekeeperData(toCall){
 
 function initTimekeeperPage(){
 	taskAddEditModalForm.on("submit", function(event){sendTaskAddEditRequest(event)});
+	selectedPeriodEditAttsModalForm.on("submit", function(event){sendSelectedPeriodAttUpdateRequest(event)});
 
 	setupTimekeepingData();
 
@@ -144,4 +145,21 @@ function doTimeManagerRestCall({
 		failNoResponseCheckStatus: failNoResponseCheckStatus,
 		extraHeaders: extraHeaders
 	});
+}
+
+function getAttStringFromAttEditTable(attTableContent){
+	var attributes = "";
+
+	var attNameInputs = attTableContent.find(".attNameInput");
+	var attValueInputs = attTableContent.find(".attValueInput");
+
+	for(i = 0; i < attNameInputs.length; i++){
+		attributes += attNameInputs.get(i).value + "," + attValueInputs.get(i).value + ";";
+		}
+
+	if(attributes == ""){
+		attributes = ";";
+	}
+
+	return attributes;
 }

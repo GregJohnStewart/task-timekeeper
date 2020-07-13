@@ -106,8 +106,8 @@ function setupTaskAddEditFormForEdit(btnObj, i){
 function taskAddEditFormAddAttribute(name, value){
 	taskAddEditModalAttTableContent.append(
 		'<tr>' +
-		'<td><input type="text" class="form-control taskAttNameInput" name="taskAttName" placeholder="name" value="' + name + '" required></td>' +
-		'<td><input type="text" class="form-control taskAttValueInput" name="taskAttValue" placeholder="value" value="' + value + '"></td>' +
+		'<td><input type="text" class="form-control attNameInput" name="taskAttName" placeholder="name" value="' + name + '" required></td>' +
+		'<td><input type="text" class="form-control attValueInput" name="taskAttValue" placeholder="value" value="' + value + '"></td>' +
 		'<td><button type="button" class="btn btn-danger btn-sm btn-block" onclick="$(this).closest(\'tr\').remove()" title="Remove Attribute"><i class="far fa-trash-alt fa-fw"></i></button></td>' +
 		'</tr>'
 	);
@@ -116,13 +116,14 @@ function taskAddEditFormAddAttribute(name, value){
 function sendTaskAddEditRequest(event){
 	event.preventDefault();
 	markScreenAsLoading();
-	console.log("Sending task add request");
+	console.log("Sending task add/edit request");
 
 	var data = {
 		actionConfig: {
 			action: "ADD",
 			objectOperatingOn: "TASK",
-			name: taskAddEditModalNameInput.val()
+			name: taskAddEditModalNameInput.val(),
+			attributes: getAttStringFromAttEditTable(taskAddEditModalAttTableContent)
 		}
 	};
 
@@ -130,21 +131,6 @@ function sendTaskAddEditRequest(event){
 		data.actionConfig.action = "EDIT";
 		data.actionConfig.index = taskAddEditModalIdInput.val();
 		delete data.actionConfig.name;
-	}
-
-	var attributes = "";
-
-	var attNameInputs = taskAddEditModalAttTableContent.find(".taskAttNameInput");
-	var attValueInputs = taskAddEditModalAttTableContent.find(".taskAttValueInput");
-
-	for(i = 0; i < attNameInputs.length; i++){
-		attributes += attNameInputs.get(i).value + "," + attValueInputs.get(i).value + ";";
-	}
-
-	if(attributes != ""){
-		data.actionConfig.attributes = attributes;
-	}else{
-		data.actionConfig.attributes = ";";
 	}
 
 	doTimeManagerRestCall({

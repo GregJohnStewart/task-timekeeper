@@ -47,7 +47,7 @@
 								<thead>
 								<tr>
 									<th colspan="2">
-										<button class="btn btn-success btn-block" title="Edit Period Attributes">
+										<button class="btn btn-success btn-block" title="Edit Period Attributes" data-toggle="modal" data-target="#selectedPeriodEditAttsModal">
 											<i class="fas fa-pencil-alt fa-fw"></i> Edit Period Attributes
 										</button>
 									</th>
@@ -86,7 +86,7 @@
 								<thead>
 								<tr>
 									<td colspan="6" class="text-right">
-										<button class="btn btn-success" title="Add Timespan">
+										<button class="btn btn-success" title="Add Timespan" data-toggle="modal" data-target="#addTimespanModal">
 											<i class="fas fa-plus fa-fw"></i> Add Timespan
 										</button>
 										<button class="btn btn-success" title="Complete All">
@@ -295,6 +295,85 @@
 						Close
 					</button>
 					<button type="submit" class="btn btn-primary" form="taskAddEditModalForm">
+						Save
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="addEditTimespanModal" tabindex="-1" role="dialog" aria-labelledby="taskAddEditModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<form id="addEditTimespanModalForm">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addEditTimespanModalLabel">
+						(add/edit) Timespan
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<!-- TODO:: this form -->
+
+					<div class="form-response">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary" form="addEditTimespanModalForm">
+						Save
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="selectedPeriodEditAttsModal" tabindex="-1" role="dialog" aria-labelledby="taskAddEditModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<form id="selectedPeriodEditAttsModalForm">
+				<div class="modal-header">
+					<h5 class="modal-title" id="selectedPeriodEditAttsModalLabel">
+						Edit Selected Period Attributes
+					</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table class="table table-bordered table-hover table-striped table-sm">
+						<thead>
+						<tr>
+							<th>Name</th>
+							<th>Value</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id="selectedPeriodEditAttsModalTableContent">
+						</tbody>
+						<tfoot>
+						<tr>
+							<td colspan="3">
+								<button type="button" class="btn btn-success btn-block" onclick="selectedPeriodAddEditAttFormAddAttribute('','');">
+									<i class="fas fa-plus fa-fw"></i> Add Attribute
+								</button>
+							</td>
+						</tr>
+						</tfoot>
+					</table>
+					<div class="form-response">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary" form="selectedPeriodEditAttsModalForm">
 						Save
 					</button>
 				</div>

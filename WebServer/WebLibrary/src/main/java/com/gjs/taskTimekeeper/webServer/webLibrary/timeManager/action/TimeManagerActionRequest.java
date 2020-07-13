@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimeManagerActionRequest {
 	private ActionConfig actionConfig;
+	private Integer selectedPeriod;
 }

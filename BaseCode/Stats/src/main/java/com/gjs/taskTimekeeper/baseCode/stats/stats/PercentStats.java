@@ -1,5 +1,7 @@
 package com.gjs.taskTimekeeper.baseCode.stats.stats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -199,6 +201,7 @@ public class PercentStats <T> extends Stats {
      *
      * @return The set of objects there are percentages for.
      */
+    @JsonIgnore
     public synchronized Set<T> getObjects() {
         return this.percentages.keySet();
     }

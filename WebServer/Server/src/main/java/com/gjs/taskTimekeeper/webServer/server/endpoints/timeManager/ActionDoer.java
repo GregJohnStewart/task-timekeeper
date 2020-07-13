@@ -1,6 +1,9 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.Action;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
+import com.gjs.taskTimekeeper.baseCode.core.crudAction.KeeperObjectType;
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.actionDoer.CrudOperator;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
@@ -111,6 +114,7 @@ public class ActionDoer {
 			provideStats,
 			sanitizeText
 		);
+		LOGGER.debug("Update request data: {}", updateRequest);
 		
 		updateRequest = actionDeSanitizer.deSanitize(updateRequest);
 		
@@ -121,6 +125,26 @@ public class ActionDoer {
 		ByteArrayOutputStream errStream = new ByteArrayOutputStream();
 		
 		CrudOperator operator = new CrudOperator(heldManager, new Outputter(regStream, errStream));
+		
+		if(updateRequest.getSelectedPeriod() != null) {
+			LOGGER.info("Selecting user's period {}", updateRequest.getSelectedPeriod());
+			ActionConfig selectConfig = new ActionConfig(KeeperObjectType.PERIOD, Action.VIEW);
+			selectConfig.setSelect(true);
+			selectConfig.setIndex(updateRequest.getSelectedPeriod());
+			
+			operator.doObjAction(selectConfig);
+			
+			String errOutput = errStream.toString();
+			
+			if(!errOutput.isEmpty()) {
+				LOGGER.warn(
+					"Error Selecting the user's selected period {} - {}",
+					updateRequest.getSelectedPeriod(),
+					errOutput
+				);
+				//TODO:: handle here
+			}
+		}
 		
 		boolean changed = operator.doObjAction(updateRequest.getActionConfig());
 		String regOutput = regStream.toString();
