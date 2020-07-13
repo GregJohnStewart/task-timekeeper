@@ -86,7 +86,7 @@
 								<thead>
 								<tr>
 									<td colspan="6" class="text-right">
-										<button class="btn btn-success" title="Add Timespan" data-toggle="modal" data-target="#addTimespanModal">
+										<button class="btn btn-success" title="Add Timespan" data-toggle="modal" data-target="#addEditTimespanModal" onclick="setupTimespanFormForAdd();">
 											<i class="fas fa-plus fa-fw"></i> Add Timespan
 										</button>
 										<button class="btn btn-success" title="Complete All">
@@ -308,15 +308,44 @@
 			<form id="addEditTimespanModalForm">
 				<div class="modal-header">
 					<h5 class="modal-title" id="addEditTimespanModalLabel">
-						(add/edit) Timespan
+						<span id="timespanAddEditModalLabelText"></span> Timespan
 					</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
+					<div class="input-group" id="timespanAddEditModalIdInputGroup">
+						<div class="input-group-prepend">
+							<div class="input-group-text">#</div>
+						</div>
+						<input type="text" class="form-control" id="timespanAddEditModalIdInput" disabled>
+					</div>
+					<div class="form-group">
+						<label for="timespanAddEditModalTaskInput">Task:</label>
+						<select class="form-control" id="timespanAddEditModalTaskInput" required>
+						</select>
+					</div>
 
-					<!-- TODO:: this form -->
+					<div class="form-group">
+						<label for="timespanAddEditModalStartInput">Start:</label>
+						<div class="input-group date" id="timespanAddEditModalStartDateTimePicker" data-target-input="nearest">
+							<input type="text" id="timespanAddEditModalStartInput" class="form-control datetimepicker-input" data-target="#timespanAddEditModalStartDateTimePicker"/>
+							<div class="input-group-append" data-target="#timespanAddEditModalStartDateTimePicker" data-toggle="datetimepicker">
+								<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="timespanAddEditModalEndInput">End:</label>
+						<div class="input-group date" id="timespanAddEditModalEndDateTimePicker" data-target-input="nearest">
+							<input type="text" id="timespanAddEditModalEndInput" class="form-control datetimepicker-input" data-target="#timespanAddEditModalEndDateTimePicker"/>
+							<div class="input-group-append" data-target="#timespanAddEditModalEndDateTimePicker" data-toggle="datetimepicker">
+								<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+							</div>
+						</div>
+					</div>
 
 					<div class="form-response">
 					</div>

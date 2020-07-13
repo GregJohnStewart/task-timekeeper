@@ -104,7 +104,8 @@ function getTimekeeperData(toCall){
 
 function initTimekeeperPage(){
 	taskAddEditModalForm.on("submit", function(event){sendTaskAddEditRequest(event)});
-	selectedPeriodEditAttsModalForm.on("submit", function(event){sendSelectedPeriodAttUpdateRequest(event)});
+
+	setupSelectedTimespanUi();
 
 	setupTimekeepingData();
 

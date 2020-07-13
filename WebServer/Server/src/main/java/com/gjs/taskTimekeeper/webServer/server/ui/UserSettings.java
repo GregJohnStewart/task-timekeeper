@@ -49,7 +49,7 @@ public class UserSettings {
         TemplateInstance instance = homeTemplate.data("title", "Your Settings");
         instance = instance.data("serverInfo", this.serverInfoBean);
         instance = instance.data("extraStyle", new String[]{});
-        instance = instance.data("extraScripts", new String[]{"userSettings.js"});
+		instance = instance.data("extraScripts", new String[]{"script/userSettings.js"});
         
         return instance;
     }

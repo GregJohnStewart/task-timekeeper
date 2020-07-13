@@ -184,4 +184,8 @@ public class ActionDoer {
 			.entity(response)
 			.build();
 	}
+	
+	private Response createActionResponse() {
+		return null;
+	}
 }

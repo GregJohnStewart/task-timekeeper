@@ -9,7 +9,31 @@ var selectedPeriodTimespansTableContent = $("#selectedPeriodTimespansTableConten
 
 var selectedPeriodEditAttsModal = $("#selectedPeriodEditAttsModal");
 var selectedPeriodEditAttsModalForm = $("#selectedPeriodEditAttsModalForm");
+var selectedPeriodEditAttsModalFormResponse = selectedPeriodEditAttsModalForm.find(".form-response");
 var selectedPeriodEditAttsModalTableContent = $("#selectedPeriodEditAttsModalTableContent");
+
+var timespanAddEditModalLabelText = $("#timespanAddEditModalLabelText");
+var timespanAddEditModalIdInputGroup = $("#timespanAddEditModalIdInputGroup");
+var timespanAddEditModalIdInput = $("#timespanAddEditModalIdInput");
+var timespanAddEditModalTaskInput = $("#timespanAddEditModalTaskInput");
+var timespanAddEditModalStartDateTimePicker = $("#timespanAddEditModalStartDateTimePicker");
+var timespanAddEditModalStartInput = $("#timespanAddEditModalStartInput");
+var timespanAddEditModalEndDateTimePicker = $("#timespanAddEditModalEndDateTimePicker");
+var timespanAddEditModalEndInput = $("#timespanAddEditModalEndInput");
+
+function setupSelectedTimespanUi(){
+	selectedPeriodEditAttsModalForm.on("submit", function(event){sendSelectedPeriodAttUpdateRequest(event)});
+
+	timespanAddEditModalStartDateTimePicker.datetimepicker();
+	timespanAddEditModalEndDateTimePicker.datetimepicker();
+
+	timespanAddEditModalStartDateTimePicker.on("change.datetimepicker", function (e) {
+		timespanAddEditModalEndDateTimePicker.datetimepicker('minDate', e.date);
+	});
+	timespanAddEditModalEndDateTimePicker.on("change.datetimepicker", function (e) {
+		timespanAddEditModalStartDateTimePicker.datetimepicker('maxDate', e.date);
+	});
+}
 
 
 function loadSelectedPeriodData(){
@@ -81,6 +105,8 @@ function clearSelectedPeriodData(){
 	selectedPeriodTimespansTableContent.empty();
 
 	selectedPeriodEditAttsModalTableContent.empty();
+
+	clearAddEditTimespanForm();
 }
 
 function setupSelectedPeriodAddEditAttForm(){
@@ -132,8 +158,26 @@ function sendSelectedPeriodAttUpdateRequest(event){
 		fail: function(data){
 			console.warn("Bad response from adding task: " + JSON.stringify(data));
 			doneLoading();
-			addMessageToDiv(taskAddEditModalFormResponse, "danger", data.responseJSON.errOut);
+			addMessageToDiv(selectedPeriodEditAttsModalFormResponse, "danger", data.responseJSON.errOut);
 		}
 	});
+
+}
+
+function clearAddEditTimespanForm(){
+	timespanAddEditModalLabelText.empty();
+	timespanAddEditModalIdInputGroup.hide();
+	timespanAddEditModalIdInput.val("");
+	timespanAddEditModalTaskInput.val([]);
+	timespanAddEditModalStartInput.val("");
+	timespanAddEditModalEndInput.val("");
+}
+
+function setupTimespanFormForAdd(){
+	clearAddEditTimespanForm();
+	timespanAddEditModalLabelText.text("Add");
+}
+
+function selectedPeriodAddEditTimespan(event){
 
 }
