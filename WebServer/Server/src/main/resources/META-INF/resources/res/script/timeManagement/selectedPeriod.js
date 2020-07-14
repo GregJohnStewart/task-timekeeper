@@ -39,10 +39,22 @@ function setupSelectedTimespanUi(){
 function loadSelectedPeriodData(){
 	console.log("Loading selected period data");
 	clearSelectedPeriodData();
+
 	if(selectedPeriod == null){
 		console.log("No period selected. Nothing to do.");
 		return;
 	}
+
+	var managerData = getManagerData();
+	var curIndForKeeper = managerData.tasks.length;
+	managerData.tasks.forEach(function(task){
+		timespanAddEditModalTaskInput.prepend(
+			'<option value="'+curIndForKeeper+'">' +
+			task.name.name +
+			'</option>'
+		);
+		curIndForKeeper--;
+	});
 
 	var selectedPeriodData = getSelectedPeriodData();
 	var selectedPeriodStats = getSelectedPeriodStats();
@@ -75,7 +87,7 @@ function loadSelectedPeriodData(){
 		);
 	});
 
-	var curIndForKeeper = selectedPeriodData.timespans.length;
+	curIndForKeeper = selectedPeriodData.timespans.length;
 	var curIndForArray = 0;
 	Object.keys(selectedPeriodData.timespans).forEach(function(key) {
 		selectedPeriodTimespansTableContent.prepend(
@@ -105,6 +117,8 @@ function clearSelectedPeriodData(){
 	selectedPeriodTimespansTableContent.empty();
 
 	selectedPeriodEditAttsModalTableContent.empty();
+
+	timespanAddEditModalTaskInput.empty();
 
 	clearAddEditTimespanForm();
 }
