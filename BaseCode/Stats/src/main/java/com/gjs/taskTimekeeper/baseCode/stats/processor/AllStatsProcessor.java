@@ -17,14 +17,8 @@ import java.util.SortedSet;
  * TODO:: test
  */
 public class AllStatsProcessor extends StatProcessor<AllStats> {
-	private static final AllStatsProcessor INSTANCE = new AllStatsProcessor();
-	
-	public static AllStatsProcessor getInstance() {
-		return INSTANCE;
-	}
-	
-	private final OverallStatProcessor overallStatProcessor = OverallStatProcessor.getInstance();
-	private final TimeSpentOnTaskProcessor timeSpentOnTaskProcessor = TimeSpentOnTaskProcessor.getInstance();
+	private final OverallStatProcessor overallStatProcessor = new OverallStatProcessor();
+	private final TimeSpentOnTaskProcessor timeSpentOnTaskProcessor = new TimeSpentOnTaskProcessor();
 	
 	@Override
 	public AllStats process(TimeManager manager) throws StatProcessingException {

@@ -88,10 +88,10 @@ function setupTaskAddEditFormForAdd(){
 	taskAddEditModalLabelText.text("Add");
 }
 
-function setupTaskAddEditFormForEdit(btnObj, i){
+function setupTaskAddEditFormForEdit(btnObj, indexForArr){
 	var rowObj = $(btnObj).closest('tr');
 
-	var task = getManagerData().tasks[i];
+	var task = getManagerData().tasks[indexForArr];
 
 	taskAddEditModalIdInputGroup.show();
 	taskAddEditModalIdInput.val(rowObj.find(".taskIndexCell").text());

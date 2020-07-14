@@ -12,6 +12,9 @@ var selectedPeriodEditAttsModalForm = $("#selectedPeriodEditAttsModalForm");
 var selectedPeriodEditAttsModalFormResponse = selectedPeriodEditAttsModalForm.find(".form-response");
 var selectedPeriodEditAttsModalTableContent = $("#selectedPeriodEditAttsModalTableContent");
 
+var addEditTimespanModal = $("#addEditTimespanModal");
+var timespanAddEditModalForm = $("#timespanAddEditModalForm");
+var timespanAddEditModalFormResponse = timespanAddEditModalForm.find(".form-response");
 var timespanAddEditModalLabelText = $("#timespanAddEditModalLabelText");
 var timespanAddEditModalIdInputGroup = $("#timespanAddEditModalIdInputGroup");
 var timespanAddEditModalIdInput = $("#timespanAddEditModalIdInput");
@@ -22,7 +25,7 @@ var timespanAddEditModalEndDateTimePicker = $("#timespanAddEditModalEndDateTimeP
 var timespanAddEditModalEndInput = $("#timespanAddEditModalEndInput");
 
 function setupSelectedTimespanUi(){
-	selectedPeriodEditAttsModalForm.on("submit", function(event){sendSelectedPeriodAttUpdateRequest(event)});
+	timespanAddEditModalForm.on("submit", function(event){sendTimespanAddEditRequest(event)});
 
 	timespanAddEditModalStartDateTimePicker.datetimepicker();
 	timespanAddEditModalEndDateTimePicker.datetimepicker();
@@ -49,7 +52,7 @@ function loadSelectedPeriodData(){
 	var curIndForKeeper = managerData.tasks.length;
 	managerData.tasks.forEach(function(task){
 		timespanAddEditModalTaskInput.prepend(
-			'<option value="'+curIndForKeeper+'">' +
+			'<option value="'+task.name.name+'">' +
 			task.name.name +
 			'</option>'
 		);
@@ -62,17 +65,20 @@ function loadSelectedPeriodData(){
 	console.log("Data for selected period: " + JSON.stringify(selectedPeriodData));
 	console.log("Stats for selected period: " + JSON.stringify(selectedPeriodStats));
 
-	// fill task table
-//	selectedPeriodStats.taskStats.forEach(function(index, value){
-		//TODO:: when we know what this looks like
-//	});
-
+	// fill task stats table
+	Object.keys(selectedPeriodStats.taskStats.valueStrings).forEach(function(key) {
+		selectedPeriodTaskStatsTableBody.append(
+			'<tr>' +
+			'<td>' + key + '</td>' +
+			'<td>' + selectedPeriodStats.taskStats.valueStrings[key] + '</td>' +
+			'</tr>'
+		);
+	});
 
 	selectedPeriodStartSpan.text(selectedPeriodStats.startDateTime);
 	selectedPeriodEndSpan.text(selectedPeriodStats.endDateTime);
 	selectedPeriodDurationSpan.text(selectedPeriodStats.totalTime);
 	selectedPeriodCompleteSpan.text((selectedPeriodStats.allComplete?"Yes":"No"));
-
 
 	Object.keys(selectedPeriodData.attributes).forEach(function(key) {
 		selectedPeriodAttributesTableBody.prepend(
@@ -89,14 +95,14 @@ function loadSelectedPeriodData(){
 
 	curIndForKeeper = selectedPeriodData.timespans.length;
 	var curIndForArray = 0;
-	Object.keys(selectedPeriodData.timespans).forEach(function(key) {
+	selectedPeriodData.timespans.forEach(function(curTimespan) {
 		selectedPeriodTimespansTableContent.prepend(
 			'<tr>' +
-			'<td>'+curIndForKeeper+'</td>' +
+			'<td class="timespanIndexCell">'+curIndForKeeper+'</td>' +
 			'<td>'+'(start)'+'</td>' +
 			'<td>'+'(end)'+'</td>' +
 			'<td>'+'(duration)'+'</td>' +
-			'<td>'+'(task)'+'</td>' +
+			'<td>'+curTimespan.taskName.name+'</td>' +
 			'<td>'+'(actions)'+'</td>' +
 			'</tr>'
 		);
@@ -192,6 +198,59 @@ function setupTimespanFormForAdd(){
 	timespanAddEditModalLabelText.text("Add");
 }
 
-function selectedPeriodAddEditTimespan(event){
+function selectedPeriodAddEditTimespan(btnObj, indexForArr){
+	var rowObj = $(btnObj).closest('tr');
+
+	var selectedPeriodData = getSelectedPeriodData();
+	var editingTimespan = selectedPeriodData.timespans[indexForArr];
+
+	timespanAddEditModalIdInputGroup.show();
+	timespanAddEditModalIdInput.val(rowObj.find(".timespanIndexCell").text());
+
+	//TODO
+	//timespanAddEditModalTaskInput.val(editingTimespan.task);
+
+	//TODO:: start/end
+}
+
+function sendTimespanAddEditRequest(event){
+	event.preventDefault();
+	markScreenAsLoading();
+	console.log("Sending timespan add/edit request");
+
+
+	var data = {
+		selectedPeriod: selectedPeriod,
+		actionConfig: {
+			action: "ADD",
+			objectOperatingOn: "SPAN",
+			name: timespanAddEditModalTaskInput.val(),
+			start: timespanAddEditModalStartDateTimePicker.datetimepicker('viewDate').toISOString(),
+			end: timespanAddEditModalStartDateTimePicker.datetimepicker('viewDate').toISOString()
+		}
+	};
+
+	if(!taskAddEditModalIdInputGroup.is(":hidden")){
+		data.actionConfig.action = "EDIT";
+		data.actionConfig.index = timespanAddEditModalIdInput.val();
+	}
+
+	doTimeManagerRestCall({
+		spinnerContainer: timespanAddEditModalForm.get(0),
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		data: data,
+		done: function(data){
+			console.log("Successful add/edit request: " + JSON.stringify(data));
+			addEditTimespanModal.modal('hide')
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from adding/editing task: " + JSON.stringify(data));
+			doneLoading();
+			addMessageToDiv(timespanAddEditModalFormResponse, "danger", data.responseJSON.errOut);
+		},
+	});
 
 }

@@ -37,6 +37,10 @@ class HTMLAnitizerTest extends RunningServerTest {
 			Arguments.of(
 				"& lt;hello world& gt;",
 				"&amp; lt;hello world&amp; gt;"
+			),
+			Arguments.of(
+				"\"hello world\"",
+				"&quot;hello world&quot;"
 			)
 		);
 	}

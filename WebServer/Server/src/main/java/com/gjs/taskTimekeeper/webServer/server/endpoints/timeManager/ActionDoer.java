@@ -47,7 +47,6 @@ import java.util.Date;
 @RequestScoped
 public class ActionDoer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
-	private static final AllStatsProcessor ALL_STATS_PROCESSOR = AllStatsProcessor.getInstance();
 	private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
 	
 	@Inject
@@ -170,7 +169,7 @@ public class ActionDoer {
 		
 		if(provideStats) {
 			response.setStats(
-				ALL_STATS_PROCESSOR.process(response.getTimeManagerData())
+				new AllStatsProcessor().process(response.getTimeManagerData())
 			);
 		}
 		

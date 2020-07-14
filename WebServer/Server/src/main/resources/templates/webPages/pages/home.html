@@ -1,6 +1,28 @@
 {#include webPages/mainWebPageTemplate}
 {#pageContent}
 <div id="loggedInContent" class="initiallyHidden loggedInContent">
+	<div class="accordion" id="opsAccordion">
+		<div class="card">
+			<div class="card-header accordionHeader" id="opsHeading">
+				<h2 class="mb-0">
+					<button class="btn btn-link btn-block text-left btn-accordion" type="button" data-toggle="collapse" data-target="#opsContent" aria-expanded="false" aria-controls="opsContent">
+						Ops
+					</button>
+				</h2>
+			</div>
+			<div id="opsContent" class="collapse" aria-labelledby="opsHeading" data-parent="#opsAccordion">
+				<div class="card-body">
+					<button class="btn btn-sm btn-info" type="button" onclick="setupTimekeepingData();">
+						<i class="fas fa-redo-alt fa-fw"></i> Refresh page data
+					</button>
+					<button class="btn btn-sm btn-danger" type="button">
+						<i class="fas fa-bomb fa-fw"></i> Clear ALL data
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="card">
 		<div class="card-header">
 			<ul class="nav nav-tabs card-header-tabs" id="mainTab" role="tablist">
@@ -82,7 +104,7 @@
 							<div class="card-header">
 								Timespans
 							</div>
-							<table class="table table-bordered table-hover table-striped table-sm">
+							<table class="table table-bordered table-hover table-striped table-sm table-responsive-sm">
 								<thead>
 								<tr>
 									<td colspan="6" class="text-right">
@@ -112,7 +134,7 @@
 				<div class="tab-pane fade" id="workPeriodsContent" role="tabpanel" aria-labelledby="periodsTab">
 					<h2 class="tabContentTitle">Work Periods</h2>
 					<hr/>
-					<table class="table table-bordered table-hover table-striped table-sm">
+					<table class="table table-bordered table-hover table-striped table-sm table-responsive-sm">
 						<thead>
 						<tr>
 							<td colspan="6">
@@ -305,7 +327,7 @@
 <div class="modal fade" id="addEditTimespanModal" tabindex="-1" role="dialog" aria-labelledby="taskAddEditModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
-			<form id="addEditTimespanModalForm">
+			<form id="timespanAddEditModalForm">
 				<div class="modal-header">
 					<h5 class="modal-title" id="addEditTimespanModalLabel">
 						<span id="timespanAddEditModalLabelText"></span> Timespan
@@ -354,7 +376,7 @@
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">
 						Close
 					</button>
-					<button type="submit" class="btn btn-primary" form="addEditTimespanModalForm">
+					<button type="submit" class="btn btn-primary" form="timespanAddEditModalForm">
 						Save
 					</button>
 				</div>
@@ -402,7 +424,7 @@
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">
 						Close
 					</button>
-					<button type="submit" class="btn btn-primary" form="selectedPeriodEditAttsModalForm">
+					<button type="submit" class="btn btn-primary" form="selectedPeriodEditAttsModalForm" onclick="sendTimespanAddEditRequest(this);">
 						Save
 					</button>
 				</div>

@@ -49,7 +49,6 @@ import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntit
 @RequestScoped
 public class WholeManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WholeManager.class);
-	private static final AllStatsProcessor ALL_STATS_PROCESSOR = AllStatsProcessor.getInstance();
 	
 	@Inject
 	JsonWebToken jwt;
@@ -79,7 +78,7 @@ public class WholeManager {
 		
 		if(provideStats) {
 			response.setStats(
-				ALL_STATS_PROCESSOR.process(response.getTimeManagerData())
+				new AllStatsProcessor().process(response.getTimeManagerData())
 			);
 		}
 		
@@ -133,7 +132,7 @@ public class WholeManager {
 		
 		if(provideStats) {
 			output.setStats(
-				ALL_STATS_PROCESSOR.process(output.getTimeManagerData())
+				new AllStatsProcessor().process(output.getTimeManagerData())
 			);
 		}
 		
