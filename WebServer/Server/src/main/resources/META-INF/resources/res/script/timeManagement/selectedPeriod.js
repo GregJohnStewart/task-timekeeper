@@ -5,6 +5,7 @@ var selectedPeriodDurationSpan = $("#selectedPeriodDurationSpan");
 var selectedPeriodCompleteSpan = $("#selectedPeriodCompleteSpan");
 var selectedPeriodAttributesTableBody = $("#selectedPeriodAttributesTableBody");
 var selectedPeriodTaskStatsTableBody = $("#selectedPeriodTaskStatsTableBody");
+var selectedPeriodCompleteAllButton = $("#selectedPeriodCompleteAllButton");
 var selectedPeriodTimespansTableContent = $("#selectedPeriodTimespansTableContent");
 
 var selectedPeriodEditAttsModal = $("#selectedPeriodEditAttsModal");
@@ -25,7 +26,7 @@ var timespanAddEditModalEndDateTimePicker = $("#timespanAddEditModalEndDateTimeP
 var timespanAddEditModalEndInput = $("#timespanAddEditModalEndInput");
 
 var datetimepickerOptions = {
-	format: 'D/M h:mm A YYYY',
+	format: 'D/M h:mm A YYYY', //https://momentjs.com/docs/#/displaying/format/
 	icons: {
 		time: 'far fa-clock',
 		date: 'far fa-calendar-alt',
@@ -111,7 +112,10 @@ function loadSelectedPeriodData(){
 
 	curIndForKeeper = 1; //selectedPeriodData.timespans.length;
 	var curIndForArray = 0;
+	var allComplete = true;
 	selectedPeriodData.timespans.forEach(function(curTimespan) {
+		var isComplete = (curTimespan.startString != "" && curTimespan.endString != "");
+
 		selectedPeriodTimespansTableContent.append(
 			'<tr>' +
 			'<td class="timespanIndexCell">'+curIndForKeeper+'</td>' +
@@ -121,13 +125,20 @@ function loadSelectedPeriodData(){
 			'<td class="timespanTaskCell">'+curTimespan.taskName.name+'</td>' +
 			'<td class="timespanActionsCol">'+
 			'<button class="btn btn-warning btn-sm" title="Edit" onclick="setupSelectedPeriodEditTimespan(this);" data-toggle="modal" data-target="#addEditTimespanModal"><i class="fas fa-pen fa-fw fa-sm"></i></button> '+
+			'<button class="btn btn-info btn-sm" title="'+(isComplete?"Already completed":"Complete")+'" '+(isComplete?"disabled":'onclick="completeTimespan('+curIndForKeeper+');"')+'><i class="fas fa-check fa-fw fa-sm"></i></button> '+
 			'<button class="btn btn-danger btn-sm" title="Remove" onclick="removeTimespan('+curIndForKeeper+')"><i class="fas fa-trash-alt fa-fw fa-sm"></i></button>'+
 			'</td>' +
 			'</tr>'
 		);
+
+		if(!isComplete){
+			allComplete = false;
+		}
 		curIndForKeeper++;
 		curIndForArray++;
 	});
+
+	selectedPeriodCompleteAllButton.prop("disabled", allComplete);
 
 	console.log("DONE loading selected period data");
 }
@@ -267,17 +278,21 @@ function sendTimespanAddEditRequest(event){
 	markScreenAsLoading();
 	console.log("Sending timespan add/edit request");
 
-
 	var data = {
 		selectedPeriod: selectedPeriod,
 		actionConfig: {
 			action: "ADD",
 			objectOperatingOn: "SPAN",
-			name: timespanAddEditModalTaskInput.val(),
-			start: timespanAddEditModalStartInput.val(),
-			end: timespanAddEditModalEndInput.val()
+			name: timespanAddEditModalTaskInput.val()
 		}
 	};
+
+	if(timespanAddEditModalStartInput.val() != ""){
+		data.actionConfig.start = timespanAddEditModalStartInput.val();
+	}
+	if(timespanAddEditModalEndInput.val() != ""){
+		data.actionConfig.end = timespanAddEditModalEndInput.val();
+	}
 
 	if(!timespanAddEditModalIdInputGroup.is(":hidden")){
 		data.actionConfig.action = "EDIT";
@@ -302,4 +317,58 @@ function sendTimespanAddEditRequest(event){
 		},
 	});
 
+}
+
+function completeAllTimespans(){
+	console.log("Completing all timespans in selected period.");
+	markScreenAsLoading();
+
+	doTimeManagerRestCall({
+		spinnerContainer: null,
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		data: {
+			selectedPeriod: selectedPeriod,
+			actionConfig: {
+				specialAction: "completeSpans"
+			}
+		},
+		done: function(data){
+			console.log("Successful complete all timespans request: " + JSON.stringify(data));
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from completing all timespans: " + JSON.stringify(data));
+			doneLoading();
+			addMessage("danger", data.responseJSON.errOut);
+		},
+	});
+}
+
+function completeTimespan(indForKeeper){
+	console.log("Completing timespan " + indForKeeper);
+
+	doTimeManagerRestCall({
+		spinnerContainer: null,
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		data: {
+			selectedPeriod: selectedPeriod,
+				actionConfig: {
+					specialAction: "completeSpans",
+					index: indForKeeper
+			}
+		},
+		done: function(data){
+			console.log("Successful complete one timespan request: " + JSON.stringify(data));
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from completing one timespan: " + JSON.stringify(data));
+			doneLoading();
+			addMessage("danger", data.responseJSON.errOut);
+		},
+	});
 }
