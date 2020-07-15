@@ -23,9 +23,7 @@ function getSelectedPeriodData(){
 	if(selectedPeriod == null){
 		return null;
 	}
-
-	//TODO:: doublecheck this is right?
-	return getManagerData().workPeriods[selectedPeriod - 1]
+	return getManagerData().workPeriods[getManagerData().workPeriods.length - selectedPeriod]
 }
 
 function getSelectedPeriodStats(){
