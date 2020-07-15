@@ -41,6 +41,7 @@ var datetimepickerOptions = {
 
 function setupSelectedTimespanUi(){
 	timespanAddEditModalForm.on("submit", function(event){sendTimespanAddEditRequest(event)});
+	selectedPeriodEditAttsModalForm.on("submit", function(event){sendSelectedPeriodAttUpdateRequest(event)});
 
 	timespanAddEditModalStartDateTimePicker.datetimepicker(datetimepickerOptions);
 	timespanAddEditModalEndDateTimePicker.datetimepicker(datetimepickerOptions);

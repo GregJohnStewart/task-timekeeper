@@ -69,7 +69,7 @@ function selectFirstPeriodIfNoneSelected(){
 	if(!haveWorkPeriods){
 		selectedPeriod = null;
 	}else if(selectedPeriod == null){
-		selectedPeriod = managerData.workPeriods.length;
+		selectedPeriod = 1;
 	}
 }
 
