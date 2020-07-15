@@ -25,8 +25,7 @@ var timespanAddEditModalEndDateTimePicker = $("#timespanAddEditModalEndDateTimeP
 var timespanAddEditModalEndInput = $("#timespanAddEditModalEndInput");
 
 var datetimepickerOptions = {
-	format: 'D/M H:mm A YYYY',
-	debug: true,
+	format: 'D/M h:mm A YYYY',
 	icons: {
 		time: 'far fa-clock',
 		date: 'far fa-calendar-alt',
@@ -86,7 +85,7 @@ function loadSelectedPeriodData(){
 		selectedPeriodTaskStatsTableBody.append(
 			'<tr>' +
 			'<td>' + key + '</td>' +
-			'<td>' + selectedPeriodStats.taskStats.valueStrings[key] + '</td>' +
+			'<td class="durationCol">' + selectedPeriodStats.taskStats.valueStrings[key] + '</td>' +
 			'</tr>'
 		);
 	});
@@ -109,23 +108,23 @@ function loadSelectedPeriodData(){
 		);
 	});
 
-	curIndForKeeper = selectedPeriodData.timespans.length;
+	curIndForKeeper = 1; //selectedPeriodData.timespans.length;
 	var curIndForArray = 0;
 	selectedPeriodData.timespans.forEach(function(curTimespan) {
-		selectedPeriodTimespansTableContent.prepend(
+		selectedPeriodTimespansTableContent.append(
 			'<tr>' +
 			'<td class="timespanIndexCell">'+curIndForKeeper+'</td>' +
 			'<td class="timespanStartCell">'+curTimespan.startString+'</td>' +
 			'<td class="timespanEndCell">'+curTimespan.endString+'</td>' +
-			'<td>'+curTimespan.durationString+'</td>' +
+			'<td class="durationCol">'+curTimespan.durationString+'</td>' +
 			'<td class="timespanTaskCell">'+curTimespan.taskName.name+'</td>' +
-			'<td>'+
-			'<button class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-pen fa-fw fa-sm"></i></button> '+
+			'<td class="timespanActionsCol">'+
+			'<button class="btn btn-warning btn-sm" title="Edit" onclick="setupSelectedPeriodEditTimespan(this);" data-toggle="modal" data-target="#addEditTimespanModal"><i class="fas fa-pen fa-fw fa-sm"></i></button> '+
 			'<button class="btn btn-danger btn-sm" title="Remove" onclick="removeTimespan('+curIndForKeeper+')"><i class="fas fa-trash-alt fa-fw fa-sm"></i></button>'+
 			'</td>' +
 			'</tr>'
 		);
-		curIndForKeeper--;
+		curIndForKeeper++;
 		curIndForArray++;
 	});
 
@@ -251,19 +250,15 @@ function removeTimespan(indForKeeper){
 	});
 }
 
-function selectedPeriodAddEditTimespan(btnObj, indexForArr){
+function setupSelectedPeriodEditTimespan(btnObj){
 	var rowObj = $(btnObj).closest('tr');
-
-	var selectedPeriodData = getSelectedPeriodData();
-	var editingTimespan = selectedPeriodData.timespans[indexForArr];
 
 	timespanAddEditModalIdInputGroup.show();
 	timespanAddEditModalIdInput.val(rowObj.find(".timespanIndexCell").text());
 
-	//TODO
-	//timespanAddEditModalTaskInput.val(editingTimespan.task);
-
-	//TODO:: start/end
+	timespanAddEditModalTaskInput.val(rowObj.find(".timespanTaskCell").text());
+	timespanAddEditModalStartInput.val(rowObj.find(".timespanStartCell").text());
+	timespanAddEditModalEndInput.val(rowObj.find(".timespanEndCell").text());
 }
 
 function sendTimespanAddEditRequest(event){
@@ -283,7 +278,7 @@ function sendTimespanAddEditRequest(event){
 		}
 	};
 
-	if(!taskAddEditModalIdInputGroup.is(":hidden")){
+	if(!timespanAddEditModalIdInputGroup.is(":hidden")){
 		data.actionConfig.action = "EDIT";
 		data.actionConfig.index = timespanAddEditModalIdInput.val();
 	}
