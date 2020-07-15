@@ -53,3 +53,7 @@
 .btn-accordion, .btn-accordion:hover, .btn-accordion:active, .btn-accordion:visited {
 	color: black !important;
 }
+
+.btn {
+	color: black !important;
+}

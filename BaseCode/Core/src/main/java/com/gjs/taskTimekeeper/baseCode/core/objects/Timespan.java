@@ -2,8 +2,10 @@ package com.gjs.taskTimekeeper.baseCode.core.objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 
 import java.time.Duration;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /** Defines a span of time. Associated with a {@link Task}. */
+@JsonIgnoreProperties(value = {"durationString", "startString", "endString"}, allowGetters = true)
 public class Timespan extends KeeperObject implements Comparable<Timespan> {
 
     /** The task this timespan is associated with. */
@@ -290,13 +293,25 @@ public class Timespan extends KeeperObject implements Comparable<Timespan> {
             }
         }
         // if end times the same, compare tasks
-        if (compareResult == 0) {
+        if(compareResult == 0) {
             compareResult = this.taskName.compareTo(o.getTaskName());
         }
-
+    
         return compareResult;
     }
-
+    
+    public String getStartString() {
+        return (this.hasStartTime() ? TimeParser.toOutputString(this.getStartTime()) : "");
+    }
+    
+    public String getEndString() {
+        return (this.hasEndTime() ? TimeParser.toOutputString(this.getEndTime()) : "");
+    }
+    
+    public String getDurationString() {
+        return TimeParser.toDurationString(this.getDuration());
+    }
+    
     @Override
     public Timespan clone() {
         return new Timespan(this.taskName, this.startTime, this.endTime);

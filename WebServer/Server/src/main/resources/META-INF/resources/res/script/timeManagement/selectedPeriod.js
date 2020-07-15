@@ -24,18 +24,34 @@ var timespanAddEditModalStartInput = $("#timespanAddEditModalStartInput");
 var timespanAddEditModalEndDateTimePicker = $("#timespanAddEditModalEndDateTimePicker");
 var timespanAddEditModalEndInput = $("#timespanAddEditModalEndInput");
 
+var datetimepickerOptions = {
+	format: 'D/M H:mm A YYYY',
+	debug: true,
+	icons: {
+		time: 'far fa-clock',
+		date: 'far fa-calendar-alt',
+		up: 'fas fa-arrow-up',
+		down: 'fas fa-arrow-down',
+		previous: 'fas fa-chevron-left',
+		next: 'fas fa-chevron-right',
+		today: 'far fa-calendar-check',
+		clear: 'far fa-trash-alt',
+		close: 'fas fa-times'
+	}
+};
+
 function setupSelectedTimespanUi(){
 	timespanAddEditModalForm.on("submit", function(event){sendTimespanAddEditRequest(event)});
 
-	timespanAddEditModalStartDateTimePicker.datetimepicker();
-	timespanAddEditModalEndDateTimePicker.datetimepicker();
+	timespanAddEditModalStartDateTimePicker.datetimepicker(datetimepickerOptions);
+	timespanAddEditModalEndDateTimePicker.datetimepicker(datetimepickerOptions);
 
-	timespanAddEditModalStartDateTimePicker.on("change.datetimepicker", function (e) {
-		timespanAddEditModalEndDateTimePicker.datetimepicker('minDate', e.date);
-	});
-	timespanAddEditModalEndDateTimePicker.on("change.datetimepicker", function (e) {
-		timespanAddEditModalStartDateTimePicker.datetimepicker('maxDate', e.date);
-	});
+//	timespanAddEditModalStartDateTimePicker.on("change.datetimepicker", function (e) {
+//		timespanAddEditModalEndDateTimePicker.datetimepicker('minDate', e.date);
+//	});
+//	timespanAddEditModalEndDateTimePicker.on("change.datetimepicker", function (e) {
+//		timespanAddEditModalStartDateTimePicker.datetimepicker('maxDate', e.date);
+//	});
 }
 
 
@@ -75,10 +91,10 @@ function loadSelectedPeriodData(){
 		);
 	});
 
-	selectedPeriodStartSpan.text(selectedPeriodStats.startDateTime);
-	selectedPeriodEndSpan.text(selectedPeriodStats.endDateTime);
-	selectedPeriodDurationSpan.text(selectedPeriodStats.totalTime);
-	selectedPeriodCompleteSpan.text((selectedPeriodStats.allComplete?"Yes":"No"));
+	selectedPeriodStartSpan.text(selectedPeriodData.startString);
+	selectedPeriodEndSpan.text(selectedPeriodData.endString);
+	selectedPeriodDurationSpan.text(selectedPeriodData.durationString);
+	selectedPeriodCompleteSpan.text((selectedPeriodStats.overallStats.allComplete?"Yes":"No"));
 
 	Object.keys(selectedPeriodData.attributes).forEach(function(key) {
 		selectedPeriodAttributesTableBody.prepend(
@@ -99,11 +115,14 @@ function loadSelectedPeriodData(){
 		selectedPeriodTimespansTableContent.prepend(
 			'<tr>' +
 			'<td class="timespanIndexCell">'+curIndForKeeper+'</td>' +
-			'<td>'+'(start)'+'</td>' +
-			'<td>'+'(end)'+'</td>' +
-			'<td>'+'(duration)'+'</td>' +
-			'<td>'+curTimespan.taskName.name+'</td>' +
-			'<td>'+'(actions)'+'</td>' +
+			'<td class="timespanStartCell">'+curTimespan.startString+'</td>' +
+			'<td class="timespanEndCell">'+curTimespan.endString+'</td>' +
+			'<td>'+curTimespan.durationString+'</td>' +
+			'<td class="timespanTaskCell">'+curTimespan.taskName.name+'</td>' +
+			'<td>'+
+			'<button class="btn btn-warning btn-sm" title="Edit"><i class="fas fa-pen fa-fw fa-sm"></i></button> '+
+			'<button class="btn btn-danger btn-sm" title="Remove" onclick="removeTimespan('+curIndForKeeper+')"><i class="fas fa-trash-alt fa-fw fa-sm"></i></button>'+
+			'</td>' +
 			'</tr>'
 		);
 		curIndForKeeper--;
@@ -198,6 +217,40 @@ function setupTimespanFormForAdd(){
 	timespanAddEditModalLabelText.text("Add");
 }
 
+function removeTimespan(indForKeeper){
+	markScreenAsLoading();
+	console.log("Removing timespan " + indForKeeper);
+
+	if(!confirm("Are you sure? This cannot be undone.")){
+		console.log("User cancelled the remove.");
+		return;
+	}
+
+	doTimeManagerRestCall({
+		spinnerContainer: null,
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		data: {
+			selectedPeriod: selectedPeriod,
+			actionConfig: {
+				action: "REMOVE",
+				objectOperatingOn: "SPAN",
+				index: indForKeeper
+			}
+		},
+		done: function(data){
+			console.log("Successful timespan remove request: " + JSON.stringify(data));
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from removing timespan: " + JSON.stringify(data));
+			doneLoading();
+			addMessageToDiv(timespanAddEditModalFormResponse, "danger", data.responseJSON.errOut);
+		},
+	});
+}
+
 function selectedPeriodAddEditTimespan(btnObj, indexForArr){
 	var rowObj = $(btnObj).closest('tr');
 
@@ -225,8 +278,8 @@ function sendTimespanAddEditRequest(event){
 			action: "ADD",
 			objectOperatingOn: "SPAN",
 			name: timespanAddEditModalTaskInput.val(),
-			start: timespanAddEditModalStartDateTimePicker.datetimepicker('viewDate').toISOString(),
-			end: timespanAddEditModalStartDateTimePicker.datetimepicker('viewDate').toISOString()
+			start: timespanAddEditModalStartInput.val(),
+			end: timespanAddEditModalEndInput.val()
 		}
 	};
 

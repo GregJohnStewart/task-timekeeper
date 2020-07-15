@@ -16,10 +16,10 @@ function loadPeriodData(){
 		periodsTableContent.prepend(
 			'<tr '+(isSelected?'class="table-info"':'')+'>' +
 			'<td class="periodIndexCell">'+curIndForKeeper+'</td>' +
-			'<td class="periodStartCell">'+""+'</td>' +
-			'<td class="periodEndCell">'+""+'</td>' +
-			'<td class="periodDurationCell">'+""+'</td>' +
-			'<td class="periodCompleteCell">'+""+'</td>' +
+			'<td class="periodStartCell">'+period.startString+'</td>' +
+			'<td class="periodEndCell">'+period.endString+'</td>' +
+			'<td class="periodDurationCell">'+period.durationString+'</td>' +
+			'<td class="periodCompleteCell">'+(period.completed?"Yes":"No")+'</td>' +
 			'<td>' +
 			'<button type="button" class="btn btn-warning btn-sm" onclick="'+(isSelected?'':"selectPeriod("+curIndForKeeper+");")+'" '+(isSelected?'title="Already Selected" disabled':'title="Select this period"')+'><i class="fas fa-hand-pointer fa-fw '+(isSelected?"selectedIcon":"")+'"></i><i class="fas fa-user-clock fa-fw"></i></button>&nbsp;' +
 			'<button type="button" class="btn btn-danger btn-sm" onclick="removePeriod('+curIndForKeeper+');" title="Delete this period"><i class="far fa-trash-alt fa-fw"></i></button>' +
