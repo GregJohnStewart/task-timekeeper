@@ -2,7 +2,7 @@
   <configuration default="false" name="task-timekeeper:WebServer [dev]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/WebServer" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/WebServer/Server" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">

@@ -44,6 +44,8 @@ For admin of the server, one can use [MongoDb Compass](https://www.mongodb.com/p
 
 #### Running with container
 
+TODO:: update this, Graal only required for native mode
+
 ##### Prerequisite: GraalVm
 
 As a prerequisite, GraalVM must be used instead of an 'official' JDK.
@@ -57,6 +59,21 @@ As a prerequisite, GraalVM must be used instead of an 'official' JDK.
 ##### Running the container
 
 #### Running "just the code"
+
+To just get the server going to see how it all works, you just need to run:
+
+`./gradlew :WebServer:Server:quarkusDev`
+
+The project is setup to run just fine without any additional configuration to serve as a demo. Please see the section
+ below on configuring the server to learn how to do so properly.
+
+**Notes:**
+
+- By design, the server will only run for 10 minutes if using the packaged keys used for jwts and ssl. This is to
+ push server operators to use their own keys for the users' safety.
+- Emails will not be sent without setting up email through configuration. At the moment, you can login without
+ verifying your email, so you should be good to so. Some user related API calls might fail due to not being able to send
+  emails.
 
 ## Configuring the server
 
