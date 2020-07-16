@@ -1,7 +1,8 @@
 package com.gjs.taskTimekeeper.baseCode.stats.processor;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
-import com.gjs.taskTimekeeper.baseCode.stats.results.Results;
+import com.gjs.taskTimekeeper.baseCode.stats.stats.Stats;
+
 import java.util.Optional;
 
 /**
@@ -9,10 +10,12 @@ import java.util.Optional;
  *
  * @param <T> The type of result this processor produces
  */
-public abstract class StatProcessor<T extends Results> {
-    /** The results of the last successful run of {@link #process(TimeManager)}. */
+public abstract class StatProcessor <T extends Stats> {
+    /**
+     * The results of the last successful run of {@link #process(TimeManager)}.
+     */
     private T results;
-
+    
     /**
      * Sets the results gotten. Returns the same results object for use in one line return
      * statements.

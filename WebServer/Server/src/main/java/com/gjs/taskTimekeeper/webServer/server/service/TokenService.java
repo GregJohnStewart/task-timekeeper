@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.service;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.ValidationException;
-import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
+import com.gjs.taskTimekeeper.webServer.server.validation.validate.PasswordValidator;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 

@@ -32,3 +32,7 @@ runningInfo:
     name: Tester Mc Testerson
     email: test@foo.bar
     phone: 222-222-2222
+
+user:
+  new:
+    autoApprove: false

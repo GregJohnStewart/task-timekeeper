@@ -8,10 +8,10 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerResponse;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.WholeTimeManagerUpdateRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -30,37 +30,29 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class WholeManagerTest extends RunningServerTest {
     private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
-
+    
     private User testUser;
     private String testUserJwt;
     private ManagerEntity testEntity;
-
+    
     @PostConstruct
-    public void setupTestUser(){
-        this.testUser = userUtils.setupTestUser(true);
-        this.testUserJwt = this.userUtils.getTestUserJwt();
+    public void setupTestUser() {
+        this.testUser = userUtils.setupTestUser(true).getUserObj();
+        this.testUserJwt = this.userUtils.getTestUserJwt(testUser);
     }
-
-    private void assertEntityEqualsResponse(ManagerEntity managerEntity, WholeTimeManagerResponse response){
+    
+    private void assertEntityEqualsResponse(ManagerEntity managerEntity, TimeManagerResponse response)
+        throws JsonProcessingException {
         assertEquals(
-                managerEntity.getLastUpdate(),
-                response.getLastUpdate()
+            managerEntity.getLastUpdate(),
+            response.getLastUpdated()
         );
         assertArrayEquals(
-                managerEntity.getTimeManagerData(),
-                response.getTimeManagerData()
-        );
-    }
-
-    private void assertValidTimeManagerData(byte[] data, TimeManager expected) throws IOException {
-        TimeManager manager = MANAGER_MAPPER.readValue(data, TimeManager.class);
-
-        assertEquals(
-                expected,
-                manager
+            managerEntity.getTimeManagerData(),
+            MANAGER_MAPPER.writeValueAsBytes(response.getTimeManagerData())
         );
     }
 
@@ -76,51 +68,51 @@ public class WholeManagerTest extends RunningServerTest {
     @Test
     public void testGetNewWholeManager() throws IOException {
         ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.testUserJwt)
-                .get("/api/timeManager/manager").then();
-
+                                                               .get("/api/timeManager/manager").then();
+    
         validatableResponse.statusCode(Response.Status.OK.getStatusCode());
-
-        WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
-        assertNull(response.getLastUpdate());
-
-
+    
+        TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
+        assertNull(response.getLastUpdated());
+    
+    
         this.testEntity = ManagerEntity.findByUserId(testUser.id);
         assertNull(this.testEntity.getLastUpdate());
-
+    
         this.assertEntityEqualsResponse(
-                this.testEntity,
-                response
+            this.testEntity,
+            response
         );
-
-        this.assertValidTimeManagerData(
-                response.getTimeManagerData(),
-                new TimeManager()
+    
+        assertEquals(
+            response.getTimeManagerData(),
+            new TimeManager()
         );
     }
 
     @Test
     public void testGetExistingWholeManager() throws IOException {
         this.setupExisting();
-
+    
         ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.testUserJwt)
-                .get("/api/timeManager/manager").then();
-
+                                                               .get("/api/timeManager/manager").then();
+    
         validatableResponse.statusCode(Response.Status.OK.getStatusCode());
-
-        WholeTimeManagerResponse response = validatableResponse.extract().body().as(WholeTimeManagerResponse.class);
-        assertNotNull(response.getLastUpdate());
-
+    
+        TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
+        assertNotNull(response.getLastUpdated());
+    
         ManagerEntity updatedEntity = ManagerEntity.findByUserId(testUser.id);
         assertNotNull(updatedEntity.getLastUpdate());
-
+    
         assertEntityEqualsResponse(
-                updatedEntity,
-                response
+            updatedEntity,
+            response
         );
-
-        assertValidTimeManagerData(
-                response.getTimeManagerData(),
-                MANAGER_MAPPER.readValue(this.testEntity.getTimeManagerData(), TimeManager.class)
+    
+        assertEquals(
+            response.getTimeManagerData(),
+            MANAGER_MAPPER.readValue(this.testEntity.getTimeManagerData(), TimeManager.class)
         );
     }
 
@@ -150,8 +142,8 @@ public class WholeManagerTest extends RunningServerTest {
         ManagerEntity previousEntity = this.testEntity;
 
         ValidatableResponse validatableResponse = given()
-                .contentType(ContentType.JSON)
-                .body(new WholeTimeManagerUpdateRequest(MANAGER_MAPPER.writeValueAsBytes(new TimeManager())))
+            .contentType(ContentType.JSON)
+            .body(new WholeTimeManagerUpdateRequest(new TimeManager()))
                 .patch("/api/timeManager/manager")
                 .then();
 

@@ -21,6 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.Date;
 
 @Path("/api/user/auth/tokenCheck")
 @RequestScoped
@@ -51,6 +52,7 @@ public class TokenCheck {
             response.setHadToken(true);
             response.setTokenSecure(ctx.isSecure());
             response.setExpired(jwt.getExpirationTime() <= StaticUtils.currentTimeInSecs());
+            response.setExpirationDate(new Date(jwt.getExpirationTime()));
         }
         return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON_TYPE).entity(response).build();
     }

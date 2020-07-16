@@ -39,3 +39,7 @@ To learn how to build this for yourself, look [here](BuildingDistrobutions.md)
 To run this with Gradle, use as with the following example:
 
 `-PappArgs=[\"--mode\",\"GUI_SWING\"]`
+
+## TODOS:
+
+- make stats processing use the new allstats processor

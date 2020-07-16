@@ -48,9 +48,23 @@ public class Home {
     public TemplateInstance load() {
         TemplateInstance instance = homeTemplate.data("title", "Home");
         instance = instance.data("serverInfo", this.serverInfoBean);
-        instance = instance.data("extraStyle", new String[]{"home.css"});
-        instance = instance.data("extraScripts", new String[]{"home.js"});
-
+        instance = instance.data("extraStyle", new String[]{
+            "lib/tempusDominus/tempusdominus-bootstrap-4.min.css",
+            "style/timekeeper.css",
+            "style/timekeeper.css",
+            "style/home.css"
+        });
+    
+        instance = instance.data("extraScripts", new String[]{
+            "lib/moment.js/moment.js",
+            "lib/tempusDominus/tempusdominus-bootstrap-4.min.js",
+            "script/timeManagement/tasks.js",
+            "script/timeManagement/periods.js",
+            "script/timeManagement/selectedPeriod.js",
+            "script/timeManagement/homeTimekeeperFunctions.js",
+            "script/home.js"
+        });
+    
         return instance;
     }
 }

@@ -25,17 +25,21 @@ public class TimeManagerTest {
 
     @Test
     public void basicsTest() {
-        TimeManager manager = new TimeManager();
-
-        TreeSet<Task> tasks = new TreeSet<>();
-
-        manager = new TimeManager(tasks);
-
-        assertEquals(tasks, manager.getTasks());
-
-        TreeSet<WorkPeriod> periods = new TreeSet<>();
-
-        manager = new TimeManager(tasks, periods);
+		assertEquals(new TimeManager(), new TimeManager());
+	
+		TimeManager manager = new TimeManager();
+	
+		manager.toString();
+	
+		TreeSet<Task> tasks = new TreeSet<>();
+	
+		manager = new TimeManager(tasks);
+	
+		assertEquals(tasks, manager.getTasks());
+	
+		TreeSet<WorkPeriod> periods = new TreeSet<>();
+	
+		manager = new TimeManager(tasks, periods);
 
         assertEquals(periods, manager.getWorkPeriods());
         manager.hashCode();

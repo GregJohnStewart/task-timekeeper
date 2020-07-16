@@ -1,16 +1,13 @@
 
+
 $( document ).ready(function() {
 	console.log("Starting home initial.");
 
 	if(userLoggedIn()){
-		console.log("Showing logged in content.");
-		$("#loggedInContent").show();
+		initTimekeeperPage();
 	} else {
-		console.log("Showing logged out content.");
-		$("#loggedOutContent").show();
-
-		document.getElementById("createAccountPassword").onchange = validatePassword;
-		document.getElementById("createAccountPasswordConfirm").onchange = validatePassword;
+		document.getElementById("createAccountPassword").onchange = function(){validatePasswordInputs(document.getElementById("createAccountPassword"), document.getElementById("createAccountPasswordConfirm"))};
+		document.getElementById("createAccountPasswordConfirm").onchange = function(){validatePasswordInputs(document.getElementById("createAccountPassword"), document.getElementById("createAccountPasswordConfirm"))};
 	}
 });
 
@@ -59,17 +56,5 @@ $("#homeCreateAccount").on("submit", function(event){
 
 	return true;
 });
-
-//TODO:: password validation check?
-function validatePassword(){
-	var pass2=document.getElementById("createAccountPassword").value;
-	var pass1=document.getElementById("createAccountPasswordConfirm").value;
-
-	if(pass1 != pass2) {
-		document.getElementById("createAccountPasswordConfirm").setCustomValidity("Passwords Don't Match");
-	} else {
-		document.getElementById("createAccountPasswordConfirm").setCustomValidity('');
-	}
-}
 
 //TODO:: username validation check

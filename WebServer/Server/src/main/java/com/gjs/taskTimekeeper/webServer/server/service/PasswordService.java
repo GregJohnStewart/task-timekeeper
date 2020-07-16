@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.WebServerException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
 import com.gjs.taskTimekeeper.webServer.server.exception.validation.PasswordValidationException;
-import com.gjs.taskTimekeeper.webServer.server.validation.PasswordValidator;
+import com.gjs.taskTimekeeper.webServer.server.validation.validate.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wildfly.common.codec.DecodeException;
@@ -38,27 +38,40 @@ public class PasswordService {
     public PasswordService(
             PasswordValidator passwordValidator
     ){
-        this.passwordValidator = passwordValidator;
-        WildFlyElytronPasswordProvider provider = WildFlyElytronPasswordProvider.getInstance();
-
-        try {
-            this.passwordFactory = PasswordFactory.getInstance(ALGORITHM, provider);
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Somehow got an exception when setting up password factory. Error: ", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String createPasswordHash(String password) throws PasswordValidationException {
-        this.passwordValidator.validateAndSanitize(password);
-
-        IteratedSaltedPasswordAlgorithmSpec iteratedAlgorithmSpec = new IteratedSaltedPasswordAlgorithmSpec(ITERATIONS, getSalt());
-        EncryptablePasswordSpec encryptableSpec = new EncryptablePasswordSpec(password.toCharArray(), iteratedAlgorithmSpec);
-
-        try {
-            BCryptPassword original = (BCryptPassword) passwordFactory.generatePassword(encryptableSpec);
-            return ModularCrypt.encodeAsString(original);
-        } catch (InvalidKeySpecException e) {
+		this.passwordValidator = passwordValidator;
+		WildFlyElytronPasswordProvider provider = WildFlyElytronPasswordProvider.getInstance();
+	
+		try {
+			this.passwordFactory = PasswordFactory.getInstance(ALGORITHM, provider);
+		} catch(NoSuchAlgorithmException e) {
+			LOGGER.error("Somehow got an exception when setting up password factory. Error: ", e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Validate/sanitizes the password given, and makes a hash out of it.
+	 *
+	 * @param password The password to hash
+	 * @return The hash for the password
+	 * @throws PasswordValidationException If the password was invalid
+	 */
+	public String createPasswordHash(String password) throws PasswordValidationException {
+		this.passwordValidator.validateAndSanitize(password);
+		
+		IteratedSaltedPasswordAlgorithmSpec iteratedAlgorithmSpec = new IteratedSaltedPasswordAlgorithmSpec(
+			ITERATIONS,
+			getSalt()
+		);
+		EncryptablePasswordSpec encryptableSpec = new EncryptablePasswordSpec(
+			password.toCharArray(),
+			iteratedAlgorithmSpec
+		);
+		
+		try {
+			BCryptPassword original = (BCryptPassword)passwordFactory.generatePassword(encryptableSpec);
+			return ModularCrypt.encodeAsString(original);
+		} catch(InvalidKeySpecException e) {
             LOGGER.error("Somehow got an invalid key spec. This should not happen. Error: ", e);
             throw new WebServerException(e);
         }

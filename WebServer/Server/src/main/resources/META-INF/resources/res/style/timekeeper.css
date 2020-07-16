@@ -1,0 +1,40 @@
+.numberCol {
+	width: 45px;
+}
+
+.taskActionsCol {
+	width: 109px;
+	text-align: center;
+}
+
+.timespanActionsCol {
+	width: 120px;
+	text-align: center;
+}
+
+.periodActionsCol {
+	width: 105px;
+	text-align: center;
+}
+
+.selectedIcon {
+	opacity: 0;
+}
+
+.dateTimeCol {
+	min-width: 170px;
+}
+
+.durationCol {
+	text-align: center;
+	width: 80px;
+}
+
+.completeCol {
+	width: 85px;
+	text-align: center;
+}
+
+.taskStatsTable {
+	width: 100%;
+}

@@ -33,10 +33,14 @@ public final class TimeParser {
         TIME
     }
 
-    /** The default date/time formatter to use in parsing and formatting */
+    /**
+     * The default date/time formatter to use in parsing and formatting
+     */
     private static DateTimeFormatter DEFAULT_OUTPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("d/M h:m a y");
-    /** The list of supported formatters */
+        DateTimeFormatter.ofPattern("d/M h:mm a y");
+    /**
+     * The list of supported formatters
+     */
     private static final Map<DateTimeFormatter, DateTimeParsedType> FORMATTERS = new HashMap<>();
     /**
      * A map of special date/time strings and the methods to get them, for processing those special

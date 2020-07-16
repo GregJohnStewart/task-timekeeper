@@ -3,7 +3,9 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
@@ -35,12 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 @Execution(ExecutionMode.SAME_THREAD)
 public class UserRegistrationTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistrationTest.class);
-
-    private static final String USER_EMAIL = "test@testing.tst";
+    
     public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
 
     @Inject
@@ -51,20 +52,9 @@ public class UserRegistrationTest extends RunningServerTest {
         mailbox.clear();
     }
 
-    private UserRegistrationRequest getTestRequest() {
-        User testUser = this.userUtils.setupTestUser(false);
-
-        return new UserRegistrationRequest(
-                testUser.getUsername(),
-                testUser.getEmail(),
-                this.userUtils.getTestUserPassword()
-        );
-    }
-
     private void assertEmailNotSent(String email) {
         List<Mail> sent = mailbox.getMessagesSentTo(email);
         assertNull(sent);
-//        assertTrue(sent.isEmpty());
     }
 
     private void assertEmailSent(String email) {
@@ -96,15 +86,16 @@ public class UserRegistrationTest extends RunningServerTest {
     @Test
     public void registerFirstUserTest() {
         this.cleanupDatabaseAndMail();
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+    
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
         Response response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body(registrationRequest)
-                .post(USER_REGISTRATION_ENDPOINT);
+            .when()
+            .contentType(ContentType.JSON)
+            .body(registrationRequest)
+            .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.CREATED.getStatusCode());
-
+    
         UserRegistrationResponse registrationResponse = response.as(UserRegistrationResponse.class);
 
         LOGGER.debug("User registration response: {}", registrationResponse);
@@ -127,13 +118,13 @@ public class UserRegistrationTest extends RunningServerTest {
     public void registerSecondUserTest() {
         User firstUser = new User();
         firstUser.persist();
-
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+    
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
         Response response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body(registrationRequest)
-                .post(USER_REGISTRATION_ENDPOINT);
+            .when()
+            .contentType(ContentType.JSON)
+            .body(registrationRequest)
+            .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.CREATED.getStatusCode());
 
@@ -161,8 +152,8 @@ public class UserRegistrationTest extends RunningServerTest {
         User firstUser = new User();
         firstUser.setUsername(username);
         firstUser.persist();
-
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+    
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
         registrationRequest.setUsername(username);
 
         Response response = given()
@@ -180,7 +171,7 @@ public class UserRegistrationTest extends RunningServerTest {
     @ParameterizedTest
     @MethodSource("badUserNames")
     public void registerUserBadUsernameTest(String badUsername, String expectedError) {
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
 
         registrationRequest.setUsername(badUsername);
 
@@ -214,7 +205,7 @@ public class UserRegistrationTest extends RunningServerTest {
 
     @Test
     public void registerUserBadPasswordTest() {
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
 
         registrationRequest.setPlainPassword("");
 
@@ -231,7 +222,7 @@ public class UserRegistrationTest extends RunningServerTest {
 
     @Test
     public void registerUserBadEmailTest() {
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(this.userUtils.setupTestUser());
 
         registrationRequest.setEmail("");
 
@@ -248,16 +239,18 @@ public class UserRegistrationTest extends RunningServerTest {
 
     @Test
     public void registerUserDuplicateEmailTest() {
-        User firstUser = this.userUtils.setupTestUser(true);
-
-        UserRegistrationRequest registrationRequest = this.getTestRequest();
-        registrationRequest.setEmail(firstUser.getEmail());
-
+        TestUser firstTestUser = this.userUtils.setupTestUser(true);
+        User firstUser = firstTestUser.getUserObj();
+    
+        TestUser secondUser = this.userUtils.setupTestUser().setEmail(firstTestUser.getEmail());
+        UserRegistrationRequest registrationRequest = TestRestUtils.getUserRegistrationRequest(secondUser);
+        registrationRequest.setEmail(firstTestUser.getEmail());
+    
         Response response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body(registrationRequest)
-                .post(USER_REGISTRATION_ENDPOINT);
+            .when()
+            .contentType(ContentType.JSON)
+            .body(registrationRequest)
+            .post(USER_REGISTRATION_ENDPOINT);
         response.then()
                 .statusCode(javax.ws.rs.core.Response.Status.BAD_REQUEST.getStatusCode());
         assertErrorMessage("Email already exists.", response.asString());

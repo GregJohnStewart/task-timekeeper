@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Path("/api/user/info/")
 @RequestScoped
-public class UserInfo{
+public class UserInfo {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserInfo.class);
 	
 	@Inject
@@ -67,6 +67,7 @@ public class UserInfo{
 	@Tags({@Tag(name = "User")})
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"ADMIN", "REGULAR"})
+	@Path("/self")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUsersInfo(
 		@Context
@@ -104,7 +105,7 @@ public class UserInfo{
 		description = "User was not authorized to get the info on another user",
 		content = @Content(mediaType = "text/plain")
 	)
-	@Tags({@Tag(name = "User")})
+	@Tags({@Tag(name = "User"), @Tag(name = "Admin Related")})
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"ADMIN"})
 	@Path("/{userId}")
@@ -114,12 +115,12 @@ public class UserInfo{
 			String userId,
 		@Context
 			SecurityContext ctx
-	){
+	) {
 		LOGGER.info("Got {} as a path parameter.", userId);
 		ObjectId userObjectId = new ObjectId(userId);
 		
 		User user = User.findById(userObjectId);
-		if(user == null){
+		if(user == null) {
 			throw new EntityNotFoundException("User requested could not be found.");
 		}
 		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(user.toUserInfo()).build();
@@ -152,19 +153,18 @@ public class UserInfo{
 		description = "Bad request given. Data given could not pass validation. (no user at given id, etc.)",
 		content = @Content(mediaType = "text/plain")
 	)
-	@Tags({@Tag(name = "User")})
+	@Tags({@Tag(name = "User"), @Tag(name = "Admin Related")})
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"ADMIN"})
-	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsersInfo(
 		@Context
 			SecurityContext ctx
-	){
+	) {
 		List<User> users = User.listAll();
 		List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
 		
-		for(User curUser : users){
+		for(User curUser : users) {
 			userInfos.add(curUser.toUserInfo());
 		}
 		

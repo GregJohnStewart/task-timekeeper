@@ -252,6 +252,10 @@ Note that the command is not case sensitive.
 
 Completes remaining timespans in selected period, giving them an end datetime of now (when the command is run). If uncompleted timespan started in the future, gives that span and and datetime of one second after start.
 
+You can pass the index of the timespan to specify a single timespan to complete:
+
+`-s completeSpans -i 1`
+
 #### `newSpan`
 
 `-s newSpan -n Task\ Name`

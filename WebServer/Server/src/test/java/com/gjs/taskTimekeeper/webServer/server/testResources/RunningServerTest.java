@@ -27,11 +27,11 @@ public abstract class RunningServerTest extends WebServerTest {
     }
 
     public void cleanup(){
-
-    }
+	
+	}
 
     public void cleanupDatabaseAndMail(){
-        this.mailbox.clear();
-        TestMongo.cleanMongo();
+		this.mailbox.clear();
+		TestResourceLifecycleManager.cleanMongo();
     }
 }

@@ -3,7 +3,9 @@ package com.gjs.taskTimekeeper.webServer.server.ui;
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.ServerWebUiTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
+import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import io.quarkus.mailer.Mail;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -17,20 +19,20 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
-import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebHelpers.clearForm;
+import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.resetForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
-class HomeTest extends ServerWebUiTest{
+@QuarkusTestResource(TestResourceLifecycleManager.class)
+class HomeTest extends ServerWebUiTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HomeTest.class);
 	
-	HomeTest(ServerInfoBean infoBean){
-		super(infoBean);
+	HomeTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
+		super(infoBean, wrapper);
 	}
 	
 	@Test
-	public void basicLoadTest(){
+	public void basicLoadTest() {
 		LOGGER.info("Loading the home page.");
 		this.wrapper.navigateTo("");
 		
@@ -57,6 +59,7 @@ class HomeTest extends ServerWebUiTest{
 		//doesn't submit on no input
 		{
 			submitFormAndAssertElementsInvalid(
+				"id",
 				(RemoteWebElement)createAccountForm,
 				"createAccountEmail",
 				"createAccountUsername",
@@ -64,16 +67,19 @@ class HomeTest extends ServerWebUiTest{
 				"createAccountPasswordConfirm"
 			);
 		}
-		clearForm(createAccountForm);
+		resetForm(createAccountForm);
 		
+		TestUser testUser = this.userUtils.setupTestUser();
 		//doesn't submit with fine input, except for bad password confirm
 		{
-			createAccountEmailInput.sendKeys(this.userUtils.getTestUserEmail());
-			createAccountUsernameInput.sendKeys(this.userUtils.getTestUserUsername());
-			createAccountPasswordInput.sendKeys(this.userUtils.getTestUserPassword());
-			createAccountPasswordConfirmInput.sendKeys(this.userUtils.getTestUserPassword() + "hello world");
+			
+			createAccountEmailInput.sendKeys(testUser.getEmail());
+			createAccountUsernameInput.sendKeys(testUser.getUsername());
+			createAccountPasswordInput.sendKeys(testUser.getPlainPassword());
+			createAccountPasswordConfirmInput.sendKeys(testUser.getPlainPassword() + "hello world");
 			
 			submitFormAndAssertElementsInvalid(
+				"id",
 				(RemoteWebElement)createAccountForm,
 				"createAccountPasswordConfirm"
 			);
@@ -82,15 +88,15 @@ class HomeTest extends ServerWebUiTest{
 		//submits, have new user, got email
 		{
 			createAccountPasswordConfirmInput.clear();
-			createAccountPasswordConfirmInput.sendKeys(this.userUtils.getTestUserPassword());
+			createAccountPasswordConfirmInput.sendKeys(testUser.getPlainPassword());
 			
 			createAccountSubmitButton.click();
 			
 			this.wrapper.waitForElement(By.id("createAccountSuccessMessage"));
 			
-			User testUser = User.findByEmail(this.userUtils.getTestUserEmail());
+			User user = User.findByEmail(testUser.getEmail());
 			
-			List<Mail> sent = mailbox.getMessagesSentTo(testUser.getEmail());
+			List<Mail> sent = mailbox.getMessagesSentTo(user.getEmail());
 			assertEquals(1, sent.size());
 			Mail actual = sent.get(0);
 			
@@ -102,6 +108,4 @@ class HomeTest extends ServerWebUiTest{
 		
 		LOGGER.info("Done.");
 	}
-	
-	//TODO:: home login form
 }

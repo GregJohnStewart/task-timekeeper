@@ -4,8 +4,8 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLocked
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLoginRequest;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLoginResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.auth.UserLoginRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.user.auth.UserLoginResponse;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
@@ -29,22 +29,27 @@ import java.util.Date;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserLogin {
-
+    
     private final PasswordService passwordService;
     private final JwtService jwtService;
-
+    
     private long numLoggedIn = 0;
-
-    public UserLogin(PasswordService passwordService, JwtService jwtService) {
+    
+    public UserLogin(
+        PasswordService passwordService,
+        JwtService jwtService
+    ) {
         this.passwordService = passwordService;
         this.jwtService = jwtService;
     }
-
+    
     @POST
     @Counted(name = "numRequests", description = "How many user login requests handled.")
-    @Timed(name = "requestTimer", description = "A measure of how long it takes to validate user credentials and make a token to return.", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "requestTimer",
+           description = "A measure of how long it takes to validate user credentials and make a token to return.",
+           unit = MetricUnits.MILLISECONDS)
     @Operation(
-            summary = "Logs a user in, returning a token to interact with the api."
+        summary = "Logs a user in, returning a token to interact with the api."
     )
     @APIResponse(
             responseCode = "202",
@@ -74,7 +79,8 @@ public class UserLogin {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response loginUser(UserLoginRequest loginRequest){
         User user = User.findByEmailOrUsername(loginRequest.getUser());
-
+        
+        //TODO:: use canLogin() method to aggregate
         if(user.isLocked()){
             throw new UserLockedException("User account has been locked. Please contact admin.");
         }

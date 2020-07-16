@@ -1,0 +1,9 @@
+{#include email/textEmailTemplate}
+{#textBody}
+    Your account on the task timekeeper server has been changed.<br/>
+
+    Here's what changed: your {change}<br/>
+
+    And some details: {details}
+{/textBody}
+{/include}

@@ -2,7 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.service;
 
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
-import com.gjs.taskTimekeeper.webServer.server.testResources.TestMongo;
+import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-@QuarkusTestResource(TestMongo.class)
+@QuarkusTestResource(TestResourceLifecycleManager.class)
 public class JwtServiceTest extends RunningServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtServiceTest.class);
 
@@ -30,8 +30,8 @@ public class JwtServiceTest extends RunningServerTest {
 
     @BeforeEach
     public void setTestUser(){
-        this.testUser = this.userUtils.setupTestUser(true);
-        this.testUser.setNumLogins(1L);
+        this.testUser = this.userUtils.setupTestUser(true).getUserObj();
+		this.testUser.setNumLogins(1L);
     }
 
     private void assertProperToken(String token){
