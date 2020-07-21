@@ -69,7 +69,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
@@ -86,7 +86,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
@@ -137,7 +137,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
