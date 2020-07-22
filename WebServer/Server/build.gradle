@@ -64,6 +64,7 @@ dependencies {
     testImplementation 'org.jsoup:jsoup:1.13.1'
     testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
     testCompile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.0.0'
+    testCompile 'com.deque:axe-selenium:3.0'
 
     nativeTestImplementation 'io.quarkus:quarkus-junit5'
     nativeTestImplementation 'io.rest-assured:rest-assured'
@@ -72,7 +73,7 @@ dependencies {
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.459'
+version = '1.0.0.467'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";

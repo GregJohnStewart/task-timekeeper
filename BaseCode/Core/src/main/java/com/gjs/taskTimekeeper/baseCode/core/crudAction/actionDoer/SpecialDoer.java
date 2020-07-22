@@ -7,6 +7,7 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
+import com.gjs.taskTimekeeper.baseCode.core.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,8 @@ public class SpecialDoer extends ActionDoer {
 		}
 		case "newspan":
 			return this.completeOldSpansAndAddNewInSelected(config);
+		case "clearallmanagerdata":
+			return this.clearAllData();
 		case "selectnewest": {
 			if(manager.getWorkPeriods().isEmpty()) {
 				LOGGER.warn("No periods to select.");
@@ -193,5 +196,31 @@ public class SpecialDoer extends ActionDoer {
 		selected.addTimespan(new Timespan(task, LocalDateTime.now()));
 		outputter.normPrintln(DEFAULT, "Added new timespan after finishing the existing ones.");
 		return true;
+	}
+	
+	private boolean clearAllData() {
+		LOGGER.info("Clearing ALL data from manager.");
+		outputter.normPrintln(DEFAULT, "Clearing ALL data from manager.");
+		boolean output = false;
+		
+		if(!this.manager.getWorkPeriods().isEmpty()) {
+			outputter.normPrintln(
+				OutputLevel.VERBOSE,
+				"Removing " + this.manager.getWorkPeriods().size() + " work periods."
+			);
+			output = true;
+			this.manager.getWorkPeriods().removeIf(WorkPeriod->{
+				return true;
+			});
+		}
+		if(!this.manager.getTasks().isEmpty()) {
+			output = true;
+			outputter.normPrintln(OutputLevel.VERBOSE, "Removing " + this.manager.getTasks().size() + " tasks.");
+			this.manager.getTasks().removeIf(Task->{
+				return true;
+			});
+		}
+		
+		return output;
 	}
 }

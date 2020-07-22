@@ -162,3 +162,34 @@ function getAttStringFromAttEditTable(attTableContent){
 
 	return attributes;
 }
+
+function clearAllData(){
+	console.log("Clearing ALL manager data.");
+	markScreenAsLoading();
+
+	if(!confirm("Are you sure you want to clear ALL your data?\nThis cannot be undone!")){
+		console.log("User canceled clearing the data.");
+		doneLoading();
+		return false;
+	}
+	doTimeManagerRestCall({
+		spinnerContainer: null,
+		url: "/api/timeManager/manager/action",
+		method: 'PATCH',
+		data: {
+			actionConfig: {
+				specialAction: "clearAllManagerData"
+			}
+		},
+		done: function(data){
+			console.log("Successful clear all data request: " + JSON.stringify(data));
+			setTimekeeperDataFromResponse(data);
+			refreshPageData();
+		},
+		fail: function(data){
+			console.warn("Bad response from clearing all data: " + JSON.stringify(data));
+			doneLoading();
+			addMessage("danger", data.responseJSON.errOut);
+		},
+	});
+}
