@@ -6,9 +6,11 @@ var contentSpinner = new Spinner(spinnerOpts);
 
 var selectedPeriodTab = $("#selectedPeriodTab");
 var periodsTab = $("#periodsTab");
+var lastDataLoadSpan = $("#lastDataLoadSpan");
 
 function setTimekeeperDataFromResponse(data){
 	timekeeperData = data;
+	lastDataLoadSpan.text(moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
 }
 
 function getManagerData(){
