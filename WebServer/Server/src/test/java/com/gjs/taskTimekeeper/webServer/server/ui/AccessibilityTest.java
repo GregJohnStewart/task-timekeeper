@@ -40,7 +40,7 @@ public class AccessibilityTest extends ServerWebUiTest {
 		);
 	}
 	
-	@ParameterizedTest
+	@ParameterizedTest(name = "[{index}] {0} loggedIn: {1}")
 	@MethodSource("args")
 	public void wcagTest(String page, boolean loggedIn) {
 		if(loggedIn) {

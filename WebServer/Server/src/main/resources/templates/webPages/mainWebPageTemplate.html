@@ -10,6 +10,7 @@
 	<title>{title} - Task Timekeeper</title>
 
 	<!-- CSS -->
+	<link rel="stylesheet" href="/res/style/bootstrap-adjust.css">
 	<link rel="stylesheet" href="/res/lib/bootstrap/4.4.1/css/minty.min.css">
 	<link rel="stylesheet" href="/res/lib/fontawesome/fontawesome-free-5.13.0-web/css/all.css">
 	<link rel="stylesheet" href="/res/lib/spin.js/spin.css">
@@ -22,8 +23,8 @@
 	</style>
 </head>
 <body>
-<div id="navContainer" class="container">
-	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div id="navContainer" class="container" role="navigation">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav">
 		<a class="navbar-brand" href="/">
 			<img src="/res/media/logo.svg" alt="Task Timekeeper Logo">
 			{#if {serverInfo.serverName.isPresent()}}
@@ -51,10 +52,10 @@
 									<label for="navbarLoginPassword">Password:</label>
 									<input type="password" class="form-control loginPassword" id="navbarLoginPassword" placeholder="password" name="password" required>
 								</div>
-								<div class="form-group">
+								<div class="form-group" role="group">
 									<div class="form-check">
-										<input type="checkbox" class="form-check-input loginStayLoggedIn" id="navbarLoginStayLoggedIn" name="stayLoggedIn">
-										<label class="form-check-label" for="navbarLoginStayLoggedIn">
+										<input type="checkbox" class="form-check-input loginStayLoggedIn" id="navbarLoginStayLoggedIn" name="stayLoggedIn" aria-labelledby="navbarLoginStayLoggedInLabel">
+										<label class="form-check-label" for="navbarLoginStayLoggedIn" id="navbarLoginStayLoggedInLabel" aria-label="navbarLoginStayLoggedIn">
 											Remember me
 										</label>
 									</div>
@@ -102,12 +103,14 @@
 
 	</div>
 
-	{#insert pageContent}<h1>No body!</h1>{/}
+	<main role="main">
+		{#insert pageContent}<h1>No body!</h1>{/}
+	</main>
 
 	<hr/>
-	<div id="footer" class="row">
+	<footer id="footer" class="row" role="contentinfo">
 		<div class="col-sm-4">
-			<h5>Task Timekeeper Server</h5>
+			<h1 class="footer-header">Task Timekeeper Server</h1>
 			<p>
 				&copy; 2020 <a href="https://gjstewart.net" target="_blank">Greg Stewart</a><br/>
 				Released under the <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache 2.0
@@ -116,24 +119,26 @@
 			</p>
 		</div>
 		<div id="serverInfo" class="col-sm-4">
-			<h5>
+			<h1 class="footer-header">
 				Run by:<br/>
 				{#if {serverInfo.orgUrl.isPresent()}}
 				<a href="{serverInfo.orgUrl.get()}" target="_blank">{serverInfo.organization}</a>
 				{#else}
 				{serverInfo.organization}
 				{/if}
-			</h5>
+			</h1>
 			{#if {serverInfo.contactInfo.name.isPresent()} || {serverInfo.contactInfo.email.isPresent()} ||
 			{serverInfo.contactInfo.phone.isPresent()}}
-			<h5>
+			<h2>
 				Contact information:
-			</h5>
+			</h2>
 			<address>
 				{#if {serverInfo.contactInfo.name.isPresent()}}
-				<h6>
-					{serverInfo.contactInfo.name.get()}
-				</h6>
+				<p>
+					<strong>
+						{serverInfo.contactInfo.name.get()}
+					</strong>
+				</p>
 				{/if}
 
 				{#if {serverInfo.contactInfo.email.isPresent()} || {serverInfo.contactInfo.phone.isPresent()}}
@@ -162,7 +167,7 @@
 			</p>
 			<!-- TODO:: legal disclaimer, etc. -->
 		</div>
-	</div>
+	</footer>
 </div>
 
 <script src="/res/lib/jquery/3.4.1/jquery.min.js"></script>
