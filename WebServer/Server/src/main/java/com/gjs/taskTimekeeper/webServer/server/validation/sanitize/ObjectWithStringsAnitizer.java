@@ -19,7 +19,7 @@ public class ObjectWithStringsAnitizer extends Anitizer<Object> {
         if(object == null) {
             return object;
         }
-        
+    
         if(object instanceof String) {
             object = this.htmlAnitizer.anitize((String)object, operation);
         } else {
@@ -29,7 +29,7 @@ public class ObjectWithStringsAnitizer extends Anitizer<Object> {
                 if(t == String.class) {
                     field.setAccessible(true);
                     String orig = null;
-                    
+                
                     try {
                         orig = (String)field.get(object);
                     } catch(IllegalAccessException e) {

@@ -70,20 +70,5 @@ public class AllStatsSanitizer implements Sanitizer<AllStats> {
 				return entry.getValue();
 			}
 		));
-		
-		//
-		//			map.forEach((Task task, Object data)->{
-		//			if(sanitizedTasks.contains(task)) {
-		//				return;
-		//			}
-		//			sanitizedTasks.add(task);
-		//			taskAnitizer.sanitize(task);
-		//
-		//			if(data instanceof String) {
-		//				map.put(task, (T)htmlAnitizer.sanitize((String)data));
-		//			} else if(!ClassUtils.isPrimitiveWrapper(data.getClass())) {
-		//
-		//			}
-		//		});
 	}
 }
