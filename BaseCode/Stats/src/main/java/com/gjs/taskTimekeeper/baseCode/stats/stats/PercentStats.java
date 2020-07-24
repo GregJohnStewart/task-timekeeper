@@ -1,12 +1,12 @@
 package com.gjs.taskTimekeeper.baseCode.stats.stats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Describes a percentage based result.
@@ -15,10 +15,11 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @param <T> The type of object to use for the percent.
  */
+@Data
 public class PercentStats <T> extends Stats {
-    private ConcurrentMap<T, Double> percentages = new ConcurrentHashMap<>();
-    private ConcurrentMap<T, String> valueStrings = new ConcurrentHashMap<>();
-    private ConcurrentMap<T, Number> values = new ConcurrentHashMap<>();
+    private Map<T, Double> percentages = new ConcurrentHashMap<>();
+    private Map<T, String> valueStrings = new ConcurrentHashMap<>();
+    private Map<T, Number> values = new ConcurrentHashMap<>();
     
     /**
      * Base constructor. No values added.

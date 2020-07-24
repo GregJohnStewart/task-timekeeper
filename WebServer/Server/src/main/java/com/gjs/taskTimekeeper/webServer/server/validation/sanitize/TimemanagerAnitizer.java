@@ -2,28 +2,23 @@ package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class TimemanagerAnitizer extends Anitizer<TimeManager> {
 	@Inject
-	HTMLAnitizer htmlAnitizer;
+	TaskAnitizer taskAnitizer;
 	
-	private Map<String, String> anitizeAtts(Map<String, String> atts, AnitizeOp op) {
-		if(atts == null) {
-			return null;
-		}
-		return atts.entrySet().stream().collect(Collectors.toMap(
-			entry->htmlAnitizer.anitize(entry.getKey(), op),
-			entry->htmlAnitizer.anitize(entry.getValue(), op)
-		));
-	}
+	@Inject
+	StringMapAnitizer stringMapAnitizer;
+	
+	@Inject
+	HTMLAnitizer htmlAnitizer;
 	
 	@Override
 	public TimeManager anitize(
@@ -35,14 +30,17 @@ public class TimemanagerAnitizer extends Anitizer<TimeManager> {
 		}
 		
 		for(Task task : manager.getTasks()) {
-			task.setName(new Name(this.htmlAnitizer.anitize(task.getName().getName(), op)));
-			task.setAttributes(this.anitizeAtts(task.getAttributes(), op));
+			taskAnitizer.anitize(task, op);
 		}
 		
 		for(WorkPeriod period : manager.getWorkPeriods()) {
 			period.setAttributes(
-				this.anitizeAtts(period.getAttributes(), op)
+				this.stringMapAnitizer.anitize(period.getAttributes(), op)
 			);
+			
+			for(Timespan timespan : period.getTimespans()) {
+				timespan.setTaskName(new Name(htmlAnitizer.anitize(timespan.getTaskName().getName(), op)));
+			}
 		}
 		
 		return manager;
