@@ -25,6 +25,10 @@ class TimemanagerActionDeSanitizerTest extends RunningServerTest {
 		return new Object[][]{
 			new Object[]{null, null},
 			new Object[]{
+				new TimeManagerActionRequest(new ActionConfig(), 0),
+				new TimeManagerActionRequest(new ActionConfig(), 0)
+			},
+			new Object[]{
 				new TimeManagerActionRequest(
 					new ActionConfig()
 						.setSpecialAction("hello")
