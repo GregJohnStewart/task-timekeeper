@@ -25,13 +25,23 @@ public class TimeManagerActionDeSanitizer implements DeSanitizer<TimeManagerActi
 		}
 		
 		Field[] fields = config.getClass().getDeclaredFields();
-		for(Field f : fields) {
-			Class t = f.getType();
+		for(Field field : fields) {
+			Class t = field.getType();
 			if(t == String.class) {
+				field.setAccessible(true);
+				String orig = null;
+				
 				try {
-					f.set(f, this.htmlAnitizer.deSanitize((String)f.get(config)));
+					orig = (String)field.get(config);
 				} catch(IllegalAccessException e) {
-					LOGGER.error("Failed to get/set field {} in action request config.", f);
+					LOGGER.error("Failed to get field {} in action request config.", field, e);
+					continue;
+				}
+				try {
+					field.set(config, this.htmlAnitizer.deSanitize(orig));
+				} catch(IllegalAccessException | IllegalArgumentException e) {
+					LOGGER.error("Failed to set field {} in action request config.", field, e);
+					continue;
 				}
 			}
 		}
@@ -39,6 +49,9 @@ public class TimeManagerActionDeSanitizer implements DeSanitizer<TimeManagerActi
 	
 	@Override
 	public TimeManagerActionRequest deSanitize(TimeManagerActionRequest request) {
+		if(request == null) {
+			return null;
+		}
 		deSanitizeConfig(request.getActionConfig());
 		
 		return request;

@@ -7,10 +7,13 @@ var contentSpinner = new Spinner(spinnerOpts);
 var selectedPeriodTab = $("#selectedPeriodTab");
 var periodsTab = $("#periodsTab");
 var lastDataLoadSpan = $("#lastDataLoadSpan");
+var lastDataChangeSpan = $("#lastDataChangeSpan");
 
 function setTimekeeperDataFromResponse(data){
+	console.log("Got new manager data.");
 	timekeeperData = data;
 	lastDataLoadSpan.text(moment(new Date()).format("YYYY-MM-DD HH:mm:ss"));
+	lastDataChangeSpan.text(moment(new Date(data.lastUpdated)).format("YYYY-MM-DD HH:mm:ss"));
 }
 
 function getManagerData(){

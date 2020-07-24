@@ -20,11 +20,22 @@
 					</button>
 					<br/>
 					<br/>
-					<p>
-						<strong>
-							Last page data load: <span id="lastDataLoadSpan"></span>
-						</strong>
-					</p>
+					<table>
+						<tr>
+							<th class="text-right">
+								Last page data load:
+							</th>
+							<td class="text-left" id="lastDataLoadSpan">
+							</td>
+						</tr>
+						<tr>
+							<th class="text-right">
+								Last data change:
+							</th>
+							<td id="lastDataChangeSpan" class="text-left">
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -33,22 +44,22 @@
 	<div class="card">
 		<div class="card-header">
 			<ul class="nav nav-tabs card-header-tabs" id="mainTab" role="tablist">
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">
 						<i class="fas fa-user-clock fa-fw"></i> Selected Period
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">
 						<i class="fas fa-business-time fa-fw"></i> Work Periods
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">
 						<i class="fas fa-tasks fa-fw"></i> Tasks
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">
 						<i class="fas fa-chart-pie fa-fw"></i> Stats
 					</a>
