@@ -11,18 +11,20 @@ import javax.inject.Inject;
  * TODO:: test
  */
 @ApplicationScoped
-public class TimeManagerActionDeSanitizer implements DeSanitizer<TimeManagerActionRequest> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TimeManagerActionDeSanitizer.class);
+public class TimeManagerActionAnitizer extends Anitizer<TimeManagerActionRequest> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TimeManagerActionAnitizer.class);
 	
 	@Inject
 	ObjectWithStringsAnitizer objectWithStringsAnitizer;
 	
 	@Override
-	public TimeManagerActionRequest deSanitize(TimeManagerActionRequest request) {
+	public TimeManagerActionRequest anitize(
+		TimeManagerActionRequest request, AnitizeOp operation
+	) {
 		if(request == null) {
 			return null;
 		}
-		this.objectWithStringsAnitizer.deSanitize(request.getActionConfig());
+		this.objectWithStringsAnitizer.anitize(request.getActionConfig(), operation);
 		
 		return request;
 	}

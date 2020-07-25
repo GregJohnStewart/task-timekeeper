@@ -1,5 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -7,13 +8,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
-class HTMLAnitizerTest extends AnitizerTest<String> {
+class TaskAnitizerTest extends AnitizerTest<Task> {
 	
-	public HTMLAnitizerTest(HTMLAnitizer anitizer) {
+	public TaskAnitizerTest(TaskAnitizer anitizer) {
 		super(anitizer);
 	}
 	
@@ -24,31 +26,29 @@ class HTMLAnitizerTest extends AnitizerTest<String> {
 				null
 			),
 			Arguments.of(
-				"hello world",
-				"hello world"
+				new Task("task"),
+				new Task("task")
 			),
 			Arguments.of(
-				"<hello world>",
-				"&lt;hello world&gt;"
+				new Task("<task>"),
+				new Task("&lt;task&gt;")
 			),
 			Arguments.of(
-				"&lt;hello world&gt;",
-				"&amp;lt;hello world&amp;gt;"
-			),
-			Arguments.of(
-				"& lt;hello world& gt;",
-				"&amp; lt;hello world&amp; gt;"
-			),
-			Arguments.of(
-				"\"hello world\"",
-				"&quot;hello world&quot;"
+				new Task("<task>", new HashMap<String, String>() {{
+					put("<hello>", "<world>");
+					put("<some>", "<BODY>");
+				}}),
+				new Task("&lt;task&gt;", new HashMap<String, String>() {{
+					put("&lt;hello&gt;", "&lt;world&gt;");
+					put("&lt;some&gt;", "&lt;BODY&gt;");
+				}})
 			)
 		);
 	}
 	
 	@ParameterizedTest
 	@MethodSource("args")
-	public void testHtmlSanitizer(String given, String expectedSanitized) {
+	public void testStringMapAnitizer(Task given, Task expectedSanitized) {
 		this.testAnitize(given, expectedSanitized);
 	}
 }

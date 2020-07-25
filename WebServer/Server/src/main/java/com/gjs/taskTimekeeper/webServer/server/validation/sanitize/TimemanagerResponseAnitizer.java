@@ -1,13 +1,16 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
+import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Set;
+import java.util.TreeSet;
 
 @ApplicationScoped
-public class TimemanagerResponseSanitizer implements Sanitizer<TimeManagerResponse> {
+public class TimemanagerResponseAnitizer extends Anitizer<TimeManagerResponse> {
 	@Inject
 	HTMLAnitizer htmlAnitizer;
 	
@@ -15,12 +18,24 @@ public class TimemanagerResponseSanitizer implements Sanitizer<TimeManagerRespon
 	TimemanagerAnitizer timemanagerAnitizer;
 	
 	@Inject
-	AllStatsSanitizer allStatsSanitizer;
+	AllStatsAnitizer allStatsSanitizer;
 	
 	@Override
-	public TimeManagerResponse sanitize(TimeManagerResponse response) {
+	public TimeManagerResponse anitize(
+		TimeManagerResponse response, AnitizeOp operation
+	) {
+		if(response == null) {
+			return response;
+		}
+		
 		this.timemanagerAnitizer.sanitize(response.getTimeManagerData());
-		this.allStatsSanitizer.sanitize(response.getStats(), response.getTimeManagerData().getTasks());
+		
+		Set<Task> sanitizedTasks = new TreeSet<>();
+		if(response.getTimeManagerData() != null) {
+			sanitizedTasks.addAll(response.getTimeManagerData().getTasks());
+		}
+		
+		this.allStatsSanitizer.anitize(response.getStats(), operation, sanitizedTasks);
 		
 		if(response instanceof TimeManagerActionResponse) {
 			((TimeManagerActionResponse)response).setRegOut(htmlAnitizer.sanitize(((TimeManagerActionResponse)response).getRegOut()));

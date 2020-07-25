@@ -5,7 +5,7 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerAnitizer;
-import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
@@ -54,7 +54,7 @@ public class WholeManager {
 	JsonWebToken jwt;
 	
 	@Inject
-	TimemanagerResponseSanitizer responseSanitizer;
+	TimemanagerResponseAnitizer responseSanitizer;
 	
 	@Inject
 	TimemanagerAnitizer timemanagerAnitizer;

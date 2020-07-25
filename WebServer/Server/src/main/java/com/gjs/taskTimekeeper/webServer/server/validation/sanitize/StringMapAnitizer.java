@@ -25,14 +25,4 @@ public class StringMapAnitizer extends Anitizer<Map<String, String>> {
 			entry->htmlAnitizer.anitize(entry.getValue(), operation)
 		));
 	}
-	
-	@Override
-	public Map<String, String> deSanitize(Map<String, String> object) {
-		return this.anitize(object, AnitizeOp.DESANITIZE);
-	}
-	
-	@Override
-	public Map<String, String> sanitize(Map<String, String> object) {
-		return this.anitize(object, AnitizeOp.SANITIZE);
-	}
 }

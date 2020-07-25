@@ -48,14 +48,4 @@ public class ObjectWithStringsAnitizer extends Anitizer<Object> {
         
         return object;
     }
-    
-    @Override
-    public Object deSanitize(Object object) {
-        return this.anitize(object, AnitizeOp.DESANITIZE);
-    }
-    
-    @Override
-    public Object sanitize(Object object) {
-        return this.anitize(object, AnitizeOp.SANITIZE);
-    }
 }

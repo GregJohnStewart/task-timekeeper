@@ -28,14 +28,4 @@ public class TaskAnitizer extends Anitizer<Task> {
         
         return task;
     }
-    
-    @Override
-    public Task deSanitize(Task object) {
-        return this.anitize(object, AnitizeOp.DESANITIZE);
-    }
-    
-    @Override
-    public Task sanitize(Task object) {
-        return this.anitize(object, AnitizeOp.SANITIZE);
-    }
 }

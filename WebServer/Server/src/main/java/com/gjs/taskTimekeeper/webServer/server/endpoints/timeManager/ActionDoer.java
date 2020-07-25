@@ -10,8 +10,8 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
-import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerActionDeSanitizer;
-import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseSanitizer;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerActionAnitizer;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionResponse;
 import org.bson.types.ObjectId;
@@ -53,10 +53,10 @@ public class ActionDoer {
 	JsonWebToken jwt;
 	
 	@Inject
-	TimeManagerActionDeSanitizer actionDeSanitizer;
+	TimeManagerActionAnitizer actionDeSanitizer;
 	
 	@Inject
-	TimemanagerResponseSanitizer responseSanitizer;
+	TimemanagerResponseAnitizer responseSanitizer;
 	
 	@PATCH
 	@Counted(name = "numPatchRequests", description = "How many manager data update requests handled.")
