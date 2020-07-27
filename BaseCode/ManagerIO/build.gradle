@@ -1,46 +1,49 @@
 plugins {
-    id 'java'
-    id "java-library"
+	id 'java'
+	id "java-library"
+	id "io.freefair.lombok" version "${lombokVersion}"
 }
 
-version = '1.0.0.705'
+version = '1.0.0.707'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false
+
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    compile project(":BaseCode:Core")
-    //logging dependencies
-    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.+'
-    compile 'org.apache.logging.log4j:log4j-api:2.+'
-    compile 'org.apache.logging.log4j:log4j-core:2.+'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2+'
-
-    // for serialization/deserialization
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.+'
-
-    compile 'args4j:args4j:2.33'
-
-    testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
-    testCompile 'org.apache.commons:commons-lang3:3.10'
-    // http://mockftpserver.sourceforge.net/fakeftpserver-getting-started.html
-    testCompile 'org.mockftpserver:MockFtpServer:2.7.1'
+	compile project(":BaseCode:Core")
+	//logging dependencies
+	compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: log4j2Slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4j2Version
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j2Version
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion
+	
+	// for serialization/deserialization
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+    
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: junitJupiterVersion
+	testCompile 'org.apache.commons:commons-lang3:3.10'
+	// http://mockftpserver.sourceforge.net/fakeftpserver-getting-started.html
+	testCompile 'org.mockftpserver:MockFtpServer:2.7.1'
 }
 
 compileJava {
-    println "ManagerIO version at compile time: " + version
-    dependsOn ':BaseCode:Core:test'
-    dependsOn 'incrementBuildVersion';
+	println "ManagerIO version at compile time: " + version
+	dependsOn ':BaseCode:Core:test'
+	dependsOn 'incrementBuildVersion';
 }
 
 test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }
