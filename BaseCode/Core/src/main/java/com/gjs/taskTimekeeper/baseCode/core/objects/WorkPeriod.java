@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 /**
  * Defines a period of work, or a set of {@link Timespan}s. Has its own attributes for the user to
  * set.
+ * <p>
+ * TODO:: investigate using lombok
  */
 @JsonIgnoreProperties(value = {"durationString", "startString", "endString", "completed"}, allowGetters = true)
 public class WorkPeriod extends KeeperObject implements Comparable<WorkPeriod> {
