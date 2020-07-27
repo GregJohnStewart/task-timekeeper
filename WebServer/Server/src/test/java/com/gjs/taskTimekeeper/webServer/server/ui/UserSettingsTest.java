@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.FormHelpers.resetForm;
@@ -23,7 +21,6 @@ import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.F
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
 public class UserSettingsTest extends ServerWebUiTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserSettingsTest.class);
 	
 	private final TokenService tokenService;
 	private final PasswordService passwordService;

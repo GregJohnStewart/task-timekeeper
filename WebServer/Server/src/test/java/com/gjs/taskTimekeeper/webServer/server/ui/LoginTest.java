@@ -7,13 +7,12 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertFormErrorMessage;
@@ -23,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
+@Slf4j
 public class LoginTest extends ServerWebUiTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(LoginTest.class);
 	
 	public LoginTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
 		super(infoBean, wrapper);
@@ -118,9 +117,9 @@ public class LoginTest extends ServerWebUiTest {
 	
 	@Test
 	public void notLoggedInUiElements() {
-		LOGGER.info("Loading the home page.");
+		log.info("Loading the home page.");
 		this.wrapper.navigateTo("");
-		LOGGER.info("Loaded the home page.");
+		log.info("Loaded the home page.");
 		
 		this.wrapper.assertLoggedOut();
 		

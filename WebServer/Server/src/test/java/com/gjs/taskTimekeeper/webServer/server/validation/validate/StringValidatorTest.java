@@ -11,36 +11,35 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StringValidatorTest extends WebServerTest {
-    private StringValidator stringValidator = new StringValidator();
-
-    @Test
-    public void testStringValidate(){
-        this.stringValidator.validate(null);
-        this.stringValidator.validate("");
-        this.stringValidator.validate("hello");
-        this.stringValidator.validate("world");
-    }
-
-    @ParameterizedTest
-    @MethodSource("sanitizeParams")
-    public void testStringSanitize(String toSanitize, String expected){
-        String sanitized = this.stringValidator.sanitize(toSanitize);
-
-        assertEquals(expected, sanitized);
-    }
-
-    public static Stream<Arguments> sanitizeParams(){
-        return Stream.of(
-                //fails null
-                Arguments.of(
-                        (String)null,
-                        (String)null
-                ),
-                Arguments.of(
-                        "",
-                        ""
-                )
-        );
-    }
-
+	private StringValidator stringValidator = new StringValidator();
+	
+	@Test
+	public void testStringValidate() {
+		this.stringValidator.validate(null);
+		this.stringValidator.validate("");
+		this.stringValidator.validate("hello");
+		this.stringValidator.validate("world");
+	}
+	
+	@ParameterizedTest
+	@MethodSource("sanitizeParams")
+	public void testStringSanitize(String toSanitize, String expected) {
+		String sanitized = this.stringValidator.sanitize(toSanitize);
+		
+		assertEquals(expected, sanitized);
+	}
+	
+	public static Stream<Arguments> sanitizeParams() {
+		return Stream.of(
+			//fails null
+			Arguments.of(
+				(String)null,
+				(String)null
+			),
+			Arguments.of(
+				"",
+				""
+			)
+		);
+	}
 }

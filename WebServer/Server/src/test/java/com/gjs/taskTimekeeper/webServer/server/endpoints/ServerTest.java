@@ -18,28 +18,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
 class ServerTest extends RunningServerTest {
-
-    @Inject
-    ServerInfoBean infoBean;
-
-    @Test
-    void getServerInfo() {
-        Response response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .get("/api/server/info");
-        response
-                .then()
-                .statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode());
-        ServerInfo info = response.as(ServerInfo.class);
-
-        assertEquals(infoBean.getOrganization(), info.getOrganization());
-        assertEquals(infoBean.getServerName().get(), info.getServerName());
-        assertEquals(infoBean.getOrgUrl().get().toString(), info.getOrgUrl());
-        assertEquals(infoBean.getContactInfo().getName().get(), info.getContactInfo().getName());
-        assertEquals(infoBean.getContactInfo().getEmail().get(), info.getContactInfo().getEmail());
-        assertEquals(infoBean.getContactInfo().getPhone().get(), info.getContactInfo().getPhone());
-        assertEquals(infoBean.getHostname(), info.getHostname());
-        assertEquals(infoBean.getPort(), info.getPort());
-    }
+	
+	@Inject
+	ServerInfoBean infoBean;
+	
+	@Test
+	void getServerInfo() {
+		Response response = given()
+			.when()
+			.contentType(ContentType.JSON)
+			.get("/api/server/info");
+		response
+			.then()
+			.statusCode(javax.ws.rs.core.Response.Status.OK.getStatusCode());
+		ServerInfo info = response.as(ServerInfo.class);
+		
+		assertEquals(infoBean.getOrganization(), info.getOrganization());
+		assertEquals(infoBean.getServerName().get(), info.getServerName());
+		assertEquals(infoBean.getOrgUrl().get().toString(), info.getOrgUrl());
+		assertEquals(infoBean.getContactInfo().getName().get(), info.getContactInfo().getName());
+		assertEquals(infoBean.getContactInfo().getEmail().get(), info.getContactInfo().getEmail());
+		assertEquals(infoBean.getContactInfo().getPhone().get(), info.getContactInfo().getPhone());
+		assertEquals(infoBean.getHostname(), info.getHostname());
+		assertEquals(infoBean.getPort(), info.getPort());
+	}
 }

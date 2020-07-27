@@ -11,28 +11,28 @@ import java.net.URL;
  */
 @ApplicationScoped
 public class ServerUrlService {
-    
-    private final ServerInfoBean serverInfoBean;
-    
-    public ServerUrlService(
-        ServerInfoBean serverInfoBean
-    ) {
-        this.serverInfoBean = serverInfoBean;
-    }
-    
-    /**
-     * TODO:: remove malformed url throws
-     *
-     * @return
-     * @throws MalformedURLException
-     */
-    public URL getBaseServerUrl() throws MalformedURLException {
-        //TODO:: http/s selection
-        return new URL(
-            "http://" +
-                this.serverInfoBean.getHostname() +
-                ":" +
-                this.serverInfoBean.getPort()
-        );
-    }
+	
+	private final ServerInfoBean serverInfoBean;
+	
+	public ServerUrlService(
+		ServerInfoBean serverInfoBean
+	) {
+		this.serverInfoBean = serverInfoBean;
+	}
+	
+	/**
+	 * TODO:: remove malformed url throws
+	 *
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	public URL getBaseServerUrl() throws MalformedURLException {
+		//TODO:: http/s selection
+		return new URL(
+			"http://" +
+				this.serverInfoBean.getHostname() +
+				":" +
+				this.serverInfoBean.getPort()
+		);
+	}
 }

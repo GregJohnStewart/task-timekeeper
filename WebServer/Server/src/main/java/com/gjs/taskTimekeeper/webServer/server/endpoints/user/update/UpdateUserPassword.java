@@ -5,6 +5,7 @@ import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.UserNotificationService;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.update.UserUpdatePasswordRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.MetricUnits;
@@ -16,8 +17,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -29,8 +28,8 @@ import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletionStage;
 
 @Path("/api/user/update/password")
+@Slf4j
 public class UpdateUserPassword {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateUserPassword.class);
 	
 	private final UserNotificationService notificationService;
 	private final PasswordService passwordService;
@@ -75,11 +74,11 @@ public class UpdateUserPassword {
 	public CompletionStage<Object> registerUser(UserUpdatePasswordRequest request) {
 		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
 		User user = User.findById(userId);
-		LOGGER.debug("Attempting up update user password: {}", userId);
+		log.debug("Attempting up update user password: {}", userId);
 		
 		this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), request.getOldPlainPassword());
 		
-		LOGGER.debug("User's old passwords matched.");
+		log.debug("User's old passwords matched.");
 		CompletionStage<Void> completionStage = this.notificationService.alertToAccountChange(
 			user,
 			"password changed",
@@ -89,7 +88,7 @@ public class UpdateUserPassword {
 		user.setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
 		user.update();
 		
-		LOGGER.debug("User's passwords were updated.");
+		log.debug("User's passwords were updated.");
 		
 		return completionStage.thenApply(
 			x->Response.noContent().build()

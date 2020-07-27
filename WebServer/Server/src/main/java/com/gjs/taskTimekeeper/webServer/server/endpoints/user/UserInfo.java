@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -15,8 +16,6 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -38,8 +37,8 @@ import java.util.List;
  */
 @Path("/api/user/info/")
 @RequestScoped
+@Slf4j
 public class UserInfo {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserInfo.class);
 	
 	@Inject
 	JsonWebToken jwt;
@@ -72,9 +71,9 @@ public class UserInfo {
 	public Response getUsersInfo(
 		@Context
 			SecurityContext ctx
-	){
+	) {
 		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
-		LOGGER.debug("Getting user's own info. User: {}", userId);
+		log.debug("Getting user's own info. User: {}", userId);
 		User user = User.findById(userId);
 		
 		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
@@ -116,7 +115,7 @@ public class UserInfo {
 		@Context
 			SecurityContext ctx
 	) {
-		LOGGER.info("Got {} as a path parameter.", userId);
+		log.info("Got {} as a path parameter.", userId);
 		ObjectId userObjectId = new ObjectId(userId);
 		
 		User user = User.findById(userObjectId);

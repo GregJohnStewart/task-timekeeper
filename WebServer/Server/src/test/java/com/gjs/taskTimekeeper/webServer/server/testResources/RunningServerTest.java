@@ -11,27 +11,27 @@ import javax.inject.Inject;
 
 @Execution(ExecutionMode.SAME_THREAD)//TODO:: remove this, when know how to make this work
 public abstract class RunningServerTest extends WebServerTest {
-    @Inject
-    protected MockMailbox mailbox;
-    @Inject
-    protected UserUtils userUtils;
-
-    @BeforeEach
-    public void beforeEach() {
-        this.cleanup();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        this.cleanup();
-    }
-
-    public void cleanup(){
+	@Inject
+	protected MockMailbox mailbox;
+	@Inject
+	protected UserUtils userUtils;
+	
+	@BeforeEach
+	public void beforeEach() {
+		this.cleanup();
+	}
+	
+	@AfterEach
+	public void afterEach() {
+		this.cleanup();
+	}
+	
+	public void cleanup() {
 	
 	}
-
-    public void cleanupDatabaseAndMail(){
+	
+	public void cleanupDatabaseAndMail() {
 		this.mailbox.clear();
 		TestResourceLifecycleManager.cleanMongo();
-    }
+	}
 }

@@ -26,34 +26,37 @@ import java.util.Date;
 @Path("/api/user/auth/tokenCheck")
 @RequestScoped
 public class TokenCheck {
-
-    @Inject
-    JsonWebToken jwt;
-
-    @GET()
-    @Operation(
-            summary = "Checks a users' token."
-    )
-    @APIResponse(
-            responseCode = "200",
-            description = "The check happened.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = TokenCheckResponse.class)
-            )
-    )
-    @Tags({@Tag(name="User"),@Tag(name="Auth")})
-    @SecurityRequirement(name="JwtAuth")
-    @RolesAllowed({"REGULAR", "ADMIN"})
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response helloRolesAllowed(@Context SecurityContext ctx) {
-        TokenCheckResponse response = new TokenCheckResponse();
-        if(jwt.getRawToken() != null){
-            response.setHadToken(true);
-            response.setTokenSecure(ctx.isSecure());
-            response.setExpired(jwt.getExpirationTime() <= StaticUtils.currentTimeInSecs());
-            response.setExpirationDate(new Date(jwt.getExpirationTime()));
-        }
-        return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON_TYPE).entity(response).build();
-    }
+	
+	@Inject
+	JsonWebToken jwt;
+	
+	@GET()
+	@Operation(
+		summary = "Checks a users' token."
+	)
+	@APIResponse(
+		responseCode = "200",
+		description = "The check happened.",
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(implementation = TokenCheckResponse.class)
+		)
+	)
+	@Tags({@Tag(name = "User"), @Tag(name = "Auth")})
+	@SecurityRequirement(name = "JwtAuth")
+	@RolesAllowed({"REGULAR", "ADMIN"})
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response helloRolesAllowed(
+		@Context
+			SecurityContext ctx
+	) {
+		TokenCheckResponse response = new TokenCheckResponse();
+		if(jwt.getRawToken() != null) {
+			response.setHadToken(true);
+			response.setTokenSecure(ctx.isSecure());
+			response.setExpired(jwt.getExpirationTime() <= StaticUtils.currentTimeInSecs());
+			response.setExpirationDate(new Date(jwt.getExpirationTime()));
+		}
+		return Response.status(Response.Status.OK).type(MediaType.APPLICATION_JSON_TYPE).entity(response).build();
+	}
 }

@@ -12,25 +12,25 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
 class EmailValidatorDbBasedTest extends RunningServerTest {
-    private EmailValidator validator = new EmailValidator();
-
-    @Test
-    public void assertValidAndDoesntExistTest() {
-        User testUser = this.userUtils.setupTestUser(true).getUserObj();
-    
-        //check
-        Assertions.assertDoesNotThrow(()->{
-            this.validator.validateSanitizeAssertDoesntExist(this.userUtils.setupTestUser().getEmail());
-        });
-    }
-
-    @Test
-    public  void addNewUserDuplicateEmailTest(){
-        User testUser = this.userUtils.setupTestUser(true).getUserObj();
-
-        //check
-        Assertions.assertThrows(EmailValidationException.class, () -> {
-            this.validator.validateSanitizeAssertDoesntExist(testUser.getEmail());
-        });
-    }
+	private EmailValidator validator = new EmailValidator();
+	
+	@Test
+	public void assertValidAndDoesntExistTest() {
+		User testUser = this.userUtils.setupTestUser(true).getUserObj();
+		
+		//check
+		Assertions.assertDoesNotThrow(()->{
+			this.validator.validateSanitizeAssertDoesntExist(this.userUtils.setupTestUser().getEmail());
+		});
+	}
+	
+	@Test
+	public void addNewUserDuplicateEmailTest() {
+		User testUser = this.userUtils.setupTestUser(true).getUserObj();
+		
+		//check
+		Assertions.assertThrows(EmailValidationException.class, ()->{
+			this.validator.validateSanitizeAssertDoesntExist(testUser.getEmail());
+		});
+	}
 }

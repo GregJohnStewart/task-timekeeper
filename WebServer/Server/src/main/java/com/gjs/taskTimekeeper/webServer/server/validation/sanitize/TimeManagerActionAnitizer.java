@@ -1,8 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,7 +10,6 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class TimeManagerActionAnitizer extends Anitizer<TimeManagerActionRequest> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TimeManagerActionAnitizer.class);
 	
 	@Inject
 	ObjectWithStringsAnitizer objectWithStringsAnitizer;

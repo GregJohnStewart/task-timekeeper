@@ -14,13 +14,12 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,8 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
+@Slf4j
 public class UserEmailValidationTest extends ServerWebUiTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserEmailValidationTest.class);
 	
 	public static final String USER_REGISTRATION_ENDPOINT = "/api/user/registration";
 	
@@ -69,7 +68,7 @@ public class UserEmailValidationTest extends ServerWebUiTest {
 		
 		UserRegistrationResponse registrationResponse = response.as(UserRegistrationResponse.class);
 		
-		LOGGER.debug("User registration response: {}", registrationResponse);
+		log.debug("User registration response: {}", registrationResponse);
 		
 		return registrationResponse;
 	}
@@ -84,13 +83,13 @@ public class UserEmailValidationTest extends ServerWebUiTest {
 			actual.getSubject()
 		);
 		
-		LOGGER.debug("Email from registration: {}", actual.getHtml());
+		log.debug("Email from registration: {}", actual.getHtml());
 		
 		Document emailDoc = Jsoup.parse(actual.getHtml());
 		
 		Element emailLink = emailDoc.getElementById("validationLink");
 		URL validationUrl = new URL(emailLink.text());
-		LOGGER.debug("Validation link: {}", validationUrl);
+		log.debug("Validation link: {}", validationUrl);
 		return validationUrl;
 	}
 	

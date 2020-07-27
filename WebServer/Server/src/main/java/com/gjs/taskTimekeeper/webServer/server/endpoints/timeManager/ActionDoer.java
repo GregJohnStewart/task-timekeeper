@@ -14,6 +14,7 @@ import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerAc
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -24,8 +25,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -45,8 +44,8 @@ import java.util.Date;
 
 @Path("/api/timeManager/manager/action")
 @RequestScoped
+@Slf4j
 public class ActionDoer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDoer.class);
 	private static final ObjectMapper MANAGER_MAPPER = ObjectMapperUtilities.getTimeManagerObjectMapper();
 	
 	@Inject
@@ -107,13 +106,13 @@ public class ActionDoer {
 			boolean sanitizeText
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		LOGGER.info(
+		log.info(
 			"Updating Time Manager data with action for user {}, providing stats? {}. Sanitizing text? {}",
 			userId,
 			provideStats,
 			sanitizeText
 		);
-		LOGGER.debug("Update request data: {}", updateRequest);
+		log.debug("Update request data: {}", updateRequest);
 		
 		updateRequest = actionDeSanitizer.deSanitize(updateRequest);
 		
@@ -126,7 +125,7 @@ public class ActionDoer {
 		CrudOperator operator = new CrudOperator(heldManager, new Outputter(regStream, errStream));
 		
 		if(updateRequest.getSelectedPeriod() != null) {
-			LOGGER.info("Selecting user's period {}", updateRequest.getSelectedPeriod());
+			log.info("Selecting user's period {}", updateRequest.getSelectedPeriod());
 			ActionConfig selectConfig = new ActionConfig(KeeperObjectType.PERIOD, Action.VIEW);
 			selectConfig.setSelect(true);
 			selectConfig.setIndex(updateRequest.getSelectedPeriod());
@@ -136,7 +135,7 @@ public class ActionDoer {
 			String errOutput = errStream.toString();
 			
 			if(!errOutput.isEmpty()) {
-				LOGGER.warn(
+				log.warn(
 					"Error Selecting the user's selected period {} - {}",
 					updateRequest.getSelectedPeriod(),
 					errOutput
