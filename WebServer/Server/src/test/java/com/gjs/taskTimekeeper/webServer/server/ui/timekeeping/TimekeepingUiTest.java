@@ -13,7 +13,9 @@ public class TimekeepingUiTest extends ServerWebUiTest {
 		WebDriverWrapper wrapper
 	) {
 		super(infoBean, wrapper);
-		
+	}
+	
+	protected void setup() {
 		this.testUser = this.userUtils.setupTestUser(true);
 		this.wrapper.login(this.testUser);
 	}

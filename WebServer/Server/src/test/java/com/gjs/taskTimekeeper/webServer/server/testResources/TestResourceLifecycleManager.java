@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Slf4j
 public class TestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
-	private static final boolean HEADLESS = true;
+	private static final boolean SELENIUM_HEADLESS = true;
 	
 	private static volatile MongodExecutable MONGO = null;
 	private static volatile WebDriver webDriver;
@@ -83,7 +83,7 @@ public class TestResourceLifecycleManager implements QuarkusTestResourceLifecycl
 	public static synchronized void initWebDriver() {
 		if(!webDriverIsInitted()) {
 			log.info("Opening web browser");
-			webDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(HEADLESS));
+			webDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(SELENIUM_HEADLESS));
 		} else {
 			log.info("Driver already started.");
 		}
