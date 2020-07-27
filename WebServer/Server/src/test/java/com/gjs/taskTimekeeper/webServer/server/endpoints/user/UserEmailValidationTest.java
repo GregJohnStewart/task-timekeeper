@@ -7,8 +7,8 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecyc
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions;
 import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserRegistrationResponse;
 import io.quarkus.mailer.Mail;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;

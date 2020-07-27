@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.assertErrorMessage;
-import static com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel.ADMIN;
+import static com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel.ADMIN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 

@@ -2,7 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.params.ParameterizedTest;

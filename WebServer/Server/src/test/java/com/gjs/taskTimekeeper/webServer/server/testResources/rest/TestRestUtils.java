@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.rest;
 
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserRegistrationRequest;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;

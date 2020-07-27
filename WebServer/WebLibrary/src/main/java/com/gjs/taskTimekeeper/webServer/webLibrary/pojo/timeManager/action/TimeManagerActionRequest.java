@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action;
+package com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action;
 
 import com.gjs.taskTimekeeper.baseCode.core.crudAction.ActionConfig;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
-package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action;
+package com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.stats.stats.AllStats;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.whole.WholeTimeManagerUpdateResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.whole.WholeTimeManagerUpdateResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

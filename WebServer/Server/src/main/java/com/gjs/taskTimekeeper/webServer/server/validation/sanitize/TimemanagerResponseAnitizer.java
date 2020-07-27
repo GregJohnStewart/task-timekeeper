@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.TimeManagerResponse;
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.TimeManagerResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

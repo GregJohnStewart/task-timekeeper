@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.webLibrary.user.auth;
+package com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

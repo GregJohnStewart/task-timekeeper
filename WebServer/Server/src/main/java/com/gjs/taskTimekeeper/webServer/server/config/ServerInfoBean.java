@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.config;
 
-import com.gjs.taskTimekeeper.webServer.webLibrary.ServerInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.ServerInfo;
 import io.quarkus.arc.config.ConfigProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;

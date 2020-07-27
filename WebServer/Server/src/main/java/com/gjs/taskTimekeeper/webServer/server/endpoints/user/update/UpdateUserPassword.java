@@ -4,7 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.UserNotificationService;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.update.UserUpdatePasswordRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.update.UserUpdatePasswordRequest;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.MetricUnits;

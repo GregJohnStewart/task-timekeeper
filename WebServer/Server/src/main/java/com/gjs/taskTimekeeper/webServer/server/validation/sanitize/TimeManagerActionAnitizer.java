@@ -1,6 +1,6 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
-import com.gjs.taskTimekeeper.webServer.webLibrary.timeManager.action.TimeManagerActionRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

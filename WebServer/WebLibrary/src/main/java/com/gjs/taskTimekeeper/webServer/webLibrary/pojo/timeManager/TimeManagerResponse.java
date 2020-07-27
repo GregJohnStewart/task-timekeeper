@@ -1,4 +1,4 @@
-package com.gjs.taskTimekeeper.webServer.webLibrary.timeManager;
+package com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.stats.stats.AllStats;

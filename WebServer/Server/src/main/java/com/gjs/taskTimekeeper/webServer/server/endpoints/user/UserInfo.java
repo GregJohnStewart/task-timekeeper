@@ -55,7 +55,7 @@ public class UserInfo {
 		content = @Content(
 			mediaType = "application/json",
 			schema = @Schema(
-				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
+				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo.class
 			)
 		)
 	)
@@ -92,7 +92,7 @@ public class UserInfo {
 		description = "Got the user's info.",
 		content = @Content(
 			mediaType = "application/json",
-			schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class)
+			schema = @Schema(implementation = com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo.class)
 		)
 	)
 	@APIResponse(
@@ -144,7 +144,7 @@ public class UserInfo {
 			mediaType = "application/json",
 			schema = @Schema(
 				type = SchemaType.ARRAY,
-				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo.class
+				implementation = com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo.class
 			)
 		)
 	)
@@ -162,7 +162,7 @@ public class UserInfo {
 			SecurityContext ctx
 	) {
 		List<User> users = User.listAll();
-		List<com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo> userInfos = new ArrayList<>(users.size());
+		List<com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo> userInfos = new ArrayList<>(users.size());
 		
 		for(User curUser : users) {
 			userInfos.add(curUser.toUserInfo());
