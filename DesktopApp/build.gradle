@@ -1,15 +1,21 @@
 plugins {
-    id 'java'
-    id 'application'
-
-    // https://github.com/i-net-software/SetupBuilder
-    id "de.inetsoftware.setupbuilder" version "4.8.7"
+	id 'java'
+	id 'application'
+	
+	// https://github.com/i-net-software/SetupBuilder
+	id "de.inetsoftware.setupbuilder" version "4.8.7"
+	
+	id "io.freefair.lombok" version "${lombokVersion}"
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false
+
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '3.3.5.49'
+version = '3.3.5.51'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information
@@ -22,55 +28,62 @@ def progDesc = "An open source program for keeping track of time spent on tasks.
 description = progDesc
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    compile project(path: ":BaseCode:ManagerIO")
-    compile project(path: ":BaseCode:Stats")
-    testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
-    testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
-
-    //for processing command line arguments
-    compile 'args4j:args4j:2.33'
-    compile 'args4j:args4j-site:2.33'
-
-    //for the intellij swing forms
-    compile 'com.intellij:forms_rt:7.0.3'
-    // https://mvnrepository.com/artifact/com.dorkbox/SystemTray
-    //compile group: 'com.dorkbox', name: 'SystemTray', version: '3.17'
-    // https://mvnrepository.com/artifact/tablelayout/TableLayout
-    // https://www.clearthought.info/sun/products/jfc/tsc/articles/tablelayout/Sizes.html#Absolute
-    compile group: 'tablelayout', name: 'TableLayout', version: '20050920'
-
-    testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
-    //for testing swing apps
-    testCompile 'org.assertj:assertj-swing-junit:3.9.2'
+	compile project(path: ":BaseCode:ManagerIO")
+	compile project(path: ":BaseCode:Stats")
+	testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
+	testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
+	
+	//logging dependencies
+	compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: log4j2Slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4j2Version
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j2Version
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion
+	
+	//for processing command line arguments
+	compile 'args4j:args4j:2.33'
+	compile 'args4j:args4j-site:2.33'
+	
+	//for the intellij swing forms
+	compile 'com.intellij:forms_rt:7.0.3'
+	// https://mvnrepository.com/artifact/com.dorkbox/SystemTray
+	//compile group: 'com.dorkbox', name: 'SystemTray', version: '3.17'
+	// https://mvnrepository.com/artifact/tablelayout/TableLayout
+	// https://www.clearthought.info/sun/products/jfc/tsc/articles/tablelayout/Sizes.html#Absolute
+	compile group: 'tablelayout', name: 'TableLayout', version: '20050920'
+	
+	testCompile 'org.junit.jupiter:junit-jupiter:5.6.2'
+	//for testing swing apps
+	testCompile 'org.assertj:assertj-swing-junit:3.9.2'
 }
 
 run {
-    /*
+	/*
 	 * So we can have arguments passed to the program in gradle
 	 *
 	 * Example of usage:
 	 *      gradle :DesktopApp:run -PappArgs="['-h']"
 	 */
-    if (project.hasProperty("appArgs")) {
-        args Eval.me(appArgs)
-    }
+	if(project.hasProperty("appArgs")){
+		args Eval.me(appArgs)
+	}
 }
 
 String projectPropertiesFileName = "project.properties";
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
 task copyInLogos() {
-    doLast {
-        copy {
-            from logoDir
-            include guiIconFile
-            into projectResourcesDir
-        }
-    }
+	doLast {
+		copy {
+			from logoDir
+			include guiIconFile
+			into projectResourcesDir
+		}
+	}
 }
 
 /**
@@ -78,8 +91,8 @@ task copyInLogos() {
  */
 //noinspection GroovyAssignabilityCheck
 task writePropertiesFile() {
-    doLast {
-        new File(projectResourcesDir + projectPropertiesFileName).text = """
+	doLast {
+		new File(projectResourcesDir + projectPropertiesFileName).text = """
 ################################################################
 #                                                              #
 # Main properties file. Contains values used in the app.       #
@@ -95,7 +108,8 @@ app.version = $version
 # the time of build
 app.buildtime = ${ZonedDateTime.now().toString()}
 # Version of the library used
-lib.version = Core:${project(":BaseCode:Core").version} ManagerIO:${project(":BaseCode:ManagerIO").version} Stats:${project(":BaseCode:Stats").version}
+lib.version = Core:${project(":BaseCode:Core").version} ManagerIO:${project(":BaseCode:ManagerIO").version} Stats:${
+			project(":BaseCode:Stats").version}
 
 # default save file location
 default.configFile = {HOME}/.timeKeeper/config.cfg
@@ -112,45 +126,47 @@ urls.github = $gitHubUrl
 urls.desktopReadme = ${gitHubUrl}/tree/master/DesktopApp
 urls.donateUrl = https://gjstewart.net/donate.html
 """
-    }
+	}
 }
 
 task deleteGenertatedResources(type: Delete) {
-    delete fileTree(projectResourcesDir) {
-        include "**/$projectPropertiesFileName"
-        include "**/gui-icon.*"
-    }
+	delete fileTree(projectResourcesDir) {
+		include "**/$projectPropertiesFileName"
+		include "**/gui-icon.*"
+	}
 }
 
 compileJava {
-    println "DesktopApp version at compile time: " + version
-    dependsOn 'writePropertiesFile';
-    dependsOn 'copyInLogos';
-    dependsOn ':BaseCode:test'
-    dependsOn 'incrementBuildVersion';
+	println "DesktopApp version at compile time: " + version
+	dependsOn 'writePropertiesFile';
+	dependsOn 'copyInLogos';
+	dependsOn ':BaseCode:test'
+	dependsOn 'incrementBuildVersion';
 }
 
 clean {
-    dependsOn 'deleteGenertatedResources';
+	dependsOn 'deleteGenertatedResources';
 }
 test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }
 
 jar {
-    dependsOn ':BaseCode:build'
-    manifest {
-        attributes(
-                'Main-Class': mainClassName,
-                'Multi-Release': true
-        )
-    }
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+	dependsOn ':BaseCode:build'
+	manifest {
+		attributes(
+			'Main-Class': mainClassName,
+			'Multi-Release': true
+		)
+	}
+	from {
+		configurations.runtimeClasspath.collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
 }
 
 /*
@@ -158,55 +174,55 @@ jar {
  * https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-setupBuilder
  */
 setupBuilder {
-    vendor = 'Greg Stewart'
-    appIdentifier = applicationName  // "TaskTimekeeper"
-    this.version = version
-
-    application = "Task Timekeeper"
-    description = progDesc
-    icons = (String)logoDir + desktopIconFile
-
-    licenseFile = "../LICENSE"
-
-    from jar.outputs
-
-    //bundleJre = 1.11 // not working on linux systems :(
-    mainClass = mainClassName // "com.gjs.taskTimekeeper.desktopApp.Main"
-    mainJar = 'DesktopApp-' + version + '.jar'
-
-    // https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
-    //TODO:: associate file type(s)?
-    desktopStarter {
-        displayName = "Task Timekeeper GUI"
-        description = progDesc + "\nThis opens the program in GUI mode."
-        //TODO:: use -Xdock:name="Foo Bar" to set real name
-        startArguments = "--mode GUI_SWING"
-
-        // Categories of the application (only for deb and rpm) TODO:: what categories are there?
-        //categories = "software;game"
-
-        // Where should this desktopStarter item be placed? (Windows only)
-        //location = StartMenu
-
-        // The working directory of the service, relative to installation root
-        workDir = "."
-    }
-    desktopStarter {
-        displayName = "tasktimekeeper"
-        description = progDesc
-
-        // Categories of the application (only for deb and rpm) TODO:: what categories are there?
-        //categories = "software;game"
-
-        // The working directory of the service, relative to installation root
-        workDir = "."
-    }
+	vendor = 'Greg Stewart'
+	appIdentifier = applicationName // "TaskTimekeeper"
+	this.version = version
+	
+	application = "Task Timekeeper"
+	description = progDesc
+	icons = (String)logoDir + desktopIconFile
+	
+	licenseFile = "../LICENSE"
+	
+	from jar.outputs
+	
+	//bundleJre = 1.11 // not working on linux systems :(
+	mainClass = mainClassName // "com.gjs.taskTimekeeper.desktopApp.Main"
+	mainJar = 'DesktopApp-' + version + '.jar'
+	
+	// https://github.com/i-net-software/SetupBuilder/wiki/DSL-of-desktopStarter
+	//TODO:: associate file type(s)?
+	desktopStarter {
+		displayName = "Task Timekeeper GUI"
+		description = progDesc + "\nThis opens the program in GUI mode."
+		//TODO:: use -Xdock:name="Foo Bar" to set real name
+		startArguments = "--mode GUI_SWING"
+		
+		// Categories of the application (only for deb and rpm) TODO:: what categories are there?
+		//categories = "software;game"
+		
+		// Where should this desktopStarter item be placed? (Windows only)
+		//location = StartMenu
+		
+		// The working directory of the service, relative to installation root
+		workDir = "."
+	}
+	desktopStarter {
+		displayName = "tasktimekeeper"
+		description = progDesc
+		
+		// Categories of the application (only for deb and rpm) TODO:: what categories are there?
+		//categories = "software;game"
+		
+		// The working directory of the service, relative to installation root
+		workDir = "."
+	}
 }
 
 test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
+	useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }

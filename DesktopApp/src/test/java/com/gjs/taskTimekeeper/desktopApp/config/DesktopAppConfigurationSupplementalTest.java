@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
 
 public class DesktopAppConfigurationSupplementalTest {
-
-    @Test
-    public void setDefaultVal() throws CmdLineException {
-        DesktopAppConfiguration config = new DesktopAppConfiguration();
-
-        Assertions.assertThrows(SetReadOnlyPropertyException.class, () -> {
-            config.putProperty(ConfigKeys.DEFAULT_CONFIG_FILE, "");
-        });
-    }
+	
+	@Test
+	public void setDefaultVal() throws CmdLineException {
+		DesktopAppConfiguration config = new DesktopAppConfiguration();
+		
+		Assertions.assertThrows(SetReadOnlyPropertyException.class, ()->{
+			config.putProperty(ConfigKeys.DEFAULT_CONFIG_FILE, "");
+		});
+	}
 }

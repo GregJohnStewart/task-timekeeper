@@ -4,20 +4,19 @@ import com.gjs.taskTimekeeper.desktopApp.config.ConfigKeys;
 import com.gjs.taskTimekeeper.desktopApp.config.DesktopAppConfiguration;
 import com.gjs.taskTimekeeper.desktopApp.gui.utils.TestFileUtils;
 import com.gjs.taskTimekeeper.desktopApp.runner.gui.GuiRunner;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.kohsuke.args4j.CmdLineException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 
 @Execution(ExecutionMode.SAME_THREAD)
+@Slf4j
 public abstract class GuiTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuiTest.class);
 
     protected static DesktopAppConfiguration getTestConfig(File file) throws CmdLineException {
         DesktopAppConfiguration config = new DesktopAppConfiguration();
@@ -42,8 +41,8 @@ public abstract class GuiTest {
         this.guiThread = new Thread(new GuiRunnable(this.runner));
 
         this.guiThread.start();
-
-        LOGGER.info("Ran gui.");
+    
+        log.info("Ran gui.");
 
         while (!this.runner.isMainGuiFinishedLoading()){
             Thread.sleep(250);
@@ -59,7 +58,7 @@ public abstract class GuiTest {
         try{
             this.fixture.close();
         }catch (Exception e){
-            LOGGER.debug("Closing fixture threw exception: ", e);
+            log.debug("Closing fixture threw exception: ", e);
         }
         while(this.guiThread.isAlive()){
             runner.closeGuiElements();
@@ -69,7 +68,7 @@ public abstract class GuiTest {
 
     @AfterEach
     public void cleanupWorkingFile() throws IOException {
-        LOGGER.info("Resetting working file after tests.");
+        log.info("Resetting working file after tests.");
         TestFileUtils.resetWorkingFiles();
     }
 
