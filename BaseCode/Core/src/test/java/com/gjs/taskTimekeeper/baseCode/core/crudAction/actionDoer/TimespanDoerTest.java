@@ -8,8 +8,6 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.Timespan;
 import com.gjs.taskTimekeeper.baseCode.core.timeParser.TimeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimespanDoerTest extends ActionDoerExtendingTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TimespanDoerTest.class);
 	
 	public TimespanDoerTest() {
 		super(KeeperObjectType.SPAN);
