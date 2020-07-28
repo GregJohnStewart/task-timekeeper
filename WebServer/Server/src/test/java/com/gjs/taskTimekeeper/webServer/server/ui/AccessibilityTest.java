@@ -36,6 +36,7 @@ public class AccessibilityTest extends ServerWebUiTest {
 	private static final String[] EXCLUDED_RULES = new String[]{
 		//Remove periodically to check for contrast issues.
 		// Disabled due to contrast error on disabled items
+		// expected violations on: #selectedPeriodTab
 		"color-contrast"
 	};
 	
