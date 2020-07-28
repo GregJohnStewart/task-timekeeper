@@ -1,0 +1,26 @@
+.navbar-brand {
+	color: white !important;
+}
+
+#mainNav {
+	background-color: #2A5F52 !important;
+}
+
+#mainNav .nav-link {
+	color: white !important;
+}
+
+h1, h2, h3, h4, h5, h6, p, li, div {
+	color: #595959 !important;
+}
+
+a {
+	color: #295C4F !important;
+}
+a.disabled {
+	color: #B8B8B8 !important;
+}
+
+th, td {
+	color: black !important;
+}

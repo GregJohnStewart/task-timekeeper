@@ -13,15 +13,15 @@ import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 public class DefaultKeysHealthCheckTest {
-    @Test
-    public void testHealthLiveEndpoint() throws IOException {
-        ValidatableResponse response = given()
-                .when().get("/health")
-                .then()
-                .statusCode(200);
-
-        JsonNode responseNode = response.extract().as(JsonNode.class);
-
-        assertHealthCheckContains(CHECK_NAME, responseNode);
-    }
+	@Test
+	public void testHealthLiveEndpoint() throws IOException {
+		ValidatableResponse response = given()
+			.when().get("/health")
+			.then()
+			.statusCode(200);
+		
+		JsonNode responseNode = response.extract().as(JsonNode.class);
+		
+		assertHealthCheckContains(CHECK_NAME, responseNode);
+	}
 }

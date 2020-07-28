@@ -1,6 +1,5 @@
 package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
-import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -8,17 +7,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import javax.inject.Inject;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
-class HTMLAnitizerTest extends RunningServerTest {
+class HTMLAnitizerTest extends AnitizerTest<String> {
 	
-	@Inject
-	HTMLAnitizer sanitizer;
+	public HTMLAnitizerTest(HTMLAnitizer anitizer) {
+		super(anitizer);
+	}
 	
 	private static Stream<Arguments> args() {
 		return Stream.of(
@@ -35,6 +32,10 @@ class HTMLAnitizerTest extends RunningServerTest {
 				"&lt;hello world&gt;"
 			),
 			Arguments.of(
+				"&lt;hello world&gt;",
+				"&amp;lt;hello world&amp;gt;"
+			),
+			Arguments.of(
 				"& lt;hello world& gt;",
 				"&amp; lt;hello world&amp; gt;"
 			),
@@ -48,12 +49,6 @@ class HTMLAnitizerTest extends RunningServerTest {
 	@ParameterizedTest
 	@MethodSource("args")
 	public void testHtmlSanitizer(String given, String expectedSanitized) {
-		String sanitized = sanitizer.sanitize(given);
-		
-		assertEquals(expectedSanitized, sanitized);
-		
-		String deSanitized = sanitizer.deSanitize(sanitized);
-		
-		assertEquals(given, deSanitized);
+		this.testAnitize(given, expectedSanitized);
 	}
 }

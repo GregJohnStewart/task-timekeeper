@@ -5,21 +5,18 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.update.UserUpdatePasswordRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.update.UserUpdatePasswordRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
 class UpdateUserPasswordTest extends RunningServerTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateUserPasswordTest.class);
 	
 	public void assertLogin(TestUser testUser, String password) {
 		User user = testUser.getUserObj();

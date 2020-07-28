@@ -9,17 +9,17 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CommandLineArgumentSplitterTest {
-
+    
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[][] {
-                    {"", new String[] {""}},
-                    {"hello world", new String[] {"hello", "world"}},
-                    {"hello\\ world", new String[] {"hello world"}},
-                    {"hello\tworld", new String[] {"hello", "world"}},
+            new Object[][]{
+                {"", new String[]{""}},
+                {"hello world", new String[]{"hello", "world"}},
+                {"hello\\ world", new String[]{"hello world"}},
+                {"hello\tworld", new String[]{"hello", "world"}},
                 });
     }
-
+    
     @ParameterizedTest
     @MethodSource("data")
     public void split(String toParse, String[] expected) {

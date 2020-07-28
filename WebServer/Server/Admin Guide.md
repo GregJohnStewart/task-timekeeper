@@ -74,6 +74,7 @@ The project is setup to run just fine without any additional configuration to se
 - Emails will not be sent without setting up email through configuration. At the moment, you can login without
  verifying your email, so you should be good to so. Some user related API calls might fail due to not being able to send
   emails.
+- You will need a JDK of at least version 8 installed.
 
 ## Configuring the server
 

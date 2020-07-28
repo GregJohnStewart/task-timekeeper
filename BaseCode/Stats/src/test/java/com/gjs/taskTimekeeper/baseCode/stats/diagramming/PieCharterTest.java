@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-/** TODO:: figure out how to test better */
+/**
+ * TODO:: figure out how to test better
+ */
 public class PieCharterTest {
-
-    @Test
-    public void test() {
+	
+	@Test
+	public void test() {
 		PercentStats<Task> results =
 			new PercentStats<>(
 				new HashMap<Task, Number>() {
@@ -24,10 +26,10 @@ public class PieCharterTest {
 						put(new Task("task six"), 90.0);
 					}
 				});
-
-        PieCharter<Task> charter = new PieCharter<>("Testing Pie Charting", 500, 500);
-
-        BufferedImage image = charter.getChartImage(results);
-        image.getHeight();
-    }
+		
+		PieCharter<Task> charter = new PieCharter<>("Testing Pie Charting", 500, 500);
+		
+		BufferedImage image = charter.getChartImage(results);
+		image.getHeight();
+	}
 }

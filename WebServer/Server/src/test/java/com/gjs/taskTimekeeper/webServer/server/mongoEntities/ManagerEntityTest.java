@@ -12,27 +12,27 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
 public class ManagerEntityTest extends RunningServerTest {
-
-    //TODO:: more?
-
-    @Test
-    public void testEquals(){
-        ManagerEntity entityOne = new ManagerEntity();
-        ManagerEntity entityTwo = new ManagerEntity();
-
-
-        assertEquals(
-                entityOne,
-                entityTwo
-        );
-
-        entityOne.persist();
-        entityTwo.persist();
-
-        assertNotEquals(
-                entityOne,
-                entityTwo
-        );
-        //TODO:: more
-    }
+	
+	//TODO:: more?
+	
+	@Test
+	public void testEquals() {
+		ManagerEntity entityOne = new ManagerEntity();
+		ManagerEntity entityTwo = new ManagerEntity();
+		
+		
+		assertEquals(
+			entityOne,
+			entityTwo
+		);
+		
+		entityOne.persist();
+		entityTwo.persist();
+		
+		assertNotEquals(
+			entityOne,
+			entityTwo
+		);
+		//TODO:: more
+	}
 }

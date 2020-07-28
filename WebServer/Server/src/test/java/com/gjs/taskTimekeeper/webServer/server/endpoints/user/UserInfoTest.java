@@ -4,27 +4,26 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ValidatableResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils.assertErrorMessage;
-import static com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel.ADMIN;
+import static com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel.ADMIN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
+@Slf4j
 public class UserInfoTest extends RunningServerTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoTest.class);
 	
 	@Test
 	public void testUserOwnInfo() {
@@ -69,7 +68,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
@@ -86,7 +85,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
@@ -137,7 +136,7 @@ public class UserInfoTest extends RunningServerTest {
 		validatableResponse.statusCode(Response.Status.FORBIDDEN.getStatusCode());
 		
 		assertErrorMessage(
-			"Forbidden",
+			"",
 			validatableResponse
 		);
 	}
@@ -167,7 +166,7 @@ public class UserInfoTest extends RunningServerTest {
 		
 		List<UserInfo> returned = validatableResponse.extract().as(new TypeRef<List<UserInfo>>() {
 		});
-		LOGGER.debug("Got {} results from get all user info.", returned.size());
+		log.debug("Got {} results from get all user info.", returned.size());
 		
 		assertUserInResults(testUser, returned);
 		assertUserInResults(testUserTwo, returned);

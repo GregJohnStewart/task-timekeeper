@@ -13,11 +13,11 @@ public class CommandLineArgumentSplitter {
      */
     public static String[] split(String inputString) {
         String[] inputs = inputString.split("(?<!\\\\)\\s+");
-
-        for (int i = 0; i < inputs.length; i++) {
+        
+        for(int i = 0; i < inputs.length; i++) {
             inputs[i] = inputs[i].replace("\\ ", " ");
         }
-
+        
         return inputs;
     }
 }

@@ -6,12 +6,13 @@ import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
 import com.gjs.taskTimekeeper.webServer.server.validation.validate.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.validate.UsernameValidator;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationRequest;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserRegistrationResponse;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserRegistrationRequest;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserRegistrationResponse;
 import io.quarkus.mailer.MailTemplate;
 import io.quarkus.qute.RawString;
 import io.quarkus.qute.api.ResourcePath;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -23,8 +24,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -39,8 +38,8 @@ import java.util.concurrent.CompletionStage;
 @Path("/api/user/registration")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class UserRegistration {
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserRegistration.class);
 	
 	private final ServerUrlService serverUrlService;
 	private final PasswordService passwordService;
@@ -98,7 +97,7 @@ public class UserRegistration {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public CompletionStage<Response> registerUser(UserRegistrationRequest request)
 		throws UnsupportedEncodingException, MalformedURLException {
-		LOGGER.info("Got User Registration request.");
+		log.info("Got User Registration request.");
 		
 		User newUser = new User();
 		
@@ -111,16 +110,16 @@ public class UserRegistration {
 		newUser.setHashedPass(
 			this.passwordService.createPasswordHash(request.getPlainPassword())
 		);
-		LOGGER.debug("Finished validating, valid user registration request.");
+		log.debug("Finished validating, valid user registration request.");
 		
 		newUser.setEmailValidated(false);
 		
 		if(User.listAll().size() < 1) {
-			LOGGER.info("First user to register. Making them an admin.");
+			log.info("First user to register. Making them an admin.");
 			newUser.setLevel(UserLevel.ADMIN);
 			newUser.setApprovedUser(true);
 		} else {
-			LOGGER.info("Creating a regular user.");
+			log.info("Creating a regular user.");
 			newUser.setLevel(UserLevel.REGULAR);
 			newUser.setApprovedUser(this.newUserAutoApprove);
 		}

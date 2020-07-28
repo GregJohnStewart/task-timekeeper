@@ -1,7 +1,7 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
-import com.gjs.taskTimekeeper.webServer.webLibrary.ServerInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.ServerInfo;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -22,32 +22,29 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class Server {
-
-    @Inject
-    ServerInfoBean serverInfoBean;
-
-    @GET()
-    @Counted(name = "numRequests", description = "How many server info requests handled.")
-    @Path("/info")
-    @Operation(
-            summary = "Gets the server's operational/ contact info."
-    )
-    @APIResponse(
-            responseCode = "200",
-            description = "The server info.",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ServerInfo.class)
-            )
-    )
-    @Tags({@Tag(name="Misc")})
-    public Response getServerInfo(){
-        return Response
-                .status(Response.Status.OK)
-                .entity(serverInfoBean.toServerInfo())
-                .build();
-    }
-
-
-
+	
+	@Inject
+	ServerInfoBean serverInfoBean;
+	
+	@GET()
+	@Counted(name = "numRequests", description = "How many server info requests handled.")
+	@Path("/info")
+	@Operation(
+		summary = "Gets the server's operational/ contact info."
+	)
+	@APIResponse(
+		responseCode = "200",
+		description = "The server info.",
+		content = @Content(
+			mediaType = "application/json",
+			schema = @Schema(implementation = ServerInfo.class)
+		)
+	)
+	@Tags({@Tag(name = "Misc")})
+	public Response getServerInfo() {
+		return Response
+			.status(Response.Status.OK)
+			.entity(serverInfoBean.toServerInfo())
+			.build();
+	}
 }

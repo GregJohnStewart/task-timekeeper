@@ -9,12 +9,11 @@ import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrap
 import io.quarkus.mailer.Mail;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -24,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(TestResourceLifecycleManager.class)
+@Slf4j
 class HomeTest extends ServerWebUiTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(HomeTest.class);
 	
 	HomeTest(ServerInfoBean infoBean, WebDriverWrapper wrapper) {
 		super(infoBean, wrapper);
@@ -33,10 +32,10 @@ class HomeTest extends ServerWebUiTest {
 	
 	@Test
 	public void basicLoadTest() {
-		LOGGER.info("Loading the home page.");
+		log.info("Loading the home page.");
 		this.wrapper.navigateTo("");
 		
-		LOGGER.info("Loaded the home page.");
+		log.info("Loaded the home page.");
 	}
 	
 	@Test
@@ -106,6 +105,6 @@ class HomeTest extends ServerWebUiTest {
 			);
 		}
 		
-		LOGGER.info("Done.");
+		log.info("Done.");
 	}
 }

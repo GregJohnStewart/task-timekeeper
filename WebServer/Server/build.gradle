@@ -1,85 +1,94 @@
 plugins {
-    id 'java'
-    id "io.freefair.lombok" version "4.1.5"
-    id 'io.quarkus' version "${quarkusPluginVersion}"
+	id 'java'
+	id "io.freefair.lombok" version "${lombokVersion}"
+	id 'io.quarkus' version "${quarkusPluginVersion}"
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
+	mavenLocal()
+	mavenCentral()
+	jcenter()
 }
 
 dependencies {
-    compile project(":BaseCode:Core")
-    testCompile project(path: ":BaseCode:Core", configuration: 'jacocoInstrumented')
-    compile project(":BaseCode:ManagerIO")
-    testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
-    compile project(":BaseCode:Stats")
-    testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
-    compile project(":WebServer:WebLibrary")
-    testCompile project(path: ":WebServer:WebLibrary", configuration: 'jacocoInstrumented')
-
-    //apache
-    compile 'org.apache.commons:commons-text:1.8'
-
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
-    implementation 'io.quarkus:quarkus-smallrye-health'
-    // https://quarkus.io/guides/microprofile-metrics
-    implementation 'io.quarkus:quarkus-smallrye-metrics'
-    implementation 'io.quarkus:quarkus-config-yaml'
-    // https://quarkus.io/guides/mailer
-    implementation 'io.quarkus:quarkus-mailer'
-    implementation 'io.quarkus:quarkus-resteasy'
-    implementation 'io.quarkus:quarkus-resteasy-jackson'
-    // https://quarkus.io/guides/qute for templates
-    // https://www.morling.dev/blog/quarkus-qute-test-ride/
-    // https://quarkus.io/guides/writing-native-applications-tips#including-resources
-    implementation 'io.quarkus:quarkus-qute'
-    implementation 'io.quarkus:quarkus-resteasy-qute'
-    // https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
-    implementation 'io.quarkus:quarkus-smallrye-openapi'
-    implementation 'io.quarkus:quarkus-scheduler'
-    // https://quarkus.io/guides/mongodb
-    // https://quarkus.io/guides/mongodb-panache
-    implementation 'io.quarkus:quarkus-mongodb-panache'
-    // https://quarkus.io/guides/security-properties
-    implementation 'io.quarkus:quarkus-elytron-security-properties-file'
-    implementation 'io.quarkus:quarkus-elytron-security'
-    // https://quarkus.io/guides/security-jwt 
-    // https://vertx.io/docs/vertx-auth-jwt/java/
-    implementation 'io.quarkus:quarkus-smallrye-jwt'
-
-    implementation 'commons-io:commons-io:2.6'
-
-    // TODO:: think about using webjars to pull in libs for web pages; https://www.webjars.org/
-    compile 'org.webjars:bootstrap:4.4.1-1'
-    compile 'org.webjars:jquery:3.5.1'
-    compile 'org.webjars:js-cookie:2.2.1'
-
-    testImplementation 'io.quarkus:quarkus-junit5'
-    testImplementation 'io.rest-assured:rest-assured'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
-    testImplementation 'org.jsoup:jsoup:1.13.1'
-    testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
-    testCompile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.0.0'
-
-    nativeTestImplementation 'io.quarkus:quarkus-junit5'
-    nativeTestImplementation 'io.rest-assured:rest-assured'
-    nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-
+	compile project(":BaseCode:Core")
+	testCompile project(path: ":BaseCode:Core", configuration: 'jacocoInstrumented')
+	compile project(":BaseCode:ManagerIO")
+	testCompile project(path: ":BaseCode:ManagerIO", configuration: 'jacocoInstrumented')
+	compile project(":BaseCode:Stats")
+	testCompile project(path: ":BaseCode:Stats", configuration: 'jacocoInstrumented')
+	compile project(":WebServer:WebLibrary")
+	testCompile project(path: ":WebServer:WebLibrary", configuration: 'jacocoInstrumented')
+	
+	//apache
+	compile 'org.apache.commons:commons-text:1.8'
+	
+	implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+	implementation 'io.quarkus:quarkus-smallrye-health'
+	// https://quarkus.io/guides/microprofile-metrics
+	implementation 'io.quarkus:quarkus-smallrye-metrics'
+	implementation 'io.quarkus:quarkus-config-yaml'
+	// https://quarkus.io/guides/mailer
+	implementation 'io.quarkus:quarkus-mailer'
+	implementation 'io.quarkus:quarkus-resteasy'
+	implementation 'io.quarkus:quarkus-resteasy-jackson'
+	// https://quarkus.io/guides/qute for templates
+	// https://www.morling.dev/blog/quarkus-qute-test-ride/
+	// https://quarkus.io/guides/writing-native-applications-tips#including-resources
+	implementation 'io.quarkus:quarkus-qute'
+	implementation 'io.quarkus:quarkus-resteasy-qute'
+	// https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Annotations
+	implementation 'io.quarkus:quarkus-smallrye-openapi'
+	implementation 'io.quarkus:quarkus-scheduler'
+	// https://quarkus.io/guides/mongodb
+	// https://quarkus.io/guides/mongodb-panache
+	implementation 'io.quarkus:quarkus-mongodb-panache'
+	// https://quarkus.io/guides/security-properties
+	implementation 'io.quarkus:quarkus-elytron-security-properties-file'
+	implementation 'io.quarkus:quarkus-elytron-security'
+	// https://quarkus.io/guides/security-jwt
+	// https://vertx.io/docs/vertx-auth-jwt/java/
+	implementation 'io.quarkus:quarkus-smallrye-jwt'
+	
+	compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: log4j2Slf4jVersion
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4j2Version
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j2Version
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: jacksonVersion
+	
+	implementation 'commons-io:commons-io:2.6'
+	
+	// TODO:: think about using webjars to pull in libs for web pages; https://www.webjars.org/
+	compile 'org.webjars:bootstrap:4.4.1-1'
+	compile 'org.webjars:jquery:3.5.1'
+	compile 'org.webjars:js-cookie:2.2.1'
+	
+	testImplementation 'io.quarkus:quarkus-junit5'
+	testImplementation 'io.rest-assured:rest-assured'
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+	testImplementation 'org.jsoup:jsoup:1.13.1'
+	testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+	testCompile group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.0.0'
+	testCompile 'com.deque:axe-selenium:3.0'
+	
+	nativeTestImplementation 'io.quarkus:quarkus-junit5'
+	nativeTestImplementation 'io.rest-assured:rest-assured'
+	nativeTestImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
 }
 
 group 'com.gjs.taskTimekeeper.webServer'
-version = '1.0.0.453'
+version = '1.0.0.592'
 String projectPropertiesFileName = "application.yml";
 String openApiConfigFileName = "META-INF/" + "openapi.yml"
 String projectResourcesDir = "$projectDir/src/main/resources/";
 
+// stop lombok from overwriting its own config
+generateLombokConfig.enabled = false
+
 task writeOpenApiFile() {
-    doLast {
-        new File(projectResourcesDir + openApiConfigFileName).text = """
+	doLast {
+		new File(projectResourcesDir + openApiConfigFileName).text = """
 #################################################################################
 #                                                                               #
 # Open API base information.                                                    #
@@ -109,12 +118,12 @@ security:
   - JwtAuth: []
 paths:
 """
-    }
+	}
 }
 
 task writePropertiesFile() {
-    doLast {
-        new File(projectResourcesDir + projectPropertiesFileName).text = """
+	doLast {
+		new File(projectResourcesDir + projectPropertiesFileName).text = """
 ################################################################
 #                                                              #
 # Main properties file. Contains values used in the server.    #
@@ -173,44 +182,41 @@ runningInfo:
   hostname: localhost
   port: \${quarkus.http.port}
 """
-    }
+	}
 }
 
 task deleteGenertatedResources(type: Delete) {
-    delete fileTree(projectResourcesDir) {
-        include "**/$openApiConfigFileName"
-        include "**/$projectPropertiesFileName"
-    }
+	delete fileTree(projectResourcesDir) {
+		include "**/$openApiConfigFileName"
+		include "**/$projectPropertiesFileName"
+	}
 }
 
 clean {
-    dependsOn 'deleteGenertatedResources';
+	dependsOn 'deleteGenertatedResources';
 }
 
 compileJava {
-    options.compilerArgs << '-parameters'
-    println "WebServer version at compile time: " + version
-    dependsOn 'writePropertiesFile';
-    dependsOn 'writeOpenApiFile';
-
-    dependsOn ':BaseCode:Core:test'
-    dependsOn ':BaseCode:ManagerIO:test'
-    dependsOn ':BaseCode:Stats:test'
-    dependsOn ':WebServer:WebLibrary:test'
-    dependsOn 'incrementBuildVersion';
+	options.compilerArgs << '-parameters'
+	println "WebServer version at compile time: " + version
+	dependsOn 'writePropertiesFile';
+	dependsOn 'writeOpenApiFile';
+	
+	dependsOn ':BaseCode:Core:test'
+	dependsOn ':BaseCode:ManagerIO:test'
+	dependsOn ':BaseCode:Stats:test'
+	dependsOn ':WebServer:WebLibrary:test'
+	dependsOn 'incrementBuildVersion';
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 test {
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }
-
-// stop lombok from overwriting its own config
-generateLombokConfig.enabled = false

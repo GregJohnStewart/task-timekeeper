@@ -9,18 +9,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class DataOperationTest extends GuiTest {
-
-    protected Outputter ioOutputter = new Outputter(
-            new ByteArrayOutputStream(),
-            new ByteArrayOutputStream()
-    );
-    protected ManagerIO managerIO;
-
-    protected void setupManagerIo(File file){
-        this.managerIO = new ManagerIO(
-                new FileDataSource(file),
-                this.ioOutputter
-        );
-    }
-
+	
+	protected Outputter ioOutputter = new Outputter(
+		new ByteArrayOutputStream(),
+		new ByteArrayOutputStream()
+	);
+	protected ManagerIO managerIO;
+	
+	protected void setupManagerIo(File file) {
+		this.managerIO = new ManagerIO(
+			new FileDataSource(file),
+			this.ioOutputter
+		);
+	}
 }

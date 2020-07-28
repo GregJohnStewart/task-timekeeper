@@ -130,6 +130,7 @@ function sendTaskAddEditRequest(event){
 	if(!taskAddEditModalIdInputGroup.is(":hidden")){
 		data.actionConfig.action = "EDIT";
 		data.actionConfig.index = taskAddEditModalIdInput.val();
+		data.actionConfig.newName = taskAddEditModalNameInput.val();
 		delete data.actionConfig.name;
 	}
 

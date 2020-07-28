@@ -1,12 +1,11 @@
 package com.gjs.taskTimekeeper.webServer.server.testResources.webUi;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -14,8 +13,8 @@ import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.form.F
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Slf4j
 public class WebAssertions {
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebAssertions.class);
 	
 	public static List<WebElement> assertElementsInvalid(
 		String identifyingAttribute,
@@ -40,7 +39,7 @@ public class WebAssertions {
 			}
 			
 			if(!found) {
-				LOGGER.error(
+				log.error(
 					"Form element with {} as its {} was not found in the set of invalid elements: {}",
 					curExpectedElement,
 					identifyingAttribute,
@@ -102,7 +101,7 @@ public class WebAssertions {
 						return messageElement;
 					}
 				}
-				LOGGER.error(
+				log.error(
 					"Could not find message that matches the expected header and/or message and/or type. Page: ({}) {}",
 					webDriverWrapper.getDriver().getCurrentUrl(),
 					webDriverWrapper.getDriver().getPageSource()

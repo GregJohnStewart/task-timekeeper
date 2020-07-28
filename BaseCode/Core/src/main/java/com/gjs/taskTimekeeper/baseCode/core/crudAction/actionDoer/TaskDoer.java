@@ -6,8 +6,7 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Name;
 import com.gjs.taskTimekeeper.baseCode.core.utils.OutputLevel;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,9 +16,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /** The action doer to handle managing Tasks. */
+@Slf4j
 public class TaskDoer extends CrudDoer<Task> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskDoer.class);
-
     public TaskDoer(TimeManager manager) {
         super(manager);
     }
@@ -32,24 +30,24 @@ public class TaskDoer extends CrudDoer<Task> {
     protected boolean add(ActionConfig config) {
         // ensure we have a name for the new task
         if (config.getName() == null) {
-            LOGGER.warn("No task name given for the new task. Not adding new task.");
+            log.warn("No task name given for the new task. Not adding new task.");
             outputter.errorPrintln("ERROR:: No task name given for the new task.");
             return false;
         }
         // check we aren't duplicating names
         try {
             if (manager.getTaskByName(config.getName()) != null) {
-                LOGGER.warn("Duplicate task name given. Not adding new task.");
+                log.warn("Duplicate task name given. Not adding new task.");
                 outputter.errorPrintln("ERROR:: Duplicate task name given.");
                 return false;
             }
         } catch (Exception e) {
-            LOGGER.warn("Invalid task name given. Not adding new task.");
+            log.warn("Invalid task name given. Not adding new task.");
             outputter.errorPrintln("Invalid task name given. Not adding new task.");
             return false;
         }
         if (config.getAttributeName() != null && config.getAttributes() != null) {
-            LOGGER.warn("Cannot process both single attribute and set of attributes.");
+            log.warn("Cannot process both single attribute and set of attributes.");
             outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
             return false;
         }
@@ -58,7 +56,7 @@ public class TaskDoer extends CrudDoer<Task> {
 
         if (config.getAttributeName() != null) {
             if (config.getAttributeVal() != null) {
-                LOGGER.debug("Setting attribute name and value.");
+                log.debug("Setting attribute name and value.");
                 newTask.getAttributes().put(config.getAttributeName(), config.getAttributeVal());
             }
         }
@@ -67,9 +65,9 @@ public class TaskDoer extends CrudDoer<Task> {
             try {
                 newAtts = ActionDoer.parseAttributes(config.getAttributes());
             } catch (IllegalArgumentException e) {
-                LOGGER.warn("Attribute string given was invalid. Error: ", e);
+                log.warn("Attribute string given was invalid. Error: ", e);
                 outputter.errorPrintln(
-                        "Attribute string given was invalid. Error: " + e.getMessage());
+                    "Attribute string given was invalid. Error: " + e.getMessage());
                 return false;
             }
             newTask.setAttributes(newAtts);
@@ -95,8 +93,8 @@ public class TaskDoer extends CrudDoer<Task> {
     protected boolean edit(ActionConfig config) {
         Task editingTask = null;
         if (config.getName() != null && config.getIndex() != null) {
-            LOGGER.warn(
-                    "Error: Both name and search index were used to specify which task to edit.");
+            log.warn(
+                "Error: Both name and search index were used to specify which task to edit.");
             outputter.errorPrintln(
                     "ERROR:: Cannot give both name and index to specify which task to edit.");
             return false;
@@ -110,22 +108,22 @@ public class TaskDoer extends CrudDoer<Task> {
                 outputter.normPrintln(
                         OutputLevel.DEFAULT, "Editing task: " + editingTask.getName());
             } else {
-                LOGGER.warn("Index given was out of bounds for referencing tasks.");
+                log.warn("Index given was out of bounds for referencing tasks.");
                 outputter.errorPrintln("ERROR: Index given was out of bounds.");
                 return false;
             }
         } else {
-            LOGGER.warn("No task name or index entered to look up task to change.");
+            log.warn("No task name or index entered to look up task to change.");
             outputter.errorPrintln("ERROR:: Nothing given to specify which task to edit.");
             return false;
         }
         if (editingTask == null) {
-            LOGGER.warn("No task found with name or index given.");
+            log.warn("No task found with name or index given.");
             outputter.errorPrintln("No task found to edit.");
             return false;
         }
         if (config.getAttributeName() != null && config.getAttributes() != null) {
-            LOGGER.warn("Cannot process both single attribute and set of attributes.");
+            log.warn("Cannot process both single attribute and set of attributes.");
             outputter.errorPrintln("Cannot process both single attribute and set of attributes.");
             return false;
         }
@@ -138,7 +136,7 @@ public class TaskDoer extends CrudDoer<Task> {
                 outputter.normPrintln(
                         OutputLevel.VERBOSE, "New name set to: " + editingTask.getName());
             } catch (IllegalArgumentException e) {
-                LOGGER.warn("Invalid new name given. ", e);
+                log.warn("Invalid new name given. ", e);
                 outputter.errorPrintln("Invalid new name given. Error: \n" + e.getMessage());
                 return false;
             }
@@ -173,16 +171,16 @@ public class TaskDoer extends CrudDoer<Task> {
             try {
                 newAtts = ActionDoer.parseAttributes(config.getAttributes());
             } catch (IllegalArgumentException e) {
-                LOGGER.warn("Attribute string given was invalid. Error: ", e);
+                log.warn("Attribute string given was invalid. Error: ", e);
                 outputter.errorPrintln(
-                        "Attribute string given was invalid. Error: " + e.getMessage());
+                    "Attribute string given was invalid. Error: " + e.getMessage());
                 return false;
             }
             if (!editingTask.getAttributes().equals(newAtts)) {
                 editingTask.setAttributes(newAtts);
                 modified = true;
             } else {
-                LOGGER.debug("Attribute map given same as what was already held.");
+                log.debug("Attribute map given same as what was already held.");
             }
         }
 
@@ -206,13 +204,13 @@ public class TaskDoer extends CrudDoer<Task> {
         }
 
         if (taskToRemove == null) {
-            LOGGER.info("No task with the name given found or at index given.");
+            log.info("No task with the name given found or at index given.");
             outputter.errorPrintln("No task with the name given found or at index given.");
             return false;
         }
 
         if (!manager.getTimespansWith(taskToRemove).isEmpty()) {
-            LOGGER.warn("Task part of one or more time spans. Cannot remove task.");
+            log.warn("Task part of one or more time spans. Cannot remove task.");
             outputter.errorPrintln("Task given part of one or more time spans. Cannot remove.");
             return false;
         }
@@ -297,13 +295,13 @@ public class TaskDoer extends CrudDoer<Task> {
 
     @Override
     public void view(ActionConfig config) {
-        LOGGER.info("Viewing one or more tasks.");
+        log.info("Viewing one or more tasks.");
 
         {
             if (config.getName() != null) {
                 Task task = manager.getTaskByName(config.getName());
                 if (task != null) {
-                    LOGGER.debug("Found a task that matched the name.");
+                    log.debug("Found a task that matched the name.");
                     this.displayOne(task);
                     return;
                 }
@@ -311,7 +309,7 @@ public class TaskDoer extends CrudDoer<Task> {
                 Task task = this.getAtIndex(config);
 
                 if (task != null) {
-                    LOGGER.debug("Found a task at the given index.");
+                    log.debug("Found a task at the given index.");
                     this.displayOne(task);
                     return;
                 }

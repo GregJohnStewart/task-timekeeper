@@ -2,13 +2,15 @@ package com.gjs.taskTimekeeper.webServer.server.validation.sanitize;
 
 public abstract class Anitizer <T> implements Sanitizer<T>, DeSanitizer<T> {
 	
-	public T anitize(T object, AnitizeOp operation) {
-		switch(operation) {
-		case SANITIZE:
-			return this.sanitize(object);
-		case DESANITIZE:
-			return this.deSanitize(object);
-		}
-		throw new IllegalArgumentException("Invalid operation given: " + operation);
+	public abstract T anitize(T object, AnitizeOp operation);
+	
+	@Override
+	public T deSanitize(T object) {
+		return this.anitize(object, AnitizeOp.DESANITIZE);
+	}
+	
+	@Override
+	public T sanitize(T object) {
+		return this.anitize(object, AnitizeOp.SANITIZE);
 	}
 }

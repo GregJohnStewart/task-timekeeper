@@ -8,8 +8,6 @@ import com.gjs.taskTimekeeper.baseCode.managerIO.dataSource.ByteArrayDataSource;
 import com.gjs.taskTimekeeper.baseCode.managerIO.exception.ManagerIOReadException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ManagerIOTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerIOTest.class);
     private static final ObjectMapper TIME_MANAGER_MAPPER =
             ObjectMapperUtilities.getDefaultMapper();
     private static final File TEST_DATA_LOCATION =

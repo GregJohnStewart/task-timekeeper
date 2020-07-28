@@ -15,9 +15,27 @@
 					<button class="btn btn-sm btn-info" type="button" onclick="setupTimekeepingData();">
 						<i class="fas fa-redo-alt fa-fw"></i> Refresh page data
 					</button>
-					<button class="btn btn-sm btn-danger" type="button">
+					<button class="btn btn-sm btn-danger" type="button" onclick="clearAllData();">
 						<i class="fas fa-bomb fa-fw"></i> Clear ALL data
 					</button>
+					<br/>
+					<br/>
+					<table>
+						<tr>
+							<th class="text-right">
+								Last page data load:
+							</th>
+							<td class="text-left" id="lastDataLoadSpan">
+							</td>
+						</tr>
+						<tr>
+							<th class="text-right">
+								Last data change:
+							</th>
+							<td id="lastDataChangeSpan" class="text-left">
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -26,22 +44,22 @@
 	<div class="card">
 		<div class="card-header">
 			<ul class="nav nav-tabs card-header-tabs" id="mainTab" role="tablist">
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link active" id="selectedPeriodTab" data-toggle="tab" href="#selectedPeriodContent" role="tab" aria-controls="selectedPeriodContent" aria-selected="true">
 						<i class="fas fa-user-clock fa-fw"></i> Selected Period
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="periodsTab" data-toggle="tab" href="#workPeriodsContent" role="tab" aria-controls="workPeriodsContent" aria-selected="false">
 						<i class="fas fa-business-time fa-fw"></i> Work Periods
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="tasksTab" data-toggle="tab" href="#tasksContent" role="tab" aria-controls="tasksContent" aria-selected="false">
 						<i class="fas fa-tasks fa-fw"></i> Tasks
 					</a>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="statsTab" data-toggle="tab" href="#statsContent" role="tab" aria-controls="statsContent" aria-selected="false">
 						<i class="fas fa-chart-pie fa-fw"></i> Stats
 					</a>
@@ -214,16 +232,19 @@
 					</div>
 					<div class="form-group">
 						<div class="form-check">
-							<input type="checkbox" class="form-check-input loginStayLoggedIn" id="homeLoginStayLoggedIn" name="stayLoggedIn">
+							<input type="checkbox" class="form-check-input loginStayLoggedIn" id="homeLoginStayLoggedIn" name="stayLoggedIn" form="homeLogin">
 							<label class="form-check-label" for="homeLoginStayLoggedIn">
 								Remember me
 							</label>
 						</div>
 					</div>
-					<button type="submit" class="btn btn-primary submitButton">Sign in
+					<button type="submit" class="btn btn-primary submitButton">
+						Sign in
 						<i class="fas fa-sign-in-alt"></i>
 					</button>
-					<button type="reset" class="btn btn-link resetButton">Reset</button>
+					<button type="reset" class="btn btn-link resetButton">
+						Reset
+					</button>
 					<div class="form-response">
 					</div>
 				</form>

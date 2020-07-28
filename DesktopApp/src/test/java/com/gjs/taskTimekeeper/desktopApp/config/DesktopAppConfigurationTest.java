@@ -23,101 +23,101 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class DesktopAppConfigurationTest {
-    private static final File TEST_USER_CONFIG_FILE =
-            new File(
-                    GuiRunnerTest.class
-                            .getClassLoader()
-                            .getResource("test/testUserConfig.properties")
-                            .getFile());
-
-    private static void writeToUserConfigFile(byte[] bytes) {
-        try (FileOutputStream os = new FileOutputStream(TEST_USER_CONFIG_FILE); ) {
-            os.write(bytes);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private DesktopAppConfiguration config;
-
-    public static Collection<Object[]> data() {
-        return Arrays.asList(
-                new Object[][] {
-                    {
-                        "", // properties file contents
-                        new HashMap<String, String>(), // env contents
-                        new String[] {}, // command line args
-                        new HashMap<ConfigKeys, String>() {
-                            { // entries to assert
-                                put(RUN_MODE, "SINGLE");
-                            }
-                        }
-                    },
-                    {
-                        RUN_MODE.key + " = " + RunMode.GUI_SWING.name(),
-                        new HashMap<String, String>() {
-                            {
-                                put(CONFIG_FILE.envVar, TEST_USER_CONFIG_FILE.getPath());
-                            }
-                        },
-                        new String[] {},
-                        new HashMap<ConfigKeys, String>() {
-                            {
-                                put(CONFIG_FILE, TEST_USER_CONFIG_FILE.getPath());
-                                put(RUN_MODE, RunMode.GUI_SWING.name());
-                            }
-                        }
-                    },
-                    {
-                        RUN_MODE.key + " = " + RunMode.GUI_SWING.name(),
-                        null,
-                        new String[] {"--configFile", TEST_USER_CONFIG_FILE.getPath()},
-                        new HashMap<ConfigKeys, String>() {
-                            {
-                                put(CONFIG_FILE, TEST_USER_CONFIG_FILE.getPath());
-                                put(RUN_MODE, RunMode.GUI_SWING.name());
-                            }
-                        }
-                    },
-                    {
-                        "",
-                        null,
-                        new String[] {"--mode", RunMode.GUI_SWING.name()},
-                        new HashMap<ConfigKeys, String>() {
-                            {
-                                put(RUN_MODE, RunMode.GUI_SWING.name());
-                            }
-                        }
-                    },
-                });
-    }
-
-    @AfterEach
-    public void cleanup() {
-        writeToUserConfigFile(new byte[0]);
-    }
-
-    @ParameterizedTest
-    @MethodSource("data")
-    public void test(
-            String userPropertiesFileContents,
-            Map<String, String> envVars,
-            String[] cmdLineArgs,
-            Map<ConfigKeys, String> entriesToAssert
-    ) throws CmdLineException {
-        writeToUserConfigFile(userPropertiesFileContents.getBytes());
-        DesktopAppConfiguration config;
-        if (envVars == null) {
-            config = new DesktopAppConfiguration(cmdLineArgs);
-        } else {
-            config = new DesktopAppConfiguration(envVars, cmdLineArgs);
-        }
-
-        for (Map.Entry<Object, Object> expecting : config.getAllProperties()) {
-            assertNotNull(expecting.getValue());
-        }
-        for (Map.Entry<ConfigKeys, String> expecting : entriesToAssert.entrySet()) {
-            assertEquals(expecting.getValue(), config.getProperty(expecting.getKey()));
-        }
-    }
+	private static final File TEST_USER_CONFIG_FILE =
+		new File(
+			GuiRunnerTest.class
+				.getClassLoader()
+				.getResource("test/testUserConfig.properties")
+				.getFile());
+	
+	private static void writeToUserConfigFile(byte[] bytes) {
+		try(FileOutputStream os = new FileOutputStream(TEST_USER_CONFIG_FILE);) {
+			os.write(bytes);
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private DesktopAppConfiguration config;
+	
+	public static Collection<Object[]> data() {
+		return Arrays.asList(
+			new Object[][]{
+				{
+					"", // properties file contents
+					new HashMap<String, String>(), // env contents
+					new String[]{}, // command line args
+					new HashMap<ConfigKeys, String>() {
+						{ // entries to assert
+							put(RUN_MODE, "SINGLE");
+						}
+					}
+				},
+				{
+					RUN_MODE.key + " = " + RunMode.GUI_SWING.name(),
+					new HashMap<String, String>() {
+						{
+							put(CONFIG_FILE.envVar, TEST_USER_CONFIG_FILE.getPath());
+						}
+					},
+					new String[]{},
+					new HashMap<ConfigKeys, String>() {
+						{
+							put(CONFIG_FILE, TEST_USER_CONFIG_FILE.getPath());
+							put(RUN_MODE, RunMode.GUI_SWING.name());
+						}
+					}
+				},
+				{
+					RUN_MODE.key + " = " + RunMode.GUI_SWING.name(),
+					null,
+					new String[]{"--configFile", TEST_USER_CONFIG_FILE.getPath()},
+					new HashMap<ConfigKeys, String>() {
+						{
+							put(CONFIG_FILE, TEST_USER_CONFIG_FILE.getPath());
+							put(RUN_MODE, RunMode.GUI_SWING.name());
+						}
+					}
+				},
+				{
+					"",
+					null,
+					new String[]{"--mode", RunMode.GUI_SWING.name()},
+					new HashMap<ConfigKeys, String>() {
+						{
+							put(RUN_MODE, RunMode.GUI_SWING.name());
+						}
+					}
+				},
+				});
+	}
+	
+	@AfterEach
+	public void cleanup() {
+		writeToUserConfigFile(new byte[0]);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("data")
+	public void test(
+		String userPropertiesFileContents,
+		Map<String, String> envVars,
+		String[] cmdLineArgs,
+		Map<ConfigKeys, String> entriesToAssert
+	) throws CmdLineException {
+		writeToUserConfigFile(userPropertiesFileContents.getBytes());
+		DesktopAppConfiguration config;
+		if(envVars == null) {
+			config = new DesktopAppConfiguration(cmdLineArgs);
+		} else {
+			config = new DesktopAppConfiguration(envVars, cmdLineArgs);
+		}
+		
+		for(Map.Entry<Object, Object> expecting : config.getAllProperties()) {
+			assertNotNull(expecting.getValue());
+		}
+		for(Map.Entry<ConfigKeys, String> expecting : entriesToAssert.entrySet()) {
+			assertEquals(expecting.getValue(), config.getProperty(expecting.getKey()));
+		}
+	}
 }

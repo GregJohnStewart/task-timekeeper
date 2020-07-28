@@ -1,17 +1,16 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserInfo;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.UserLevel;
-import com.gjs.taskTimekeeper.webServer.webLibrary.user.notification.NotificationSettings;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.notification.NotificationSettings;
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,9 +22,8 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @MongoEntity(collection = "Users")
+@Slf4j
 public class User extends OurMongoEntity {
-	private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
-	
 	private String username;
 	
 	private String hashedPass;
