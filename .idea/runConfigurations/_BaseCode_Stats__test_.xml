@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="task-timekeeper:DesktopApp [test]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name=":BaseCode:Stats [test]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/DesktopApp" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/BaseCode/Stats" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">

@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="task-timekeeper:BaseCode:Core [test]" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name=":WebLibrary [test]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/BaseCode/Core" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/WebServer/WebLibrary" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">

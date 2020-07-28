@@ -4,7 +4,7 @@ plugins {
 	id "io.freefair.lombok" version "${lombokVersion}"
 }
 
-version = '2.1.2.173'
+version = '2.1.2.182'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
