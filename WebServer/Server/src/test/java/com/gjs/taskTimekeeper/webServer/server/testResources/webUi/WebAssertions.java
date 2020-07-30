@@ -128,7 +128,8 @@ public class WebAssertions {
 		
 		assertEquals(
 			1,
-			messages.size()
+			messages.size(),
+			"Unexpected number of messages for form."
 		);
 		
 		for(WebElement message : messages) {

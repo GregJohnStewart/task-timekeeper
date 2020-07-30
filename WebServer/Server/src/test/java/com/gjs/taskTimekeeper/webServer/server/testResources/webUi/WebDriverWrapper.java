@@ -146,6 +146,11 @@ public class WebDriverWrapper {
 		return this;
 	}
 	
+	public WebDriverWrapper waitForModalClose() throws InterruptedException {
+		Thread.sleep(250);
+		return this;
+	}
+	
 	public WebDriverWrapper closeAllMessages() {
 		List<WebElement> messageCloseButtons = this.getDriver().findElements(By.className("messageClose"));
 		

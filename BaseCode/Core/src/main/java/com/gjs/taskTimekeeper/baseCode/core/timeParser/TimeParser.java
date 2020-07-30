@@ -95,6 +95,8 @@ public final class TimeParser {
 		FORMATTERS.put(DateTimeFormatter.ISO_LOCAL_TIME, DateTimeParsedType.TIME);
 		ACCEPTABLE_FORMATS_FOR_HELP.add("ISO Date/Times");
 		
+		FORMATTERS.put(DateTimeFormatter.ofPattern("uuuu-MM-dd kk:mm:ss"), DateTimeParsedType.DATETIME);
+		
 		FORMATTERS.put(DateTimeFormatter.ofPattern("d/M h:m a y"), DateTimeParsedType.DATETIME);
 		ACCEPTABLE_FORMATS_FOR_HELP.add("d/M h:m a y");
 		FORMATTERS.put(DateTimeFormatter.ofPattern("d/M H:m y"), DateTimeParsedType.DATETIME);

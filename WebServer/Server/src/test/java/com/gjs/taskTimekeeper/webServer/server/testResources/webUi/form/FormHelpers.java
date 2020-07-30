@@ -9,6 +9,7 @@ public class FormHelpers {
 	}
 	
 	public static void submitForm(WebElement formElement) {
+//		formElement.submit();
 		formElement.findElement(By.className("submitButton")).click();
 	}
 }
