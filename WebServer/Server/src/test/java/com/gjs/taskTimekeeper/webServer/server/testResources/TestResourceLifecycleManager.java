@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @Slf4j
 public class TestResourceLifecycleManager implements QuarkusTestResourceLifecycleManager {
-	private static final boolean SELENIUM_HEADLESS = false;
+	private static final boolean SELENIUM_HEADLESS = true;
 	
 	private static volatile MongodExecutable MONGO = null;
 	private static volatile WebDriver webDriver;
