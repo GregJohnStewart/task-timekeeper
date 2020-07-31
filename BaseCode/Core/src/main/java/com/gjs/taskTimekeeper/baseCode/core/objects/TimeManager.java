@@ -65,6 +65,14 @@ public class TimeManager {
 		this.setWorkPeriods(workPeriods);
 	}
 	
+	public TimeManager(Collection<Task> tasks) {
+		this(new TreeSet<>(tasks));
+	}
+	
+	public TimeManager(Collection<Task> tasks, Collection<WorkPeriod> workPeriods) {
+		this(new TreeSet<>(tasks), new TreeSet<>(workPeriods));
+	}
+	
 	public CrudOperator getCrudOperator() {
 		return this.crudOperator;
 	}

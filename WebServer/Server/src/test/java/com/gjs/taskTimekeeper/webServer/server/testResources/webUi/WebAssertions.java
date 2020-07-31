@@ -32,7 +32,15 @@ public class WebAssertions {
 		for(String curExpectedElement : expectedInvalidElements) {
 			boolean found = false;
 			for(WebElement curInvalidElement : invalidElements) {
-				if(curExpectedElement.equals(curInvalidElement.getAttribute(identifyingAttribute))) {
+				String attValue = curInvalidElement.getAttribute(identifyingAttribute);
+				
+				if(
+					curExpectedElement.equals(attValue) ||
+						(
+							identifyingAttribute.equals("class") &&
+								attValue.contains(curExpectedElement)
+						)
+				) {
 					found = true;
 					break;
 				}

@@ -24,6 +24,9 @@ public class TimekeepingAssertions {
 		TimeManager held = MANAGER_MAPPER.readValue(managerEntity.getTimeManagerData(), TimeManager.class);
 		
 		assertEquals(expectedData, held);
+		
+		//TODO:: assert that data on page matches held manager data
+		
 	}
 	
 	public static void assertLastDataLoadUpdated(LocalDateTime previousLastDataLoad, WebDriverWrapper wrapper) {

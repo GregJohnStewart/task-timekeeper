@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 import static com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebAssertions.submitFormAndAssertElementsInvalid;
@@ -77,6 +78,7 @@ public class TaskTest extends TimekeepingUiTest {
 			assertUserTimeData(this.testUser, new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task")))));
 			this.assertTimestampsUpdated();
 		}
+		//TODO:: assert task in list
 	}
 	
 	@Test
@@ -88,18 +90,39 @@ public class TaskTest extends TimekeepingUiTest {
 		
 		WebElement taskNameField = this.wrapper.waitForElement(By.id("taskAddEditModalNameInput"));
 		WebElement closeModalButton = taskAddEditForm.findElement(By.className("closeModalButton"));
+		WebElement addAttributeButton = taskAddEditForm.findElement(By.id("taskAddEditModalAddAttButton"));
 		taskNameField.sendKeys("Test Task");
+		
+		addAttributeButton.click();
+		WebElement attNameInput = taskAddEditForm.findElement(By.className("attNameInput"));
+		WebElement attValueInput = taskAddEditForm.findElement(By.className("attValueInput"));
+		
+		{
+			submitFormAndAssertElementsInvalid(
+				"class",
+				(RemoteWebElement)taskAddEditForm,
+				"attNameInput"
+			);
+		}
 		
 		
 		{
-			//TODO:: atts
+			attNameInput.sendKeys("some");
+			attValueInput.sendKeys("att");
 			
 			submitForm(taskAddEditForm);
 			this.wrapper.waitForAjaxComplete();
 			
-			assertUserTimeData(this.testUser, new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task")))));
+			assertUserTimeData(
+				this.testUser,
+				new TimeManager(Arrays.asList(new Task("Test Task", new HashMap<String, String>() {{
+					put("some", "att");
+				}})))
+			);
 		}
 		
 		this.assertTimestampsUpdated();
+		
+		//TODO:: assert task in list
 	}
 }
