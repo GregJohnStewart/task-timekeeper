@@ -6,6 +6,8 @@ var contentSpinner = new Spinner(spinnerOpts);
 
 var selectedPeriodTab = $("#selectedPeriodTab");
 var periodsTab = $("#periodsTab");
+var tasksTab = $("#tasksTab");
+var statsTab = $("#statssTab");
 var lastDataLoadSpan = $("#lastDataLoadSpan");
 var lastDataChangeSpan = $("#lastDataChangeSpan");
 
@@ -79,7 +81,10 @@ function selectFirstPeriodIfNoneSelected(){
 }
 
 function manageSelectedTabView(){
-	//TODO:: don't move off of stats or task page
+	if(tasksTab.hasClass("active") || statsTab.hasClass("active")){
+		return;
+	}
+
 	if(selectedPeriod == null){
 		selectedPeriodTab.prop("disabled", true);
 		selectedPeriodTab.addClass("disabled");
