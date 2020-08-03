@@ -26,8 +26,8 @@ function loadTaskData(){
 			'<td class="taskIndexCell">'+curIndForKeeper+'</td>' +
 			'<td class="taskNameCell">'+task.name.name+'</td>' +
 			'<td>' +
-			'<button type="button" class="btn btn-warning btn-sm" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal" title="View or Edit Task"><i class="far fa-eye fa-fw"></i>/<i class="fas fa-pencil-alt fa-fw"></i></button>&nbsp;' +
-			'<button type="button" class="btn btn-danger btn-sm" onclick="removeTask('+curIndForKeeper+');" title="Remove Task"><i class="far fa-trash-alt fa-fw"></i></button>' +
+			'<button type="button" class="btn btn-warning btn-sm taskViewEditButton" onclick="setupTaskAddEditFormForEdit($(this), '+curIndForArray+');" data-toggle="modal" data-target="#taskAddEditModal" title="View or Edit Task"><i class="far fa-eye fa-fw"></i>/<i class="fas fa-pencil-alt fa-fw"></i></button>&nbsp;' +
+			'<button type="button" class="btn btn-danger btn-sm taskRemoveButton" onclick="removeTask('+curIndForKeeper+');" title="Remove Task"><i class="far fa-trash-alt fa-fw"></i></button>' +
 			'</td>' +
 			'</tr>'
 		);
@@ -106,8 +106,8 @@ function setupTaskAddEditFormForEdit(btnObj, indexForArr){
 function taskAddEditFormAddAttribute(name, value){
 	taskAddEditModalAttTableContent.append(
 		'<tr>' +
-		'<td><input type="text" class="form-control attNameInput" name="taskAttName" placeholder="name" value="' + name + '" required></td>' +
-		'<td><input type="text" class="form-control attValueInput" name="taskAttValue" placeholder="value" value="' + value + '"></td>' +
+		'<td><input type="text" class="form-control attNameInput attName" name="taskAttName" placeholder="name" value="' + name + '" required></td>' +
+		'<td><input type="text" class="form-control attValueInput attValue" name="taskAttValue" placeholder="value" value="' + value + '"></td>' +
 		'<td><button type="button" class="btn btn-danger btn-sm btn-block" onclick="$(this).closest(\'tr\').remove()" title="Remove Attribute"><i class="far fa-trash-alt fa-fw"></i></button></td>' +
 		'</tr>'
 	);

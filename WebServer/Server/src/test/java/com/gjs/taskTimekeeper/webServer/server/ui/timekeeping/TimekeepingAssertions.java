@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.ui.timekeeping;
 
 import com.gjs.taskTimekeeper.baseCode.core.objects.Task;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
+import com.gjs.taskTimekeeper.baseCode.core.objects.WorkPeriod;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
@@ -14,7 +15,9 @@ import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.gjs.taskTimekeeper.webServer.server.ui.timekeeping.TimekeepingHelpers.getTimeDataLastDataChange;
 import static com.gjs.taskTimekeeper.webServer.server.ui.timekeeping.TimekeepingHelpers.getTimeDataLastDataLoad;
@@ -22,6 +25,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimekeepingAssertions {
+	
+	private static void assertTableMatchesMap(WebElement tableContentElement, Map<String, String> map) {
+		Map<String, String> found = new HashMap<>();
+		
+		for(WebElement row : tableContentElement.findElements(By.xpath(".//tr"))) {
+			WebElement attNameElement = row.findElement(By.className("attName"));
+			WebElement attValueElement = row.findElement(By.className("attValue"));
+			
+			String name;
+			String value;
+			
+			if(attNameElement.getTagName().equals("input")) {
+				name = attNameElement.getAttribute("value");
+			} else {
+				name = attNameElement.getText();
+			}
+			if(attValueElement.getTagName().equals("input")) {
+				value = attValueElement.getAttribute("value");
+			} else {
+				value = attValueElement.getText();
+			}
+			found.put(name, value);
+		}
+		
+		assertEquals(
+			map,
+			found
+		);
+	}
 	
 	private static TimeManagerResponse getHeldTimeManagerData(String jwt) {
 		ValidatableResponse validatableResponse = TestRestUtils
@@ -39,8 +71,7 @@ public class TimekeepingAssertions {
 		WebDriverWrapper wrapper,
 		TimeManager expectedData,
 		String userJwt
-	)
-		throws IOException {
+	) throws IOException, InterruptedException {
 		User user = testUser.getUserObj();
 		ManagerEntity managerEntity = ManagerEntity.findByUserId(user.id);
 		
@@ -58,25 +89,49 @@ public class TimekeepingAssertions {
 		{
 			tasksTab.click();
 			
+			WebElement taskTable = wrapper.waitForElement(By.id("tasksTableContent"));
+			assertEquals(
+				held.getTasks().size(),
+				taskTable.findElements(By.xpath(".//tr")).size()
+			);
+			
 			for(Task task : held.getTasks()) {
-				WebElement taskTable = wrapper.waitForElement(By.id("tasksTableContent"));
-				List<WebElement> taskTableElements = taskTable.findElements(By.xpath("//*[contains(text(),'" + task.getName()
-																												   .getName() + "')]"));
+				List<WebElement> taskTableElements = taskTable
+					.findElements(
+						By.xpath("//*[contains(text(),'" + task.getName().getName() + "')]")
+					);
 				
 				assertEquals(1, taskTableElements.size());
 				
 				WebElement taskRow = taskTableElements.get(0).findElement(By.xpath("./.."));
+				
+				taskRow.findElement(By.className("taskViewEditButton")).click();
+				
+				WebElement taskAddEditModalAttTableContent = wrapper.waitForElement(By.id(
+					"taskAddEditModalAttTableContent"));
+				
+				assertTableMatchesMap(taskAddEditModalAttTableContent, task.getAttributes());
+				
+				Thread.sleep(250);
+				wrapper.waitForElement(By.id("taskAddEditModal")).findElement(By.className("closeModalButton")).click();
+				wrapper.waitForModalClose();
 			}
 		}
 		
-		//periods
+		//periods/ selected period/ timespans
 		{
-			//TODO
-		}
-		
-		//selected period
-		{
-			//TODO
+			periodsTab.click();
+			WebElement periodsTableContent = wrapper.waitForElement(By.id("periodsTableContent"));
+			
+			assertEquals(
+				held.getWorkPeriods().size(),
+				periodsTableContent.findElements(By.xpath(".//tr")).size()
+			);
+			
+			//TODO:: check period table size
+			for(WorkPeriod period : held.getWorkPeriods()) {
+			
+			}
 		}
 		
 		//stats
