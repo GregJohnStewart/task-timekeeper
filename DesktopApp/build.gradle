@@ -15,7 +15,7 @@ targetCompatibility = 1.8
 generateLombokConfig.enabled = false
 
 //config for the application plugin. The last number (build #) is auto generated on assembly of the code. (see "incrementBuildVersion" task)
-version = '3.3.5.54'
+version = '3.3.5.55'
 mainClassName = "com.gjs.taskTimekeeper.desktopApp.Main"
 applicationName = "TaskTimekeeper"
 //logo location information

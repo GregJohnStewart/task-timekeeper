@@ -79,6 +79,7 @@ function selectFirstPeriodIfNoneSelected(){
 }
 
 function manageSelectedTabView(){
+	//TODO:: don't move off of stats or task page
 	if(selectedPeriod == null){
 		selectedPeriodTab.prop("disabled", true);
 		selectedPeriodTab.addClass("disabled");

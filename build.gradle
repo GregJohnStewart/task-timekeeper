@@ -169,5 +169,5 @@ codeCoverageReport.dependsOn {
 task updateWrapper(type: Wrapper) {
     group "wrapper"
     description "Rebuilds the wrapper with the version set. Use to update to new versions of Gradle"
-    gradleVersion = '6.3'
+    gradleVersion = '6.5'
 }
