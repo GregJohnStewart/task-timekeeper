@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.enterprise.context.RequestScoped;
@@ -147,7 +148,14 @@ public class WebDriverWrapper {
 	}
 	
 	public WebDriverWrapper waitForModalClose() throws InterruptedException {
-		Thread.sleep(250);
+		this.getWait().until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal")));
+		this.getWait().until(ExpectedConditions.invisibilityOfElementLocated(By.className("modal-backdrop")));
+		//		this.driver
+		//		this.getWait().until(
+		//			(WebDriver driver)->{
+		//
+		//			});
+		//		Thread.sleep(250);
 		return this;
 	}
 	

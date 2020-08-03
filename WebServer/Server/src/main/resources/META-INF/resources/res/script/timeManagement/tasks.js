@@ -141,7 +141,7 @@ function sendTaskAddEditRequest(event){
 		data: data,
 		done: function(data){
 			console.log("Successful add request: " + JSON.stringify(data));
-			taskAddEditModal.modal('hide')
+			taskAddEditModal.modal('hide');
 			setTimekeeperDataFromResponse(data);
 			refreshPageData();
 		},

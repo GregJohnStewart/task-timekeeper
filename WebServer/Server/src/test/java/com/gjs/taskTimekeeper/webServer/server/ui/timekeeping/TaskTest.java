@@ -58,8 +58,6 @@ public class TaskTest extends TimekeepingUiTest {
 				"taskAddEditModalNameInput"
 			);
 			
-			closeModalButton.click();
-			this.wrapper.waitForModalClose();
 			assertLastDataLoadAndChangeNotUpdated(
 				this.lastDataLoad,
 				this.lastDataChange,
@@ -67,18 +65,21 @@ public class TaskTest extends TimekeepingUiTest {
 			);
 		}
 		
-		addTaskButton.click();
 		
 		{
 			taskNameField.sendKeys("Test Task");
 			
 			submitForm(taskAddEditForm);
 			this.wrapper.waitForAjaxComplete();
+			this.wrapper.waitForModalClose();
 			
-			assertUserTimeData(this.testUser, new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task")))));
+			assertUserTimeData(
+				this.testUser,
+				this.wrapper,
+				new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task"))))
+			);
 			this.assertTimestampsUpdated();
 		}
-		//TODO:: assert task in list
 	}
 	
 	@Test
@@ -112,9 +113,11 @@ public class TaskTest extends TimekeepingUiTest {
 			
 			submitForm(taskAddEditForm);
 			this.wrapper.waitForAjaxComplete();
+			this.wrapper.waitForModalClose();
 			
 			assertUserTimeData(
 				this.testUser,
+				this.wrapper,
 				new TimeManager(Arrays.asList(new Task("Test Task", new HashMap<String, String>() {{
 					put("some", "att");
 				}})))
@@ -122,7 +125,5 @@ public class TaskTest extends TimekeepingUiTest {
 		}
 		
 		this.assertTimestampsUpdated();
-		
-		//TODO:: assert task in list
 	}
 }
