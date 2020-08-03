@@ -5,7 +5,10 @@ import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.entity.TestUser;
+import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
 import com.gjs.taskTimekeeper.webServer.server.testResources.webUi.WebDriverWrapper;
+import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.TimeManagerResponse;
+import io.restassured.response.ValidatableResponse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -13,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity.MANAGER_MAPPER;
 import static com.gjs.taskTimekeeper.webServer.server.ui.timekeeping.TimekeepingHelpers.getTimeDataLastDataChange;
 import static com.gjs.taskTimekeeper.webServer.server.ui.timekeeping.TimekeepingHelpers.getTimeDataLastDataLoad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,17 +23,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimekeepingAssertions {
 	
-	public static void assertUserTimeData(TestUser testUser, WebDriverWrapper wrapper, TimeManager expectedData)
+	private static TimeManagerResponse getHeldTimeManagerData(String jwt) {
+		ValidatableResponse validatableResponse = TestRestUtils
+			.newJwtCall(jwt)
+			.header("provideStats", true)
+			.header("sanitizeText", true)
+			.get("/api/timeManager/manager")
+			.then();
+		
+		return validatableResponse.extract().body().as(TimeManagerResponse.class);
+	}
+	
+	public static void assertUserTimeData(
+		TestUser testUser,
+		WebDriverWrapper wrapper,
+		TimeManager expectedData,
+		String userJwt
+	)
 		throws IOException {
 		User user = testUser.getUserObj();
 		ManagerEntity managerEntity = ManagerEntity.findByUserId(user.id);
 		
-		//TODO:: get from endpoint, with stats and sanitization on
-		TimeManager held = MANAGER_MAPPER.readValue(managerEntity.getTimeManagerData(), TimeManager.class);
+		TimeManagerResponse getResponse = getHeldTimeManagerData(userJwt);
+		TimeManager held = getResponse.getTimeManagerData();
 		
 		assertEquals(expectedData, held);
 		
-		//TODO:: assert that data on page matches held manager data
 		WebElement tasksTab = wrapper.waitForElement(By.id("tasksTab"));
 		WebElement periodsTab = wrapper.waitForElement(By.id("periodsTab"));
 		WebElement selectedPeriodTab = wrapper.waitForElement(By.id("selectedPeriodTab"));

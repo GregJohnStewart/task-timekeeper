@@ -195,6 +195,7 @@ public class PercentStats <T> extends Stats {
 	 *
 	 * @return The number of percentages held.
 	 */
+	@JsonIgnore
 	public synchronized int getNumEntries() {
 		return this.percentages.size();
 	}

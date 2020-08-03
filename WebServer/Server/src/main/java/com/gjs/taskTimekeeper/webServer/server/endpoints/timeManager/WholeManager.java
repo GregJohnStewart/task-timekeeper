@@ -202,8 +202,6 @@ public class WholeManager {
 			sanitizeText
 		);
 		
-		//TODO:: unsanitize text data in request
-		
 		ManagerEntity entity = getOrCreateNew(userId);
 		byte[] managerData = null;
 		

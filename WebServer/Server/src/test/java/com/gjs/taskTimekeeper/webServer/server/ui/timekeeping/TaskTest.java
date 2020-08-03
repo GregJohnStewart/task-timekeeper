@@ -76,7 +76,8 @@ public class TaskTest extends TimekeepingUiTest {
 			assertUserTimeData(
 				this.testUser,
 				this.wrapper,
-				new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task"))))
+				new TimeManager(new TreeSet<>(Arrays.asList(new Task("Test Task")))),
+				this.userUtils.getTestUserJwt(this.testUser)
 			);
 			this.assertTimestampsUpdated();
 		}
@@ -120,10 +121,13 @@ public class TaskTest extends TimekeepingUiTest {
 				this.wrapper,
 				new TimeManager(Arrays.asList(new Task("Test Task", new HashMap<String, String>() {{
 					put("some", "att");
-				}})))
+				}}))),
+				this.userUtils.getTestUserJwt(this.testUser)
 			);
 		}
 		
 		this.assertTimestampsUpdated();
 	}
+	
+	//TODO:: edit and remove test
 }
