@@ -103,6 +103,11 @@ public class WebDriverWrapper {
 		);
 	}
 	
+	public void reloadPage() {
+		this.driver.navigate().refresh();
+		this.waitForPageLoad();
+	}
+	
 	public WebDriverWait getWait() {
 		return this.getWait(DEFAULT_WAIT_TIMEOUT);
 	}

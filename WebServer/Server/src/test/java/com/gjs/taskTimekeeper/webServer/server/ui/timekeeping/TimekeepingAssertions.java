@@ -128,9 +128,8 @@ public class TimekeepingAssertions {
 				periodsTableContent.findElements(By.xpath(".//tr")).size()
 			);
 			
-			//TODO:: check period table size
 			for(WorkPeriod period : held.getWorkPeriods()) {
-			
+				//TODO:: verify
 			}
 		}
 		
