@@ -94,7 +94,6 @@ public class TaskTest extends TimekeepingUiTest {
 		addTaskButton.click();
 		
 		WebElement taskNameField = this.wrapper.waitForElement(By.id("taskAddEditModalNameInput"));
-		WebElement closeModalButton = taskAddEditForm.findElement(By.className("closeModalButton"));
 		WebElement addAttributeButton = taskAddEditForm.findElement(By.id("taskAddEditModalAddAttButton"));
 		taskNameField.sendKeys("Test Task");
 		
@@ -132,17 +131,14 @@ public class TaskTest extends TimekeepingUiTest {
 		this.assertTimestampsUpdated();
 	}
 	
-	//TODO:: edit test
 	@Test
 	public void remTaskTest() throws IOException, InterruptedException {
 		TimeManager manager = new TimeManager(
-			new TreeSet<>(
-				Arrays.asList(
-					new Task("Test Task 01"),
-					new Task("Test Task 02"),
-					new Task("Test Task 03"),
-					new Task("Test Task 04")
-				)
+			Arrays.asList(
+				new Task("Test Task 01"),
+				new Task("Test Task 02"),
+				new Task("Test Task 03"),
+				new Task("Test Task 04")
 			)
 		);
 		this.setupUserData(manager);
@@ -177,6 +173,58 @@ public class TaskTest extends TimekeepingUiTest {
 					Arrays.asList(
 						new Task("Test Task 01"),
 						new Task("Test Task 02"),
+						new Task("Test Task 04")
+					)
+				)
+			),
+			this.userUtils.getTestUserJwt(this.testUser)
+		);
+		this.assertTimestampsUpdated();
+	}
+	
+	@Test
+	public void editViewTaskTest() throws IOException, InterruptedException {
+		TimeManager manager = new TimeManager(
+			Arrays.asList(
+				new Task("Test Task 01"),
+				new Task("Test Task 02"),
+				new Task("Test Task 03"),
+				new Task("Test Task 04")
+			)
+		);
+		this.setupUserData(manager);
+		this.wrapper.waitForElement(By.id("tasksTab")).click();
+		
+		WebElement taskTable = wrapper.waitForElement(By.id("tasksTableContent"));
+		
+		WebElement taskRow = taskTable.findElement(By.xpath("//*[contains(text(),'Test Task 03')]"))
+									  .findElement(By.xpath("./.."));
+		taskRow.findElement(By.className("taskViewEditButton")).click();
+		
+		WebElement taskAddEditForm = this.wrapper.waitForElement(By.id("taskAddEditModalForm"));
+		
+		taskAddEditForm.findElement(By.id("taskAddEditModalNameInput")).sendKeys(" updated");
+		
+		taskAddEditForm.findElement(By.id("taskAddEditModalAddAttButton")).click();
+		
+		taskAddEditForm.findElement(By.className("attNameInput")).sendKeys("some");
+		taskAddEditForm.findElement(By.className("attValueInput")).sendKeys("att");
+		
+		submitForm(taskAddEditForm);
+		this.wrapper.waitForAjaxComplete();
+		this.wrapper.waitForModalClose();
+		
+		assertUserTimeData(
+			this.testUser,
+			this.wrapper,
+			new TimeManager(
+				new TreeSet<>(
+					Arrays.asList(
+						new Task("Test Task 01"),
+						new Task("Test Task 02"),
+						new Task("Test Task 03 updated", new HashMap<String, String>() {{
+							put("some", "att");
+						}}),
 						new Task("Test Task 04")
 					)
 				)
