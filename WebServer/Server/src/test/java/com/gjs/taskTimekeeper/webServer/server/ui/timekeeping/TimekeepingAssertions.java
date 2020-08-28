@@ -123,12 +123,16 @@ public class TimekeepingAssertions {
 			periodsTab.click();
 			WebElement periodsTableContent = wrapper.waitForElement(By.id("periodsTableContent"));
 			
+			List<WebElement> periodsTableRows = periodsTableContent.findElements(By.xpath(".//tr"));
+			
 			assertEquals(
 				held.getWorkPeriods().size(),
-				periodsTableContent.findElements(By.xpath(".//tr")).size()
+				periodsTableRows.size()
 			);
 			
 			for(WorkPeriod period : held.getWorkPeriods()) {
+				//foreach period, select and verify data
+				
 				//TODO:: verify
 			}
 		}
