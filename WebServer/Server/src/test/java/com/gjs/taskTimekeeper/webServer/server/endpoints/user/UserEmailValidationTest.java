@@ -107,9 +107,9 @@ public class UserEmailValidationTest extends ServerWebUiTest {
 	private void assertNotValidated(String email) {
 		User newUser = User.findByEmail(email);
 		
-		assertFalse(newUser.isEmailValidated());
-		assertNotNull(newUser.getEmailValidationTokenHash());
-		assertNull(newUser.getLastEmailValidated());
+		assertFalse(newUser.getLoginAuth().isEmailValidated());
+		assertNotNull(newUser.getLoginAuth().getEmailValidationTokenHash());
+		assertNull(newUser.getLoginAuth().getLastEmailValidated());
 	}
 	
 	@Test
@@ -129,9 +129,9 @@ public class UserEmailValidationTest extends ServerWebUiTest {
 		
 		User newUser = User.findByEmail(registrationResponse.getEmail());
 		
-		assertTrue(newUser.isEmailValidated());
-		assertNull(newUser.getEmailValidationTokenHash());
-		assertNotNull(newUser.getLastEmailValidated());
+		assertTrue(newUser.getLoginAuth().isEmailValidated());
+		assertNull(newUser.getLoginAuth().getEmailValidationTokenHash());
+		assertNotNull(newUser.getLoginAuth().getLastEmailValidated());
 	}
 	
 	@Test
@@ -156,9 +156,9 @@ public class UserEmailValidationTest extends ServerWebUiTest {
 		
 		User newUser = User.findByEmail(registrationResponse.getEmail());
 		
-		assertFalse(newUser.isEmailValidated());
-		assertNotNull(newUser.getEmailValidationTokenHash());
-		assertNull(newUser.getLastEmailValidated());
+		assertFalse(newUser.getLoginAuth().isEmailValidated());
+		assertNotNull(newUser.getLoginAuth().getEmailValidationTokenHash());
+		assertNull(newUser.getLoginAuth().getLastEmailValidated());
 		
 		assertErrorMessage("User was not found.", response.asString());
 	}

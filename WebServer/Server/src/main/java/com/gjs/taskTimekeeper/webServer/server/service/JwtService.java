@@ -81,7 +81,7 @@ public class JwtService {
 		
 		output.put(
 			"jti",
-			user.id + "-" + user.getLastLogin().getTime() + "-" + user.getNumLogins()
+			user.id + "-" + user.getLoginAuth().getLastLogin().getTime() + "-" + user.getLoginAuth().getNumLogins()
 		);//TODO: move to utility, test
 		output.put("sub", userIdentification);
 		output.put("aud", userIdentification);
@@ -93,7 +93,7 @@ public class JwtService {
 		List<Object> groups = new ArrayList<>();
 		
 		groups.add(UserLevel.REGULAR.name());
-		if(user.getLevel() == UserLevel.ADMIN) {
+		if(user.getLoginAuth().getLevel() == UserLevel.ADMIN) {
 			groups.add(UserLevel.ADMIN.name());
 		}
 		

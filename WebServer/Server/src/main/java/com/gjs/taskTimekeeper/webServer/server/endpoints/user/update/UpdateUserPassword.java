@@ -76,7 +76,10 @@ public class UpdateUserPassword {
 		User user = User.findById(userId);
 		log.debug("Attempting up update user password: {}", userId);
 		
-		this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), request.getOldPlainPassword());
+		this.passwordService.assertPasswordMatchesHash(
+			user.getLoginAuth().getHashedPass(),
+			request.getOldPlainPassword()
+		);
 		
 		log.debug("User's old passwords matched.");
 		CompletionStage<Void> completionStage = this.notificationService.alertToAccountChange(
@@ -85,7 +88,7 @@ public class UpdateUserPassword {
 			"Your password was changed."
 		);
 		
-		user.setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
+		user.getLoginAuth().setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
 		user.update();
 		
 		log.debug("User's passwords were updated.");

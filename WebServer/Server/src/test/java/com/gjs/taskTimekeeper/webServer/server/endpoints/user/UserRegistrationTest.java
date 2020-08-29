@@ -77,13 +77,13 @@ public class UserRegistrationTest extends RunningServerTest {
 		assertEquals(response.getUsername(), newUser.getUsername());
 		assertEquals(request.getEmail(), newUser.getEmail());
 		
-		assertFalse(newUser.isEmailValidated());
-		assertNull(newUser.getLastEmailValidated());
+		assertFalse(newUser.getLoginAuth().isEmailValidated());
+		assertNull(newUser.getLoginAuth().getLastEmailValidated());
 		assertNotNull(newUser.getJoinDateTime());
-		assertNotNull(newUser.getNoLoginsBefore());
-		assertEquals(newUser.getJoinDateTime(), newUser.getNoLoginsBefore());
+		assertNotNull(newUser.getLoginAuth().getNoLoginsBefore());
+		assertEquals(newUser.getJoinDateTime(), newUser.getLoginAuth().getNoLoginsBefore());
 		
-		passwordService.assertPasswordMatchesHash(newUser.getHashedPass(), request.getPlainPassword());
+		passwordService.assertPasswordMatchesHash(newUser.getLoginAuth().getHashedPass(), request.getPlainPassword());
 	}
 	
 	@Test
@@ -113,8 +113,8 @@ public class UserRegistrationTest extends RunningServerTest {
 			newUser
 		);
 		
-		assertTrue(newUser.isApprovedUser());
-		assertEquals(UserLevel.ADMIN, newUser.getLevel());
+		assertTrue(newUser.getLoginAuth().isApprovedUser());
+		assertEquals(UserLevel.ADMIN, newUser.getLoginAuth().getLevel());
 	}
 	
 	@Test
@@ -145,8 +145,8 @@ public class UserRegistrationTest extends RunningServerTest {
 			newUser
 		);
 		
-		assertFalse(newUser.isApprovedUser());
-		assertEquals(UserLevel.REGULAR, newUser.getLevel());
+		assertFalse(newUser.getLoginAuth().isApprovedUser());
+		assertEquals(UserLevel.REGULAR, newUser.getLoginAuth().getLevel());
 	}
 	
 	@Test

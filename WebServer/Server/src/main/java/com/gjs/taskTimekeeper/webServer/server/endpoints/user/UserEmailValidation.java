@@ -91,14 +91,17 @@ public class UserEmailValidation {
 		}
 		
 		try {
-			this.passwordService.assertPasswordMatchesHash(user.getEmailValidationTokenHash(), validationToken);
+			this.passwordService.assertPasswordMatchesHash(
+				user.getLoginAuth().getEmailValidationTokenHash(),
+				validationToken
+			);
 		} catch(IncorrectPasswordException e) {
 			throw new ValidationException("Token given was invalid.");
 		}
 		
-		user.setEmailValidated(true);
-		user.setEmailValidationTokenHash(null);
-		user.setLastEmailValidated(new Date());
+		user.getLoginAuth().setEmailValidated(true);
+		user.getLoginAuth().setEmailValidationTokenHash(null);
+		user.getLoginAuth().setLastEmailValidated(new Date());
 		
 		user.update();
 		

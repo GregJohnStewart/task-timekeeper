@@ -30,7 +30,7 @@ public class JwtServiceTest extends RunningServerTest {
 	@BeforeEach
 	public void setTestUser() {
 		this.testUser = this.userUtils.setupTestUser(true).getUserObj();
-		this.testUser.setNumLogins(1L);
+		this.testUser.getLoginAuth().setNumLogins(1L);
 	}
 	
 	private void assertProperToken(String token) {

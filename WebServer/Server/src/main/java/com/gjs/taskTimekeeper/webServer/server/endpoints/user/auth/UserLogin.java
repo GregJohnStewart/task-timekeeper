@@ -1,9 +1,11 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLoginException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
+import com.gjs.taskTimekeeper.webServer.server.utils.UserUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.auth.UserLoginRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.auth.UserLoginResponse;
 import org.eclipse.microprofile.metrics.MetricUnits;
@@ -32,15 +34,18 @@ public class UserLogin {
 	
 	private final PasswordService passwordService;
 	private final JwtService jwtService;
+	private final UserUtils userUtils;
 	
 	private long numLoggedIn = 0;
 	
 	public UserLogin(
 		PasswordService passwordService,
-		JwtService jwtService
+		JwtService jwtService,
+		UserUtils userUtils
 	) {
 		this.passwordService = passwordService;
 		this.jwtService = jwtService;
+		this.userUtils = userUtils;
 	}
 	
 	@POST
@@ -80,18 +85,22 @@ public class UserLogin {
 	public Response loginUser(UserLoginRequest loginRequest) {
 		User user = User.findByEmailOrUsername(loginRequest.getUser());
 		
-		//TODO:: use canLogin() method to aggregate
-		if(user.isLocked()) {
-			throw new UserLockedException("User account has been locked. Please contact admin.");
+		//TODO:: in user utils, cull login attempts not in last hour, add this one
+		
+		if(userUtils.canLogin(user)) {
+			if(user.getLoginAuth().isLocked()) {
+				throw new UserLockedException("User account has been locked. Please contact admin.");
+			}
+			throw new UserLoginException("User account is not able to login. For questions, contact admin.");
 		}
 		
-		//TODO:: check num login attempts. If over limit, add and kick out. Put it to the database to make this happen?
-		//TODO:: generalize canLogin logic into user object.
+		this.passwordService.assertPasswordMatchesHash(
+			user.getLoginAuth().getHashedPass(),
+			loginRequest.getPlainPass()
+		);
 		
-		this.passwordService.assertPasswordMatchesHash(user.getHashedPass(), loginRequest.getPlainPass());
-		
-		user.setLastLogin(new Date());
-		user.setNumLogins(user.getNumLogins() + 1);
+		user.getLoginAuth().setLastLogin(new Date());
+		user.getLoginAuth().setNumLogins(user.getLoginAuth().getNumLogins() + 1);
 		
 		user.update();
 		

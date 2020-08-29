@@ -60,7 +60,7 @@ public class TokenCheckTest extends RunningServerTest {
 	@Test
 	public void checkValidUserJwt() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(UserLevel.REGULAR);
+		testUser.getLoginAuth().setLevel(UserLevel.REGULAR);
 		testUser.update();
 		
 		String token = this.userUtils.getTestUserJwt(testUser);
@@ -84,7 +84,7 @@ public class TokenCheckTest extends RunningServerTest {
 	@Test
 	public void checkValidAdminJwt() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(UserLevel.ADMIN);
+		testUser.getLoginAuth().setLevel(UserLevel.ADMIN);
 		testUser.update();
 		
 		String token = this.userUtils.getTestUserJwt(testUser);

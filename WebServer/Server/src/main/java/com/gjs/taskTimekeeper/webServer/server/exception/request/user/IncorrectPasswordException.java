@@ -2,7 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.exception.request.user;
 
 import javax.ws.rs.core.Response;
 
-public class IncorrectPasswordException extends UserRequestException {
+public class IncorrectPasswordException extends UserLoginException {
 	public IncorrectPasswordException() {
 	}
 	

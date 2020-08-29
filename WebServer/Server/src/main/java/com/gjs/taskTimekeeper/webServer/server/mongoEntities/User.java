@@ -1,8 +1,8 @@
 package com.gjs.taskTimekeeper.webServer.server.mongoEntities;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
+import com.gjs.taskTimekeeper.webServer.server.mongoEntities.pojos.UserLoginAuth;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo;
-import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.notification.NotificationSettings;
 import io.quarkus.mongodb.panache.MongoEntity;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,27 +24,12 @@ import java.util.List;
 @Slf4j
 public class User extends OurMongoEntity {
 	private String username;
-	
-	private String hashedPass;
-	private String passResetTokenHash = null;
-	
 	private String email;
-	private boolean emailValidated = false;
-	private Date lastEmailValidated = null;
-	private String emailValidationTokenHash = null;
-	private String newEmail = null;
-	
-	private boolean approvedUser = false;
-	private UserLevel level = UserLevel.REGULAR;
-	private boolean locked = false;
-	private String lockReason;
+	private Date joinDateTime = new Date();
 	private NotificationSettings notificationSettings;
 	
-	private Date joinDateTime = new Date();
-	private Date noLoginsBefore = new Date();
-	private Date lastLogin;
-	private Long numLogins = 0L;
-	private List<Date> lastHourLoginAttempts = new ArrayList<>();
+	private UserLoginAuth loginAuth = new UserLoginAuth();
+	
 	
 	/**
 	 * @param email The email of the user to find
@@ -104,13 +88,13 @@ public class User extends OurMongoEntity {
 			this.id.toHexString(),
 			this.getUsername(),
 			this.getEmail(),
-			this.isEmailValidated(),
-			this.isApprovedUser(),
-			this.getLevel(),
-			this.isLocked(),
-			this.getLockReason(),
+			this.getLoginAuth().isEmailValidated(),
+			this.getLoginAuth().isApprovedUser(),
+			this.getLoginAuth().getLevel(),
+			this.getLoginAuth().isLocked(),
+			this.getLoginAuth().getLockReason(),
 			this.getJoinDateTime(),
-			this.getLastLogin()
+			this.getLoginAuth().getLastLogin()
 		);
 	}
 }

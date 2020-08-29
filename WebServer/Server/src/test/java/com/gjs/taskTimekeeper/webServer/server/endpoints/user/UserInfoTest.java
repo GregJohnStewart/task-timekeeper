@@ -43,7 +43,7 @@ public class UserInfoTest extends RunningServerTest {
 	@Test
 	public void testAdminUserOwnInfo() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(ADMIN);
+		testUser.getLoginAuth().setLevel(ADMIN);
 		testUser.update();
 		
 		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt(testUser)).get(
@@ -93,7 +93,7 @@ public class UserInfoTest extends RunningServerTest {
 	@Test
 	public void testUserInfoByIdAdminOwn() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(ADMIN);
+		testUser.getLoginAuth().setLevel(ADMIN);
 		testUser.update();
 		
 		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.userUtils.getTestUserJwt(testUser)).get(
@@ -110,7 +110,7 @@ public class UserInfoTest extends RunningServerTest {
 	@Test
 	public void testUserInfoByIdAdminOther() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(ADMIN);
+		testUser.getLoginAuth().setLevel(ADMIN);
 		testUser.update();
 		User testUserTwo = this.userUtils.setupTestUser(true).getUserObj();
 		
@@ -155,7 +155,7 @@ public class UserInfoTest extends RunningServerTest {
 	@Test
 	public void testUsersInfoByIdAdminUser() {
 		User testUser = this.userUtils.setupTestUser(true).getUserObj();
-		testUser.setLevel(ADMIN);
+		testUser.getLoginAuth().setLevel(ADMIN);
 		testUser.update();
 		User testUserTwo = this.userUtils.setupTestUser(true).getUserObj();
 		

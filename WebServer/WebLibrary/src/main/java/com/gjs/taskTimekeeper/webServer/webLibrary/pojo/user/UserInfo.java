@@ -13,6 +13,8 @@ public class UserInfo {
 	private String id;
 	private String username;
 	private String email;
+	//TODO:: implement
+	//	private boolean canLogin;
 	private boolean emailValidated;
 	private boolean approvedUser;
 	private UserLevel level;

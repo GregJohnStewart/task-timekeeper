@@ -88,7 +88,10 @@ public class UserSettingsTest extends ServerWebUiTest {
 			this.wrapper.waitForElement(By.id("changePasswordSuccessMessage"));
 			
 			//TODO:: message check, email check
-			this.passwordService.assertPasswordMatchesHash(testUser.getUserObj().getHashedPass(), newPass);
+			this.passwordService.assertPasswordMatchesHash(
+				testUser.getUserObj().getLoginAuth().getHashedPass(),
+				newPass
+			);
 		}
 	}
 }

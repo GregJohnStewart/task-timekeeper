@@ -107,25 +107,25 @@ public class UserRegistration {
 		newUser.setEmail(
 			this.emailValidator.validateSanitizeAssertDoesntExist(request.getEmail())
 		);
-		newUser.setHashedPass(
+		newUser.getLoginAuth().setHashedPass(
 			this.passwordService.createPasswordHash(request.getPlainPassword())
 		);
 		log.debug("Finished validating, valid user registration request.");
 		
-		newUser.setEmailValidated(false);
+		newUser.getLoginAuth().setEmailValidated(false);
 		
 		if(User.listAll().size() < 1) {
 			log.info("First user to register. Making them an admin.");
-			newUser.setLevel(UserLevel.ADMIN);
-			newUser.setApprovedUser(true);
+			newUser.getLoginAuth().setLevel(UserLevel.ADMIN);
+			newUser.getLoginAuth().setApprovedUser(true);
 		} else {
 			log.info("Creating a regular user.");
-			newUser.setLevel(UserLevel.REGULAR);
-			newUser.setApprovedUser(this.newUserAutoApprove);
+			newUser.getLoginAuth().setLevel(UserLevel.REGULAR);
+			newUser.getLoginAuth().setApprovedUser(this.newUserAutoApprove);
 		}
 		
 		String emailValidationToken = this.tokenService.generateToken();
-		newUser.setEmailValidationTokenHash(
+		newUser.getLoginAuth().setEmailValidationTokenHash(
 			this.passwordService.createPasswordHash(emailValidationToken)
 		);
 		

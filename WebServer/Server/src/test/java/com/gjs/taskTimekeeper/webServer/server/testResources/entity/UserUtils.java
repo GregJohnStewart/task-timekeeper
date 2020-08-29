@@ -65,9 +65,9 @@ public class UserUtils {
 		
 		newUser.setEmail(testUser.getEmail());
 		newUser.setUsername(testUser.getUsername());
-		newUser.setHashedPass(this.passwordService.createPasswordHash(testUser.getPlainPassword()));
+		newUser.getLoginAuth().setHashedPass(this.passwordService.createPasswordHash(testUser.getPlainPassword()));
 		
-		newUser.setLastLogin(new Date());
+		newUser.getLoginAuth().setLastLogin(new Date());
 		
 		if(persist) {
 			newUser.persist();

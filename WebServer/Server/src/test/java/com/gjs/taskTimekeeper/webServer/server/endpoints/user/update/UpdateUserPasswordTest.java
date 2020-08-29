@@ -22,7 +22,7 @@ class UpdateUserPasswordTest extends RunningServerTest {
 		User user = testUser.getUserObj();
 		
 		this.userUtils.getPasswordService().assertPasswordMatchesHash(
-			user.getHashedPass(),
+			user.getLoginAuth().getHashedPass(),
 			password
 		);
 	}
