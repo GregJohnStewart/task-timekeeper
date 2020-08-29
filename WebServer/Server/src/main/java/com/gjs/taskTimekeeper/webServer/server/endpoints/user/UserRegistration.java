@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.ServerUrlService;
 import com.gjs.taskTimekeeper.webServer.server.service.TokenService;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.server.validation.validate.EmailValidator;
 import com.gjs.taskTimekeeper.webServer.server.validation.validate.UsernameValidator;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserLevel;
@@ -24,11 +25,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
@@ -95,9 +98,16 @@ public class UserRegistration {
 	@Tags({@Tag(name = "User")})
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public CompletionStage<Response> registerUser(UserRegistrationRequest request)
-		throws UnsupportedEncodingException, MalformedURLException {
-		log.info("Got User Registration request.");
+	public CompletionStage<Response> registerUser(
+		UserRegistrationRequest request,
+		@Context
+			HttpRequest context
+	) throws UnsupportedEncodingException, MalformedURLException {
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Got User Registration request."
+		);
 		
 		User newUser = new User();
 		
@@ -110,16 +120,29 @@ public class UserRegistration {
 		newUser.getLoginAuth().setHashedPass(
 			this.passwordService.createPasswordHash(request.getPlainPassword())
 		);
-		log.debug("Finished validating, valid user registration request.");
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Finished validating, valid user registration request."
+		);
 		
 		newUser.getLoginAuth().setEmailValidated(false);
 		
 		if(User.listAll().size() < 1) {
-			log.info("First user to register. Making them an admin.");
+			LoggingUtils.endpointInfoLog(
+				log,
+				context,
+				"First user to register. Making them an admin: {}",
+				newUser.getEmail()
+			);
 			newUser.getLoginAuth().setLevel(UserLevel.ADMIN);
 			newUser.getLoginAuth().setApprovedUser(true);
 		} else {
-			log.info("Creating a regular user.");
+			LoggingUtils.endpointInfoLog(
+				log,
+				context,
+				"Creating a regular user."
+			);
 			newUser.getLoginAuth().setLevel(UserLevel.REGULAR);
 			newUser.getLoginAuth().setApprovedUser(this.newUserAutoApprove);
 		}

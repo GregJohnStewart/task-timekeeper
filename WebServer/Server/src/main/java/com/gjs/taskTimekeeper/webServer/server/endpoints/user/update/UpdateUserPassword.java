@@ -4,6 +4,7 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
 import com.gjs.taskTimekeeper.webServer.server.service.UserNotificationService;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.update.UserUpdatePasswordRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -17,12 +18,14 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.concurrent.CompletionStage;
@@ -71,17 +74,31 @@ public class UpdateUserPassword {
 	@SecurityRequirement(name = "JwtAuth")
 	@RolesAllowed({"REGULAR", "ADMIN"})
 	@Consumes(MediaType.APPLICATION_JSON)
-	public CompletionStage<Object> registerUser(UserUpdatePasswordRequest request) {
+	public CompletionStage<Object> registerUser(
+		UserUpdatePasswordRequest request,
+		@Context
+			HttpRequest context
+	) {
 		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
 		User user = User.findById(userId);
-		log.debug("Attempting up update user password: {}", userId);
+		LoggingUtils.endpointDebugLog(
+			log,
+			context,
+			"Attempting up update user password: {}",
+			userId
+		);
 		
 		this.passwordService.assertPasswordMatchesHash(
 			user.getLoginAuth().getHashedPass(),
 			request.getOldPlainPassword()
 		);
 		
-		log.debug("User's old passwords matched.");
+		LoggingUtils.endpointDebugLog(
+			log,
+			context,
+			"User's old passwords matched.",
+			userId
+		);
 		CompletionStage<Void> completionStage = this.notificationService.alertToAccountChange(
 			user,
 			"password changed",
@@ -91,7 +108,13 @@ public class UpdateUserPassword {
 		user.getLoginAuth().setHashedPass(this.passwordService.createPasswordHash(request.getNewPlainPassword()));
 		user.update();
 		
-		log.debug("User's passwords were updated.");
+		
+		LoggingUtils.endpointDebugLog(
+			log,
+			context,
+			"User's passwords were updated.",
+			userId
+		);
 		
 		return completionStage.thenApply(
 			x->Response.noContent().build()

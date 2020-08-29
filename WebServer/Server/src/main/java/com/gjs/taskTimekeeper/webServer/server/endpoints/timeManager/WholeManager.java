@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gjs.taskTimekeeper.baseCode.core.objects.TimeManager;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerAnitizer;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.TimeManagerResponse;
@@ -20,6 +21,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -116,10 +118,17 @@ public class WholeManager {
 		@HeaderParam("provideStats")
 			boolean provideStats,
 		@HeaderParam("sanitizeText")
-			boolean sanitizeText
+			boolean sanitizeText,
+		@Context
+			HttpRequest context
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		log.info("Getting Time Manager data for user {}", userId);
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Getting Time Manager data for user {}",
+			userId
+		);
 		
 		ManagerEntity entity = getOrCreateNew(userId);
 		
@@ -191,11 +200,14 @@ public class WholeManager {
 		@HeaderParam("provideStats")
 			boolean provideStats,
 		@HeaderParam("sanitizeText")
-			boolean sanitizeText
-	)
-		throws JsonProcessingException {
+			boolean sanitizeText,
+		@Context
+			HttpRequest context
+	) throws JsonProcessingException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		log.info(
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
 			"Updating Time Manager data for user {}, providing stats? {}. Sanitizing text? {}",
 			userId,
 			provideStats,
@@ -211,7 +223,12 @@ public class WholeManager {
 			
 			managerData = MANAGER_MAPPER.writeValueAsBytes(manager);
 		} catch(JsonProcessingException e) {
-			log.warn("FAILED to serialize manager object given by user.");
+			//TODO:: better exception
+			LoggingUtils.endpointErrorLog(
+				log,
+				context,
+				"FAILED to serialize manager object given by user."
+			);
 			throw e;
 		}
 		
@@ -221,7 +238,11 @@ public class WholeManager {
 				managerData
 			)
 		) {
-			log.info("User posted the same data that was already held.");
+			LoggingUtils.endpointInfoLog(
+				log,
+				context,
+				"User posted the same data that was already held."
+			);
 			return Response
 				.status(Response.Status.OK.getStatusCode())
 				.type(MediaType.APPLICATION_JSON_TYPE)

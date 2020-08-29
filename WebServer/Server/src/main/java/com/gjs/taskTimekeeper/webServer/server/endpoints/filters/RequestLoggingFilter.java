@@ -11,9 +11,12 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 import java.time.Instant;
 
+import static com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils.REQUEST_ID_KEY;
+
+//TODO:: use markers: https://logging.apache.org/log4j/2.x/manual/markers.html
 @Slf4j
 @Provider
-public class LoggingFilter implements ContainerRequestFilter {
+public class RequestLoggingFilter implements ContainerRequestFilter {
 	
 	@Context
 	UriInfo info;
@@ -27,7 +30,8 @@ public class LoggingFilter implements ContainerRequestFilter {
 		final String path = info.getPath();
 		final String address = request.remoteAddress().toString();
 		
-		context.setProperty("requestId", buildRequestId());
+		String reqId = buildRequestId();
+		context.setProperty(REQUEST_ID_KEY, reqId);
 		
 		log.info("Request {} - {} {} from IP {}", context.getProperty("requestId"), method, path, address);
 	}

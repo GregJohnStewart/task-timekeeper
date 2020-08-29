@@ -3,6 +3,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.user;
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -16,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -70,10 +72,16 @@ public class UserInfo {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUsersInfo(
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@Context
+			HttpRequest context
 	) {
 		ObjectId userId = new ObjectId((String)jwt.getClaim(JwtService.JWT_USER_ID_CLAIM));
-		log.debug("Getting user's own info. User: {}", userId);
+		LoggingUtils.endpointDebugLog(
+			log,
+			context,
+			"Getting user's own info. User: {}", userId
+		);
 		User user = User.findById(userId);
 		
 		return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(
@@ -113,9 +121,15 @@ public class UserInfo {
 		@PathParam("userId")
 			String userId,
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@Context
+			HttpRequest context
 	) {
-		log.info("Got {} as a path parameter.", userId);
+		LoggingUtils.endpointDebugLog(
+			log,
+			context,
+			"Got {} as a path parameter.", userId
+		);
 		ObjectId userObjectId = new ObjectId(userId);
 		
 		User user = User.findById(userObjectId);
@@ -158,11 +172,24 @@ public class UserInfo {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsersInfo(
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@Context
+			HttpRequest context
 	) {
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Getting List of users."
+		);
 		List<User> users = User.listAll();
 		List<com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.UserInfo> userInfos = new ArrayList<>(users.size());
 		
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Getting {} users' info.",
+			users.size()
+		);
 		for(User curUser : users) {
 			userInfos.add(curUser.toUserInfo());
 		}

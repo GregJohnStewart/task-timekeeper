@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints;
 
 import com.gjs.taskTimekeeper.webServer.server.config.ServerInfoBean;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.ServerInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 @Path("/api/server")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class Server {
 	
 	@Inject

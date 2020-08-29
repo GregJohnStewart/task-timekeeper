@@ -10,6 +10,7 @@ import com.gjs.taskTimekeeper.baseCode.core.utils.ObjectMapperUtilities;
 import com.gjs.taskTimekeeper.baseCode.core.utils.Outputter;
 import com.gjs.taskTimekeeper.baseCode.stats.processor.AllStatsProcessor;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimeManagerActionAnitizer;
 import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerResponseAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.action.TimeManagerActionRequest;
@@ -25,6 +26,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -103,17 +105,19 @@ public class ActionDoer {
 		@HeaderParam("provideStats")
 			boolean provideStats,
 		@HeaderParam("sanitizeText")
-			boolean sanitizeText
+			boolean sanitizeText,
+		@Context
+			HttpRequest context
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		log.info(
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
 			"Updating Time Manager data with action for user {}, providing stats? {}. Sanitizing text? {}",
 			userId,
 			provideStats,
 			sanitizeText
 		);
-		log.debug("Update request data: {}", updateRequest);
-		
 		updateRequest = actionDeSanitizer.deSanitize(updateRequest);
 		
 		ManagerEntity heldEntity = ManagerEntity.getOrCreateNew(userId);
@@ -125,7 +129,7 @@ public class ActionDoer {
 		CrudOperator operator = new CrudOperator(heldManager, new Outputter(regStream, errStream));
 		
 		if(updateRequest.getSelectedPeriod() != null) {
-			log.info("Selecting user's period {}", updateRequest.getSelectedPeriod());
+			
 			ActionConfig selectConfig = new ActionConfig(KeeperObjectType.PERIOD, Action.VIEW);
 			selectConfig.setSelect(true);
 			selectConfig.setIndex(updateRequest.getSelectedPeriod());
@@ -135,10 +139,13 @@ public class ActionDoer {
 			String errOutput = errStream.toString();
 			
 			if(!errOutput.isEmpty()) {
-				log.warn(
+				LoggingUtils.endpointWarnLog(
+					log,
+					context,
 					"Error Selecting the user's selected period {} - {}",
 					updateRequest.getSelectedPeriod(),
 					errOutput
+				
 				);
 				//TODO:: handle here
 			}

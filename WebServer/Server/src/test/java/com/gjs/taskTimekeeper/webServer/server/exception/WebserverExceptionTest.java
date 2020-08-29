@@ -6,6 +6,7 @@ import com.gjs.taskTimekeeper.webServer.server.exception.request.RequestExceptio
 import com.gjs.taskTimekeeper.webServer.server.exception.request.TooManyRequestsException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.CorruptedKeyException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.IncorrectPasswordException;
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.TooManyFailedLoginsException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLoginException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserRegistrationException;
@@ -45,6 +46,7 @@ public class WebserverExceptionTest extends WebServerTest {
 			Arguments.of(UserRequestException.class, 400),
 			Arguments.of(UserLoginException.class, 403),
 			Arguments.of(UserLockedException.class, 403),
+			Arguments.of(TooManyFailedLoginsException.class, 429),
 			Arguments.of(UserRegistrationException.class, 400),
 			Arguments.of(UserUnauthorizedException.class, 401),
 			Arguments.of(EmailValidationException.class, 400),

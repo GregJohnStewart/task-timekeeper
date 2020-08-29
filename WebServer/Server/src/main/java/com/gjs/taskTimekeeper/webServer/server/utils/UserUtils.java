@@ -15,11 +15,13 @@ public class UserUtils {
 	@ConfigProperty(name = "user.login.loginAttemptsAllowed")
 	int loginAttemptThreshold;
 	
+	//TODO:: test
 	@BsonIgnore
 	public boolean numLoginAttemptsDoesNotExceed(User user) {
 		return user.getLoginAuth().getNumLastHourLoginAttempts() < this.loginAttemptThreshold;
 	}
 	
+	//TODO:: test
 	@BsonIgnore
 	public boolean canLogin(User user) {
 		return user.getLoginAuth().isApprovedUser() &&

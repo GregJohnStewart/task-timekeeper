@@ -1,13 +1,16 @@
 package com.gjs.taskTimekeeper.webServer.server.endpoints.user.auth;
 
+import com.gjs.taskTimekeeper.webServer.server.exception.request.user.TooManyFailedLoginsException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLockedException;
 import com.gjs.taskTimekeeper.webServer.server.exception.request.user.UserLoginException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.service.JwtService;
 import com.gjs.taskTimekeeper.webServer.server.service.PasswordService;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.server.utils.UserUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.auth.UserLoginRequest;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.user.auth.UserLoginResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
@@ -18,11 +21,13 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Date;
@@ -30,6 +35,7 @@ import java.util.Date;
 @Path("/api/user/auth/login")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class UserLogin {
 	
 	private final PasswordService passwordService;
@@ -82,12 +88,26 @@ public class UserLogin {
 	@Tags({@Tag(name = "User"), @Tag(name = "Auth")})
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response loginUser(UserLoginRequest loginRequest) {
+	public Response loginUser(
+		UserLoginRequest loginRequest,
+		@Context
+			HttpRequest context
+	) {
 		User user = User.findByEmailOrUsername(loginRequest.getUser());
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Attempting to log in user: {}",
+			user.id
+		);
 		
 		//TODO:: in user utils, cull login attempts not in last hour, add this one
 		
+		//TODO:: fix this next line's broken logic
 		if(userUtils.canLogin(user)) {
+			if(!userUtils.numLoginAttemptsDoesNotExceed(user)) {
+				throw new TooManyFailedLoginsException("User account has been locked. Please contact admin.");
+			}
 			if(user.getLoginAuth().isLocked()) {
 				throw new UserLockedException("User account has been locked. Please contact admin.");
 			}

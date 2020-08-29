@@ -2,6 +2,7 @@ package com.gjs.taskTimekeeper.webServer.server.endpoints.timeManager;
 
 import com.gjs.taskTimekeeper.webServer.server.exception.database.request.EntityNotFoundException;
 import com.gjs.taskTimekeeper.webServer.server.mongoEntities.ManagerEntity;
+import com.gjs.taskTimekeeper.webServer.server.utils.LoggingUtils;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.TimeManagerLastUpdateCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
@@ -63,10 +65,17 @@ public class LastUpdate {
 	@Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
 	public Response getTimeManager(
 		@Context
-			SecurityContext ctx
+			SecurityContext ctx,
+		@Context
+			HttpRequest context
 	) throws IOException {
 		ObjectId userId = new ObjectId((String)jwt.getClaim("userId"));
-		log.info("Getting Time Manager data for user {}", userId);
+		LoggingUtils.endpointInfoLog(
+			log,
+			context,
+			"Getting Time Manager data for user {}",
+			userId
+		);
 		
 		ManagerEntity managerEntity;
 		
