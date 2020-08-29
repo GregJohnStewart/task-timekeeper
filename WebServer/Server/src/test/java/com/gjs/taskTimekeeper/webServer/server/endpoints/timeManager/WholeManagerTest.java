@@ -10,6 +10,8 @@ import com.gjs.taskTimekeeper.webServer.server.mongoEntities.User;
 import com.gjs.taskTimekeeper.webServer.server.testResources.RunningServerTest;
 import com.gjs.taskTimekeeper.webServer.server.testResources.TestResourceLifecycleManager;
 import com.gjs.taskTimekeeper.webServer.server.testResources.rest.TestRestUtils;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.AllStatsAnitizer;
+import com.gjs.taskTimekeeper.webServer.server.validation.sanitize.TimemanagerAnitizer;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.TimeManagerResponse;
 import com.gjs.taskTimekeeper.webServer.webLibrary.pojo.timeManager.whole.WholeTimeManagerUpdateRequest;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -19,6 +21,7 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Date;
@@ -38,6 +41,12 @@ public class WholeManagerTest extends RunningServerTest {
 	private String testUserJwt;
 	private ManagerEntity testEntity;
 	
+	@Inject
+	private TimemanagerAnitizer timemanagerAnitizer;
+	
+	@Inject
+	private AllStatsAnitizer allStatsAnitizer;
+	
 	@PostConstruct
 	public void setupTestUser() {
 		this.testUser = userUtils.setupTestUser(true).getUserObj();
@@ -46,13 +55,17 @@ public class WholeManagerTest extends RunningServerTest {
 	
 	private void assertEntityEqualsResponse(ManagerEntity managerEntity, TimeManagerResponse response)
 		throws JsonProcessingException {
+		
 		assertEquals(
 			managerEntity.getLastUpdate(),
 			response.getLastUpdated()
 		);
+		
 		assertArrayEquals(
 			managerEntity.getTimeManagerData(),
-			MANAGER_MAPPER.writeValueAsBytes(response.getTimeManagerData())
+			MANAGER_MAPPER.writeValueAsBytes(
+				response.getTimeManagerData()
+			)
 		);
 	}
 	
@@ -65,6 +78,8 @@ public class WholeManagerTest extends RunningServerTest {
 		this.testEntity.persist();
 	}
 	
+	// <editor-fold desc="GET tests">
+	//TODO:: cleanup
 	@Test
 	public void testGetNewWholeManager() throws IOException {
 		ValidatableResponse validatableResponse = TestRestUtils.newJwtCall(this.testUserJwt)
@@ -102,11 +117,11 @@ public class WholeManagerTest extends RunningServerTest {
 		TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
 		assertNotNull(response.getLastUpdated());
 		
-		ManagerEntity updatedEntity = ManagerEntity.findByUserId(testUser.id);
-		assertNotNull(updatedEntity.getLastUpdate());
+		ManagerEntity heldEntity = ManagerEntity.findByUserId(testUser.id);
+		assertNotNull(heldEntity.getLastUpdate());
 		
 		assertEntityEqualsResponse(
-			updatedEntity,
+			heldEntity,
 			response
 		);
 		
@@ -116,6 +131,48 @@ public class WholeManagerTest extends RunningServerTest {
 		);
 	}
 	
+	@Test
+	public void testGetExistingWholeManagerSanitization() throws IOException {
+		this.setupExisting();
+		
+		ValidatableResponse validatableResponse =
+			TestRestUtils.newJwtCall(this.testUserJwt)
+						 .header("sanitizeText", "true")
+						 .get("/api/timeManager/manager")
+						 .then();
+		
+		validatableResponse.statusCode(Response.Status.OK.getStatusCode());
+		
+		TimeManagerResponse response = validatableResponse.extract().body().as(TimeManagerResponse.class);
+		assertNotNull(response.getLastUpdated());
+		
+		ManagerEntity heldEntity = ManagerEntity.findByUserId(testUser.id);
+		assertNotNull(heldEntity.getLastUpdate());
+		
+		//TODO:: assert sanitization
+		assertEntityEqualsResponse(
+			heldEntity,
+			response
+		);
+		
+		assertEquals(
+			response.getTimeManagerData(),
+			MANAGER_MAPPER.readValue(this.testEntity.getTimeManagerData(), TimeManager.class)
+		);
+	}
+	
+	//TODO:: get with sanitization, with stats
+	
+	
+	// </editor-fold>
+	
+	//TODO:: post
+	//TODO:: post bad data
+	//TODO:: post with getStats
+	//TODO:: post with sanitization, with stats
+	//TODO:: post/get, with/out sanitization
+	
+	// <editor-fold desc="Bad Auth">
 	@Test
 	public void testGetWholeManagerBadAuth() throws JsonProcessingException {
 		this.setupExisting();
@@ -131,9 +188,6 @@ public class WholeManagerTest extends RunningServerTest {
 			ManagerEntity.findByUserId(this.testUser.id)
 		);
 	}
-	
-	//TODO:: post
-	//TODO:: post bad data
 	
 	@Test
 	public void testPatchWholeManagerBadAuth() throws JsonProcessingException {
@@ -154,4 +208,5 @@ public class WholeManagerTest extends RunningServerTest {
 			ManagerEntity.findByUserId(this.testUser.id)
 		);
 	}
+	// </editor-fold>
 }
